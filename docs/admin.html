@@ -1072,11 +1072,12 @@ window.H10 = (function () {
         '<div class="truong" style="flex:1 1 220px"><label for="muc-do">Mức độ</label><select id="muc-do"><option value="tron">Trộn: biết, hiểu, vận dụng (cân bằng)</option><option value="biet">Nhận biết</option><option value="hieu">Thông hiểu</option><option value="vandung">Vận dụng</option><option value="cao">Vận dụng cao</option><option value="tailieu">Theo tài liệu tham khảo</option></select></div>' +
         '<div class="truong" style="flex:2 1 260px"><label for="ten-bo">Tên bộ câu hỏi (không bắt buộc)</label><input id="ten-bo" type="text" placeholder="Tự đặt theo ngày và bài nếu để trống"></div>' +
       '</div>' +
-      '<div class="hang" style="gap:4px 18px;margin-bottom:12px">' +
+      '<div class="hang" style="gap:4px 18px;margin-bottom:8px">' +
         '<label class="chon"><input type="checkbox" data-loai="tn" checked>Nhiều lựa chọn (A/B/C/D)</label>' +
         '<label class="chon"><input type="checkbox" data-loai="ds" checked>Đúng / Sai (4 ý a, b, c, d)</label>' +
         '<label class="chon"><input type="checkbox" data-loai="tl" checked>Trả lời ngắn (số, chữ, công thức)</label>' +
       '</div>' +
+      '<label class="chon" style="margin-bottom:12px"><input type="checkbox" id="kiem-tra">AI tự giải check lại hết đáp án sau khi tạo (chạy song song)</label>' +
       '<button type="button" class="nut chinh to" id="nut-tao">Tạo câu hỏi</button>' +
       '<div id="cho-tao" style="margin-top:10px"></div></section>';
     h += '<div id="vung-lam"></div>';
@@ -1118,7 +1119,7 @@ window.H10 = (function () {
         driveTatCa = (r && r.tatCa) || [];
         let autoDem = 0;
         driveGoiY.forEach(function (x) {
-          if (x.khopBai && !driveChon[x.fileId] && !driveBoQuaAuto[x.fileId] && autoDem < 3 && (!x.size || x.size <= 15 * 1024 * 1024)) {
+          if (x.khopBai && !driveChon[x.fileId] && !driveBoQuaAuto[x.fileId] && autoDem < 2 && (!x.size || x.size <= 15 * 1024 * 1024)) {
             driveChon[x.fileId] = x;
             autoDem++;
           }
@@ -1255,12 +1256,56 @@ window.H10 = (function () {
     } catch (e) { return false; }
   }
 
+  function buildDotSongSong_(soCau, loaiChon, baiIds, cach) {
+    const buoc = soCau <= 6 ? soCau : 5;
+    const nDot = Math.ceil(soCau / buoc);
+    const sizes = [];
+    let con = soCau;
+    for (let i = 0; i < nDot; i++) {
+      const sz = Math.ceil(con / (nDot - i));
+      sizes.push(sz);
+      con -= sz;
+    }
+    const coTN = loaiChon.indexOf('tn') >= 0;
+    const coDS = loaiChon.indexOf('ds') >= 0;
+    const coTL = loaiChon.indexOf('tl') >= 0;
+    const kieu = [];
+    if (coTN) kieu.push({ loai: ['tn'], nhan: 'chỉ tạo câu trắc nghiệm 4 lựa chọn (tn) phần lý thuyết, khái niệm và nhận biết' });
+    if (coTN && sizes.length >= 2) kieu.push({ loai: ['tn'], nhan: 'chỉ tạo câu trắc nghiệm 4 lựa chọn (tn) phần thông hiểu, bản chất hóa học hoặc bài tập tính toán' });
+    if (coDS) kieu.push({ loai: ['ds'], nhan: 'chỉ tạo câu Đúng/Sai 4 ý a, b, c, d (ds) về thí nghiệm, số liệu hoặc nhận định tổng hợp' });
+    if (coTL) kieu.push({ loai: ['tl'], nhan: 'chỉ tạo câu Trả lời ngắn (so hoặc chu) gồm bài tập tính số liệu và điền công thức/từ khóa' });
+
+    const gocNhin = [
+      'ưu tiên câu nhận biết, khái niệm cơ bản và tính chất đặc trưng',
+      'ưu tiên câu thông hiểu, giải thích hiện tượng và so sánh tính chất',
+      'ưu tiên câu bài tập tính toán và định lượng',
+      'ưu tiên câu vận dụng thực tế, thí nghiệm hoặc tổng hợp kiến thức'
+    ];
+    return sizes.map(function (sz, idx) {
+      let nhomLoai = loaiChon;
+      let focus = gocNhin[idx % gocNhin.length];
+      if (sizes.length > 1 && kieu.length > 1) {
+        const pick = kieu[idx % kieu.length];
+        nhomLoai = pick.loai;
+        focus = pick.nhan;
+      }
+      if (baiIds.length > 1) {
+        focus += '; ưu tiên bám theo bài "' + baiIds[idx % baiIds.length] + '"';
+      }
+      if (cach === 'lay_nguyen' && sizes.length > 1) {
+        focus += '; lấy các câu nằm ở phần ' + (idx + 1) + '/' + sizes.length + ' của tài liệu';
+      }
+      return { soCauDot: sz, loai: nhomLoai, focus: focus };
+    });
+  }
+
   async function taoCauHoi() {
     const baiIds = Object.keys(baiChon);
     if (!baiIds.length) return bao('Chọn ít nhất 1 bài.', true);
     const loai = Array.prototype.slice.call(document.querySelectorAll('[data-loai]')).filter(i => i.checked).map(i => i.getAttribute('data-loai'));
     if (!loai.length) return bao('Chọn ít nhất 1 loại câu.', true);
     const soCau = Math.max(1, Math.min(40, Number($('#so-cau').value) || 10));
+    const kiemTraSau = !!($('#kiem-tra') && $('#kiem-tra').checked);
     const opts = {
       baiIds: baiIds,
       files: files.map(f => ({ name: f.name, mimeType: f.mimeType, data: f.data })),
@@ -1271,35 +1316,67 @@ window.H10 = (function () {
     const nut = $('#nut-tao'); nut.disabled = true;
     const aiTen = tenAI();
     const cho = $('#cho-tao');
-    const datCho = msg => { if (cho) cho.innerHTML = '<div class="thongbao info"><span class="cho"></span><span>' + esc(msg) + '</span></div>'; };
-    datCho('Đang chuẩn bị bộ câu hỏi và tài liệu cho ' + aiTen + '...');
+    const t0 = Date.now();
+    let msgHien = 'Đang rút chữ tài liệu và chuẩn bị tạo câu...';
+    const veCho = () => {
+      if (!cho) return;
+      const giay = Math.max(0, Math.round((Date.now() - t0) / 1000));
+      cho.innerHTML = '<div class="thongbao info"><span class="cho"></span><span>' + esc(msgHien) + ' (' + giay + 's)</span></div>';
+    };
+    veCho();
+    const timer = setInterval(veCho, 1000);
     let khoi = null;
     try {
       khoi = await apiGV('gvBatDauTaoBo', opts);
       viecLam = { bo: khoi.bo, cau: [] }; dangSua = null; nhapGiaoDe = null; locDuyet = 'tat_ca';
-      const buoc = 6;
-      const dots = [];
-      let con = khoi.soCau;
-      while (con > 0) { dots.push(Math.min(buoc, con)); con -= buoc; }
-      for (let i = 0; i < dots.length; i++) {
-        datCho(aiTen + ' đang soạn đợt ' + (i + 1) + '/' + dots.length + ' (' + dots[i] + ' câu)... Đã có ' + viecLam.cau.length + '/' + khoi.soCau + ' câu.');
-        const daCo = viecLam.cau.map(c => c.cauHoi.slice(0, 120));
+      const dots = buildDotSongSong_(khoi.soCau, loai, khoi.baiIds, khoi.cach);
+      let xongNhom = 0;
+      msgHien = aiTen + ' đang soạn song song ' + dots.length + ' nhóm (xong 0/' + dots.length + ')';
+      veCho();
+      const ketQuaNhom = new Array(dots.length);
+      await Promise.all(dots.map(async function (d, idx) {
         const moi = await apiGV('gvTaoDotCauHoi', {
-          boId: khoi.bo.id, baiIds: khoi.baiIds, loai: khoi.loai, soCauDot: dots[i],
-          mucDo: khoi.mucDo, cach: khoi.cach, refs: khoi.refs, daCo: daCo, dotSo: i + 1, tongDot: dots.length
+          boId: khoi.bo.id, baiIds: khoi.baiIds, loai: d.loai, soCauDot: d.soCauDot,
+          mucDo: khoi.mucDo, cach: khoi.cach, refs: khoi.refs, daCo: [],
+          dotSo: idx + 1, tongDot: dots.length, focus: d.focus
         });
-        viecLam.cau = viecLam.cau.concat(moi || []);
+        ketQuaNhom[idx] = moi || [];
+        xongNhom++;
+        viecLam.cau = [].concat.apply([], ketQuaNhom.filter(Boolean));
+        msgHien = aiTen + ' đang soạn song song ' + dots.length + ' nhóm (xong ' + xongNhom + '/' + dots.length + ' · ' + viecLam.cau.length + '/' + khoi.soCau + ' câu)';
+        veCho();
         veViecLam();
-      }
+      }));
       if (!viecLam.cau.length) throw new Error(aiTen + ' không tạo được câu nào. Thử lại hoặc đổi tài liệu.');
+
+      if (kiemTraSau) {
+        const loKiem = chiaNhom_(viecLam.cau.map(c => c.id), 5);
+        let xongKiem = 0;
+        msgHien = aiTen + ' đang tự giải check chéo song song ' + loKiem.length + ' nhóm (xong 0/' + loKiem.length + ')';
+        veCho();
+        await Promise.all(loKiem.map(async function (idsLo) {
+          const capNhat = await apiGV('gvKiemTraLai', idsLo);
+          const map = {}; (capNhat || []).forEach(x => map[x.id] = x);
+          viecLam.cau = viecLam.cau.map(x => map[x.id] || x);
+          xongKiem++;
+          msgHien = aiTen + ' đang tự giải check chéo song song (xong ' + xongKiem + '/' + loKiem.length + ')';
+          veCho();
+          veViecLam();
+        }));
+      }
+
+      clearInterval(timer);
       files = []; veChip();
       if (cho) cho.innerHTML = '';
       nut.disabled = false;
+      const giayTong = Math.max(1, Math.round((Date.now() - t0) / 1000));
       const r = viecLam;
       const nLap = r.cau.filter(c => c.laTrung).length;
-      bao('Đã tạo ' + r.cau.length + ' câu. Xem, duyệt hoặc xuất Word/PDF để kiểm tra ở dưới.' + (nLap ? ' Có ' + nLap + ' câu trùng.' : ''));
+      const nCanh = r.cau.filter(c => !!c.canhBao && !c.laTrung).length;
+      bao('Đã tạo ' + r.cau.length + ' câu trong ' + giayTong + 's.' + (nCanh ? ' Có ' + nCanh + ' câu AI nghi lệch.' : '') + (nLap ? ' Có ' + nLap + ' câu trùng.' : ''));
       const v = $('#vung-lam'); if (v) v.scrollIntoView({ behavior: 'smooth' });
     } catch (e) {
+      clearInterval(timer);
       nut.disabled = false;
       if (e.message !== '__REDIRECT__' && cho) cho.innerHTML = '<div class="thongbao loi" role="alert">' + esc(e.message) + '</div>';
       if (viecLam && viecLam.cau.length) veViecLam();
@@ -1323,6 +1400,7 @@ window.H10 = (function () {
       '</div>' +
       '<div class="hang-nut" style="margin-top:12px">' +
         '<button type="button" class="nut nho xanh" id="duyet-het">Duyệt tất cả câu ổn</button>' +
+        '<button type="button" class="nut nho vien" id="kt-ca-bo">✓ AI check lại cả bộ</button>' +
         (nTrung ? '<button type="button" class="nut nho xoa" id="xoa-het-trung">Xóa ' + nTrung + ' câu trùng</button>' : '') +
         '<button type="button" class="nut nho tim" id="xem-a4">Xem trước bản in A4</button>' +
         '<button type="button" class="nut nho vien" id="xuat-word">Xuất Word (.docx)</button>' +
@@ -1402,7 +1480,16 @@ window.H10 = (function () {
     v.querySelectorAll('[data-huy]').forEach(b => b.onclick = () => { dangSua = null; veViecLam(); });
     v.querySelectorAll('[data-luu]').forEach(b => b.onclick = () => luuSua(b.getAttribute('data-luu'), true));
     v.querySelectorAll('[data-luu-giu]').forEach(b => b.onclick = () => luuSua(b.getAttribute('data-luu-giu'), false));
+    v.querySelectorAll('[data-kt]').forEach(b => b.onclick = () => kiemTraLai([b.getAttribute('data-kt')], b));
     v.querySelectorAll('[data-xoa-trung]').forEach(b => b.onclick = () => doiTT([b.getAttribute('data-xoa-trung')], 'da_xoa'));
+    v.querySelectorAll('[data-dung-gem]').forEach(b => b.onclick = () => hoi('Thay đáp án và lời giải của câu này bằng đáp án AI?').then(function (ok) {
+      if (!ok) return;
+      b.disabled = true;
+      apiGV('gvDungDapAnGemini', b.getAttribute('data-dung-gem')).then(function (moi) {
+        viecLam.cau = viecLam.cau.map(x => x.id === moi.id ? moi : x); veViecLam(); bao('Đã dùng đáp án AI. Kiểm tra lại rồi bấm Duyệt.');
+      }).catch(function (e) { b.disabled = false; bao(e.message, true); });
+    }));
+    $('#kt-ca-bo').onclick = function () { kiemTraLai(cau.map(c => c.id), this); };
     $('#xem-a4').onclick = moXemTruocA4;
     $('#xuat-word').onclick = function () { xuatBoFile('docx', this); };
     $('#xuat-pdf').onclick = function () { xuatBoFile('pdf', this); };
@@ -1497,6 +1584,8 @@ window.H10 = (function () {
         '<span class="chip">' + esc(c.bai === 'MD' ? 'Mở đầu' : 'Bài ' + c.bai) + '</span>' +
         (c.nguon && c.nguon !== 'moi' ? '<span class="chip chinh">' + esc(TEN_NGUON[c.nguon] || c.nguon) + '</span>' : '') +
         (c.trangThai === 'da_duyet' ? '<span class="chip ok">Đã duyệt</span>' : '<span class="chip canh">Chờ duyệt</span>') +
+        (c.daKiemTra ? '<span class="chip ok">AI check: ổn</span>' : '') +
+        (c.trungGoc ? '<span class="chip ok">AI check: trùng gốc</span>' : '') +
       '</div>' +
       '<div style="font-size:15px;line-height:1.55">' + md(c.cauHoi) + '</div>';
     if (c.loai === 'tn') {
@@ -1516,7 +1605,9 @@ window.H10 = (function () {
     h += '<div class="hang-nut">' +
       (c.trangThai === 'da_duyet' ? '<button type="button" class="nut nho" data-bo-duyet="' + esc(c.id) + '">Bỏ duyệt</button>' : '<button type="button" class="nut nho xanh" data-duyet="' + esc(c.id) + '">Duyệt</button>') +
       '<button type="button" class="nut nho" data-sua="' + esc(c.id) + '">Sửa</button>' +
+      '<button type="button" class="nut nho vien" data-kt="' + esc(c.id) + '">AI check lại</button>' +
       (c.laTrung ? '<button type="button" class="nut nho xoa" data-xoa-trung="' + esc(c.id) + '">Xóa câu trùng</button>' : '') +
+      (c.coDapAnGemini ? '<button type="button" class="nut nho tim" data-dung-gem="' + esc(c.id) + '">Dùng đáp án AI</button>' : '') +
       (c.laTrung ? '' : '<button type="button" class="nut nho xoa" data-xoa="' + esc(c.id) + '">Xóa</button>') +
     '</div></article>';
     return h;
@@ -1580,6 +1671,40 @@ window.H10 = (function () {
       if (!duyet) { viecLam.cau = viecLam.cau.map(x => x.id === id ? moi : x); dangSua = null; veViecLam(); bao('Đã lưu câu.'); return; }
       return apiGV('gvDoiTrangThai', [id], 'da_duyet').then(function () { moi.trangThai = 'da_duyet'; viecLam.cau = viecLam.cau.map(x => x.id === id ? moi : x); dangSua = null; veViecLam(); bao('Đã lưu và duyệt.'); });
     }).catch(e => bao(e.message, true));
+  }
+
+  async function kiemTraLai(ids, nut) {
+    const chu = nut ? nut.textContent : '';
+    if (nut) nut.disabled = true;
+    const nhom = chiaNhom_(ids, 5);
+    const t0 = Date.now();
+    let xong = 0, tongSai = 0, tongDaKiem = 0;
+    const capNhatChu = () => {
+      if (!nut) return;
+      const s = Math.max(0, Math.round((Date.now() - t0) / 1000));
+      nut.textContent = nhom.length > 1 ? ('Đang check song song (' + xong + '/' + nhom.length + ') · ' + s + 's') : ('Đang check... ' + s + 's');
+    };
+    capNhatChu();
+    const timer = setInterval(capNhatChu, 1000);
+    try {
+      await Promise.all(nhom.map(async function (idsNhom) {
+        const moi = await apiGV('gvKiemTraLai', idsNhom);
+        const map = {}; (moi || []).forEach(x => map[x.id] = x);
+        viecLam.cau = viecLam.cau.map(x => map[x.id] || x);
+        tongSai += (moi || []).filter(x => !!x.canhBao && !x.laTrung).length;
+        tongDaKiem += (moi || []).length;
+        xong++;
+        capNhatChu();
+      }));
+      clearInterval(timer);
+      veViecLam();
+      const sTong = Math.max(1, Math.round((Date.now() - t0) / 1000));
+      bao(tongSai ? tongSai + ' câu AI nghi lệch (' + sTong + 's), xem cảnh báo vàng.' : (tongDaKiem > 1 ? 'AI check xong ' + tongDaKiem + ' câu trong ' + sTong + 's, đều ổn.' : 'AI check: ổn.'), !!tongSai);
+    } catch (e) {
+      clearInterval(timer);
+      if (nut) { nut.disabled = false; nut.textContent = chu; }
+      bao(e.message, true);
+    }
   }
 
   function xuatBoFile(fmt, nut) {
@@ -2750,10 +2875,18 @@ window.H10 = (function () {
       btnAiLop.disabled = true;
       const khoangStr = ngayDepYMD(rpForm.tuNgay) + ' – ' + ngayDepYMD(rpForm.denNgay);
       const st = $('#rp-ai-lop-status');
+      const t0 = Date.now();
+      let xong = 0;
+      const veSt = () => {
+        if (!st) return;
+        const giay = Math.max(0, Math.round((Date.now() - t0) / 1000));
+        st.innerHTML = '<div class="thongbao info"><span class="cho"></span><span>Claude đang viết song song ' + nhom.length + ' nhóm theo văn phong thầy (xong ' + xong + '/' + nhom.length + ') · ' + giay + 's</span></div>';
+      };
+      veSt();
+      const timer = setInterval(veSt, 1000);
       try {
-        for (let i = 0; i < nhom.length; i++) {
-          if (st) st.innerHTML = '<div class="thongbao info"><span class="cho"></span><span>Claude đang viết nhận xét theo văn phong thầy (nhóm ' + (i + 1) + '/' + nhom.length + ')...</span></div>';
-          const hsBatch = nhom[i].map(x => {
+        await Promise.all(nhom.map(async function (dsNhom, i) {
+          const hsBatch = dsNhom.map(x => {
             const dg = rpForm.hsDanhGia[x.khoa] || {};
             const tags = Object.keys(dg.tags || {}).filter(k => dg.tags[k]);
             return {
@@ -2778,11 +2911,16 @@ window.H10 = (function () {
             const ta = document.querySelector('[data-hs-nx="' + item.khoa + '"]');
             if (ta) ta.value = dg.nhanXet;
           });
-        }
+          xong++;
+          veSt();
+        }));
+        clearInterval(timer);
         btnAiLop.disabled = false;
         if (st) st.innerHTML = '';
-        bao('Đã viết xong nhận xét cho cả ' + listThuc.length + ' học sinh! Thầy xem lại rồi xuất file nhé.');
+        const giayTong = Math.max(1, Math.round((Date.now() - t0) / 1000));
+        bao('Đã viết xong nhận xét cho cả ' + listThuc.length + ' học sinh trong ' + giayTong + 's!');
       } catch (e) {
+        clearInterval(timer);
         btnAiLop.disabled = false;
         if (st) st.innerHTML = '<div class="thongbao loi">' + esc(e.message) + '</div>';
       }
