@@ -1077,7 +1077,7 @@ window.H10 = (function () {
         '<label class="chon"><input type="checkbox" data-loai="ds" checked>Đúng / Sai (4 ý a, b, c, d)</label>' +
         '<label class="chon"><input type="checkbox" data-loai="tl" checked>Trả lời ngắn (số, chữ, công thức)</label>' +
       '</div>' +
-      '<label class="chon" style="margin-bottom:12px"><input type="checkbox" id="kiem-tra">AI tự giải check lại hết đáp án sau khi tạo (chạy song song)</label>' +
+      '<label class="chon" style="margin-bottom:12px"><input type="checkbox" id="kiem-tra">AI tự rà soát lại đáp án, ngữ cảnh &amp; câu từ sau khi tạo (chạy song song)</label>' +
       '<button type="button" class="nut chinh to" id="nut-tao">Tạo câu hỏi</button>' +
       '<div id="cho-tao" style="margin-top:10px"></div></section>';
     h += '<div id="vung-lam"></div>';
@@ -1270,16 +1270,16 @@ window.H10 = (function () {
     const coDS = loaiChon.indexOf('ds') >= 0;
     const coTL = loaiChon.indexOf('tl') >= 0;
     const kieu = [];
-    if (coTN) kieu.push({ loai: ['tn'], nhan: 'chỉ tạo câu trắc nghiệm 4 lựa chọn (tn) phần lý thuyết, khái niệm và nhận biết' });
-    if (coTN && sizes.length >= 2) kieu.push({ loai: ['tn'], nhan: 'chỉ tạo câu trắc nghiệm 4 lựa chọn (tn) phần thông hiểu, bản chất hóa học hoặc bài tập tính toán' });
-    if (coDS) kieu.push({ loai: ['ds'], nhan: 'chỉ tạo câu Đúng/Sai 4 ý a, b, c, d (ds) về thí nghiệm, số liệu hoặc nhận định tổng hợp' });
-    if (coTL) kieu.push({ loai: ['tl'], nhan: 'chỉ tạo câu Trả lời ngắn (so hoặc chu) gồm bài tập tính số liệu và điền công thức/từ khóa' });
+    if (coTN) kieu.push({ loai: ['tn'], nhan: 'chỉ tạo câu trắc nghiệm 4 lựa chọn (tn) phần khái niệm, cấu hình và xu hướng biến đổi (mức nhận biết – thông hiểu; không dùng từ "luôn/mọi" làm nhiễu)' });
+    if (coTN && sizes.length >= 2) kieu.push({ loai: ['tn'], nhan: 'chỉ tạo câu trắc nghiệm 4 lựa chọn (tn) phần bài tập tính toán định lượng, phân tích hoặc vận dụng thực tế (dùng chất khác với nhóm 1)' });
+    if (coDS) kieu.push({ loai: ['ds'], nhan: 'chỉ tạo câu Đúng/Sai 4 ý a, b, c, d (ds) về thí nghiệm, hợp chất đa dạng và trường hợp mở rộng (mệnh đề rõ trước/sau liên kết, không dùng từ tuyệt đối lộ liễu)' });
+    if (coTL) kieu.push({ loai: ['tl'], nhan: 'chỉ tạo câu Trả lời ngắn (so hoặc chu) gồm cả bài tập tính số liệu vận dụng và điền công thức/từ khóa (câu hỏi không mơ hồ, rõ hỏi 1 nguyên tử hay cả phân tử)' });
 
     const gocNhin = [
-      'ưu tiên câu nhận biết, khái niệm cơ bản và tính chất đặc trưng',
-      'ưu tiên câu thông hiểu, giải thích hiện tượng và so sánh tính chất',
-      'ưu tiên câu bài tập tính toán và định lượng',
-      'ưu tiên câu vận dụng thực tế, thí nghiệm hoặc tổng hợp kiến thức'
+      'ưu tiên câu nhận biết và khái niệm cơ bản với nhóm chất đại diện khác nhau',
+      'ưu tiên câu thông hiểu, giải thích bản chất và so sánh các liên kết khác nhau',
+      'ưu tiên câu bài tập tính toán định lượng và vận dụng',
+      'ưu tiên câu vận dụng thực tế, thí nghiệm hoặc tổng hợp kiến thức không trùng chất với các nhóm trước'
     ];
     return sizes.map(function (sz, idx) {
       let nhomLoai = loaiChon;
@@ -1392,6 +1392,7 @@ window.H10 = (function () {
     const nCho = cau.length - duyet;
     const nCanh = cau.filter(c => !!c.canhBao).length;
     const nTrung = cau.filter(c => !!c.laTrung).length;
+    const nDeXuat = cau.filter(c => !!c.deXuatSua).length;
 
     let h = '<div class="the" style="margin-top:16px">' +
       '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px">' +
@@ -1400,7 +1401,8 @@ window.H10 = (function () {
       '</div>' +
       '<div class="hang-nut" style="margin-top:12px">' +
         '<button type="button" class="nut nho xanh" id="duyet-het">Duyệt tất cả câu ổn</button>' +
-        '<button type="button" class="nut nho vien" id="kt-ca-bo">✓ AI check lại cả bộ</button>' +
+        '<button type="button" class="nut nho vien" id="kt-ca-bo">✓ AI check đáp án &amp; câu từ cả bộ</button>' +
+        (nDeXuat ? '<button type="button" class="nut nho tim" id="ap-dung-het">✨ Áp dụng tất cả bản sửa (' + nDeXuat + ')</button>' : '') +
         (nTrung ? '<button type="button" class="nut nho xoa" id="xoa-het-trung">Xóa ' + nTrung + ' câu trùng</button>' : '') +
         '<button type="button" class="nut nho tim" id="xem-a4">Xem trước bản in A4</button>' +
         '<button type="button" class="nut nho vien" id="xuat-word">Xuất Word (.docx)</button>' +
@@ -1480,15 +1482,36 @@ window.H10 = (function () {
     v.querySelectorAll('[data-huy]').forEach(b => b.onclick = () => { dangSua = null; veViecLam(); });
     v.querySelectorAll('[data-luu]').forEach(b => b.onclick = () => luuSua(b.getAttribute('data-luu'), true));
     v.querySelectorAll('[data-luu-giu]').forEach(b => b.onclick = () => luuSua(b.getAttribute('data-luu-giu'), false));
-    v.querySelectorAll('[data-kt]').forEach(b => b.onclick = () => kiemTraLai([b.getAttribute('data-kt')], b));
+    v.querySelectorAll('[data-kt]').forEach(b => b.onclick = () => {
+      const id = b.getAttribute('data-kt');
+      const inp = document.querySelector('[data-yc-sua="' + id + '"]');
+      kiemTraLai([id], b, inp ? inp.value.trim() : '');
+    });
     v.querySelectorAll('[data-xoa-trung]').forEach(b => b.onclick = () => doiTT([b.getAttribute('data-xoa-trung')], 'da_xoa'));
-    v.querySelectorAll('[data-dung-gem]').forEach(b => b.onclick = () => hoi('Thay đáp án và lời giải của câu này bằng đáp án AI?').then(function (ok) {
-      if (!ok) return;
+    v.querySelectorAll('[data-dung-gem]').forEach(b => b.onclick = () => {
       b.disabled = true;
       apiGV('gvDungDapAnGemini', b.getAttribute('data-dung-gem')).then(function (moi) {
-        viecLam.cau = viecLam.cau.map(x => x.id === moi.id ? moi : x); veViecLam(); bao('Đã dùng đáp án AI. Kiểm tra lại rồi bấm Duyệt.');
+        viecLam.cau = viecLam.cau.map(x => x.id === moi.id ? moi : x); veViecLam(); bao('Đã áp dụng bản sửa AI.');
       }).catch(function (e) { b.disabled = false; bao(e.message, true); });
-    }));
+    });
+    v.querySelectorAll('[data-bo-goi-y]').forEach(b => b.onclick = () => {
+      b.disabled = true;
+      apiGV('gvBoQuaGoiY', b.getAttribute('data-bo-goi-y')).then(function (moi) {
+        viecLam.cau = viecLam.cau.map(x => x.id === moi.id ? moi : x); veViecLam(); bao('Đã giữ nguyên câu gốc.');
+      }).catch(function (e) { b.disabled = false; bao(e.message, true); });
+    });
+    const adh = $('#ap-dung-het');
+    if (adh) adh.onclick = () => {
+      const ids = cau.filter(c => !!c.deXuatSua).map(c => c.id);
+      if (!ids.length) return;
+      adh.disabled = true; adh.textContent = 'Đang áp dụng...';
+      apiGV('gvDungDapAnGemini', ids).then(function (dsMoi) {
+        const map = {}; (dsMoi || []).forEach(x => map[x.id] = x);
+        viecLam.cau = viecLam.cau.map(x => map[x.id] || x);
+        veViecLam();
+        bao('Đã áp dụng ' + (dsMoi || []).length + ' bản sửa của AI.');
+      }).catch(function (e) { adh.disabled = false; adh.textContent = '✨ Áp dụng tất cả bản sửa (' + ids.length + ')'; bao(e.message, true); });
+    };
     $('#kt-ca-bo').onclick = function () { kiemTraLai(cau.map(c => c.id), this); };
     $('#xem-a4').onclick = moXemTruocA4;
     $('#xuat-word').onclick = function () { xuatBoFile('docx', this); };
@@ -1584,7 +1607,7 @@ window.H10 = (function () {
         '<span class="chip">' + esc(c.bai === 'MD' ? 'Mở đầu' : 'Bài ' + c.bai) + '</span>' +
         (c.nguon && c.nguon !== 'moi' ? '<span class="chip chinh">' + esc(TEN_NGUON[c.nguon] || c.nguon) + '</span>' : '') +
         (c.trangThai === 'da_duyet' ? '<span class="chip ok">Đã duyệt</span>' : '<span class="chip canh">Chờ duyệt</span>') +
-        (c.daKiemTra ? '<span class="chip ok">AI check: ổn</span>' : '') +
+        (c.daKiemTra ? '<span class="chip ok">AI check: ổn (đáp án &amp; câu từ)</span>' : '') +
         (c.trungGoc ? '<span class="chip ok">AI check: trùng gốc</span>' : '') +
       '</div>' +
       '<div style="font-size:15px;line-height:1.55">' + md(c.cauHoi) + '</div>';
@@ -1602,12 +1625,32 @@ window.H10 = (function () {
     }
     if (c.loiGiai) h += '<div class="loi-giai"><b>Lời giải:</b> ' + md(c.loiGiai) + '</div>';
     if (c.canhBao) h += '<div class="thongbao canh" style="margin:0">' + esc(c.canhBao) + '</div>';
-    h += '<div class="hang-nut">' +
+    if (c.deXuatSua) {
+      const dx = c.deXuatSua;
+      h += '<div style="margin-top:8px;padding:10px 12px;border-radius:11px;border:1.5px solid var(--tim-v);background:var(--tim-n);font-size:13.5px;display:flex;flex-direction:column;gap:6px">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><b style="color:var(--tim)">✨ Bản AI đề xuất sửa</b>' +
+        (dx.dapAnSai ? '<span class="chip loi">Sửa cả đáp án</span>' : '<span class="chip tim">Rà câu từ / ngữ cảnh</span>') + '</div>' +
+        (dx.cauHoi ? '<div><b>Câu hỏi mới:</b> ' + md(dx.cauHoi) + '</div>' : '') +
+        (c.loai === 'tn' && Array.isArray(dx.luaChon) && dx.luaChon.length === 4
+          ? '<div class="lc4">' + dx.luaChon.map((t, j) => '<span' + (j === dx.dapAn ? ' class="dung"' : '') + '>' + 'ABCD'.charAt(j) + '. ' + md(t) + (j === dx.dapAn ? ' ✓' : '') + '</span>').join('') + '</div>' : '') +
+        (c.loai === 'ds' && Array.isArray(dx.luaChon) && dx.luaChon.length === 4
+          ? '<div class="ds-list">' + dx.luaChon.map((t, j) => {
+              const d = !!(dx.dapAn && dx.dapAn[j]);
+              return '<div class="ds-row' + (d ? ' dung' : '') + '"><span class="ds-key">' + 'abcd'.charAt(j) + ')</span><span class="ds-txt">' + md(t) + '</span><span class="chip ' + (d ? 'ok' : 'loi') + '">' + (d ? 'Đúng' : 'Sai') + '</span></div>';
+            }).join('') + '</div>' : '') +
+        (dx.hien ? '<div><b>Đáp án mới:</b> <b style="color:var(--ok)">' + md(dx.hien) + '</b></div>' : '') +
+        (dx.loiGiai ? '<div><b>Lời giải mới:</b> ' + md(dx.loiGiai) + '</div>' : '') +
+        '<div class="hang-nut" style="margin-top:2px">' +
+          '<button type="button" class="nut nho tim" data-dung-gem="' + esc(c.id) + '">✓ Áp dụng bản sửa</button>' +
+          '<button type="button" class="nut nho" data-bo-goi-y="' + esc(c.id) + '">Bỏ qua gợi ý</button>' +
+        '</div></div>';
+    }
+    h += '<div class="hang-nut" style="margin-top:6px">' +
       (c.trangThai === 'da_duyet' ? '<button type="button" class="nut nho" data-bo-duyet="' + esc(c.id) + '">Bỏ duyệt</button>' : '<button type="button" class="nut nho xanh" data-duyet="' + esc(c.id) + '">Duyệt</button>') +
-      '<button type="button" class="nut nho" data-sua="' + esc(c.id) + '">Sửa</button>' +
-      '<button type="button" class="nut nho vien" data-kt="' + esc(c.id) + '">AI check lại</button>' +
+      '<button type="button" class="nut nho" data-sua="' + esc(c.id) + '">Sửa tay</button>' +
+      '<input type="text" data-yc-sua="' + esc(c.id) + '" placeholder="Nhờ AI sửa riêng (VD: viết rõ hơn)..." style="flex:1 1 180px;min-height:32px;height:32px;font-size:12.5px;padding:0 10px">' +
+      '<button type="button" class="nut nho vien" data-kt="' + esc(c.id) + '">✨ AI check &amp; sửa</button>' +
       (c.laTrung ? '<button type="button" class="nut nho xoa" data-xoa-trung="' + esc(c.id) + '">Xóa câu trùng</button>' : '') +
-      (c.coDapAnGemini ? '<button type="button" class="nut nho tim" data-dung-gem="' + esc(c.id) + '">Dùng đáp án AI</button>' : '') +
       (c.laTrung ? '' : '<button type="button" class="nut nho xoa" data-xoa="' + esc(c.id) + '">Xóa</button>') +
     '</div></article>';
     return h;
@@ -1673,25 +1716,25 @@ window.H10 = (function () {
     }).catch(e => bao(e.message, true));
   }
 
-  async function kiemTraLai(ids, nut) {
+  async function kiemTraLai(ids, nut, yeuCau) {
     const chu = nut ? nut.textContent : '';
     if (nut) nut.disabled = true;
     const nhom = chiaNhom_(ids, 5);
     const t0 = Date.now();
-    let xong = 0, tongSai = 0, tongDaKiem = 0;
+    let xong = 0, tongDeXuat = 0, tongDaKiem = 0;
     const capNhatChu = () => {
       if (!nut) return;
       const s = Math.max(0, Math.round((Date.now() - t0) / 1000));
-      nut.textContent = nhom.length > 1 ? ('Đang check song song (' + xong + '/' + nhom.length + ') · ' + s + 's') : ('Đang check... ' + s + 's');
+      nut.textContent = nhom.length > 1 ? ('Đang rà song song (' + xong + '/' + nhom.length + ') · ' + s + 's') : ('Đang rà & sửa... ' + s + 's');
     };
     capNhatChu();
     const timer = setInterval(capNhatChu, 1000);
     try {
       await Promise.all(nhom.map(async function (idsNhom) {
-        const moi = await apiGV('gvKiemTraLai', idsNhom);
+        const moi = await apiGV('gvKiemTraLai', idsNhom, yeuCau || '');
         const map = {}; (moi || []).forEach(x => map[x.id] = x);
         viecLam.cau = viecLam.cau.map(x => map[x.id] || x);
-        tongSai += (moi || []).filter(x => !!x.canhBao && !x.laTrung).length;
+        tongDeXuat += (moi || []).filter(x => !!x.deXuatSua).length;
         tongDaKiem += (moi || []).length;
         xong++;
         capNhatChu();
@@ -1699,7 +1742,7 @@ window.H10 = (function () {
       clearInterval(timer);
       veViecLam();
       const sTong = Math.max(1, Math.round((Date.now() - t0) / 1000));
-      bao(tongSai ? tongSai + ' câu AI nghi lệch (' + sTong + 's), xem cảnh báo vàng.' : (tongDaKiem > 1 ? 'AI check xong ' + tongDaKiem + ' câu trong ' + sTong + 's, đều ổn.' : 'AI check: ổn.'), !!tongSai);
+      bao(tongDeXuat ? ('Có ' + tongDeXuat + ' câu AI đề xuất chỉnh sửa (' + sTong + 's), xem khung tím để duyệt áp dụng.') : (tongDaKiem > 1 ? 'AI rà xong ' + tongDaKiem + ' câu trong ' + sTong + 's, đều chuẩn.' : 'AI check: câu đã chuẩn.'), !!tongDeXuat);
     } catch (e) {
       clearInterval(timer);
       if (nut) { nut.disabled = false; nut.textContent = chu; }
