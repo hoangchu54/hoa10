@@ -865,13 +865,8 @@ window.H10 = (function () {
   const TEN_LOAI = { tn: 'Nhiều lựa chọn', ds: 'Đúng / Sai', so: 'Trả lời ngắn (số)', chu: 'Trả lời ngắn (chữ/CT)' };
   const TEN_NGUON = { goc: 'Câu gốc từ tài liệu', tuong_tu: 'Tương tự tài liệu', moi: 'AI tạo mới', xao_lai: 'Xào lại', doi_so_lieu: 'Đổi số liệu', goc_tu_giai: 'Câu gốc, chưa có đáp án' };
 
-  let laFull = false;
-  getLocation(function (loc) {
-    laFull = !!(loc && loc.parameter && loc.parameter.full);
-    if (info) veKhung();
-  });
-
   // ================= trạng thái =================
+  let laFull = false;
   let info = null;
   let tab = 'tao';
   let baiChon = {};
@@ -887,6 +882,11 @@ window.H10 = (function () {
   let lopData = null, lopSub = 'dd', ddForm = null, rpForm = null;
   const tenBai = {};
   const chuongCua = {};
+
+  getLocation(function (loc) {
+    laFull = !!(loc && loc.parameter && loc.parameter.full);
+    if (info) veKhung();
+  });
 
   // ================= đăng nhập =================
   function veDangNhap(loi) {
