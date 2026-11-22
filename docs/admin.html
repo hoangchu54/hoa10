@@ -759,6 +759,7 @@ window.H10 = (function () {
     cb({ parameter: p });
   }
 
+  const GH_PAGES_BASE = 'https://hoangchu54.github.io/hoa10/';
   const STATIC_PAGES = {
     home: 'index.html',
     btvn: 'btvn.html',
@@ -781,32 +782,44 @@ window.H10 = (function () {
         target: opts.target || (page === 'admin' ? 'h10_admin' : '_self')
       };
     }
+    // Khi nhung tren Google Sites (iframe sandbox khong cap allow-top-navigation),
+    // target="_top" bi trinh duyet chan. Mo qua GitHub Pages voi target="_blank" (allow-popups-to-escape-sandbox)
+    const trongIframe = document.documentElement.classList.contains('in-iframe');
+    const navTarget = (!laFull && trongIframe) ? '_blank' : '_top';
+    if (!laFull && trongIframe) {
+      if (page === 'thinghiem' && cfg.linkThiNghiem) return { href: cfg.linkThiNghiem, target: 'h10_ngoai' };
+      if (page === 'trochoi' && cfg.linkTroChoi) return { href: cfg.linkTroChoi, target: '_blank' };
+      return {
+        href: GH_PAGES_BASE + (STATIC_PAGES[page] || 'index.html') + (opts.query || ''),
+        target: page === 'admin' ? (opts.target || 'h10_admin') : '_blank'
+      };
+    }
     const suf = laFull ? '&full=1' : '';
     if (page === 'home') {
       return {
         href: (!laFull && cfg.trangChuSites) ? cfg.trangChuSites : (webUrl + '?page=home' + suf),
-        target: '_top'
+        target: navTarget
       };
     }
     if (page === 'btvn') {
       return {
         href: laFull ? (webUrl + '?full=1') : (cfg.trangBtvnSites || webUrl),
-        target: '_top'
+        target: navTarget
       };
     }
-    if (page === 'tailieu') return { href: webUrl + '?page=tailieu' + suf, target: '_top' };
+    if (page === 'tailieu') return { href: webUrl + '?page=tailieu' + suf, target: navTarget };
     if (page === 'thinghiem') {
       return cfg.linkThiNghiem
         ? { href: cfg.linkThiNghiem, target: 'h10_ngoai' }
-        : { href: webUrl + '?page=thinghiem' + suf, target: '_top' };
+        : { href: webUrl + '?page=thinghiem' + suf, target: navTarget };
     }
     if (page === 'trochoi') {
       return cfg.linkTroChoi
-        ? { href: cfg.linkTroChoi, target: '_top' }
-        : { href: webUrl + '?page=trochoi' + suf, target: '_top' };
+        ? { href: cfg.linkTroChoi, target: navTarget }
+        : { href: webUrl + '?page=trochoi' + suf, target: navTarget };
     }
     if (page === 'admin') return { href: webUrl + '?page=admin' + suf, target: opts.target || 'h10_admin' };
-    return { href: webUrl, target: '_top' };
+    return { href: webUrl, target: navTarget };
   }
 
   let henToast = null;
@@ -2167,14 +2180,16 @@ window.H10 = (function () {
       return true;
     });
 
-    const embedHome = '<iframe src="' + esc(info.webUrl + '?page=home') + '" width="100%" height="620" frameborder="0" style="border:0;border-radius:12px;"></iframe>';
-    const embedTaiLieu = '<iframe src="' + esc(info.webUrl + '?page=tailieu') + '" width="100%" height="760" frameborder="0" style="border:0;border-radius:12px;"></iframe>';
-    const embedThiNghiem = '<iframe src="' + esc(info.webUrl + '?page=thinghiem') + '" width="100%" height="760" frameborder="0" style="border:0;border-radius:12px;"></iframe>';
-    const embedTroChoi = '<iframe src="' + esc(info.webUrl + '?page=trochoi') + '" width="100%" height="620" frameborder="0" style="border:0;border-radius:12px;"></iframe>';
+    const ghBase = 'https://hoangchu54.github.io/hoa10/';
+    const embedHome = '<iframe src="' + ghBase + 'index.html" width="100%" height="640" frameborder="0" style="border:0;border-radius:12px;"></iframe>';
+    const embedTaiLieu = '<iframe src="' + ghBase + 'tailieu.html" width="100%" height="760" frameborder="0" style="border:0;border-radius:12px;"></iframe>';
+    const embedThiNghiem = '<iframe src="' + ghBase + 'thinghiem.html" width="100%" height="760" frameborder="0" style="border:0;border-radius:12px;"></iframe>';
+    const embedTroChoi = '<iframe src="' + ghBase + 'trochoi.html" width="100%" height="640" frameborder="0" style="border:0;border-radius:12px;"></iframe>';
 
     let h = '<div class="hero-box art-benzene" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">' +
       '<div><span class="chip tim">PHA 3 · HỌC LIỆU &amp; SITES</span><h1 style="margin-bottom:2px">Kho tài liệu &amp; Cài đặt Trang chủ</h1><p class="phu" style="margin:0">Quản lý file hiển thị cho học sinh và các liên kết trên Google Sites.</p></div>' +
       '<div class="hang-nut">' +
+        '<button type="button" class="nut nho tim" id="btn-sync-drive">🔄 Đồng bộ lại từ Drive</button>' +
         '<a class="nut nho" href="' + esc(linkTrang('tailieu', { webUrl: info.webUrl, laFull: true }).href) + '" target="_blank" rel="noopener">Mở trang Kho tài liệu</a>' +
         '<a class="nut nho" href="' + esc(linkTrang('home', { webUrl: info.webUrl, laFull: true }).href) + '" target="_blank" rel="noopener">Xem trước Trang chủ</a>' +
         '<a class="nut nho" href="' + esc(thuVien.thuMucUrl) + '" target="_blank" rel="noopener">Mở Drive Kho</a>' +
@@ -2274,6 +2289,16 @@ window.H10 = (function () {
       '</div></details></section>';
 
     m.innerHTML = h;
+
+    const btnSync = $('#btn-sync-drive');
+    if (btnSync) btnSync.onclick = function () {
+      btnSync.disabled = true; btnSync.textContent = 'Đang quét Drive...';
+      apiGV('gvThuVien').then(r => {
+        thuVien = r;
+        veThuVien();
+        bao('Đã đồng bộ ' + (r.thuMuc || []).length + ' thư mục & ' + (r.items || []).length + ' tài liệu từ Google Drive.');
+      }).catch(e => { btnSync.disabled = false; btnSync.textContent = '🔄 Đồng bộ lại từ Drive'; bao(e.message, true); });
+    };
 
     $('#up-file').onchange = function () {
       const f = this.files && this.files[0];

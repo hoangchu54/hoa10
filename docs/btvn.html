@@ -740,6 +740,7 @@ window.H10 = (function () {
     cb({ parameter: p });
   }
 
+  const GH_PAGES_BASE = 'https://hoangchu54.github.io/hoa10/';
   const STATIC_PAGES = {
     home: 'index.html',
     btvn: 'btvn.html',
@@ -762,32 +763,44 @@ window.H10 = (function () {
         target: opts.target || (page === 'admin' ? 'h10_admin' : '_self')
       };
     }
+    // Khi nhung tren Google Sites (iframe sandbox khong cap allow-top-navigation),
+    // target="_top" bi trinh duyet chan. Mo qua GitHub Pages voi target="_blank" (allow-popups-to-escape-sandbox)
+    const trongIframe = document.documentElement.classList.contains('in-iframe');
+    const navTarget = (!laFull && trongIframe) ? '_blank' : '_top';
+    if (!laFull && trongIframe) {
+      if (page === 'thinghiem' && cfg.linkThiNghiem) return { href: cfg.linkThiNghiem, target: 'h10_ngoai' };
+      if (page === 'trochoi' && cfg.linkTroChoi) return { href: cfg.linkTroChoi, target: '_blank' };
+      return {
+        href: GH_PAGES_BASE + (STATIC_PAGES[page] || 'index.html') + (opts.query || ''),
+        target: page === 'admin' ? (opts.target || 'h10_admin') : '_blank'
+      };
+    }
     const suf = laFull ? '&full=1' : '';
     if (page === 'home') {
       return {
         href: (!laFull && cfg.trangChuSites) ? cfg.trangChuSites : (webUrl + '?page=home' + suf),
-        target: '_top'
+        target: navTarget
       };
     }
     if (page === 'btvn') {
       return {
         href: laFull ? (webUrl + '?full=1') : (cfg.trangBtvnSites || webUrl),
-        target: '_top'
+        target: navTarget
       };
     }
-    if (page === 'tailieu') return { href: webUrl + '?page=tailieu' + suf, target: '_top' };
+    if (page === 'tailieu') return { href: webUrl + '?page=tailieu' + suf, target: navTarget };
     if (page === 'thinghiem') {
       return cfg.linkThiNghiem
         ? { href: cfg.linkThiNghiem, target: 'h10_ngoai' }
-        : { href: webUrl + '?page=thinghiem' + suf, target: '_top' };
+        : { href: webUrl + '?page=thinghiem' + suf, target: navTarget };
     }
     if (page === 'trochoi') {
       return cfg.linkTroChoi
-        ? { href: cfg.linkTroChoi, target: '_top' }
-        : { href: webUrl + '?page=trochoi' + suf, target: '_top' };
+        ? { href: cfg.linkTroChoi, target: navTarget }
+        : { href: webUrl + '?page=trochoi' + suf, target: navTarget };
     }
     if (page === 'admin') return { href: webUrl + '?page=admin' + suf, target: opts.target || 'h10_admin' };
-    return { href: webUrl, target: '_top' };
+    return { href: webUrl, target: navTarget };
   }
 
   let henToast = null;
