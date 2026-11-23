@@ -213,6 +213,9 @@ tr.cay td{background:var(--canh-n)}
 @keyframes q{to{transform:rotate(360deg)}}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @keyframes modalIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.the,.hub-card,.de-card,.tl-card,.tn-row,.gal-card,.ch-card{animation:fadeSlideUp .22s cubic-bezier(.2,.8,.3,1) both}
+.the-cau,.cau-hs,.tl-card,.tn-row{content-visibility:auto;contain-intrinsic-size:auto 140px}
 
 /* Student specific */
 body.dang-lam .topbar{position:static}
@@ -467,7 +470,8 @@ body.dang-lam .topbar{position:static}
 .sec-head .phu{font-size:12.5px}
 
 /* Poster 7 Chuong SGK */
-.ch-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px}
+.ch-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+@media (max-width:1180px){.ch-strip{grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}}
 .ch-card{position:relative;overflow:hidden;border-radius:16px;padding:13px 14px;color:#fff;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;min-height:112px;box-shadow:0 6px 18px rgba(24,18,40,.14);border:1px solid rgba(255,255,255,.22);transition:transform .16s,box-shadow .16s}
 .ch-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(24,18,40,.22);text-decoration:none;color:#fff}
 .ch-card::after{content:"";position:absolute;right:-14px;bottom:-14px;width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
@@ -484,7 +488,8 @@ body.dang-lam .topbar{position:static}
 .ch-c7{background:linear-gradient(135deg,#4338CA 0%,#EC4899 100%)}
 
 /* Visual Gallery Sac Mau Hoa Hoc 10 */
-.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px}
+.gal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:1080px){.gal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .gal-card{background:var(--the);border:1px solid var(--vien);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;transition:transform .16s,box-shadow .16s,border-color .16s;text-align:left;padding:0}
 .gal-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--tim-v)}
 .gal-art{position:relative;height:132px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:12px}
@@ -534,12 +539,80 @@ body.dang-lam .topbar{position:static}
 .lab-vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:6px}
 .lab-voc-item{background:var(--the);border:1px solid var(--vien);border-radius:8px;padding:5px 8px;font-size:12px;line-height:1.35}
 .lab-voc-item code{font-weight:800;color:var(--tim);font-family:inherit}
+.lab-mob-tabs{display:none;gap:6px;padding:7px 12px;background:var(--nen2);border-bottom:1px solid var(--vien)}
+.lab-mob-tabs button{flex:1}
 @media (max-width:920px){
   .lab-shell{height:96dvh}
-  .lab-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(280px,54%) minmax(0,46%)}
-  .lab-body.an-hd{grid-template-rows:minmax(0,1fr)}
-  .lab-guide{border-left:0;border-top:1px solid var(--vien)}
+  .lab-mob-tabs{display:flex}
+  .lab-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  .lab-body .lab-guide{display:none;border-left:0}
+  .lab-body.mob-hd .lab-stage{display:none}
+  .lab-body.mob-hd .lab-guide{display:flex}
 }
+
+/* Mobile Bottom Navigation Dock & Quick Reference Modal */
+.mob-dock{display:none;position:fixed;left:0;right:0;bottom:0;z-index:45;background:var(--the);border-top:1px solid var(--vien);box-shadow:0 -4px 18px rgba(20,16,36,.09);padding:4px 6px calc(4px + env(safe-area-inset-bottom));justify-content:space-around;align-items:center;gap:2px}
+.mob-dock a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 2px;border-radius:11px;font-size:10.5px;font-weight:700;color:var(--mo);text-decoration:none;transition:background-color .14s,color .14s}
+.mob-dock a i{font-style:normal;font-size:16px;line-height:1}
+.mob-dock a.on{color:var(--do);background:linear-gradient(135deg,var(--do-n),var(--tim-n));font-weight:800}
+body.dang-lam .mob-dock{display:none!important}
+
+/* Quick Periodic Table & Chemistry Reference Drawer */
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px;max-height:380px;overflow-y:auto;padding:2px}
+.ref-el{border-radius:12px;padding:8px 10px;border:1px solid var(--vien);background:var(--nen2);display:flex;flex-direction:column;gap:2px;position:relative;transition:border-color .14s,transform .12s}
+.ref-el:hover{border-color:var(--do-v);transform:translateY(-1px);background:var(--the)}
+.ref-el-top{display:flex;justify-content:space-between;align-items:baseline}
+.ref-el-kh{font-size:18px;font-weight:800;color:var(--do)}
+.ref-el-z{font-size:11px;font-weight:800;color:var(--mo);background:var(--the);padding:1px 6px;border-radius:999px;border:1px solid var(--vien)}
+.ref-el-m{font-size:12.5px;font-weight:800;color:var(--tim)}
+.ref-el-ten{font-size:12px;font-weight:600;color:var(--chu)}
+.ref-el-cfg{font-size:11px;color:var(--mo);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.ref-el.kl .ref-el-kh{color:#B45309}
+.ref-el.pk .ref-el-kh{color:#0F766E}
+.ref-el.kh .ref-el-kh{color:#6D28D9}
+.kbd-hint{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:var(--mo)}
+.kbd-hint kbd{padding:1px 6px;border-radius:5px;border:1px solid var(--vien);background:var(--nen2);font-size:11px;font-weight:700;font-family:inherit}
+@media (max-width:760px){.kbd-hint{display:none}}
+
+/* Casio fx-580 Hoa Hoc Mini */
+.casio-layout{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:680px){.casio-layout{grid-template-columns:minmax(0,1fr)}}
+.casio-body{background:linear-gradient(165deg,#252836 0%,#181A24 100%);border:2px solid #3B4058;border-radius:20px;padding:13px;box-shadow:0 12px 28px rgba(10,10,20,.36),inset 0 1px 0 rgba(255,255,255,.15);color:#fff;user-select:none}
+.casio-brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;padding:0 3px}
+.casio-brand b{font-size:11.5px;letter-spacing:.12em;color:#E2E8F0;font-weight:800}
+.casio-brand span{font-size:10px;color:#FFD166;font-weight:700;font-style:italic}
+.casio-lcd{background:linear-gradient(180deg,#C8D6C5 0%,#B8C9B5 100%);color:#142214;border:3px solid #383E52;border-radius:11px;padding:8px 10px;margin-bottom:10px;box-shadow:inset 0 2px 6px rgba(0,0,0,.22);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:68px;display:flex;flex-direction:column;justify-content:space-between}
+.casio-exp{font-size:12.5px;min-height:17px;color:#2C3E2C;word-break:break-all;line-height:1.3}
+.casio-res{font-size:21px;font-weight:800;text-align:right;line-height:1.2;letter-spacing:-.02em;overflow-x:auto;white-space:nowrap}
+.casio-chem-row{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:7px}
+.casio-keys{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.ck{all:unset;box-sizing:border-box;cursor:pointer;min-height:36px;border-radius:8px;background:#353A4F;border-bottom:2.5px solid #1E2130;color:#F8FAFC;font-size:13.5px;font-weight:700;display:grid;place-items:center;text-align:center;transition:transform .06s,filter .1s}
+.ck:hover{filter:brightness(1.14)}
+.ck:active{transform:translateY(1.5px)}
+.ck.num{background:#474E68;font-size:15px;font-weight:800}
+.ck.chem{background:linear-gradient(135deg,#6D28D9,#4C1D95);font-size:11.5px;color:#F3E8FF;border-bottom-color:#2E1065}
+.ck.del{background:#B45309;border-bottom-color:#78350F;color:#fff;font-size:12px}
+.ck.ac{background:#BE123C;border-bottom-color:#881337;color:#fff;font-size:12px}
+.ck.eq{background:linear-gradient(135deg,#0F766E,#0D9488);border-bottom-color:#115E59;color:#fff;font-size:16px}
+.casio-round{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-top:8px;padding-top:7px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:#CBD5E1}
+.casio-round button{all:unset;cursor:pointer;padding:3px 7px;border-radius:6px;background:rgba(255,255,255,.1);color:#FFD166;font-weight:700;font-size:11px}
+.casio-round button:hover{background:rgba(255,255,255,.22)}
+.mm-card{background:var(--nen2);border:1px solid var(--vien);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+.mm-chips{display:flex;flex-wrap:wrap;gap:5px}
+.mm-chip{all:unset;cursor:pointer;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--the);border:1px solid var(--vien);color:var(--chu);transition:border-color .12s,background-color .12s}
+.mm-chip:hover{border-color:var(--do-v);background:var(--do-n);color:var(--do)}
+
+/* Flag / Bookmark cau hoi & Quick Symbol Bar */
+.o-so{position:relative}
+.o-so.co-flag::after{content:"";position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#F59E0B;border:2px solid var(--the);box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.nut-flag{all:unset;cursor:pointer;margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;color:var(--mo);background:var(--nen2);border:1px solid var(--vien);transition:all .12s}
+.nut-flag:hover{border-color:var(--canh-v);color:var(--canh)}
+.nut-flag.on{background:var(--canh-n);border-color:var(--canh);color:var(--canh)}
+.cau-hs.co-flag{border-color:var(--canh-v);box-shadow:0 0 0 1.5px var(--canh-v),var(--shadow)}
+.sym-bar{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;align-items:center}
+.sym-btn{all:unset;cursor:pointer;padding:3px 9px;border-radius:7px;background:var(--nen2);border:1px solid var(--vien);font-size:12.5px;font-weight:700;color:var(--chu);transition:background-color .12s,border-color .12s}
+.sym-btn:hover{background:var(--tim-n);border-color:var(--tim-v);color:var(--tim)}
+.sym-btn:active{transform:scale(.96)}
 @media (max-width:640px){
   .ch-strip{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:9px;padding-bottom:4px}
   .ch-strip::-webkit-scrollbar{display:none}
@@ -730,6 +803,11 @@ body.embed-ok .topbar-in{max-width:1280px}
   .th-bang-pc{display:none}
   .th-cards{display:flex}
   .dock-sticky{top:96px;padding:8px 10px}
+  /* Mobile Bottom Dock cho trang Học sinh */
+  body.has-mob-dock .mob-dock{display:flex}
+  body.has-mob-dock .khung-chinh,body.has-mob-dock .khung-hep{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+  body.has-mob-dock .btn-top{bottom:calc(70px + env(safe-area-inset-bottom))}
+  body.has-mob-dock .topbar .top-nav-link{display:none!important}
   /* Kho tài liệu: gập bộ lọc chi tiết */
   .tl-loc-nut{display:inline-flex}
   .tl-loc-chi-tiet{display:none!important}
@@ -1354,6 +1432,550 @@ window.H10 = (function () {
     });
   }
 
+  // ---- Cache cục bộ Stale-While-Revalidate (mở trang 0ms) & Prefetch ----
+  function docCacheUI(k, maxAgeMs) {
+    try {
+      const raw = localStorage.getItem('h10_ui_' + k);
+      if (!raw) return null;
+      const o = JSON.parse(raw);
+      if (!o || !o.t || (Date.now() - o.t > (maxAgeMs || 7 * 86400e3))) return null;
+      return o.d;
+    } catch (e) { return null; }
+  }
+  function ghiCacheUI(k, data) {
+    try { localStorage.setItem('h10_ui_' + k, JSON.stringify({ t: Date.now(), d: data })); } catch (e) {}
+  }
+
+  let daPrefetch = false;
+  function prefetchPages() {
+    if (daPrefetch || laGAS) return;
+    daPrefetch = true;
+    setTimeout(function () {
+      ['index.html', 'btvn.html', 'tailieu.html', 'thinghiem.html', 'trochoi.html'].forEach(function (p) {
+        try {
+          if (location.pathname.indexOf(p) >= 0) return;
+          const l = document.createElement('link');
+          l.rel = 'prefetch';
+          l.href = p;
+          document.head.appendChild(l);
+        } catch (e) {}
+      });
+    }, 600);
+  }
+
+  // ---- Bảng Tuần Hoàn & Sổ tay Hằng số Hóa 10 (Quick Reference Modal, phím tắt Alt+P) ----
+  const BANG_NT_SGK = [
+    { z: 1, kh: 'H', ten: 'Hydrogen', m: '1', chi: '2,20', cfg: '1s¹', nhom: 'IA (1)', ck: 1, loai: 'pk' },
+    { z: 2, kh: 'He', ten: 'Helium', m: '4', chi: '–', cfg: '1s²', nhom: 'VIIIA (18)', ck: 1, loai: 'kh' },
+    { z: 3, kh: 'Li', ten: 'Lithium', m: '7', chi: '0,98', cfg: '[He] 2s¹', nhom: 'IA (1)', ck: 2, loai: 'kl' },
+    { z: 4, kh: 'Be', ten: 'Beryllium', m: '9', chi: '1,57', cfg: '[He] 2s²', nhom: 'IIA (2)', ck: 2, loai: 'kl' },
+    { z: 5, kh: 'B', ten: 'Boron', m: '11', chi: '2,04', cfg: '[He] 2s²2p¹', nhom: 'IIIA (13)', ck: 2, loai: 'pk' },
+    { z: 6, kh: 'C', ten: 'Carbon', m: '12', chi: '2,55', cfg: '[He] 2s²2p²', nhom: 'IVA (14)', ck: 2, loai: 'pk' },
+    { z: 7, kh: 'N', ten: 'Nitrogen', m: '14', chi: '3,04', cfg: '[He] 2s²2p³', nhom: 'VA (15)', ck: 2, loai: 'pk' },
+    { z: 8, kh: 'O', ten: 'Oxygen', m: '16', chi: '3,44', cfg: '[He] 2s²2p⁴', nhom: 'VIA (16)', ck: 2, loai: 'pk' },
+    { z: 9, kh: 'F', ten: 'Fluorine', m: '19', chi: '3,98', cfg: '[He] 2s²2p⁵', nhom: 'VIIA (17)', ck: 2, loai: 'pk' },
+    { z: 10, kh: 'Ne', ten: 'Neon', m: '20', chi: '–', cfg: '[He] 2s²2p⁶', nhom: 'VIIIA (18)', ck: 2, loai: 'kh' },
+    { z: 11, kh: 'Na', ten: 'Sodium', m: '23', chi: '0,93', cfg: '[Ne] 3s¹', nhom: 'IA (1)', ck: 3, loai: 'kl' },
+    { z: 12, kh: 'Mg', ten: 'Magnesium', m: '24', chi: '1,31', cfg: '[Ne] 3s²', nhom: 'IIA (2)', ck: 3, loai: 'kl' },
+    { z: 13, kh: 'Al', ten: 'Aluminium', m: '27', chi: '1,61', cfg: '[Ne] 3s²3p¹', nhom: 'IIIA (13)', ck: 3, loai: 'kl' },
+    { z: 14, kh: 'Si', ten: 'Silicon', m: '28', chi: '1,90', cfg: '[Ne] 3s²3p²', nhom: 'IVA (14)', ck: 3, loai: 'pk' },
+    { z: 15, kh: 'P', ten: 'Phosphorus', m: '31', chi: '2,19', cfg: '[Ne] 3s²3p³', nhom: 'VA (15)', ck: 3, loai: 'pk' },
+    { z: 16, kh: 'S', ten: 'Sulfur', m: '32', chi: '2,58', cfg: '[Ne] 3s²3p⁴', nhom: 'VIA (16)', ck: 3, loai: 'pk' },
+    { z: 17, kh: 'Cl', ten: 'Chlorine', m: '35,5', chi: '3,16', cfg: '[Ne] 3s²3p⁵', nhom: 'VIIA (17)', ck: 3, loai: 'pk' },
+    { z: 18, kh: 'Ar', ten: 'Argon', m: '40', chi: '–', cfg: '[Ne] 3s²3p⁶', nhom: 'VIIIA (18)', ck: 3, loai: 'kh' },
+    { z: 19, kh: 'K', ten: 'Potassium', m: '39', chi: '0,82', cfg: '[Ar] 4s¹', nhom: 'IA (1)', ck: 4, loai: 'kl' },
+    { z: 20, kh: 'Ca', ten: 'Calcium', m: '40', chi: '1,00', cfg: '[Ar] 4s²', nhom: 'IIA (2)', ck: 4, loai: 'kl' },
+    { z: 24, kh: 'Cr', ten: 'Chromium', m: '52', chi: '1,66', cfg: '[Ar] 3d⁵4s¹', nhom: 'VIB (6)', ck: 4, loai: 'kl' },
+    { z: 25, kh: 'Mn', ten: 'Manganese', m: '55', chi: '1,55', cfg: '[Ar] 3d⁵4s²', nhom: 'VIIB (7)', ck: 4, loai: 'kl' },
+    { z: 26, kh: 'Fe', ten: 'Iron (Sắt)', m: '56', chi: '1,83', cfg: '[Ar] 3d⁶4s²', nhom: 'VIIIB (8)', ck: 4, loai: 'kl' },
+    { z: 29, kh: 'Cu', ten: 'Copper (Đồng)', m: '64', chi: '1,90', cfg: '[Ar] 3d¹⁰4s¹', nhom: 'IB (11)', ck: 4, loai: 'kl' },
+    { z: 30, kh: 'Zn', ten: 'Zinc (Kẽm)', m: '65', chi: '1,65', cfg: '[Ar] 3d¹⁰4s²', nhom: 'IIB (12)', ck: 4, loai: 'kl' },
+    { z: 35, kh: 'Br', ten: 'Bromine', m: '80', chi: '2,96', cfg: '[Ar] 3d¹⁰4s²4p⁵', nhom: 'VIIA (17)', ck: 4, loai: 'pk' },
+    { z: 47, kh: 'Ag', ten: 'Silver (Bạc)', m: '108', chi: '1,93', cfg: '[Kr] 4d¹⁰5s¹', nhom: 'IB (11)', ck: 5, loai: 'kl' },
+    { z: 53, kh: 'I', ten: 'Iodine', m: '127', chi: '2,66', cfg: '[Kr] 4d¹⁰5s²5p⁵', nhom: 'VIIA (17)', ck: 5, loai: 'pk' },
+    { z: 56, kh: 'Ba', ten: 'Barium', m: '137', chi: '0,89', cfg: '[Xe] 6s²', nhom: 'IIA (2)', ck: 6, loai: 'kl' },
+    { z: 79, kh: 'Au', ten: 'Gold (Vàng)', m: '197', chi: '2,54', cfg: '[Xe] 4f¹⁴5d¹⁰6s¹', nhom: 'IB (11)', ck: 6, loai: 'kl' },
+    { z: 80, kh: 'Hg', ten: 'Mercury', m: '201', chi: '2,00', cfg: '[Xe] 4f¹⁴5d¹⁰6s²', nhom: 'IIB (12)', ck: 6, loai: 'kl' },
+    { z: 82, kh: 'Pb', ten: 'Lead (Chì)', m: '207', chi: '2,33', cfg: '[Xe] 4f¹⁴5d¹⁰6s²6p²', nhom: 'IVA (14)', ck: 6, loai: 'kl' }
+  ];
+
+  const NT_KHOI_MAP = {
+    H: 1, He: 4, Li: 7, Be: 9, B: 11, C: 12, N: 14, O: 16, F: 19, Ne: 20,
+    Na: 23, Mg: 24, Al: 27, Si: 28, P: 31, S: 32, Cl: 35.5, Ar: 40,
+    K: 39, Ca: 40, Sc: 45, Ti: 48, V: 51, Cr: 52, Mn: 55, Fe: 56, Co: 59, Ni: 59, Cu: 64, Zn: 65,
+    Ga: 70, Ge: 73, As: 75, Se: 79, Br: 80, Kr: 84, Rb: 85, Sr: 88, Ag: 108, Cd: 112, Sn: 119, Sb: 122,
+    I: 127, Xe: 131, Cs: 133, Ba: 137, Pt: 195, Au: 197, Hg: 201, Pb: 207, Bi: 209
+  };
+
+  /** Phân tích công thức hóa học (hỗ trợ ngoặc tròn/vuông và muối ngậm nước vd CuSO4.5H2O, Fe2(SO4)3) → { M, ct: [{kh, so, m, pct}] } */
+  function tinhPhanTuKhoi(ctRaw) {
+    const s = String(ctRaw || '').trim().replace(/\s+/g, '').replace(/\[/g, '(').replace(/\]/g, ')').replace(/[·*]/g, '.');
+    if (!s) return null;
+    const parts = s.split('.');
+    const tongDem = {};
+    for (let p = 0; p < parts.length; p++) {
+      let part = parts[p];
+      if (!part) continue;
+      let heSo = 1;
+      const mHs = part.match(/^(\d+)(.*)$/);
+      if (mHs) { heSo = parseInt(mHs[1], 10) || 1; part = mHs[2]; }
+      const stack = [{}];
+      let i = 0;
+      while (i < part.length) {
+        const ch = part.charAt(i);
+        if (ch === '(') {
+          stack.push({});
+          i++;
+        } else if (ch === ')') {
+          if (stack.length < 2) return null;
+          i++;
+          let numStr = '';
+          while (i < part.length && /\d/.test(part.charAt(i))) { numStr += part.charAt(i); i++; }
+          const mult = numStr ? parseInt(numStr, 10) : 1;
+          const top = stack.pop();
+          const cur = stack[stack.length - 1];
+          Object.keys(top).forEach(function (k) { cur[k] = (cur[k] || 0) + top[k] * mult; });
+        } else if (/[A-Z]/.test(ch)) {
+          let sym = ch;
+          i++;
+          if (i < part.length && /[a-z]/.test(part.charAt(i))) { sym += part.charAt(i); i++; }
+          if (!NT_KHOI_MAP[sym]) return null;
+          let numStr = '';
+          while (i < part.length && /\d/.test(part.charAt(i))) { numStr += part.charAt(i); i++; }
+          const cnt = numStr ? parseInt(numStr, 10) : 1;
+          const cur = stack[stack.length - 1];
+          cur[sym] = (cur[sym] || 0) + cnt;
+        } else {
+          return null;
+        }
+      }
+      if (stack.length !== 1) return null;
+      const mapP = stack[0];
+      Object.keys(mapP).forEach(function (k) { tongDem[k] = (tongDem[k] || 0) + mapP[k] * heSo; });
+    }
+    const keys = Object.keys(tongDem);
+    if (!keys.length) return null;
+    let M = 0;
+    keys.forEach(function (k) { M += NT_KHOI_MAP[k] * tongDem[k]; });
+    M = Math.round(M * 100) / 100;
+    const ct = keys.map(function (k) {
+      const m = Math.round(NT_KHOI_MAP[k] * tongDem[k] * 100) / 100;
+      return { kh: k, so: tongDem[k], ntk: NT_KHOI_MAP[k], m: m, pct: Math.round(m / M * 10000) / 100 };
+    });
+    return { M: M, ct: ct };
+  }
+
+  let casioExp = '', casioAns = 0, casioVal = null, casioFormula = 'H2SO4';
+
+  function moBangTraCuu(tabMacDinh) {
+    const cu = document.getElementById('h10-ref-modal');
+    if (cu) { cu.remove(); return; }
+    let tabRef = (typeof tabMacDinh === 'string' && tabMacDinh) ? tabMacDinh : 'casio';
+    let qRef = '', loaiRef = '';
+    const hop = document.createElement('div');
+    hop.id = 'h10-ref-modal';
+    hop.className = 'hopdn';
+    hop.setAttribute('role', 'dialog');
+    hop.setAttribute('aria-modal', 'true');
+
+    function dinhDangSoCasio(n, soLe) {
+      if (n === null || n === undefined || isNaN(n) || !isFinite(n)) return 'Lỗi phép tính';
+      const v = (soLe !== undefined) ? Number(n.toFixed(soLe)) : (Math.round(n * 1e8) / 1e8);
+      return String(v).replace('.', ',');
+    }
+
+    function tinhBieuThucCasio(raw) {
+      let s = String(raw || '').trim();
+      if (!s) return 0;
+      s = s.replace(/,/g, '.')
+        .replace(/×/g, '*')
+        .replace(/÷/g, '/')
+        .replace(/−/g, '-')
+        .replace(/Ans/g, '(' + (Number(casioAns) || 0) + ')')
+        .replace(/√\(/g, 'Math.sqrt(')
+        .replace(/\^/g, '**');
+      // Chỉ cho phép số, toán tử và Math.sqrt
+      const clean = s.replace(/Math\.sqrt/g, '');
+      if (/[^0-9.+\-*/()\s]/.test(clean)) return NaN;
+      try {
+        const kq = Function('"use strict"; return (' + s + ')')();
+        return typeof kq === 'number' ? kq : NaN;
+      } catch (e) { return NaN; }
+    }
+
+    function veNoiDung() {
+      const vung = hop.querySelector('[data-x="body"]');
+      if (tabRef === 'casio') {
+        const kqM = tinhPhanTuKhoi(casioFormula);
+        const hienRes = casioVal !== null ? dinhDangSoCasio(casioVal) : (casioExp ? '…' : '0');
+        vung.innerHTML =
+          '<div class="casio-layout">' +
+            '<div class="casio-body">' +
+              '<div class="casio-brand"><b>CASIO HÓA 10</b><span>fx-580KNTT · CLASSWIZ</span></div>' +
+              '<div class="casio-lcd">' +
+                '<div class="casio-exp" id="cs-exp">' + esc(casioExp || '0') + '</div>' +
+                '<div class="casio-res" id="cs-res">' + esc(hienRes) + '</div>' +
+              '</div>' +
+              '<div class="casio-chem-row">' +
+                '<button type="button" class="ck chem" data-ck="/24.79" title="Tính số mol khí đkc: n = V / 24,79">÷24,79</button>' +
+                '<button type="button" class="ck chem" data-ck="*24.79" title="Tính thể tích khí đkc: V = n × 24,79">×24,79</button>' +
+                '<button type="button" class="ck chem" data-ck="*100" title="Nhân 100%">×100%</button>' +
+                '<button type="button" class="ck chem" id="cs-use-m" title="Chèn Phân tử khối M đang tính bên phải">' + (kqM ? ('M=' + String(kqM.M).replace('.', ',')) : 'Chèn M') + '</button>' +
+              '</div>' +
+              '<div class="casio-keys">' +
+                '<button type="button" class="ck num" data-ck="7">7</button>' +
+                '<button type="button" class="ck num" data-ck="8">8</button>' +
+                '<button type="button" class="ck num" data-ck="9">9</button>' +
+                '<button type="button" class="ck del" data-act="del">DEL</button>' +
+                '<button type="button" class="ck ac" data-act="ac">AC</button>' +
+
+                '<button type="button" class="ck num" data-ck="4">4</button>' +
+                '<button type="button" class="ck num" data-ck="5">5</button>' +
+                '<button type="button" class="ck num" data-ck="6">6</button>' +
+                '<button type="button" class="ck" data-ck="×">×</button>' +
+                '<button type="button" class="ck" data-ck="÷">÷</button>' +
+
+                '<button type="button" class="ck num" data-ck="1">1</button>' +
+                '<button type="button" class="ck num" data-ck="2">2</button>' +
+                '<button type="button" class="ck num" data-ck="3">3</button>' +
+                '<button type="button" class="ck" data-ck="+">+</button>' +
+                '<button type="button" class="ck" data-ck="−">−</button>' +
+
+                '<button type="button" class="ck num" data-ck="0">0</button>' +
+                '<button type="button" class="ck num" data-ck=".">,</button>' +
+                '<button type="button" class="ck" data-ck="(">(</button>' +
+                '<button type="button" class="ck" data-ck=")">)</button>' +
+                '<button type="button" class="ck eq" data-act="eq">=</button>' +
+
+                '<button type="button" class="ck" data-ck="^2">x²</button>' +
+                '<button type="button" class="ck" data-ck="√(">√</button>' +
+                '<button type="button" class="ck" data-ck="*10^">10ˣ</button>' +
+                '<button type="button" class="ck" data-ck="Ans">Ans</button>' +
+                '<button type="button" class="ck" data-act="copy" title="Copy kết quả để dán vào ô trả lời">Copy</button>' +
+              '</div>' +
+              '<div class="casio-round">' +
+                '<span>Làm tròn kết quả:</span>' +
+                '<div style="display:flex;gap:4px">' +
+                  '<button type="button" data-rnd="1">1 số lẻ</button>' +
+                  '<button type="button" data-rnd="2">2 số lẻ</button>' +
+                  '<button type="button" data-rnd="3">3 số lẻ</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div style="display:flex;flex-direction:column;gap:10px">' +
+              '<div class="mm-card">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">' +
+                  '<b style="font-size:14px;color:var(--do)">🧪 Tính tự động Phân tử khối M &amp; % Nguyên tố</b>' +
+                  '<span class="chip tim">Chuẩn SGK KNTT</span>' +
+                '</div>' +
+                '<div style="display:flex;gap:6px">' +
+                  '<input id="mm-inp" type="text" value="' + esc(casioFormula) + '" placeholder="Gõ công thức: H2SO4, Fe2(SO4)3, CuSO4.5H2O..." style="flex:1;font-weight:700">' +
+                  (kqM ? '<button type="button" class="nut nho chinh" id="mm-to-casio">Đưa M=' + String(kqM.M).replace('.', ',') + ' vào Casio</button>' : '') +
+                '</div>' +
+                '<div class="mm-chips">' +
+                  ['H2SO4', 'HCl', 'HNO3', 'NaOH', 'Ca(OH)2', 'NaCl', 'AgNO3', 'CaCO3', 'Fe2O3', 'Fe2(SO4)3', 'CuSO4.5H2O', 'Al2(SO4)3', 'KMnO4'].map(function (c) {
+                    return '<button type="button" class="mm-chip" data-f="' + c + '">' + md(c) + '</button>';
+                  }).join('') +
+                '</div>' +
+                '<div id="mm-kq">' +
+                  (kqM
+                    ? ('<div style="background:var(--the);border:1px solid var(--ok-v);border-radius:11px;padding:10px 12px">' +
+                        '<div style="font-size:16px;font-weight:800;color:var(--ok)">M(' + md(casioFormula) + ') = ' + String(kqM.M).replace('.', ',') + ' g/mol</div>' +
+                        '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">' +
+                          kqM.ct.map(function (x) {
+                            return '<span class="chip"><b>' + esc(x.kh) + '</b>×' + x.so + ' = ' + String(x.m).replace('.', ',') + ' (' + String(x.pct).replace('.', ',') + '%)</span>';
+                          }).join('') +
+                        '</div>' +
+                      '</div>')
+                    : '<div class="phu" style="font-size:12.5px">Nhập đúng kí hiệu nguyên tố viết hoa chữ cái đầu (ví dụ: <code>Na2CO3</code>, <code>Fe(OH)3</code>).</div>') +
+                '</div>' +
+              '</div>' +
+
+              '<div class="mm-card">' +
+                '<b style="font-size:13.8px;color:var(--tim)">⚡ Đổi nhanh Mol (n) ⇄ Khối lượng (m) ⇄ Thể tích khí đkc (24,79 L)</b>' +
+                '<div class="hang" style="gap:8px">' +
+                  '<div class="truong" style="flex:1 1 105px"><label style="font-size:11.5px">Số mol n (mol)</label><input id="cv-n" type="text" inputmode="decimal" placeholder="VD: 0,2"></div>' +
+                  '<div class="truong" style="flex:1 1 115px"><label style="font-size:11.5px">Khối lượng m (g)</label><input id="cv-m" type="text" inputmode="decimal" placeholder="m = n × M"></div>' +
+                  '<div class="truong" style="flex:1 1 115px"><label style="font-size:11.5px">V khí đkc (L)</label><input id="cv-v" type="text" inputmode="decimal" placeholder="V = n × 24,79"></div>' +
+                '</div>' +
+                '<span class="phu" style="font-size:11.5px">Gõ vào 1 trong 3 ô trên, 2 ô còn lại sẽ tự nhảy theo M(' + md(casioFormula) + ') = <b>' + (kqM ? String(kqM.M).replace('.', ',') : '–') + '</b> và <b>24,79 L/mol</b>.</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+
+        const capNhatLCD = function () {
+          const eEl = vung.querySelector('#cs-exp'), rEl = vung.querySelector('#cs-res');
+          if (eEl) eEl.textContent = casioExp || '0';
+          if (rEl) rEl.textContent = casioVal !== null ? dinhDangSoCasio(casioVal) : (casioExp ? '…' : '0');
+        };
+        const bamCasio = function (tok) {
+          if (casioVal !== null && /^[0-9.(√]/.test(tok)) {
+            casioExp = '';
+          } else if (casioVal !== null && /^[+−×÷*/^]/.test(tok)) {
+            casioExp = 'Ans';
+          }
+          casioVal = null;
+          casioExp += tok;
+          const thu = tinhBieuThucCasio(casioExp);
+          const rEl = vung.querySelector('#cs-res'), eEl = vung.querySelector('#cs-exp');
+          if (eEl) eEl.textContent = casioExp;
+          if (rEl) rEl.textContent = (!isNaN(thu) && isFinite(thu)) ? ('= ' + dinhDangSoCasio(thu)) : '…';
+        };
+        vung.querySelectorAll('[data-ck]').forEach(function (b) {
+          b.onclick = function () { bamCasio(b.getAttribute('data-ck')); };
+        });
+        vung.querySelectorAll('[data-act]').forEach(function (b) {
+          b.onclick = function () {
+            const act = b.getAttribute('data-act');
+            if (act === 'ac') { casioExp = ''; casioVal = null; capNhatLCD(); }
+            else if (act === 'del') { casioExp = casioExp.slice(0, -1); casioVal = null; capNhatLCD(); }
+            else if (act === 'eq') {
+              const kq = tinhBieuThucCasio(casioExp);
+              casioVal = kq;
+              if (!isNaN(kq) && isFinite(kq)) casioAns = kq;
+              capNhatLCD();
+            } else if (act === 'copy') {
+              const v = casioVal !== null ? casioVal : tinhBieuThucCasio(casioExp);
+              if (!isNaN(v) && isFinite(v)) {
+                const str = dinhDangSoCasio(v);
+                try { navigator.clipboard.writeText(str); } catch (e) {}
+                toast('Đã copy kết quả: ' + str);
+              }
+            }
+          };
+        });
+        vung.querySelectorAll('[data-rnd]').forEach(function (b) {
+          b.onclick = function () {
+            const soLe = Number(b.getAttribute('data-rnd'));
+            const v = casioVal !== null ? casioVal : tinhBieuThucCasio(casioExp);
+            if (!isNaN(v) && isFinite(v)) {
+              const rEl = vung.querySelector('#cs-res');
+              if (rEl) rEl.textContent = dinhDangSoCasio(v, soLe);
+            }
+          };
+        });
+        const useM = vung.querySelector('#cs-use-m');
+        if (useM) useM.onclick = function () {
+          const mObj = tinhPhanTuKhoi(casioFormula);
+          if (mObj) bamCasio(String(mObj.M));
+        };
+        const toCasio = vung.querySelector('#mm-to-casio');
+        if (toCasio) toCasio.onclick = function () {
+          const mObj = tinhPhanTuKhoi(casioFormula);
+          if (mObj) bamCasio(String(mObj.M));
+        };
+        const mmInp = vung.querySelector('#mm-inp');
+        if (mmInp) {
+          mmInp.oninput = function () {
+            casioFormula = this.value;
+            const pos = this.selectionStart;
+            veNoiDung();
+            const inp2 = hop.querySelector('#mm-inp');
+            if (inp2) { inp2.focus(); try { inp2.setSelectionRange(pos, pos); } catch (e) {} }
+          };
+        }
+        vung.querySelectorAll('[data-f]').forEach(function (b) {
+          b.onclick = function () { casioFormula = b.getAttribute('data-f'); veNoiDung(); };
+        });
+
+        // Đổi nhanh n - m - V
+        const inpN = vung.querySelector('#cv-n'), inpM = vung.querySelector('#cv-m'), inpV = vung.querySelector('#cv-v');
+        const docSo = function (s) { return parseFloat(String(s || '').replace(',', '.')); };
+        if (inpN && inpM && inpV) {
+          inpN.oninput = function () {
+            const n = docSo(this.value);
+            const mObj = tinhPhanTuKhoi(casioFormula);
+            if (isNaN(n)) { inpM.value = ''; inpV.value = ''; return; }
+            inpV.value = dinhDangSoCasio(n * 24.79, 3);
+            if (mObj) inpM.value = dinhDangSoCasio(n * mObj.M, 3);
+          };
+          inpM.oninput = function () {
+            const m = docSo(this.value);
+            const mObj = tinhPhanTuKhoi(casioFormula);
+            if (isNaN(m) || !mObj || !mObj.M) { inpN.value = ''; inpV.value = ''; return; }
+            const n = m / mObj.M;
+            inpN.value = dinhDangSoCasio(n, 4);
+            inpV.value = dinhDangSoCasio(n * 24.79, 3);
+          };
+          inpV.oninput = function () {
+            const v = docSo(this.value);
+            const mObj = tinhPhanTuKhoi(casioFormula);
+            if (isNaN(v)) { inpN.value = ''; inpM.value = ''; return; }
+            const n = v / 24.79;
+            inpN.value = dinhDangSoCasio(n, 4);
+            if (mObj) inpM.value = dinhDangSoCasio(n * mObj.M, 3);
+          };
+        }
+      } else if (tabRef === 'nt') {
+        const q = qRef.trim().toLowerCase();
+        const ds = BANG_NT_SGK.filter(function (e) {
+          if (loaiRef && e.loai !== loaiRef) return false;
+          if (!q) return true;
+          return (e.kh.toLowerCase() === q) || (String(e.z) === q) ||
+            ((e.kh + ' ' + e.ten + ' ' + e.m + ' ' + e.nhom).toLowerCase().indexOf(q) >= 0);
+        });
+        vung.innerHTML =
+          '<div class="hang" style="margin-bottom:10px;align-items:center">' +
+            '<input id="ref-q" type="search" placeholder="Gõ kí hiệu, số hiệu Z, tên hoặc M (VD: Fe, 26, 35,5, Cl)..." value="' + esc(qRef) + '" style="flex:2 1 220px">' +
+            '<div class="seg">' +
+              '<button type="button" data-rl="" class="' + (!loaiRef ? 'on' : '') + '">Tất cả (' + BANG_NT_SGK.length + ')</button>' +
+              '<button type="button" data-rl="kl" class="' + (loaiRef === 'kl' ? 'on' : '') + '">Kim loại</button>' +
+              '<button type="button" data-rl="pk" class="' + (loaiRef === 'pk' ? 'on' : '') + '">Phi kim</button>' +
+              '<button type="button" data-rl="kh" class="' + (loaiRef === 'kh' ? 'on' : '') + '">Khí hiếm</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="ref-grid">' + (ds.length ? ds.map(function (e) {
+            return '<div class="ref-el ' + e.loai + '">' +
+              '<div class="ref-el-top"><span class="ref-el-kh">' + esc(e.kh) + '</span><span class="ref-el-z">Z = ' + e.z + '</span></div>' +
+              '<div class="ref-el-ten">' + esc(e.ten) + '</div>' +
+              '<div class="ref-el-m">M = ' + esc(e.m) + ' <span class="phu" style="font-weight:500;font-size:11px">· χ = ' + esc(e.chi) + '</span></div>' +
+              '<div class="ref-el-cfg">' + esc(e.cfg) + '</div>' +
+              '<div class="phu" style="font-size:10.8px">CK ' + e.ck + ' · Nhóm ' + esc(e.nhom) + '</div>' +
+            '</div>';
+          }).join('') : '<div class="phu" style="grid-column:1/-1;text-align:center;padding:18px">Không tìm thấy nguyên tố khớp từ khóa.</div>') +
+          '</div>';
+        const inp = vung.querySelector('#ref-q');
+        if (inp) {
+          inp.oninput = function () {
+            qRef = this.value;
+            const pos = this.selectionStart;
+            veNoiDung();
+            const inp2 = hop.querySelector('#ref-q');
+            if (inp2) { inp2.focus(); try { inp2.setSelectionRange(pos, pos); } catch (e) {} }
+          };
+        }
+        vung.querySelectorAll('[data-rl]').forEach(function (b) {
+          b.onclick = function () { loaiRef = b.getAttribute('data-rl'); veNoiDung(); };
+        });
+      } else {
+        vung.innerHTML =
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;max-height:420px;overflow-y:auto">' +
+            '<div class="lab-sec"><h3>⚗️ Hằng số &amp; Công thức Mol (Chuẩn KNTT)</h3>' +
+              '<div style="font-size:13px;line-height:1.6">' +
+                '• <b>Điều kiện chuẩn (đkc: 25 °C, 1 bar):</b><br>  <b>V = n × 24,79</b> (L) ⇒ <b>n = V / 24,79</b> (mol)<br>' +
+                '• <b>Khối lượng &amp; Nồng độ:</b><br>  <b>n = m / M</b> · <b>C<sub>M</sub> = n / V<sub>dd(L)</sub></b> · <b>C% = (m<sub>ct</sub> / m<sub>dd</sub>) × 100%</b><br>' +
+                '• <b>Số Avogadro:</b> N<sub>A</sub> ≈ 6,022 × 10²³ hạt/mol<br>' +
+                '• <b>Hạt cơ bản:</b> Z = số p = số e · Số khối <b>A = Z + N</b>' +
+              '</div></div>' +
+            '<div class="lab-sec"><h3>🔗 Hiệu độ âm điện &amp; Liên kết (Pauling)</h3>' +
+              '<div style="font-size:13px;line-height:1.6">' +
+                '• <b>0 ≤ Δχ &lt; 0,4:</b> Cộng hóa trị không phân cực<br>' +
+                '• <b>0,4 ≤ Δχ &lt; 1,7:</b> Cộng hóa trị phân cực<br>' +
+                '• <b>Δχ ≥ 1,7:</b> Liên kết ion (điển hình: KL mạnh + PK mạnh)<br>' +
+                '• <b>Liên kết Hydrogen:</b> H gắn trực tiếp với <b>F, O, N</b> hút cặp e riêng của F, O, N khác (làm tăng nhiệt độ sôi &amp; độ tan trong nước).' +
+              '</div></div>' +
+            '<div class="lab-sec"><h3>🔥 Biến thiên Enthalpy (Chương 5)</h3>' +
+              '<div style="font-size:13px;line-height:1.6">' +
+                '• <b>Δ<sub>r</sub>H°<sub>298</sub> &lt; 0:</b> Phản ứng <b>TỎA NHIỆT</b> (thuận lợi)<br>' +
+                '• <b>Δ<sub>r</sub>H°<sub>298</sub> &gt; 0:</b> Phản ứng <b>THU NHIỆT</b><br>' +
+                '• <b>Theo nhiệt tạo thành (Δ<sub>f</sub>H°):</b><br>  Δ<sub>r</sub>H°<sub>298</sub> = ∑Δ<sub>f</sub>H°<sub>298</sub>(sản phẩm) − ∑Δ<sub>f</sub>H°<sub>298</sub>(chất đầu)<br>' +
+                '• <b>Theo năng lượng liên kết (E<sub>b</sub>):</b><br>  Δ<sub>r</sub>H°<sub>298</sub> = ∑E<sub>b</sub>(chất đầu) − ∑E<sub>b</sub>(sản phẩm)' +
+              '</div></div>' +
+            '<div class="lab-sec"><h3>🧪 Tốc độ phản ứng &amp; Nhận biết Halogen</h3>' +
+              '<div style="font-size:13px;line-height:1.6">' +
+                '• <b>Hệ số nhiệt độ Van’t Hoff:</b> v<sub>2</sub> / v<sub>1</sub> = γ<sup>(T<sub>2</sub> − T<sub>1</sub>)/10</sup><br>' +
+                '• <b>Nhận biết ion Halide bằng AgNO<sub>3</sub>:</b><br>  <b>F⁻</b> (không ↓) · <b>Cl⁻</b> (AgCl↓ trắng) · <b>Br⁻</b> (AgBr↓ vàng nhạt) · <b>I⁻</b> (AgI↓ vàng đậm)<br>' +
+                '• <b>Dãy hoạt động KL:</b> K, Ba, Ca, Na, Mg, Al, Zn, Fe, Ni, Sn, Pb, (H), Cu, Hg, Ag, Pt, Au.' +
+              '</div></div>' +
+          '</div>';
+      }
+    }
+
+    hop.innerHTML = '<div class="the rong" style="max-width:820px;display:flex;flex-direction:column;gap:12px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+          '<b style="font-size:16.5px">⚛️ Casio &amp; Sổ tay Hóa 10</b>' +
+          '<div class="seg">' +
+            '<button type="button" data-rt="casio" class="' + (tabRef === 'casio' ? 'on' : '') + '">🧮 Máy tính Casio &amp; M</button>' +
+            '<button type="button" data-rt="nt" class="' + (tabRef === 'nt' ? 'on' : '') + '">⚛️ Bảng Nguyên tố</button>' +
+            '<button type="button" data-rt="ct" class="' + (tabRef === 'ct' ? 'on' : '') + '">📐 Công thức SGK</button>' +
+          '</div>' +
+        '</div>' +
+        '<button type="button" class="nut nho chinh" data-x="dong">Đóng (Esc)</button>' +
+      '</div>' +
+      '<div data-x="body"></div>' +
+    '</div>';
+
+    document.body.appendChild(hop);
+    veNoiDung();
+
+    const dong = function () { hop.remove(); document.removeEventListener('keydown', onEsc); };
+    const onEsc = function (e) { if (e.key === 'Escape') dong(); };
+    document.addEventListener('keydown', onEsc);
+    hop.onclick = function (e) { if (e.target === hop) dong(); };
+    hop.querySelector('[data-x="dong"]').onclick = dong;
+    hop.querySelectorAll('[data-rt]').forEach(function (b) {
+      b.onclick = function () {
+        tabRef = b.getAttribute('data-rt');
+        hop.querySelectorAll('[data-rt]').forEach(function (x) { x.classList.toggle('on', x === b); });
+        veNoiDung();
+      };
+    });
+  }
+
+  // ---- Thanh Dock dưới đáy cho Điện thoại + Nút Tra cứu ⚛️ trên Topbar ----
+  function ganThanhDieuHuongHS(activePage, opts) {
+    opts = opts || {};
+    prefetchPages();
+    document.body.classList.add('has-mob-dock');
+
+    // Thêm nút "⚛️ Tra cứu" vào .top-right nếu chưa có
+    const tr = document.querySelector('.topbar .top-right');
+    if (tr && !document.getElementById('btn-quick-ref')) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.id = 'btn-quick-ref';
+      b.className = 'top-pill';
+      b.title = 'Mở Máy tính Casio Hóa học, Bảng nguyên tử khối & Công thức (Phím tắt: Alt + P)';
+      b.innerHTML = '🧮 <span>Casio &amp; Tra cứu</span>';
+      b.onclick = function () { moBangTraCuu('casio'); };
+      const themeBtn = document.getElementById('btn-theme');
+      if (themeBtn) tr.insertBefore(b, themeBtn);
+      else tr.appendChild(b);
+    }
+
+    // Gắn class .top-nav-link cho các nút chuyển trang trên topbar để tự ẩn ở <=640px (nhường chỗ cho Bottom Dock)
+    ['btn-home', 'btn-btvn', 'btn-tailieu', 'btn-lab', 'btn-game'].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('top-nav-link');
+    });
+    if (tr) {
+      tr.querySelectorAll('.top-pill.on').forEach(function (el) { el.classList.add('top-nav-link'); });
+    }
+
+    // Tạo hoặc cập nhật Mobile Bottom Dock
+    let dock = document.getElementById('h10-mob-dock');
+    if (!dock) {
+      dock = document.createElement('nav');
+      dock.id = 'h10-mob-dock';
+      dock.className = 'mob-dock';
+      dock.setAttribute('aria-label', 'Điều hướng nhanh');
+      document.body.appendChild(dock);
+    }
+    const items = [
+      { id: 'home', ic: '🏠', ten: 'Trang chủ' },
+      { id: 'btvn', ic: '📝', ten: 'Làm BTVN' },
+      { id: 'tailieu', ic: '📚', ten: 'Tài liệu' },
+      { id: 'thinghiem', ic: '🔬', ten: 'Thí nghiệm' },
+      { id: 'trochoi', ic: '🎮', ten: 'Trò chơi' }
+    ];
+    dock.innerHTML = items.map(function (it) {
+      const l = linkTrang(it.id, opts);
+      const isCur = it.id === activePage;
+      return '<a href="' + esc(l.href) + '" target="' + l.target + '" class="' + (isCur ? 'on' : '') + '"' + (isCur ? ' aria-current="page"' : '') + '>' +
+        '<i aria-hidden="true">' + it.ic + '</i><span>' + esc(it.ten) + '</span></a>';
+    }).join('');
+  }
+
+  // Phím tắt toàn cục trên Máy tính: Alt + P mở Bảng tra cứu Hóa 10
+  document.addEventListener('keydown', function (e) {
+    if (e.altKey && (e.key === 'p' || e.key === 'P')) {
+      e.preventDefault();
+      moBangTraCuu();
+    }
+  });
+
   try {
     if (window.top !== window.self) document.documentElement.classList.add('in-iframe');
   } catch (e) {
@@ -1381,6 +2003,10 @@ window.H10 = (function () {
     renderSlogan: renderSlogan,
     renderGalleryHoa10: renderGalleryHoa10,
     GALLERY_HOA10: GALLERY_HOA10,
+    moBangTraCuu: moBangTraCuu,
+    ganThanhDieuHuongHS: ganThanhDieuHuongHS,
+    docCacheUI: docCacheUI,
+    ghiCacheUI: ghiCacheUI,
     ganBungCoVu: ganBungCoVu,
     ganNutLenDau: ganNutLenDau,
     ICONS: ICONS
@@ -1390,7 +2016,7 @@ window.H10 = (function () {
 
 <script>
 (function () {
-  const { esc, md, api, laGAS, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, toast, renderSlogan, ganNutLenDau, tenDep } = window.H10;
+  const { esc, md, api, laGAS, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, toast, renderSlogan, ganThanhDieuHuongHS, docCacheUI, ghiCacheUI, ganNutLenDau, tenDep } = window.H10;
   let moLocChiTiet = false; // điện thoại: bộ lọc chi tiết gập/mở
   document.getElementById('brand-ic').innerHTML = ICONS.doc;
   ganNutTheme(document.getElementById('btn-theme'));
@@ -1413,9 +2039,10 @@ window.H10 = (function () {
   });
 
   function veTopLinks() {
+    const cfg = (data && data.caiDatTrang) || {};
+    const opt = { cfg: cfg, webUrl: (data && data.webUrl) || '', laFull: laFull };
+    ganThanhDieuHuongHS('tailieu', opt);
     if (!data) return;
-    const cfg = data.caiDatTrang || {};
-    const opt = { cfg: cfg, webUrl: data.webUrl, laFull: laFull };
     const hm = $('#btn-home');
     if (hm) { const l = linkTrang('home', opt); hm.href = l.href; hm.target = l.target; hm.classList.remove('an'); }
     const lb = $('#btn-lab');
@@ -1475,8 +2102,13 @@ window.H10 = (function () {
     hop.className = 'hopdn';
     hop.innerHTML = '<div class="the rong" style="padding:0;display:flex;flex-direction:column;max-height:92vh">' +
       '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--vien);position:sticky;top:0;background:var(--the);z-index:2">' +
-        '<b style="font-size:15.5px;margin-right:auto;overflow-wrap:anywhere">' + esc(item.ten) + '</b>' +
+        '<b style="font-size:15.5px;margin-right:auto;overflow-wrap:anywhere">' + esc(tenDep(item.ten)) + '</b>' +
         '<span class="chip" data-x="meta">Đang mở...</span>' +
+        '<div class="hang-nut an" data-x="zoom-box" style="gap:4px">' +
+          '<button type="button" class="nut nho" data-x="z-out" title="Thu nhỏ">−</button>' +
+          '<button type="button" class="nut nho" data-x="z-txt" title="Đặt về 100%">100%</button>' +
+          '<button type="button" class="nut nho" data-x="z-in" title="Phóng to">+</button>' +
+        '</div>' +
         '<a class="nut nho" data-x="tai" href="https://drive.google.com/uc?export=download&id=' + esc(item.fileId) + '" target="_blank" rel="noopener">Tải về</a>' +
         '<button type="button" class="nut nho chinh" data-x="dong">Đóng</button>' +
       '</div>' +
@@ -1521,26 +2153,83 @@ window.H10 = (function () {
       const lib = await napPdfJs();
       const pdf = await lib.getDocument({ data: u8.slice() }).promise;
       vung.innerHTML = '';
-      const rong = Math.min(820, Math.max(260, vung.clientWidth - 28));
-      for (let i = 1; i <= pdf.numPages; i++) {
-        meta.textContent = 'Trang ' + i + '/' + pdf.numPages;
-        const trang = await pdf.getPage(i);
+      const rongGoc = Math.min(820, Math.max(260, vung.clientWidth - 28));
+      let zoomPct = 100;
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const daVe = {};
+
+      const trang1 = await pdf.getPage(1);
+      const vp1 = trang1.getViewport({ scale: 1 });
+      const tiLeCao = vp1.height / vp1.width;
+
+      const veTrangPdf = async function (soTrang, slot) {
+        if (daVe[soTrang]) return;
+        daVe[soTrang] = true;
+        const trang = await pdf.getPage(soTrang);
         const vp0 = trang.getViewport({ scale: 1 });
-        const tl = rong / vp0.width;
-        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const rongRender = Math.round(rongGoc * 1.45);
+        const tl = rongRender / vp0.width;
         const vp = trang.getViewport({ scale: tl * dpr });
         const cv = document.createElement('canvas');
         cv.width = vp.width; cv.height = vp.height;
-        cv.style.width = rong + 'px';
-        cv.style.maxWidth = '100%';
+        cv.style.width = '100%';
         cv.style.height = 'auto';
-        cv.style.background = '#fff';
-        cv.style.borderRadius = '6px';
-        cv.style.boxShadow = '0 2px 10px rgba(0,0,0,.14)';
-        vung.appendChild(cv);
+        cv.style.display = 'block';
+        slot.innerHTML = '';
+        slot.style.minHeight = '0';
+        slot.appendChild(cv);
         await trang.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+      };
+
+      const obs = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            const p = Number(en.target.getAttribute('data-pdf-p'));
+            obs.unobserve(en.target);
+            veTrangPdf(p, en.target);
+          }
+        });
+      }, { root: vung, rootMargin: '420px 0px' }) : null;
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const slot = document.createElement('div');
+        slot.setAttribute('data-pdf-p', String(i));
+        slot.style.width = rongGoc + 'px';
+        slot.style.maxWidth = '100%';
+        slot.style.minHeight = Math.round(rongGoc * tiLeCao) + 'px';
+        slot.style.background = '#fff';
+        slot.style.borderRadius = '6px';
+        slot.style.boxShadow = '0 2px 10px rgba(0,0,0,.14)';
+        slot.style.display = 'grid';
+        slot.style.placeItems = 'center';
+        slot.innerHTML = '<span class="phu" style="font-size:12px">Trang ' + i + '/' + pdf.numPages + '</span>';
+        vung.appendChild(slot);
+        if (i <= 2 || !obs) {
+          await veTrangPdf(i, slot);
+        } else {
+          obs.observe(slot);
+        }
       }
       meta.textContent = pdf.numPages + ' trang';
+
+      const zoomBox = hop.querySelector('[data-x="zoom-box"]');
+      const zTxt = hop.querySelector('[data-x="z-txt"]');
+      const apZoom = function (pct) {
+        zoomPct = Math.max(75, Math.min(200, pct));
+        if (zTxt) zTxt.textContent = zoomPct + '%';
+        const w = Math.round(rongGoc * zoomPct / 100);
+        vung.style.alignItems = zoomPct > 100 ? 'flex-start' : 'center';
+        vung.querySelectorAll('[data-pdf-p]').forEach(function (sl) {
+          sl.style.width = w + 'px';
+          sl.style.maxWidth = zoomPct > 100 ? 'none' : '100%';
+        });
+      };
+      if (zoomBox) {
+        zoomBox.classList.remove('an');
+        hop.querySelector('[data-x="z-in"]').onclick = function () { apZoom(zoomPct + 25); };
+        hop.querySelector('[data-x="z-out"]').onclick = function () { apZoom(zoomPct - 25); };
+        zTxt.onclick = function () { apZoom(100); };
+      }
     } catch (e) {
       meta.textContent = 'Lỗi xem trước';
       vung.innerHTML = '<div class="thongbao loi">' + esc(e.message || e) + '</div>' +
@@ -1704,8 +2393,7 @@ window.H10 = (function () {
     });
   }
 
-  app.innerHTML = '<div class="phu" style="margin:6px 2px 10px"><span class="cho"></span> Đang tải kho tài liệu...</div>' + skelCards(4);
-  api('tlKhoiDong').then(function (r) {
+  function napDuLieuTL(r) {
     data = r;
     (r.mucLuc || []).forEach(c => {
       tenBaiMap[c.id] = c.ten;
@@ -1713,7 +2401,21 @@ window.H10 = (function () {
     });
     veTopLinks();
     veTrang();
+  }
+
+  ganThanhDieuHuongHS('tailieu', {});
+  const cachedTL = docCacheUI('tailieu');
+  if (cachedTL) {
+    napDuLieuTL(cachedTL);
+  } else {
+    app.innerHTML = '<div class="phu" style="margin:6px 2px 10px"><span class="cho"></span> Đang tải kho tài liệu...</div>' + skelCards(4);
+  }
+
+  api('tlKhoiDong').then(function (r) {
+    ghiCacheUI('tailieu', r);
+    napDuLieuTL(r);
   }).catch(function (e) {
+    if (cachedTL) return;
     if (!laGAS) { data = { caiDatTrang: {}, webUrl: '' }; veTopLinks(); }
     toast(e.message, true);
     app.innerHTML = '<div class="thongbao loi">' + esc(e.message) + '</div><button class="nut chinh" type="button" onclick="location.reload()">Tải lại</button>';
