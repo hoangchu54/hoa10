@@ -19,11 +19,15 @@
   button{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:12px;padding:9px 20px;margin-top:6px;background:linear-gradient(90deg,#1f6fb2,#3fa0e6);color:#fff;cursor:pointer;transition:transform .12s,filter .12s}
   button:active{transform:scale(.98)}
   button.sec{background:#e6eef6;color:#17558a;font-size:14px;padding:6px 13px}
-  #side{width:256px;flex:none;background:#f4f9fe;border-left:4px solid #1f6fb2;padding:12px;overflow:auto;display:flex;flex-direction:column}
-  #side h2{margin:0 0 6px;font-size:18px;color:#1f6fb2;text-align:center}
-  .side-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;background:#dcebf7;padding:3px;border-radius:10px}
-  .side-tabs button{margin:0;padding:4px 6px;font-size:12.5px;border-radius:8px;background:transparent;color:#17558a}
-  .side-tabs button.on{background:#1f6fb2;color:#fff;box-shadow:0 2px 6px rgba(31,111,178,.28)}
+  /* Cột bảng điểm: đồng bộ tông Burgundy–Tím của web */
+  #side{width:256px;flex:none;background:#FBF7FB;border-left:4px solid transparent;border-image:linear-gradient(180deg,#7A2230,#6D28D9) 1;padding:12px;overflow:auto;display:flex;flex-direction:column}
+  #side h2{margin:0 0 6px;font-size:18px;color:#7A2230;text-align:center}
+  .side-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;background:#F1E6EF;padding:3px;border-radius:10px}
+  .side-tabs button{margin:0;padding:4px 6px;font-size:12.5px;border-radius:8px;background:transparent;color:#5B1126}
+  .side-tabs button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);color:#fff;box-shadow:0 2px 6px rgba(122,34,48,.28)}
+  #side td{border-bottom-color:#EFE3EC}
+  #side tr.me td{background:#F6E9F1}
+  #side td.s{color:#6D28D9}
   #side .best{background:linear-gradient(90deg,#ffd166,#ffb347);border-radius:12px;padding:8px 10px;font-weight:800;color:#5a3500;margin-bottom:8px;font-size:14px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   td{padding:5px 4px;border-bottom:1px solid #dbe8f3;color:#28394a;text-align:left}
@@ -54,9 +58,18 @@
     #lb{padding:6px 9px;font-size:13px}
   }
   @media (max-height:400px){.card{padding:10px 14px}.card h1{font-size:20px}.card p{font-size:13px;margin:2px 0}.big{font-size:32px}input{padding:5px 8px;margin:4px 0}button{margin-top:3px;padding:6px 16px}}
-  #menu{z-index:4;background:radial-gradient(120% 100% at 50% 0%,#491538 0%,#1d1747 52%,#0c1738 100%);overflow:hidden}
+  /* Sảnh trò chơi: đồng bộ tông Burgundy–Tím của cả web (giống banner trang chủ) */
+  #menu{z-index:4;background:radial-gradient(120% 100% at 50% 0%,#9E1F3F 0%,#5B1126 38%,#2A0F3D 72%,#140A24 100%);overflow:hidden}
   .mbg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-  .mbg span{position:absolute;font-weight:800;border-radius:14px;padding:6px 11px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:rgba(255,255,255,.16);font-size:clamp(16px,3vw,24px);animation:mf 9s ease-in-out infinite}
+  /* Ô nguyên tố kiểu bảng tuần hoàn: số hiệu nguyên tử Z nhỏ ở góc trên bên trái, kí hiệu ở giữa */
+  .mbg span{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;width:clamp(44px,7vw,62px);height:clamp(48px,7.6vw,68px);font-weight:800;border-radius:12px;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:rgba(255,255,255,.2);font-size:clamp(17px,3vw,25px);line-height:1;animation:mf 9s ease-in-out infinite}
+  .mbg span small{position:absolute;top:4px;left:6px;font-size:clamp(9px,1.4vw,11.5px);font-weight:700;color:rgba(255,255,255,.26)}
+  /* Thanh điều hướng chung trong sảnh */
+  .mnav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:0 0 12px}
+  .mnav a{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:10px;font:600 13px/1.2 "Be Vietnam Pro","Baloo 2",Arial,sans-serif;color:#fff;text-decoration:none;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);transition:background-color .14s,transform .12s}
+  .mnav a:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
+  .mnav a.on{background:linear-gradient(90deg,#7A2230,#6D28D9);border-color:rgba(255,209,102,.45)}
+  @media (max-width:480px){.mnav{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;scrollbar-width:none;padding:0 2px 2px}.mnav::-webkit-scrollbar{display:none}.mnav a{flex:none}}
   @keyframes mf{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
   .mwrap{position:relative;z-index:1;width:min(650px,96%);max-height:94%;overflow:auto;text-align:center;color:#fff;padding:6px 2px}
   .mkick{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#ffd166;background:rgba(255,209,102,.14);border:1px solid rgba(255,209,102,.3);padding:3px 12px;border-radius:999px;margin-bottom:4px}
@@ -175,14 +188,21 @@
     <!-- MENU CHỌN TRÒ -->
     <div class="ov" id="menu">
       <div class="mbg" aria-hidden="true">
-        <span style="top:10%;left:6%;animation-delay:0s">H₁</span>
-        <span style="top:16%;right:8%;animation-delay:1.5s">O₈</span>
-        <span style="bottom:18%;left:8%;animation-delay:2.8s">Na₁₁</span>
-        <span style="bottom:14%;right:7%;animation-delay:4.1s">Fe₂₆</span>
-        <span style="top:52%;left:3%;animation-delay:3.3s">Cl₁₇</span>
-        <span style="top:46%;right:4%;animation-delay:5.2s">Cu₂₉</span>
+        <span style="top:10%;left:6%;animation-delay:0s"><small>1</small>H</span>
+        <span style="top:16%;right:8%;animation-delay:1.5s"><small>8</small>O</span>
+        <span style="bottom:18%;left:8%;animation-delay:2.8s"><small>11</small>Na</span>
+        <span style="bottom:14%;right:7%;animation-delay:4.1s"><small>26</small>Fe</span>
+        <span style="top:52%;left:3%;animation-delay:3.3s"><small>17</small>Cl</span>
+        <span style="top:46%;right:4%;animation-delay:5.2s"><small>29</small>Cu</span>
       </div>
       <div class="mwrap">
+      <nav class="mnav" aria-label="Chuyển trang">
+        <a id="nav-home" href="index.html" target="_self">🏠 Trang chủ</a>
+        <a id="nav-btvn" href="btvn.html" target="_self">📝 Làm BTVN</a>
+        <a id="nav-tl" href="tailieu.html" target="_self">📚 Kho tài liệu</a>
+        <a id="nav-tn" href="thinghiem.html" target="_self">🔬 Thí nghiệm</a>
+        <a class="on" aria-current="page">🎮 Trò chơi</a>
+      </nav>
       <div class="mkick">⚗️ Hóa học 10 · Kết nối tri thức</div>
       <div class="mtitle"><span>🎮</span> <span style="animation-delay:.1s">Gaming</span> <span style="animation-delay:.2s">Center</span></div>
       <div class="msub">Vừa chơi vừa ôn Hóa 10 — có cơ hội hồi sinh bằng câu hỏi Hóa học!</div>
@@ -258,6 +278,13 @@ const GAS_EXEC_URL='https://script.google.com/macros/s/AKfycbwGoG7DJpgg-FNqewgq-
 const LA_GAS=!!(window.google&&window.google.script&&window.google.script.run);
 function capNhatLinkHome(){
   var a=$('home'); if(!a) return;
+  // Thanh điều hướng trong sảnh: GitHub Pages dùng file tĩnh, trong Apps Script dùng ?page=
+  var nav={ 'nav-home':['index.html','home'], 'nav-btvn':['btvn.html',''], 'nav-tl':['tailieu.html','tailieu'], 'nav-tn':['thinghiem.html','thinghiem'] };
+  Object.keys(nav).forEach(function(id){ var el=$(id); if(!el) return;
+    if(!LA_GAS){ el.href=nav[id][0]; el.target='_self'; }
+    else if(WEB_APP_URL){ el.href=WEB_APP_URL+(nav[id][1]?'?page='+nav[id][1]+(LA_FULL?'&full=1':''):(LA_FULL?'?full=1':'')); el.target='_top'; }
+    else if(id==='nav-home'){ el.href=HOME_URL; el.target='_top'; }
+  });
   if(!LA_GAS){ a.href='index.html'; a.target='_self'; return; }
   if(WEB_APP_URL){ a.href=WEB_APP_URL+'?page=home'+(LA_FULL?'&full=1':''); a.target='_top'; }
   else { a.href=HOME_URL; a.target='_top'; }
@@ -297,11 +324,11 @@ function bestOf(g){return ROWS[g].reduce(function(m,r){return Math.max(m,+r.s||0
 function best(){return bestOf('flappy')}
 function table(list,rank){if(!list.length)return '<p class="empty">Chưa có lượt chơi nào.</p>';
   var me=(layTenNho()||'').trim().toLowerCase();
-  var o='<table>';list.forEach(function(r,i){var laMe=me&&String(r.n||'').trim().toLowerCase()===me;o+='<tr'+(laMe?' class="me"':'')+'><td>'+(rank?'<b>#'+(i+1)+'</b> ':'')+esc(r.n)+'<br><small>'+esc(r.t)+'</small></td><td class="s">'+r.s+'</td></tr>'});return o+'</table>'}
+  var o='<table>';list.forEach(function(r,i){var laMe=me&&String(r.n||'').trim().toLowerCase()===me;o+='<tr'+(laMe?' class="me"':'')+'><td>'+(rank?'<b>#'+(i+1)+'</b> ':'')+esc(r.n)+'<br><small>'+esc(r.t)+'</small></td><td class="s">'+(+r.s||0)+'</td></tr>'});return o+'</table>'}
 function renderHist(){var rows=ROWS[HG],t=topList(HG);
   $('sideT').textContent='🏆 '+GN[HG];
   document.querySelectorAll('[data-sg]').forEach(function(b){b.className=b.dataset.sg===HG?'on':''});
-  $('hists').innerHTML=(t.length?'<div class="best">🥇 '+t[0].s+' – '+esc(t[0].n)+'</div>':'')+table(t.slice(0,10),true)+'<p class="empty">Tổng: '+rows.length+' lượt chơi</p>';
+  $('hists').innerHTML=(t.length?'<div class="best">🥇 '+(+t[0].s||0)+' – '+esc(t[0].n)+'</div>':'')+table(t.slice(0,10),true)+'<p class="empty">Tổng: '+rows.length+' lượt chơi</p>';
   $('histm').innerHTML=tab==='N'?table(rows,false):table(t,true);
   $('tabN').style.background=tab==='N'?'#bcdcf5':'';$('tabT').style.background=tab==='T'?'#bcdcf5':'';
   document.querySelectorAll('.gtabs button').forEach(function(b){b.className=b.dataset.g===HG?'on':''});

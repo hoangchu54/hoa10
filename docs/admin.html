@@ -194,9 +194,11 @@ tr.cay td{background:var(--canh-n)}
 .kpi-card.tim .kpi-ic{background:var(--tim-n);color:var(--tim);border-color:var(--tim-v)}
 .kpi-card.xanh .kpi-ic{background:var(--xanh-n);color:var(--xanh);border-color:var(--xanh-v)}
 .kpi-card.canh .kpi-ic{background:var(--canh-n);color:var(--canh);border-color:var(--canh-v)}
-.ring-svg{width:46px;height:46px;flex-shrink:0;transform:rotate(-90deg)}
-.ring-bg{fill:none;stroke:var(--vien);stroke-width:4}
-.ring-fg{fill:none;stroke:var(--xanh);stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .35s ease}
+.ring-wrap{position:relative;width:56px;height:56px;flex-shrink:0;display:grid;place-items:center}
+.ring-svg{position:absolute;inset:0;width:56px;height:56px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--vien2);stroke-width:5.5}
+.ring-fg{fill:none;stroke:var(--xanh);stroke-width:5.5;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
+.ring-pct{position:relative;font-size:12.5px;font-weight:800;color:var(--xanh);letter-spacing:-.02em}
 .prog-bar{height:6px;background:var(--vien2);border-radius:999px;overflow:hidden;margin-top:7px}
 .prog-bar > div{height:100%;background:var(--grad);border-radius:999px;transition:width .25s ease}
 
@@ -235,9 +237,19 @@ body.dang-lam .topbar{position:static}
 .lc-xem.sai-chon{background:var(--loi-n);border-color:var(--loi-v);color:var(--loi)}
 .dap-an-box{margin-top:10px;background:var(--ok-n);border:1px dashed var(--ok-v);border-radius:11px;padding:10px 13px;font-size:13.5px}
 .dap-an-box .d{color:var(--ok);font-weight:700}
-.hs-picker-list{max-height:220px;overflow:auto;border:1px solid var(--vien);border-radius:11px;background:var(--nen2);padding:4px;margin-top:6px}
-.hs-picker-item{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:9px;cursor:pointer;font-size:14px;transition:background-color .12s}
-.hs-picker-item:hover{background:var(--do-n);color:var(--do);font-weight:600}
+.hs-picker-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;max-height:340px;overflow:auto;padding:2px 2px 6px;margin-top:8px;-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 22px),transparent)}
+.hs-picker-item{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;background:var(--the);border:1px solid var(--vien);box-shadow:var(--shadow);transition:background-color .12s,border-color .12s,transform .12s}
+.hs-picker-item:hover,.hs-picker-item:focus-visible{background:var(--do-n);border-color:var(--do-v);color:var(--do);transform:translateY(-1px)}
+.hs-av{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:14px;font-weight:800;color:#fff;background:var(--grad)}
+.hs-av.c1{background:linear-gradient(135deg,#7A2230,#B8475C)}.hs-av.c2{background:linear-gradient(135deg,#6D28D9,#9F7AEA)}
+.hs-av.c3{background:linear-gradient(135deg,#0F766E,#2DD4BF)}.hs-av.c4{background:linear-gradient(135deg,#B45309,#F59E0B)}
+.hs-av.c5{background:linear-gradient(135deg,#1D4ED8,#60A5FA)}
+.hs-picker-ten{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hs-dem{font-size:12px;color:var(--mo);margin-top:4px}
+/* Pháo giấy khi đạt điểm cao */
+.phao-giay{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.phao-giay i{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;opacity:.95;animation:phaoRoi 3s cubic-bezier(.25,.6,.4,1) forwards}
+@keyframes phaoRoi{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--x),105vh) rotate(var(--r));opacity:.9}}
 .score-ring{display:inline-flex;align-items:baseline;justify-content:center;padding:14px 28px;border-radius:20px;background:var(--the);border:2px solid var(--do-v);box-shadow:var(--shadow-lg);margin:10px 0 6px}
 .score-ring.tot{border-color:var(--ok-v);background:linear-gradient(180deg,var(--ok-n),var(--the))}
 .score-ring.kha{border-color:var(--tim-v);background:linear-gradient(180deg,var(--tim-n),var(--the))}
@@ -250,7 +262,11 @@ body.dang-lam .topbar{position:static}
 .feat-title{margin:0 0 12px;font-size:clamp(18px,2.4vw,21px);font-weight:800;line-height:1.3}
 .feat-body{display:flex;align-items:stretch;gap:12px;flex-wrap:wrap}
 .feat-cta{min-width:210px;min-height:52px;font-size:15.5px;font-weight:800;border-radius:14px;padding:0 22px}
-.de-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.feat-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;color:var(--mo);font-weight:600}
+.feat-meta .dot{width:4px;height:4px;border-radius:50%;background:var(--vien);display:inline-block}
+.feat-meta b{color:var(--chu)}
+.feat-nhac{display:flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 12px;border-radius:11px;background:var(--canh-n);border:1px solid var(--canh-v);color:var(--canh);font-size:13.5px;font-weight:700}
+.de-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px}
 .de-card{background:var(--the);border:1px solid var(--vien);border-left:4px solid var(--tim);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;transition:transform .14s,box-shadow .14s,border-color .14s}
 .de-card + .de-card{margin-top:10px}
 .de-grid .de-card + .de-card{margin-top:0}
@@ -386,6 +402,26 @@ body.dang-lam .topbar{position:static}
 .tl-ic.ppt{background:linear-gradient(135deg,#D97706,#B45309);box-shadow:0 4px 10px rgba(180,83,9,.24),inset 0 1px 0 rgba(255,255,255,.28)}
 .tl-ic.doc{background:linear-gradient(135deg,var(--sky),#0369A1);box-shadow:0 4px 10px rgba(2,132,199,.24),inset 0 1px 0 rgba(255,255,255,.28)}
 .tl-act{justify-content:flex-end;padding-top:8px;border-top:1px solid var(--vien2)}
+.tl-goc{font-size:11.5px;color:var(--mo);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Kho tài liệu: nhóm theo buổi dạng dòng thời gian */
+.tl-buoi{position:relative;padding-left:22px;margin-bottom:18px}
+.tl-buoi::before{content:"";position:absolute;left:6px;top:26px;bottom:-14px;width:2px;background:linear-gradient(180deg,var(--tim-v),transparent)}
+.tl-buoi:last-of-type::before{display:none}
+.tl-buoi-head{position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px}
+.tl-buoi-head::before{content:"";position:absolute;left:-21px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:var(--grad);box-shadow:0 0 0 4px var(--tim-n)}
+.tl-buoi-head h2{margin:0;font-size:16px;font-weight:800}
+.tl-buoi-head .phu{font-size:12.5px}
+.tl-loc-nut{display:none}
+/* Trang chủ: bảng tin */
+.home-news{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.news-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.news-item{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:12px;background:var(--nen2);border:1px solid var(--vien2);text-decoration:none;color:var(--chu);transition:border-color .14s,background-color .14s,transform .12s}
+.news-item:hover{border-color:var(--do-v);background:var(--do-n);text-decoration:none;transform:translateX(2px)}
+.news-item .tl-ic{width:34px;height:34px;border-radius:10px;font-size:9px}
+.news-item b{display:block;font-size:14px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.news-item .phu{font-size:12px}
+.news-han{flex-shrink:0;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--canh-n);color:var(--canh);border:1px solid var(--canh-v)}
+.news-han.gap{background:var(--loi-n);color:var(--loi);border-color:var(--loi-v)}
 
 /* Virtual Lab & Reference */
 .tn-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -561,9 +597,31 @@ body.embed-ok .topbar-in{max-width:1280px}
   .seg{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .seg::-webkit-scrollbar{display:none}
 }
+@media (max-width:860px){
+  .home-news{grid-template-columns:minmax(0,1fr)}
+}
 @media (max-width:640px){
   .de-grid{grid-template-columns:minmax(0,1fr)}
   .feat-cta{width:100%}
+  .feat-banner{padding:15px 15px}
+  .feat-top{margin-bottom:6px}
+  .feat-body .kpi-strip{grid-template-columns:1fr 1fr;gap:8px}
+  .feat-body .kpi-card{padding:10px 11px}
+  .feat-body .kpi-card .g{font-size:18px}
+  .feat-body .kpi-ic{display:none}
+  /* Nút đổi giao diện gọn: chỉ còn 3 chấm màu */
+  #btn-theme .theme-ten{display:none}
+  #btn-theme{padding:0 10px;min-width:40px;justify-content:center}
+  .hero-mascot .hm-star{display:none}
+  .hero-mascot .hm-kicker{letter-spacing:.08em}
+  /* Kho tài liệu: gập bộ lọc chi tiết */
+  .tl-loc-nut{display:inline-flex}
+  .tl-loc-chi-tiet{display:none!important}
+  .tl-loc-chi-tiet.mo{display:flex!important}
+  .tl-buoi{padding-left:16px}
+  .tl-buoi::before{left:3px}
+  .tl-buoi-head::before{left:-16px;width:10px;height:10px;margin-top:-5px}
+  .hs-picker-list{grid-template-columns:minmax(0,1fr);max-height:300px}
   input[type=text],input[type=number],input[type=search],input[type=date],input[type=datetime-local],input[type=password],input[type=url],select,textarea{font-size:16px}
   .hero-mascot{padding:14px 12px;gap:10px}
   .hero-mascot .hm-side{width:64px;height:64px}
@@ -670,9 +728,44 @@ window.H10 = (function () {
     });
   }
 
-  /** Parser công thức hóa học nhẹ: _{...}, ^{...}, **đậm**, xuống dòng. */
+  // ---- Tự định dạng công thức hóa học khi hiển thị (H2SO4 → H₂SO₄, Fe3+ → Fe³⁺, <=> → ⇌) ----
+  const KI_HIEU_NT = ('H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr ' +
+    'Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os ' +
+    'Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr').split(' ');
+  const NT_SET = {};
+  KI_HIEU_NT.forEach(function (k) { NT_SET[k] = true; });
+  const SO_DUOI = { '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉' };
+  const SO_TREN = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '+': '⁺', '-': '⁻' };
+  function doiSo_(s, bang) { return String(s).split('').map(function (c) { return bang[c] || c; }).join(''); }
+  /** Token có phải chuỗi kí hiệu nguyên tố hợp lệ (vd: H2SO4, Ca(OH)2, CO2) không. */
+  function laCongThuc_(tok) {
+    const bo = tok.replace(/[()\d]/g, '');
+    const m = bo.match(/[A-Z][a-z]?/g);
+    if (!m || m.join('') !== bo) return false;
+    return m.every(function (k) { return NT_SET[k]; });
+  }
+  function dinhDangCongThuc(t) {
+    // Ion đơn nguyên tử: Fe3+, Mg2+, Cl-, Na+ (đứng trước khoảng trắng/dấu câu/cuối)
+    t = t.replace(/(^|[^\w&#])([A-Z][a-z]?)(\d?)([+-])(?=$|[\s,.;:)\]!?])/g, function (all, pre, k, so, dau) {
+      if (!NT_SET[k]) return all;
+      return pre + k + doiSo_(so + dau, SO_TREN);
+    });
+    // Phân tử (có thể kèm hệ số đứng trước: 2H2O): chỉ đổi khi token gồm toàn kí hiệu nguyên tố và có chữ số sau kí hiệu.
+    // Token chỉ 1 nguyên tố (O2, Cl2, S8...) chỉ đổi với các đơn chất hay gặp để tránh nhầm mã như "C1", "B12".
+    t = t.replace(/(^|[^\w&#])(\d*)((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d+)+)(?![\w])/g, function (all, pre, heSo, tok) {
+      if (!/[A-Za-z)]\d/.test(tok) || !laCongThuc_(tok)) return all;
+      const kh = tok.replace(/[()\d]/g, '').match(/[A-Z][a-z]?/g) || [];
+      if (kh.length === 1 && !/^(H|N|O|F|Cl|Br|I|S|P)$/.test(kh[0])) return all;
+      return pre + heSo + tok.replace(/([A-Za-z)])(\d+)/g, function (x, a, so) { return a + doiSo_(so, SO_DUOI); });
+    });
+    return t
+      .replace(/&lt;=+&gt;|&lt;-+&gt;/g, '⇌')
+      .replace(/(^|[\s(])-+&gt;(?=[\s)]|$)/g, '$1→');
+  }
+
+  /** Parser công thức hóa học nhẹ: tự định dạng H2SO4/Fe3+/⇌, _{...}, ^{...}, **đậm**, xuống dòng. */
   function md(s) {
-    return esc(s)
+    return dinhDangCongThuc(esc(s))
       .replace(/_\{([^}]*)\}/g, '<sub>$1</sub>')
       .replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>')
       .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
@@ -701,7 +794,8 @@ window.H10 = (function () {
       const t = THEMES.find(function (x) { return x.id === cur; }) || THEMES[0];
       el.innerHTML = '<span class="theme-dots">' + t.dots.map(function (c) {
         return '<i style="background:' + c + '"></i>';
-      }).join('') + '</span><span>' + esc(t.ten) + '</span>';
+      }).join('') + '</span><span class="theme-ten">' + esc(t.ten) + '</span>';
+      el.setAttribute('aria-label', 'Đổi giao diện, đang dùng ' + t.ten);
       el.title = 'Đổi giao diện (đang dùng: ' + t.ten + ')';
     }
     apTheme(layTheme());
@@ -970,6 +1064,56 @@ window.H10 = (function () {
     });
   }
 
+  // ---- Tên tài liệu dễ đọc: bỏ đuôi file, "_" → khoảng trắng, bỏ "(1)", thêm dấu cho từ phổ biến ----
+  const TU_CO_DAU = [
+    [/\bbai tap\b/gi, 'Bài tập'], [/\bdap an\b/gi, 'Đáp án'], [/\bde kiem tra\b/gi, 'Đề kiểm tra'],
+    [/\bkiem tra\b/gi, 'Kiểm tra'], [/\bon tap\b/gi, 'Ôn tập'], [/\bphieu\b/gi, 'Phiếu'],
+    [/\bcau tao nguyen tu\b/gi, 'Cấu tạo nguyên tử'], [/\bbang tuan hoan\b/gi, 'Bảng tuần hoàn'],
+    [/\blien ket hoa hoc\b/gi, 'Liên kết hóa học'], [/\blien ket\b/gi, 'Liên kết'], [/\bhoc sinh\b/gi, 'Học sinh'],
+    [/\bphan ung\b/gi, 'Phản ứng'], [/\btoc do\b/gi, 'Tốc độ'], [/\bnang luong\b/gi, 'Năng lượng'],
+    [/\boxi hoa khu\b/gi, 'Oxi hóa – khử'], [/\bhalogen\b/gi, 'Halogen'], [/\bchuong\b/gi, 'Chương'],
+    [/\bbai\b/gi, 'Bài'], [/\bhoa\b/gi, 'Hóa'], [/\bma\b/gi, 'mã'], [/\bde\b/gi, 'Đề'], [/\bgiua ki\b/gi, 'giữa kì']
+  ];
+  function tenDep(ten) {
+    let s = String(ten || '').normalize('NFC')
+      .replace(/\.(pdf|docx?|pptx?|xlsx?|txt|png|jpe?g)$/i, '')
+      .replace(/\s*\(\d+\)\s*$/g, '').replace(/\s*\(\d+\)(?=\s|$)/g, '')
+      .replace(/[_]+/g, ' ')
+      .replace(/\s+/g, ' ').trim();
+    // Chỉ tách chữ dính liền & thêm dấu khi tên viết hoàn toàn không dấu (ASCII)
+    if (/^[\x20-\x7E]*$/.test(s)) {
+      s = s.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/\s+/g, ' ');
+      TU_CO_DAU.forEach(function (p) { s = s.replace(p[0], p[1]); });
+      s = s.replace(/\bGHK\s?(\d)\b/gi, 'giữa HK$1').replace(/\bHoa 10\b/g, 'Hóa 10');
+    }
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : String(ten || '');
+  }
+
+  // ---- Pháo giấy CSS (không cần thư viện) khi đạt điểm cao ----
+  function phaoGiay(soManh) {
+    try {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    } catch (e) {}
+    const mau = ['#7A2230', '#6D28D9', '#0F766E', '#FFD166', '#FF5A7A', '#38BDF8'];
+    const vung = document.createElement('div');
+    vung.className = 'phao-giay';
+    vung.setAttribute('aria-hidden', 'true');
+    const n = soManh || 90;
+    for (let i = 0; i < n; i++) {
+      const m = document.createElement('i');
+      m.style.left = (Math.random() * 100) + '%';
+      m.style.background = mau[i % mau.length];
+      m.style.animationDelay = (Math.random() * 0.6) + 's';
+      m.style.animationDuration = (2.2 + Math.random() * 1.6) + 's';
+      m.style.setProperty('--x', ((Math.random() - 0.5) * 220) + 'px');
+      m.style.setProperty('--r', (Math.random() * 900 - 450) + 'deg');
+      if (i % 3 === 0) m.style.borderRadius = '50%';
+      vung.appendChild(m);
+    }
+    document.body.appendChild(vung);
+    setTimeout(function () { vung.remove(); }, 4600);
+  }
+
   try {
     if (window.top !== window.self) document.documentElement.classList.add('in-iframe');
   } catch (e) {
@@ -980,6 +1124,9 @@ window.H10 = (function () {
   return {
     esc: esc,
     md: md,
+    dinhDangCongThuc: dinhDangCongThuc,
+    tenDep: tenDep,
+    phaoGiay: phaoGiay,
     laGAS: laGAS,
     GAS_EXEC_URL: GAS_EXEC_URL,
     layTheme: layTheme,
