@@ -57,7 +57,7 @@ html[data-theme="dark"]{
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-html,body{margin:0;padding:0;font-family:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;background-color:var(--nen);background-image:var(--aurora),var(--dot);background-size:100% 100%,20px 20px;background-repeat:no-repeat,repeat;color:var(--chu);font-size:14.5px;line-height:1.55;font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+html,body{margin:0;padding:0;font-family:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;background-color:var(--nen);background-image:var(--aurora),var(--dot);background-size:100% 100%,20px 20px;background-repeat:no-repeat,repeat;color:var(--chu);font-size:14.5px;line-height:1.55;font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent;overflow-x:clip}
 a{color:var(--do);text-decoration:none}
 a:hover{color:var(--do2);text-decoration:underline}
 button,select,input,textarea{font:inherit;color:inherit}
@@ -625,10 +625,35 @@ body.dang-lam .mob-dock{display:none!important}
 /* Scrollable chip bar */
 .chip-scroll{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
 
-/* Back to top floating button */
+/* Back to top & Casio floating buttons */
 .btn-top{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;width:42px;height:42px;border-radius:999px;border:1px solid var(--vien);background:var(--the);color:var(--do);box-shadow:var(--shadow-lg);display:grid;place-items:center;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .18s,transform .18s,background-color .14s,color .14s}
 .btn-top.hien{opacity:1;pointer-events:auto;transform:translateY(0)}
 .btn-top:hover{background:var(--do);color:#fff;border-color:var(--do)}
+.btn-casio-fab{position:fixed;right:16px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:41;height:42px;min-width:42px;padding:0 12px;border-radius:999px;border:1.5px solid var(--tim-v);background:linear-gradient(135deg,var(--do),var(--tim));color:#fff;box-shadow:0 6px 18px rgba(109,40,217,.32);display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:800;cursor:pointer;transition:transform .14s,box-shadow .14s}
+.btn-casio-fab:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(109,40,217,.42)}
+.btn-casio-fab:active{transform:scale(.96)}
+
+/* Floating Exam Quick Pill (trượt theo dưới đáy khi cuộn làm bài trên Mobile/Tablet) */
+.exam-fab-bar{display:none;position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:44;background:rgba(23,26,40,.94);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 7px;box-shadow:0 10px 28px rgba(0,0,0,.38);align-items:center;gap:6px;white-space:nowrap;max-width:96vw}
+.exam-fab-btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:700;color:#F8FAFC;background:rgba(255,255,255,.1);transition:background-color .12s,transform .1s}
+.exam-fab-btn:hover{background:rgba(255,255,255,.2)}
+.exam-fab-btn:active{transform:scale(.96)}
+.exam-fab-btn.chinh{background:linear-gradient(135deg,var(--do),var(--tim));color:#fff;font-weight:800}
+.exam-fab-btn.casio{background:linear-gradient(135deg,#6D28D9,#4C1D95);color:#FFD166}
+.exam-fab-drawer{position:fixed;left:10px;right:10px;bottom:calc(64px + env(safe-area-inset-bottom));z-index:45;background:var(--the);color:var(--chu);border:1.5px solid var(--tim-v);border-radius:18px;padding:14px;box-shadow:0 14px 36px rgba(0,0,0,.35);max-height:66dvh;overflow-y:auto;animation:modalIn .14s ease}
+@media (max-width:960px){
+  body.dang-lam .exam-fab-bar{display:inline-flex}
+  body.dang-lam .btn-casio-fab{display:none!important}
+  body.dang-lam .btn-top{bottom:calc(64px + env(safe-area-inset-bottom));right:10px;width:36px;height:36px}
+}
+
+/* Chế độ thu nửa màn hình dưới (Split-View Bottom Sheet) cho Casio để vừa nhìn đề vừa bấm */
+.hopdn.half-sheet{background:rgba(16,14,26,.18);align-items:flex-end;padding:0;pointer-events:none}
+.hopdn.half-sheet > .the{pointer-events:auto;max-width:680px;width:100%;max-height:58dvh;border-radius:20px 20px 0 0;border:2px solid var(--tim-v);box-shadow:0 -10px 34px rgba(0,0,0,.35);padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+.hopdn.half-sheet .casio-layout{grid-template-columns:minmax(0,1fr);gap:8px}
+.hopdn.half-sheet .casio-lcd{min-height:54px;padding:6px 8px;margin-bottom:7px}
+.hopdn.half-sheet .casio-res{font-size:18px}
+.hopdn.half-sheet .ck{min-height:31px;font-size:13px}
 
 /* Slogan Footer */
 .slogan-foot{margin-top:20px;background:linear-gradient(135deg,var(--do-n) 0%,var(--the) 52%,var(--tim-n) 100%);border:1px solid var(--do-v);border-radius:15px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
@@ -803,10 +828,15 @@ body.embed-ok .topbar-in{max-width:1280px}
   .th-bang-pc{display:none}
   .th-cards{display:flex}
   .dock-sticky{top:96px;padding:8px 10px}
+  /* Nút đổi giao diện & nút Casio trên Topbar gọn ở mobile */
+  #btn-theme .theme-ten,#btn-quick-ref span{display:none}
+  #btn-theme,#btn-quick-ref{padding:0 10px;min-width:38px;justify-content:center}
   /* Mobile Bottom Dock cho trang Học sinh */
   body.has-mob-dock .mob-dock{display:flex}
   body.has-mob-dock .khung-chinh,body.has-mob-dock .khung-hep{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
   body.has-mob-dock .btn-top{bottom:calc(70px + env(safe-area-inset-bottom))}
+  body.has-mob-dock .btn-casio-fab{bottom:calc(118px + env(safe-area-inset-bottom));right:12px;padding:0 11px;height:38px}
+  body.has-mob-dock .btn-casio-fab span{display:none}
   body.has-mob-dock .topbar .top-nav-link{display:none!important}
   /* Kho tài liệu: gập bộ lọc chi tiết */
   .tl-loc-nut{display:inline-flex}
@@ -1600,10 +1630,10 @@ window.H10 = (function () {
     const cu = document.getElementById('h10-ref-modal');
     if (cu) { cu.remove(); return; }
     let tabRef = (typeof tabMacDinh === 'string' && tabMacDinh) ? tabMacDinh : 'casio';
-    let qRef = '', loaiRef = '';
+    let qRef = '', loaiRef = '', thuNho = laDienThoai() && document.body.classList.contains('dang-lam');
     const hop = document.createElement('div');
     hop.id = 'h10-ref-modal';
-    hop.className = 'hopdn';
+    hop.className = 'hopdn' + (thuNho ? ' half-sheet' : '');
     hop.setAttribute('role', 'dialog');
     hop.setAttribute('aria-modal', 'true');
 
@@ -1921,7 +1951,10 @@ window.H10 = (function () {
             '<button type="button" data-rt="ct" class="' + (tabRef === 'ct' ? 'on' : '') + '">📐 Công thức SGK</button>' +
           '</div>' +
         '</div>' +
-        '<button type="button" class="nut nho chinh" data-x="dong">Đóng (Esc)</button>' +
+        '<div class="hang-nut" style="gap:6px">' +
+          '<button type="button" class="nut nho vien" data-x="half" title="Thu xuống nửa dưới màn hình để vừa nhìn đề vừa bấm Casio">' + (thuNho ? '⛶ Mở rộng' : '⬓ Vừa nhìn đề') + '</button>' +
+          '<button type="button" class="nut nho chinh" data-x="dong">Đóng (Esc)</button>' +
+        '</div>' +
       '</div>' +
       '<div data-x="body"></div>' +
     '</div>';
@@ -1934,6 +1967,12 @@ window.H10 = (function () {
     document.addEventListener('keydown', onEsc);
     hop.onclick = function (e) { if (e.target === hop) dong(); };
     hop.querySelector('[data-x="dong"]').onclick = dong;
+    const btnHalf = hop.querySelector('[data-x="half"]');
+    if (btnHalf) btnHalf.onclick = function () {
+      thuNho = !thuNho;
+      hop.classList.toggle('half-sheet', thuNho);
+      btnHalf.textContent = thuNho ? '⛶ Mở rộng' : '⬓ Vừa nhìn đề';
+    };
     hop.querySelectorAll('[data-rt]').forEach(function (b) {
       b.onclick = function () {
         tabRef = b.getAttribute('data-rt');
@@ -1957,11 +1996,23 @@ window.H10 = (function () {
       b.id = 'btn-quick-ref';
       b.className = 'top-pill';
       b.title = 'Mở Máy tính Casio Hóa học, Bảng nguyên tử khối & Công thức (Phím tắt: Alt + P)';
-      b.innerHTML = '🧮 <span>Casio &amp; Tra cứu</span>';
+      b.innerHTML = '🧮 <span>Casio</span>';
       b.onclick = function () { moBangTraCuu('casio'); };
       const themeBtn = document.getElementById('btn-theme');
       if (themeBtn) tr.insertBefore(b, themeBtn);
       else tr.appendChild(b);
+    }
+
+    // Nút tròn nổi Casio ở góc dưới bên phải (trượt theo khi cuộn trang)
+    if (!document.getElementById('h10-casio-fab')) {
+      const fab = document.createElement('button');
+      fab.type = 'button';
+      fab.id = 'h10-casio-fab';
+      fab.className = 'btn-casio-fab';
+      fab.title = 'Mở Máy tính Casio & Tra cứu Hóa 10 (Alt + P)';
+      fab.innerHTML = '🧮 <span>Casio</span>';
+      fab.onclick = function () { moBangTraCuu('casio'); };
+      document.body.appendChild(fab);
     }
 
     // Gắn class .top-nav-link cho các nút chuyển trang trên topbar để tự ẩn ở <=640px (nhường chỗ cho Bottom Dock)
