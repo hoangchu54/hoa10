@@ -37,6 +37,7 @@ html[data-theme="classic"]{
   --hex-bg:none;
 }
 html[data-theme="dark"]{
+  color-scheme:dark;
   --do:#C24156; --do2:#E1586E; --do3:#9F2D40; --do-n:rgba(194,65,86,.18); --do-v:rgba(225,88,110,.35);
   --tim:#A78BFA; --tim2:#8B5CF6; --tim-n:rgba(167,139,250,.16); --tim-v:rgba(167,139,250,.32);
   --xanh:#2DD4BF; --xanh-n:rgba(45,212,191,.15); --xanh-v:rgba(45,212,191,.3);
@@ -106,6 +107,7 @@ body.dang-lam .khung-hep{max-width:1160px}
 .hero-box::before{content:"";position:absolute;top:0;left:0;right:0;height:3.5px;background:var(--grad)}
 html[data-theme="dark"] .hero-box{background:linear-gradient(135deg,rgba(194,65,86,.22) 0%,var(--the) 48%,rgba(109,40,217,.22) 100%)}
 .hero-box::after{content:"";position:absolute;inset:0;background-image:var(--hero-art),var(--hex-bg);background-size:150px 115px,64px 56px;background-position:right 10px center,0 0;background-repeat:no-repeat,repeat;pointer-events:none;opacity:.92;mask-image:linear-gradient(108deg,transparent 24%,rgba(0,0,0,.96) 100%);-webkit-mask-image:linear-gradient(108deg,transparent 24%,rgba(0,0,0,.96) 100%)}
+.hero-box.has-right::after{background-position:right 34% center,0 0;background-size:132px 102px,64px 56px;opacity:.48}
 .hero-box > *{position:relative;z-index:1}
 .hero-box h1{margin:6px 0 4px;font-size:clamp(20px,3vw,24px);font-weight:800;letter-spacing:-.015em;line-height:1.25}
 h1.tieu-trang{margin:0 0 12px;font-size:22px;font-weight:800;letter-spacing:-.015em}
@@ -147,6 +149,7 @@ h2.tieu-khoi{margin:0;font-size:16.5px;font-weight:700;display:flex;align-items:
 input[type=text],input[type=number],input[type=search],input[type=date],input[type=datetime-local],input[type=password],input[type=url],select,textarea{min-height:40px;padding:0 12px;border:1px solid var(--vien);border-radius:10px;background:var(--the);color:var(--chu);font-size:14px;width:100%;max-width:100%;min-width:0;transition:border-color .14s,box-shadow .14s}
 textarea{min-height:84px;padding:9px 12px;resize:vertical;line-height:1.5}
 input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(109,40,217,.16);border-color:var(--tim)}
+input[type=checkbox],input[type=radio]{accent-color:var(--do)}
 .chon{display:flex;align-items:center;gap:9px;min-height:36px;font-size:13.5px;cursor:pointer}
 .chon input{width:17px;height:17px;flex-shrink:0;accent-color:var(--do)}
 .hang{display:flex;flex-wrap:wrap;gap:12px}
@@ -171,6 +174,7 @@ input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(1
 .hop-bang{border:1px solid var(--vien);border-radius:13px;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--the);box-shadow:var(--shadow)}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 th{background:var(--nen2);text-align:left;font-weight:700;color:var(--mo);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:10px 12px;white-space:nowrap;border-bottom:1px solid var(--vien);position:sticky;top:0;z-index:1}
+th.so{text-align:right}
 td{padding:10px 12px;border-top:1px solid var(--vien2);vertical-align:middle}
 tbody tr:hover td{background:var(--nen2)}
 .so{text-align:right}
@@ -325,6 +329,17 @@ body.dang-lam .topbar{position:static}
 .dock-act{align-self:center}
 .dock-t2{margin-top:12px;padding-top:12px;border-top:1px solid var(--vien);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
 .dock-xuat{margin-left:auto}
+.dock-sticky{position:sticky;top:60px;z-index:28;margin-top:10px;padding:10px 14px;border-radius:14px;background:var(--the);border:1.5px solid var(--tim-v);box-shadow:var(--shadow-lg);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.top-more-wrap{position:relative;display:none}
+.top-more-menu{position:absolute;right:0;top:calc(100% + 6px);min-width:176px;background:var(--the);border:1px solid var(--vien);border-radius:13px;padding:6px;box-shadow:var(--shadow-lg);display:none;flex-direction:column;gap:4px;z-index:60}
+.top-more-menu.mo{display:flex}
+.top-more-menu .top-pill{width:100%;justify-content:flex-start}
+.th-cards{display:none;flex-direction:column;gap:8px}
+.th-card{background:var(--the);border:1px solid var(--vien);border-left:4px solid var(--tim);border-radius:13px;padding:11px 13px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.th-card.cay{border-left-color:var(--canh);background:var(--canh-n)}
+.th-card.chua{border-left-color:var(--loi);background:var(--nen2)}
+.th-card-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.th-card-meta{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--mo)}
 .dx-box{margin-top:8px;padding:12px 14px;border-radius:13px;border:1.5px solid var(--tim-v);background:linear-gradient(180deg,var(--tim-n) 0%,var(--the) 100%);font-size:13.5px;display:flex;flex-direction:column;gap:7px;box-shadow:0 3px 10px rgba(109,40,217,.08)}
 .luoi-chuong{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px;align-items:start}
 .chuong{border:1px solid var(--vien);border-radius:12px;padding:4px 12px;background:var(--nen2);transition:border-color .14s}
@@ -445,6 +460,94 @@ body.dang-lam .topbar{position:static}
 .tn-card:hover{transform:translateY(-2px);border-color:var(--tim-v);box-shadow:var(--shadow-lg);text-decoration:none}
 .tn-card strong{color:var(--do);font-size:14.5px;display:flex;align-items:center;justify-content:space-between;gap:6px}
 .tn-card span{color:var(--mo);font-size:12.5px;line-height:1.45}
+
+/* Gallery Sac Mau Hoa Hoc 10, Poster 7 Chuong, Flashcard 3D & Lab Studio */
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:18px 2px 10px}
+.sec-head h2{margin:0;font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:-.01em}
+.sec-head .phu{font-size:12.5px}
+
+/* Poster 7 Chuong SGK */
+.ch-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px}
+.ch-card{position:relative;overflow:hidden;border-radius:16px;padding:13px 14px;color:#fff;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;min-height:112px;box-shadow:0 6px 18px rgba(24,18,40,.14);border:1px solid rgba(255,255,255,.22);transition:transform .16s,box-shadow .16s}
+.ch-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(24,18,40,.22);text-decoration:none;color:#fff}
+.ch-card::after{content:"";position:absolute;right:-14px;bottom:-14px;width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
+.ch-card .ch-num{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.92;display:inline-flex;align-items:center;gap:5px}
+.ch-card .ch-ic{font-size:22px;line-height:1}
+.ch-card b{font-size:14.5px;font-weight:800;line-height:1.25;margin-top:6px;text-shadow:0 1px 4px rgba(0,0,0,.18)}
+.ch-card .ch-sub{font-size:11.5px;opacity:.9;margin-top:4px;font-weight:600}
+.ch-c1{background:linear-gradient(135deg,#7A2230 0%,#B83B5E 100%)}
+.ch-c2{background:linear-gradient(135deg,#5B21B6 0%,#8B5CF6 100%)}
+.ch-c3{background:linear-gradient(135deg,#0F766E 0%,#14B8A6 100%)}
+.ch-c4{background:linear-gradient(135deg,#B45309 0%,#F59E0B 100%)}
+.ch-c5{background:linear-gradient(135deg,#BE123C 0%,#FB7185 100%)}
+.ch-c6{background:linear-gradient(135deg,#0369A1 0%,#38BDF8 100%)}
+.ch-c7{background:linear-gradient(135deg,#4338CA 0%,#EC4899 100%)}
+
+/* Visual Gallery Sac Mau Hoa Hoc 10 */
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px}
+.gal-card{background:var(--the);border:1px solid var(--vien);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;transition:transform .16s,box-shadow .16s,border-color .16s;text-align:left;padding:0}
+.gal-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--tim-v)}
+.gal-art{position:relative;height:132px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:12px}
+.gal-art svg{width:100%;height:100%;max-height:112px;overflow:visible}
+.gal-tag{position:absolute;top:9px;left:10px;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(15,18,30,.66);color:#fff;backdrop-filter:blur(4px);letter-spacing:.03em}
+.gal-zoom{position:absolute;bottom:8px;right:9px;font-size:11px;font-weight:700;padding:2.5px 8px;border-radius:8px;background:rgba(255,255,255,.88);color:#1E1B24;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.gal-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
+.gal-body b{font-size:14.5px;font-weight:800;color:var(--chu);line-height:1.3}
+.gal-body .phu{font-size:12.5px;line-height:1.45}
+.gal-swatches{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.gal-sw{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--nen2);border:1px solid var(--vien)}
+.gal-sw i{width:9px;height:9px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+
+/* Flashcard 3D Thu thach 10 giay */
+.fc-wrap{perspective:1000px}
+.fc-box{position:relative;border-radius:16px;background:linear-gradient(135deg,var(--tim-n) 0%,var(--the) 52%,var(--do-n) 100%);border:1.5px solid var(--tim-v);padding:15px 18px;box-shadow:var(--shadow);cursor:pointer;user-select:none;transition:transform .28s cubic-bezier(.2,.85,.35,1),box-shadow .18s}
+.fc-box:hover{box-shadow:var(--shadow-lg)}
+.fc-box.lat{background:linear-gradient(135deg,var(--ok-n) 0%,var(--the) 58%,var(--tim-n) 100%);border-color:var(--ok-v)}
+.fc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.fc-q{font-size:15.5px;font-weight:800;line-height:1.45;color:var(--chu);min-height:44px;display:flex;align-items:center}
+.fc-a{margin-top:8px;padding-top:9px;border-top:1px dashed var(--ok-v);font-size:14px;line-height:1.5;color:var(--ok);font-weight:700;display:none}
+.fc-box.lat .fc-a{display:block}
+.fc-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:12px;color:var(--mo)}
+
+/* Virtual Lab Studio (Inline iframe + Huong dan Tieng Viet) */
+.tn-sim-list{display:flex;flex-direction:column;gap:8px}
+.tn-sim-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:var(--nen2);border:1px solid var(--vien);transition:border-color .14s,background-color .14s,transform .12s;flex-wrap:wrap}
+.tn-sim-card:hover{border-color:var(--tim-v);background:var(--the);transform:translateY(-1px)}
+.tn-sim-info{flex:1 1 200px;min-width:0}
+.tn-sim-info b{display:flex;align-items:center;gap:6px;font-size:13.8px;color:var(--chu);line-height:1.35;flex-wrap:wrap}
+.tn-sim-info .phu{font-size:12px;margin-top:2px;display:block}
+.lab-modal{position:fixed;inset:0;background:rgba(12,10,22,.76);z-index:85;display:flex;align-items:center;justify-content:center;padding:10px}
+.lab-shell{width:100%;max-width:1360px;height:94vh;height:94dvh;background:var(--the);border-radius:18px;border:1px solid var(--vien);box-shadow:0 20px 50px rgba(0,0,0,.45);display:flex;flex-direction:column;overflow:hidden}
+.lab-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:var(--the);border-bottom:1px solid var(--vien);flex-wrap:wrap}
+.lab-bar-title{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.lab-bar-title b{font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lab-body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 350px;background:var(--nen)}
+.lab-body.an-hd{grid-template-columns:minmax(0,1fr)}
+.lab-body.ngoai-only{grid-template-columns:minmax(0,1fr)}
+.lab-stage{position:relative;width:100%;height:100%;background:#0F111A;display:flex;flex-direction:column;min-height:300px}
+.lab-stage iframe{width:100%;height:100%;border:0;flex:1;background:#fff}
+.lab-guide{background:var(--the);border-left:1px solid var(--vien);padding:14px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.lab-body.an-hd .lab-guide{display:none}
+.lab-sec{background:var(--nen2);border:1px solid var(--vien2);border-radius:12px;padding:11px 13px}
+.lab-sec h3{margin:0 0 6px;font-size:13px;font-weight:800;color:var(--do);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:6px}
+.lab-steps{margin:0;padding-left:18px;font-size:13.2px;line-height:1.55;display:flex;flex-direction:column;gap:5px}
+.lab-vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:6px}
+.lab-voc-item{background:var(--the);border:1px solid var(--vien);border-radius:8px;padding:5px 8px;font-size:12px;line-height:1.35}
+.lab-voc-item code{font-weight:800;color:var(--tim);font-family:inherit}
+@media (max-width:920px){
+  .lab-shell{height:96dvh}
+  .lab-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(280px,54%) minmax(0,46%)}
+  .lab-body.an-hd{grid-template-rows:minmax(0,1fr)}
+  .lab-guide{border-left:0;border-top:1px solid var(--vien)}
+}
+@media (max-width:640px){
+  .ch-strip{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:9px;padding-bottom:4px}
+  .ch-strip::-webkit-scrollbar{display:none}
+  .ch-card{flex:0 0 162px;min-height:104px}
+  .gal-grid{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:10px;padding-bottom:4px}
+  .gal-grid::-webkit-scrollbar{display:none}
+  .gal-card{flex:0 0 246px}
+}
 
 /* Scrollable chip bar */
 .chip-scroll{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
@@ -614,6 +717,19 @@ body.embed-ok .topbar-in{max-width:1280px}
   #btn-theme{padding:0 10px;min-width:40px;justify-content:center}
   .hero-mascot .hm-star{display:none}
   .hero-mascot .hm-kicker{letter-spacing:.08em}
+  /* Admin mobile: gom menu topbar, kho đề trượt ngang, chấm lịch, thẻ điểm */
+  .top-extra{display:none!important}
+  .top-more-wrap{display:inline-block}
+  .cay-tm{flex-direction:row!important;flex-wrap:nowrap!important;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;max-height:none!important;padding:6px;gap:6px}
+  .cay-tm::-webkit-scrollbar{display:none}
+  .cay-tm button{width:auto!important;flex:none;white-space:nowrap;min-height:32px;padding:4px 10px}
+  .cay-tm button.b{padding-left:10px}
+  .cay-tm button[data-loc="nhieu"]{border-top:0!important;margin-top:0!important;padding-top:4px!important}
+  .cal-pill.de{width:10px;height:10px;min-width:10px;padding:0;border-radius:50%;background:var(--tim);border:0;font-size:0;color:transparent;display:inline-block}
+  .cal-ev-list{flex-direction:row;flex-wrap:wrap;align-items:center}
+  .th-bang-pc{display:none}
+  .th-cards{display:flex}
+  .dock-sticky{top:96px;padding:8px 10px}
   /* Kho tài liệu: gập bộ lọc chi tiết */
   .tl-loc-nut{display:inline-flex}
   .tl-loc-chi-tiet{display:none!important}
@@ -670,11 +786,11 @@ body.embed-ok .topbar-in{max-width:1280px}
         </div>
       </div>
       <div class="top-right">
-        <a class="top-pill an" id="btn-home" href="#" target="_self">← Trang chủ</a>
-        <a class="top-pill an" id="btn-btvn" href="#" target="_top">Làm BTVN</a>
-        <a class="top-pill an" id="btn-tailieu" href="#" target="_self">Kho tài liệu</a>
-        <span class="top-pill on">Thí nghiệm</span>
-        <a class="top-pill an" id="btn-game" href="#" target="_self">Trò chơi</a>
+        <a class="top-pill an" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
+        <a class="top-pill an" id="btn-btvn" href="#" target="_top">📝 Làm BTVN</a>
+        <a class="top-pill an" id="btn-tailieu" href="#" target="_self">📚 Tài liệu</a>
+        <span class="top-pill on">🔬 Thí nghiệm</span>
+        <a class="top-pill an" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
         <a class="top-pill an" id="btn-full" href="#" target="_top"></a>
         <button type="button" class="top-pill" id="btn-theme"></button>
       </div>
@@ -1085,6 +1201,159 @@ window.H10 = (function () {
     setTimeout(function () { vung.remove(); }, 4600);
   }
 
+  // ---- Bộ Gallery "Sắc màu Hóa học 10" (SVG trực quan + Lightbox chi tiết) ----
+  const GALLERY_HOA10 = [
+    {
+      id: 'flame',
+      tag: 'Chương 1 · Quang phổ',
+      ten: 'Màu ngọn lửa ion kim loại',
+      tomTat: 'Khi đốt nóng, electron nhảy lên mức năng lượng cao rồi phát xạ ánh sáng màu đặc trưng cho từng nguyên tố.',
+      nen: 'linear-gradient(135deg,#1E112A 0%,#3B1432 55%,#131A2E 100%)',
+      swatches: [
+        { ten: 'Li⁺ Đỏ tía', mau: '#FF2A5F' },
+        { ten: 'Na⁺ Vàng rực', mau: '#FFB800' },
+        { ten: 'K⁺ Tím hoa cà', mau: '#C084FC' },
+        { ten: 'Cu²⁺ Xanh lục', mau: '#10B981' }
+      ],
+      svg: '<svg viewBox="0 0 260 110" aria-hidden="true">' +
+        '<g transform="translate(22,12)"><path d="M18 76 C4 58 8 32 18 10 C28 32 32 58 18 76Z" fill="#FF2A5F" opacity=".92"/><path d="M18 74 C11 60 13 42 18 26 C23 42 25 60 18 74Z" fill="#FF9EBB"/><rect x="12" y="76" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="102" fill="#FFE4EC" font-size="11" font-weight="800" text-anchor="middle">Li⁺</text></g>' +
+        '<g transform="translate(82,8)"><path d="M18 80 C2 60 6 30 18 6 C30 30 34 60 18 80Z" fill="#FFB800" opacity=".95"/><path d="M18 78 C10 62 12 42 18 24 C24 42 26 62 18 78Z" fill="#FFF3B0"/><rect x="12" y="80" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="106" fill="#FEF08A" font-size="11" font-weight="800" text-anchor="middle">Na⁺</text></g>' +
+        '<g transform="translate(142,12)"><path d="M18 76 C4 58 8 32 18 10 C28 32 32 58 18 76Z" fill="#C084FC" opacity=".92"/><path d="M18 74 C11 60 13 42 18 26 C23 42 25 60 18 74Z" fill="#F3E8FF"/><rect x="12" y="76" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="102" fill="#E9D5FF" font-size="11" font-weight="800" text-anchor="middle">K⁺</text></g>' +
+        '<g transform="translate(202,10)"><path d="M18 78 C4 58 8 30 18 8 C28 30 32 58 18 78Z" fill="#10B981" opacity=".95"/><path d="M18 76 C11 60 13 42 18 24 C23 42 25 60 18 76Z" fill="#A7F3D0"/><rect x="12" y="78" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="104" fill="#A7F3D0" font-size="11" font-weight="800" text-anchor="middle">Cu²⁺</text></g>' +
+      '</svg>',
+      chiTiet: '<b>Bản chất (Bài 3 – Lớp vỏ electron):</b> Khi nhúng dây platinum sạch vào dung dịch muối rồi đốt trên đèn khí, các electron hấp thụ năng lượng nhảy lên orbital cao hơn, sau đó trở về trạng thái cơ bản và phát ra bức xạ có bước sóng đặc trưng trong vùng nhìn thấy:\n' +
+        '• <b>Muối Lithium (Li⁺):</b> Ngọn lửa màu đỏ tía (λ ≈ 671 nm).\n' +
+        '• <b>Muối Sodium (Na⁺):</b> Ngọn lửa màu vàng tươi rực rỡ (λ ≈ 589 nm, dùng làm đèn cao áp đường phố).\n' +
+        '• <b>Muối Potassium (K⁺):</b> Ngọn lửa màu tím hoa cà.\n' +
+        '• <b>Muối Calcium (Ca²⁺):</b> Đỏ cam · <b>Barium (Ba²⁺):</b> Lục vàng · <b>Copper (Cu²⁺):</b> Xanh lục (ứng dụng chế tạo pháo hoa).'
+    },
+    {
+      id: 'halogen',
+      tag: 'Chương 7 · Bài 21',
+      ten: 'Sắc màu 4 đơn chất Halogen',
+      tomTat: 'Từ F2 → Cl2 → Br2 → I2: màu sắc đậm dần và nhiệt độ nóng chảy, nhiệt độ sôi tăng dần do tương tác van der Waals tăng.',
+      nen: 'linear-gradient(135deg,#1B2838 0%,#2B1E3F 58%,#3A1828 100%)',
+      swatches: [
+        { ten: 'F₂ Lục nhạt', mau: '#D9F99D' },
+        { ten: 'Cl₂ Vàng lục', mau: '#A3E635' },
+        { ten: 'Br₂ Nâu đỏ', mau: '#B91C1C' },
+        { ten: 'I₂ Tím đen', mau: '#6B21A8' }
+      ],
+      svg: '<svg viewBox="0 0 260 110" aria-hidden="true">' +
+        '<g transform="translate(18,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(217,249,157,.38)" stroke="#E2E8F0" stroke-width="2"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#ECFCCB" font-size="11" font-weight="800" text-anchor="middle">F₂ (khí)</text></g>' +
+        '<g transform="translate(80,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(163,230,53,.52)" stroke="#E2E8F0" stroke-width="2"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#D9F99D" font-size="11" font-weight="800" text-anchor="middle">Cl₂ (khí)</text></g>' +
+        '<g transform="translate(142,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(239,68,68,.28)" stroke="#E2E8F0" stroke-width="2"/><path d="M5 46 H31 V62 A13 13 0 0 1 5 62 Z" fill="#991B1B"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#FCA5A5" font-size="11" font-weight="800" text-anchor="middle">Br₂ (lỏng)</text></g>' +
+        '<g transform="translate(204,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(168,85,247,.34)" stroke="#E2E8F0" stroke-width="2"/><circle cx="14" cy="64" r="5" fill="#3B0764"/><circle cx="22" cy="66" r="4.5" fill="#4C1D95"/><circle cx="18" cy="59" r="4" fill="#581C87"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#E9D5FF" font-size="11" font-weight="800" text-anchor="middle">I₂ (rắn)</text></g>' +
+      '</svg>',
+      chiTiet: '<b>Quy luật biến đổi nhóm VIIA (Bài 21 – Nhóm Halogen):</b>\n' +
+        '• <b>Fluorine (F2):</b> Khí màu lục nhạt, rất độc, tính oxi hóa mạnh nhất (oxi hóa mãnh liệt H2O tạo O2).\n' +
+        '• <b>Chlorine (Cl2):</b> Khí màu vàng lục, mùi xốc, tan một phần trong nước tạo nước chlorine (HCl + HClO có tính tẩy màu).\n' +
+        '• <b>Bromine (Br2):</b> Chất lỏng màu nâu đỏ, dễ bay hơi, gây bỏng sâu khi rơi vào da.\n' +
+        '• <b>Iodine (I2):</b> Tinh thể màu đen tím; khi đun nóng <b>thăng hoa</b> trực tiếp từ thể rắn sang hơi màu tím mà không qua trạng thái lỏng; gặp hồ tinh bột tạo phức màu <b>xanh tím</b> đặc trưng.'
+    },
+    {
+      id: 'agx',
+      tag: 'Chương 7 · Bài 22',
+      ten: 'Nhận biết ion Halide bằng AgNO3',
+      tomTat: 'Phản ứng chuẩn trong phòng Lab: F⁻ không kết tủa, Cl⁻ kết tủa trắng, Br⁻ vàng nhạt, I⁻ vàng đậm.',
+      nen: 'linear-gradient(135deg,#0F292E 0%,#1E293B 55%,#3B2818 100%)',
+      swatches: [
+        { ten: 'AgF Tan', mau: '#38BDF8' },
+        { ten: 'AgCl↓ Trắng', mau: '#F8FAFC' },
+        { ten: 'AgBr↓ Vàng nhạt', mau: '#FEF08A' },
+        { ten: 'AgI↓ Vàng đậm', mau: '#EAB308' }
+      ],
+      svg: '<svg viewBox="0 0 260 110" aria-hidden="true">' +
+        '<g transform="translate(18,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(56,189,248,.22)" stroke="#CBD5E1" stroke-width="2"/><text x="18" y="46" fill="#BAE6FD" font-size="9" font-weight="700" text-anchor="middle">Trong</text><text x="18" y="92" fill="#BAE6FD" font-size="11" font-weight="800" text-anchor="middle">NaF</text></g>' +
+        '<g transform="translate(80,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(255,255,255,.15)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 50 H31 V62 A13 13 0 0 1 5 62 Z" fill="#F8FAFC"/><text x="18" y="92" fill="#F8FAFC" font-size="11" font-weight="800" text-anchor="middle">AgCl↓</text></g>' +
+        '<g transform="translate(142,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(255,255,255,.15)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 50 H31 V62 A13 13 0 0 1 5 62 Z" fill="#FEF08A"/><text x="18" y="92" fill="#FEF08A" font-size="11" font-weight="800" text-anchor="middle">AgBr↓</text></g>' +
+        '<g transform="translate(204,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(255,255,255,.15)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 50 H31 V62 A13 13 0 0 1 5 62 Z" fill="#EAB308"/><text x="18" y="92" fill="#FACC15" font-size="11" font-weight="800" text-anchor="middle">AgI↓</text></g>' +
+      '</svg>',
+      chiTiet: '<b>Phương trình phân biệt các muối Halide (Bài 22):</b>\n' +
+        '• <b>NaF + AgNO3:</b> Không hiện tượng (vì AgF tan tốt trong nước).\n' +
+        '• <b>NaCl + AgNO3 -> AgCl↓ (kết tủa trắng) + NaNO3</b> (kết tủa AgCl hóa đen ngoài ánh sáng: 2AgCl -> 2Ag + Cl2).\n' +
+        '• <b>NaBr + AgNO3 -> AgBr↓ (kết tủa vàng nhạt) + NaNO3</b>.\n' +
+        '• <b>NaI + AgNO3 -> AgI↓ (kết tủa vàng đậm) + NaNO3</b>.'
+    },
+    {
+      id: 'redox',
+      tag: 'Chương 4 & 5 · Thí nghiệm',
+      ten: 'Sắc màu Ion chuyển tiếp & Nhiệt phản ứng',
+      tomTat: 'Sự đổi màu ấn tượng của KMnO4, muối sắt Fe2+/Fe3+, đồng Cu2+ và so sánh phản ứng tỏa nhiệt – thu nhiệt.',
+      nen: 'linear-gradient(135deg,#2D122B 0%,#1F243D 52%,#112C29 100%)',
+      swatches: [
+        { ten: 'MnO₄⁻ Tím đậm', mau: '#9333EA' },
+        { ten: 'Cu²⁺ Xanh lam', mau: '#0284C7' },
+        { ten: 'Fe³⁺ Vàng nâu', mau: '#D97706' },
+        { ten: 'ΔrH < 0 Tỏa nhiệt', mau: '#EF4444' }
+      ],
+      svg: '<svg viewBox="0 0 260 110" aria-hidden="true">' +
+        '<g transform="translate(22,12)"><path d="M22 10 H36 M25 10 V30 L8 68 A7 7 0 0 0 14 78 H44 A7 7 0 0 0 50 68 L33 30 V10" fill="none" stroke="#E2E8F0" stroke-width="2"/><path d="M13 54 H45 L49 68 A5 5 0 0 1 44 76 H14 A5 5 0 0 1 9 68 Z" fill="#9333EA"/><text x="29" y="96" fill="#E9D5FF" font-size="10.5" font-weight="800" text-anchor="middle">KMnO₄</text></g>' +
+        '<g transform="translate(100,12)"><path d="M22 10 H36 M25 10 V30 L8 68 A7 7 0 0 0 14 78 H44 A7 7 0 0 0 50 68 L33 30 V10" fill="none" stroke="#E2E8F0" stroke-width="2"/><path d="M13 54 H45 L49 68 A5 5 0 0 1 44 76 H14 A5 5 0 0 1 9 68 Z" fill="#0284C7"/><text x="29" y="96" fill="#BAE6FD" font-size="10.5" font-weight="800" text-anchor="middle">CuSO₄</text></g>' +
+        '<g transform="translate(178,12)"><path d="M22 10 H36 M25 10 V30 L8 68 A7 7 0 0 0 14 78 H44 A7 7 0 0 0 50 68 L33 30 V10" fill="none" stroke="#E2E8F0" stroke-width="2"/><path d="M13 54 H45 L49 68 A5 5 0 0 1 44 76 H14 A5 5 0 0 1 9 68 Z" fill="#D97706"/><text x="29" y="96" fill="#FDE68A" font-size="10.5" font-weight="800" text-anchor="middle">FeCl₃</text></g>' +
+      '</svg>',
+      chiTiet: '<b>Nhận biết nhanh hiện tượng trong các bài toán Hóa 10:</b>\n' +
+        '• <b>Dung dịch KMnO4 (thuốc tím):</b> Màu tím đặc trưng; khi oxi hóa chất khử trong môi trường acid (H2SO4 loãng) sẽ <b>mất màu tím</b> tạo Mn2+ không màu.\n' +
+        '• <b>Dung dịch muối Cu2+ (CuSO4):</b> Màu xanh lam; tác dụng với NaOH tạo kết tủa <b>Cu(OH)2 xanh lam</b>.\n' +
+        '• <b>Dung dịch Fe2+ → Fe3+:</b> Từ lục nhạt chuyển sang vàng nâu; tạo kết tủa Fe(OH)3 màu <b>nâu đỏ</b>.\n' +
+        '• <b>Biến thiên Enthalpy (Chương 5):</b> $\\Delta_r H^\\circ_{298} < 0$ là phản ứng <b>tỏa nhiệt</b> (bình nóng lên, như đốt cháy, tôi vôi CaO + H2O); $\\Delta_r H^\\circ_{298} > 0$ là phản ứng <b>thu nhiệt</b> (bình lạnh đi, như hòa tan viên sủi hoặc NH4Cl).'
+    }
+  ];
+
+  function moLightboxGallery(id) {
+    const item = GALLERY_HOA10.find(function (x) { return x.id === id; });
+    if (!item) return;
+    const hop = document.createElement('div');
+    hop.className = 'hopdn';
+    hop.innerHTML = '<div class="the vua" style="padding:0;overflow:hidden">' +
+      '<div class="gal-art" style="height:175px;background:' + item.nen + '">' +
+        '<span class="gal-tag">' + esc(item.tag) + '</span>' +
+        item.svg +
+      '</div>' +
+      '<div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">' +
+        '<h2 style="margin:0;font-size:18px;font-weight:800">' + md(item.ten) + '</h2>' +
+        '<div class="gal-swatches">' + item.swatches.map(function (s) {
+          return '<span class="gal-sw"><i style="background:' + s.mau + '"></i>' + esc(s.ten) + '</span>';
+        }).join('') + '</div>' +
+        '<div style="font-size:13.8px;line-height:1.6;background:var(--nen2);border:1px solid var(--vien);border-radius:12px;padding:12px 14px">' + md(item.chiTiet) + '</div>' +
+        '<div class="hang-nut" style="justify-content:flex-end"><button type="button" class="nut nho chinh" data-x="dong">Đã hiểu ✓</button></div>' +
+      '</div></div>';
+    document.body.appendChild(hop);
+    const dong = function () { hop.remove(); document.removeEventListener('keydown', onEsc); };
+    const onEsc = function (e) { if (e.key === 'Escape') dong(); };
+    document.addEventListener('keydown', onEsc);
+    hop.onclick = function (e) { if (e.target === hop) dong(); };
+    hop.querySelector('[data-x="dong"]').onclick = dong;
+  }
+
+  function renderGalleryHoa10(el, tieuDe) {
+    if (!el) return;
+    let h = '<div class="sec-head">' +
+      '<h2>📸 ' + esc(tieuDe || 'Gallery Sắc màu & Hiện tượng Hóa 10') + '</h2>' +
+      '<span class="phu">Chạm vào từng thẻ để xem phương trình &amp; giải thích</span>' +
+    '</div><div class="gal-grid">';
+    GALLERY_HOA10.forEach(function (g) {
+      h += '<button type="button" class="gal-card" data-gal="' + esc(g.id) + '">' +
+        '<div class="gal-art" style="background:' + g.nen + '">' +
+          '<span class="gal-tag">' + esc(g.tag) + '</span>' +
+          g.svg +
+          '<span class="gal-zoom">🔍 Xem chi tiết</span>' +
+        '</div>' +
+        '<div class="gal-body">' +
+          '<b>' + md(g.ten) + '</b>' +
+          '<span class="phu">' + md(g.tomTat) + '</span>' +
+          '<div class="gal-swatches">' + g.swatches.map(function (s) {
+            return '<span class="gal-sw"><i style="background:' + s.mau + '"></i>' + esc(s.ten) + '</span>';
+          }).join('') + '</div>' +
+        '</div></button>';
+    });
+    h += '</div>';
+    el.innerHTML = h;
+    el.querySelectorAll('[data-gal]').forEach(function (btn) {
+      btn.onclick = function () { moLightboxGallery(btn.getAttribute('data-gal')); };
+    });
+  }
+
   try {
     if (window.top !== window.self) document.documentElement.classList.add('in-iframe');
   } catch (e) {
@@ -1110,6 +1379,8 @@ window.H10 = (function () {
     skelCards: skelCards,
     laDienThoai: laDienThoai,
     renderSlogan: renderSlogan,
+    renderGalleryHoa10: renderGalleryHoa10,
+    GALLERY_HOA10: GALLERY_HOA10,
     ganBungCoVu: ganBungCoVu,
     ganNutLenDau: ganNutLenDau,
     ICONS: ICONS
@@ -1119,95 +1390,819 @@ window.H10 = (function () {
 
 <script>
 (function () {
-  const { esc, api, laGAS, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, renderSlogan, ganNutLenDau } = window.H10;
+  const { esc, md, api, laGAS, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, renderSlogan, renderGalleryHoa10, ganNutLenDau } = window.H10;
   document.getElementById('brand-ic').innerHTML = ICONS.lab;
   ganNutTheme(document.getElementById('btn-theme'));
   ganNutLenDau();
 
   const BAI_THI_NGHIEM = [
     { bai: '1', ten: 'Thành phần của nguyên tử', links: [
-      { ten: 'Build an Atom (PhET)', url: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_all.html?locale=vi' },
-      { ten: 'Rutherford gold foil (MrChemCoach)', url: 'https://mrchemcoach.com/rutherford-gold-foil' },
-      { ten: 'Cathode ray (MrChemCoach)', url: 'https://mrchemcoach.com/cathode-ray-experiment' },
-      { ten: 'Build an atom (MrChemCoach)', url: 'https://mrchemcoach.com/structure-of-the-atom' }
+      {
+        ten: 'Build an Atom (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'Tự lắp ráp nguyên tử từ các hạt Proton, Neutron, Electron; hiểu mối liên hệ giữa số proton (Z), số khối (A = Z + N) và điện tích ion.',
+        buoc: [
+          'Chọn chế độ đầu tiên <b>Atom (Nguyên tử)</b> trên màn hình.',
+          'Mở 2 bảng góc phải: <b>Net Charge (Điện tích)</b> và <b>Mass Number (Số khối)</b>; tích chọn <b>Stable/Unstable (Bền/Không bền)</b> ở dưới.',
+          'Kéo hạt <b>Proton (đỏ)</b> và <b>Neutron (xám)</b> vào tâm hạt nhân, kéo <b>Electron (xanh)</b> vào các vòng lớp vỏ để tạo nguyên tử trung hòa.'
+        ],
+        tuDien: [
+          ['Protons', 'Hạt proton (+)'], ['Neutrons', 'Hạt neutron (không mang điện)'],
+          ['Electrons', 'Hạt electron (−)'], ['Net Charge', 'Điện tích chung'],
+          ['Mass Number', 'Số khối A = Z + N'], ['Neutral Atom', 'Nguyên tử trung hòa'],
+          ['Ion', 'Hạt mang điện (Ion)'], ['Stable / Unstable', 'Hạt nhân bền / không bền']
+        ],
+        cauHoi: 'Nếu một nguyên tử có 6 Proton, 6 Neutron và 6 Electron thì đó là nguyên tố nào và số khối bằng bao nhiêu?'
+      },
+      {
+        ten: 'Rutherford gold foil (MrChemCoach)',
+        url: 'https://mrchemcoach.com/rutherford-gold-foil',
+        embed: true,
+        mucTieu: 'Quan sát thí nghiệm bắn hạt alpha (α) qua lá vàng mỏng của Rutherford — chứng minh nguyên tử có cấu tạo rỗng và hạt nhân rất nhỏ mang điện dương ở tâm.',
+        buoc: [
+          'Bấm nút phát nguồn tia <b>Alpha particles (Hạt α)</b> bắn vào lá vàng mỏng ở giữa.',
+          'Quan sát đường đi của phần lớn hạt α (đi thẳng xuyên qua) và một số rất ít hạt bị lệch góc lớn hoặc bật ngược lại.',
+          'Chuyển sang chế độ phóng to mức nguyên tử (Atomic view) để thấy hạt α bị hạt nhân dương đẩy bật lại.'
+        ],
+        tuDien: [
+          ['Alpha particles', 'Chùm hạt alpha (He²⁺)'], ['Gold foil', 'Lá vàng mỏng'],
+          ['Nucleus', 'Hạt nhân nguyên tử'], ['Deflected', 'Bị lệch hướng'],
+          ['Detector screen', 'Màn huỳnh quang thu hạt'], ['Empty space', 'Khoảng không rỗng']
+        ],
+        cauHoi: 'Vì sao hầu hết các hạt alpha đều xuyên thẳng qua lá vàng mà chỉ có tỉ lệ cực nhỏ bị bật ngược lại?'
+      },
+      {
+        ten: 'Cathode ray (MrChemCoach)',
+        url: 'https://mrchemcoach.com/cathode-ray-experiment',
+        embed: true,
+        mucTieu: 'Tái hiện thí nghiệm ống tia âm cực của J.J. Thomson (1897) tìm ra hạt Electron mang điện tích âm.',
+        buoc: [
+          'Bật nguồn điện cao thế để tạo chùm tia phát ra từ cực âm (Cathode) sang cực dương (Anode).',
+          'Bật điện trường (Electric field) hoặc từ trường (Magnetic field) hai bên ống.',
+          'Quan sát chùm tia bị hút lệch về phía bản cực dương (+), chứng tỏ tia âm cực gồm các hạt mang điện âm (electron).'
+        ],
+        tuDien: [
+          ['Cathode (−)', 'Cực âm'], ['Anode (+)', 'Cực dương'],
+          ['Cathode ray', 'Chùm tia âm cực'], ['Electric Plate', 'Bản tụ điện'],
+          ['Magnet', 'Nam châm (từ trường)'], ['Fluorescent screen', 'Màn phát sáng']
+        ],
+        cauHoi: 'Khi đặt điện trường vào ống tia âm cực, chùm tia lệch về cực dương (+) chứng tỏ hạt cấu tạo nên tia mang điện gì?'
+      },
+      {
+        ten: 'Build an atom (MrChemCoach)',
+        url: 'https://mrchemcoach.com/structure-of-the-atom',
+        embed: true,
+        mucTieu: 'Thực hành phân bố electron vào các lớp K, L, M, N và xác định kí hiệu nguyên tử AZX.',
+        buoc: [
+          'Chọn một nguyên tố trong danh sách từ Z = 1 đến Z = 20.',
+          'Thêm đủ số Proton, Neutron vào hạt nhân và sắp xếp Electron vào từng lớp từ trong ra ngoài (tối đa 2e lớp trong cùng, 8e lớp thứ hai).',
+          'Kiểm tra cấu hình electron hoàn chỉnh.'
+        ],
+        tuDien: [
+          ['Atomic Number (Z)', 'Số hiệu nguyên tử'], ['Mass Number (A)', 'Số khối'],
+          ['Electron shells', 'Các lớp electron'], ['Valence electrons', 'Electron lớp ngoài cùng']
+        ],
+        cauHoi: 'Lớp thứ nhất (lớp K) và lớp thứ hai (lớp L) chứa tối đa bao nhiêu electron?'
+      }
     ]},
     { bai: '2', ten: 'Nguyên tố hóa học', links: [
-      { ten: 'Isotopes and Atomic Mass (PhET)', url: 'https://phet.colorado.edu/sims/html/isotopes-and-atomic-mass/latest/isotopes-and-atomic-mass_all.html?locale=vi' },
-      { ten: 'Build an Atom (PhET)', url: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_all.html?locale=vi' },
-      { ten: 'Formula Mass Calculator (Luminous)', url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/formula-mass-calculator/' }
+      {
+        ten: 'Isotopes and Atomic Mass (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/isotopes-and-atomic-mass/latest/isotopes-and-atomic-mass_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'Hiểu khái niệm Đồng vị (cùng số proton Z nhưng khác số neutron N) và cách tính Nguyên tử khối trung bình từ phần trăm số nguyên tử.',
+        buoc: [
+          'Ở tab <b>Isotopes (Đồng vị)</b>: Kéo thêm hoặc bớt hạt <b>Neutron</b> vào nguyên tử (ví dụ Carbon-12 thêm 1 neutron thành Carbon-13) để xem độ bền và phần trăm trong tự nhiên.',
+          'Chuyển sang tab <b>Mixtures (Hỗn hợp đồng vị)</b>: Kéo các đồng vị vào khay hoặc chọn <b>Nature’s Mix (Hỗn hợp tự nhiên)</b> để thấy máy tự tính Nguyên tử khối trung bình.'
+        ],
+        tuDien: [
+          ['Isotopes', 'Các đồng vị'], ['Mixtures', 'Hỗn hợp đồng vị'],
+          ['Symbol', 'Kí hiệu nguyên tử'], ['Abundance in Nature', '% tồn tại trong tự nhiên'],
+          ['Average Atomic Mass', 'Nguyên tử khối trung bình'], ['Nature’s Mix', 'Tỉ lệ tự nhiên'],
+          ['amu', 'Đơn vị khối lượng nguyên tử']
+        ],
+        cauHoi: 'Chlorine có 2 đồng vị bền là ³⁵Cl (~75,77%) và ³⁷Cl (~24,23%). Nguyên tử khối trung bình của Cl bằng bao nhiêu?'
+      },
+      {
+        ten: 'Build an Atom (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'Luyện đọc kí hiệu nguyên tử AZX và chơi trò chơi đố vui xác định số hạt.',
+        buoc: [
+          'Chọn chế độ <b>Symbol (Kí hiệu)</b> ở giữa hoặc <b>Game (Trò chơi)</b> ở bên phải.',
+          'Quan sát cách số hiệu Z viết ở góc dưới bên trái, số khối A ở góc trên bên trái và điện tích ở góc trên bên phải kí hiệu nguyên tố.'
+        ],
+        tuDien: [
+          ['Symbol', 'Kí hiệu nguyên tử AZX'], ['Game', 'Trò chơi kiểm tra'],
+          ['Mass Number', 'Số khối A (góc trên trái)'], ['Atomic Number', 'Số hiệu Z (góc dưới trái)']
+        ],
+        cauHoi: 'Trong kí hiệu ²⁷₁₃Al³⁺, nguyên tử/ion này có bao nhiêu proton, neutron và electron?'
+      },
+      {
+        ten: 'Formula Mass Calculator (Luminous)',
+        url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/formula-mass-calculator/',
+        embed: true,
+        mucTieu: 'Công cụ tính nhanh phân tử khối (M) và thành phần phần trăm khối lượng các nguyên tố trong hợp chất.',
+        buoc: [
+          'Nhập công thức hóa học vào ô (ví dụ: <code>H2SO4</code>, <code>Ca(OH)2</code>, <code>Fe2(SO4)3</code>).',
+          'Xem bảng phân tích số nguyên tử từng nguyên tố, nguyên tử khối và phần trăm khối lượng (%m).'
+        ],
+        tuDien: [
+          ['Formula', 'Công thức hóa học'], ['Molar Mass', 'Khối lượng mol (g/mol)'],
+          ['Element', 'Nguyên tố'], ['Mass Percent (%)', '% khối lượng nguyên tố']
+        ],
+        cauHoi: 'Khối lượng mol phân tử của H2SO4 và phần trăm khối lượng của Sulfur (S) là bao nhiêu?'
+      }
     ]},
     { bai: '3', ten: 'Cấu trúc lớp vỏ electron nguyên tử', links: [
-      { ten: 'Models of the Hydrogen Atom (PhET)', url: 'https://phet.colorado.edu/sims/html/models-of-the-hydrogen-atom/latest/models-of-the-hydrogen-atom_all.html?locale=vi' }
+      {
+        ten: 'Models of the Hydrogen Atom (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/models-of-the-hydrogen-atom/latest/models-of-the-hydrogen-atom_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'So sánh mô hình hành tinh nguyên tử (Bohr) với mô hình đám mây electron hiện đại (Schrödinger — các orbital s, p).',
+        buoc: [
+          'Chuyển công tắc ở giữa từ <b>Prediction</b> sang <b>Experiment</b>? Không, hãy gạt sang <b>Prediction (Mô hình lý thuyết)</b> để chọn các mô hình.',
+          'Bấm vào nút súng chiếu sáng (hình đèn pin) để bật chùm photon chiếu vào nguyên tử Hydrogen.',
+          'Chọn lần lượt mô hình <b>Bohr</b> (quỹ đạo tròn) và <b>Schrödinger</b> (đám mây orbital) kèm nút <b>エネルギー / Energy (Mức năng lượng)</b> để xem electron nhảy mức.'
+        ],
+        tuDien: [
+          ['Experiment / Prediction', 'Thực nghiệm / Mô hình lý thuyết'],
+          ['Bohr', 'Mô hình quỹ đạo Bohr'], ['Schrödinger', 'Mô hình đám mây Orbital hiện đại'],
+          ['White light', 'Ánh sáng trắng'], ['Monochromatic', 'Ánh sáng đơn sắc'],
+          ['Spectrometer', 'Máy đo quang phổ vạch'], ['Electron energy level', 'Mức năng lượng e']
+        ],
+        cauHoi: 'Trong mô hình hiện đại (Schrödinger), orbital nguyên tử (AO) là vùng không gian có xác suất tìm thấy electron khoảng bao nhiêu %?'
+      }
     ]},
     { bai: '5', ten: 'Cấu tạo của bảng tuần hoàn các nguyên tố hóa học', links: [
-      { ten: 'Bảng tuần hoàn Ptable', url: 'https://ptable.com/?lang=vi' },
-      { ten: 'Periodic table explorer (MrChemCoach)', url: 'https://mrchemcoach.com/periodic-table' }
+      {
+        ten: 'Bảng tuần hoàn Ptable (Tiếng Việt)',
+        url: 'https://ptable.com/?lang=vi',
+        embed: true,
+        mucTieu: 'Khám phá bảng tuần hoàn tương tác 118 nguyên tố (đã có giao diện Tiếng Việt): tra cứu cấu hình e, orbital, chu kì, nhóm A/B.',
+        buoc: [
+          'Di chuột hoặc chạm vào bất kỳ ô nguyên tố nào để xem Số hiệu Z, Nguyên tử khối và Cấu hình electron.',
+          'Bấm tab <b>Orbital (Quỹ đạo)</b> phía trên để xem sơ đồ phân bố electron vào các ô lượng tử s, p, d, f theo nguyên lí Pauli và quy tắc Hund.',
+          'Lọc các nhóm Kim loại kiềm (IA), Kiềm thổ (IIA), Halogen (VIIA), Khí hiếm (VIIIA).'
+        ],
+        tuDien: [
+          ['Properties', 'Tính chất vật lí & hóa học'], ['Electrons / Orbitals', 'Cấu hình e & Ô orbital'],
+          ['Isotopes', 'Các đồng vị'], ['Compounds', 'Các hợp chất tạo thành'],
+          ['Period (1–7)', 'Chu kì (hàng ngang)'], ['Group (1–18)', 'Nhóm (cột dọc)']
+        ],
+        cauHoi: 'Nguyên tố có cấu hình electron [Ne] 3s² 3p⁵ nằm ở ô số mấy, chu kì mấy và nhóm nào?'
+      },
+      {
+        ten: 'Periodic table explorer (MrChemCoach)',
+        url: 'https://mrchemcoach.com/periodic-table',
+        embed: true,
+        mucTieu: 'Quan sát trực quan mối liên hệ giữa số lớp electron = số thứ tự chu kì, số e hóa trị = số thứ tự nhóm A.',
+        buoc: [
+          'Bấm chọn các nguyên tố thuộc 20 nguyên tố đầu (Z = 1 → 20).',
+          'So sánh số vòng lớp electron của các nguyên tố cùng một hàng ngang (Chu kì) và số e lớp ngoài cùng của các nguyên tố cùng một cột dọc (Nhóm).'
+        ],
+        tuDien: [
+          ['Period', 'Chu kì (cùng số lớp e)'], ['Group', 'Nhóm (cùng số e hóa trị)'],
+          ['Alkali metals', 'Kim loại kiềm (Nhóm IA)'], ['Halogens', 'Nhóm Halogen (VIIA)'],
+          ['Noble gases', 'Khí hiếm (Nhóm VIIIA)']
+        ],
+        cauHoi: 'Các nguyên tố trong cùng một nhóm A có đặc điểm cấu hình electron lớp ngoài cùng giống nhau như thế nào?'
+      }
     ]},
     { bai: '6', ten: 'Xu hướng biến đổi một số tính chất của nguyên tử các nguyên tố trong một chu kì và trong một nhóm', links: [
-      { ten: 'Bảng tuần hoàn Ptable', url: 'https://ptable.com/?lang=vi' },
-      { ten: 'Atomic Radius Simulator (InteractiveChem)', url: 'https://interactivechemistry.org/AtomicRadii/' },
-      { ten: 'Periodic Trends (AACT)', url: 'https://teachchemistry.org/classroom-resources/periodic-trends-simulation' }
+      {
+        ten: 'Atomic Radius Simulator (InteractiveChem)',
+        url: 'https://interactivechemistry.org/AtomicRadii/',
+        embed: true,
+        mucTieu: 'Quan sát trực quan sự thu nhỏ bán kính nguyên tử từ trái sang phải trong một chu kì và sự phình to bán kính từ trên xuống dưới trong một nhóm A.',
+        buoc: [
+          'Chọn các nguyên tố cùng Chu kì 2 (Li → Ne) hoặc Chu kì 3 (Na → Ar) để so sánh kích thước quả cầu nguyên tử.',
+          'Chọn các nguyên tố cùng Nhóm IA (Li, Na, K, Rb) để thấy bán kính tăng nhanh khi tăng thêm lớp electron.'
+        ],
+        tuDien: [
+          ['Atomic Radius', 'Bán kính nguyên tử (pm)'], ['Nuclear Charge', 'Điện tích hạt nhân'],
+          ['Shielding effect', 'Hiệu ứng chắn của lớp e trong'], ['Electronegativity', 'Độ âm điện (χ)']
+        ],
+        cauHoi: 'Vì sao trong một chu kì, từ trái sang phải số electron tăng nhưng bán kính nguyên tử lại giảm dần?'
+      },
+      {
+        ten: 'Bảng tuần hoàn Ptable (Bản đồ nhiệt tính chất)',
+        url: 'https://ptable.com/?lang=vi#Properties',
+        embed: true,
+        mucTieu: 'Xem bản đồ màu (Heatmap) biến đổi Bán kính nguyên tử và Độ âm điện Pauling trên toàn bộ bảng tuần hoàn.',
+        buoc: [
+          'Ở mục <b>Tính chất (Properties)</b>, bấm vào dòng <b>Độ âm điện (Electronegativity)</b> hoặc <b>Bán kính (Radius)</b>.',
+          'Quan sát toàn bộ các ô nguyên tố đổi màu đậm nhạt theo quy luật biến đổi tuần hoàn.'
+        ],
+        tuDien: [
+          ['Electronegativity', 'Độ âm điện (F cao nhất = 3,98)'], ['Calculated Radius', 'Bán kính nguyên tử'],
+          ['Ionization Energy', 'Năng lượng ion hóa']
+        ],
+        cauHoi: 'Nguyên tố nào có độ âm điện lớn nhất (3,98) trong bảng tuần hoàn?'
+      },
+      {
+        ten: 'Periodic Trends (AACT)',
+        url: 'https://teachchemistry.org/classroom-resources/periodic-trends-simulation',
+        embed: false,
+        mucTieu: 'Mô phỏng lực hút tĩnh điện Coulomb giữa hạt nhân và electron lớp ngoài cùng giải thích quy luật bán kính & độ âm điện.',
+        buoc: [
+          'Bấm nút mở trang mô phỏng AACT, sau đó chọn các cặp nguyên tố để so sánh lực hút của hạt nhân lên electron hóa trị.',
+          'Quan sát đồ thị xu hướng biến đổi theo số hiệu nguyên tử Z.'
+        ],
+        tuDien: [
+          ['Atomic Radius', 'Bán kính nguyên tử'], ['Coulombic Attraction', 'Lực hút tĩnh điện hạt nhân – e'],
+          ['Valence Electron', 'Electron hóa trị'], ['Trend', 'Xu hướng biến đổi']
+        ],
+        cauHoi: 'Xếp các nguyên tố Na (Z=11), Mg (Z=12), K (Z=19) theo chiều bán kính nguyên tử tăng dần?'
+      }
     ]},
     { bai: '7', ten: 'Xu hướng biến đổi thành phần và một số tính chất của hợp chất trong một chu kì', links: [
-      { ten: 'Bảng tuần hoàn Ptable', url: 'https://ptable.com/?lang=vi' }
+      {
+        ten: 'Bảng tuần hoàn Ptable (Oxide & Hydroxide)',
+        url: 'https://ptable.com/?lang=vi#Compounds',
+        embed: true,
+        mucTieu: 'Khảo sát hợp chất với Oxygen và Hydrogen của các nguyên tố Chu kì 3 (từ Na2O, MgO, Al2O3 đến SiO2, P2O5, SO3, Cl2O7).',
+        buoc: [
+          'Chọn tab <b>Hợp chất (Compounds)</b> ở thanh trên cùng của Ptable.',
+          'Kéo chọn nguyên tố <b>O (Oxygen)</b> rồi bấm lần lượt vào Na, Mg, Al, Si, P, S, Cl để xem công thức oxide cao nhất và hóa trị tăng từ I đến VII.'
+        ],
+        tuDien: [
+          ['Compounds', 'Tạo hợp chất'], ['Oxide', 'Hợp chất với Oxygen'],
+          ['Hydride', 'Hợp chất với Hydrogen'], ['Basic / Acidic', 'Tính base / Tính acid'],
+          ['Amphoteric (Al₂O₃)', 'Lưỡng tính']
+        ],
+        cauHoi: 'Trong chu kì 3, từ NaOH → Mg(OH)2 → Al(OH)3 → H2SiO3 → H3PO4 → H2SO4 → HClO4, tính base và tính acid biến đổi thế nào?'
+      }
     ]},
     { bai: '8', ten: 'Định luật tuần hoàn. Ý nghĩa của bảng tuần hoàn các nguyên tố hóa học', links: [
-      { ten: 'Bảng tuần hoàn Ptable', url: 'https://ptable.com/?lang=vi' },
-      { ten: 'Periodic table explorer (MrChemCoach)', url: 'https://mrchemcoach.com/periodic-table' }
+      {
+        ten: 'Bảng tuần hoàn Ptable',
+        url: 'https://ptable.com/?lang=vi',
+        embed: true,
+        mucTieu: 'Từ vị trí (ô, chu kì, nhóm) suy ra cấu tạo nguyên tử, tính chất nguyên tố và so sánh với các nguyên tố lân cận.',
+        buoc: [
+          'Chọn một nguyên tố bất kỳ (ví dụ Sulfur Z = 16, Chu kì 3, Nhóm VIA).',
+          'Dựa vào số thứ tự nhóm VIA (6e ngoài cùng), dự đoán hóa trị cao nhất với O là VI (SO3) và hóa trị với H là II (H2S).'
+        ],
+        tuDien: [
+          ['Oxidation States', 'Các trạng thái oxi hóa / Hóa trị'], ['Electron Configuration', 'Cấu hình electron']
+        ],
+        cauHoi: 'Biết Phosphorus (P) ở ô 15, chu kì 3, nhóm VA. Công thức oxide cao nhất và hợp chất khí với H của P là gì?'
+      },
+      {
+        ten: 'Periodic table explorer (MrChemCoach)',
+        url: 'https://mrchemcoach.com/periodic-table',
+        embed: true,
+        mucTieu: 'Tổng ôn mối quan hệ hai chiều: Cấu tạo nguyên tử ⇄ Vị trí trong BTH ⇄ Tính chất hóa học cơ bản.',
+        buoc: [
+          'Chọn nguyên tố trên bảng để đối chiếu đồng thời sơ đồ lớp vỏ electron và tính kim loại/phi kim.'
+        ],
+        tuDien: [
+          ['Metals', 'Kim loại (nhường e)'], ['Non-metals', 'Phi kim (nhận e)'], ['Metalloids', 'Á kim']
+        ],
+        cauHoi: 'Nguyên tố có 2 electron lớp ngoài cùng (ở chu kì 4) có tính chất hóa học cơ bản là kim loại hay phi kim?'
+      }
     ]},
     { bai: '10', ten: 'Quy tắc octet', links: [
-      { ten: 'Build a Molecule (PhET)', url: 'https://phet.colorado.edu/sims/html/build-a-molecule/latest/build-a-molecule_all.html?locale=vi' },
-      { ten: 'Matchmaker: Ionic Bonding (InteractiveChem)', url: 'https://interactivechemistry.org/Matchmaker/' },
-      { ten: '21st Century Lewis Dots (InteractiveChem)', url: 'https://interactivechemistry.org/2-DMolecularModels/' }
+      {
+        ten: 'Build a Molecule (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/build-a-molecule/latest/build-a-molecule_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'Ghép các nguyên tử H, O, N, C, Cl để tạo phân tử bền vững thỏa mãn quy tắc Octet (8 electron lớp ngoài cùng, riêng H là 2e).',
+        buoc: [
+          'Chọn chế độ <b>Single (Đơn chất & Hợp chất)</b> hoặc <b>Playground (Sân chơi tự do)</b>.',
+          'Kéo các nguyên tử từ khay dưới lại gần nhau để chúng tự góp chung electron tạo liên kết (ví dụ ghép 2H + 1O thành H2O, 2N thành N2).',
+          'Bấm nút <b>3D</b> màu xanh cạnh phân tử vừa ghép để xoay xem mô hình không gian 3 chiều!'
+        ],
+        tuDien: [
+          ['Single / Multiple', 'Ghép 1 phân tử / Nhiều phân tử'], ['Playground', 'Ghép tự do'],
+          ['Your Molecules', 'Bộ sưu tập phân tử đã ghép'], ['3D', 'Xem mô hình 3D (Ball & Stick / Spacefill)'],
+          ['Refill / Reset Kit', 'Lấy lại bộ nguyên tử mới']
+        ],
+        cauHoi: 'Để đạt cấu hình bền của khí hiếm Neon (8e ngoài cùng), nguyên tử Nitrogen (có 5e hóa trị) cần góp chung mấy electron khi tạo phân tử N2?'
+      },
+      {
+        ten: 'Matchmaker: Ionic Bonding (InteractiveChem)',
+        url: 'https://interactivechemistry.org/Matchmaker/',
+        embed: true,
+        mucTieu: 'Trò chơi ghép đôi nhường – nhận electron giữa kim loại và phi kim để cả hai cùng đạt 8e lớp ngoài cùng (quy tắc Octet).',
+        buoc: [
+          'Quan sát số electron lớp ngoài cùng của nguyên tử kim loại (ít e) và phi kim (gần đủ 8e).',
+          'Ghép chúng lại để kim loại nhường hẳn electron cho phi kim tạo thành các ion bền vững.'
+        ],
+        tuDien: [
+          ['Valence shell', 'Lớp electron ngoài cùng'], ['Octet (8e)', 'Bão hòa 8 electron'],
+          ['Transfer electron', 'Nhường – nhận electron']
+        ],
+        cauHoi: 'Nguyên tử Magnesium (Mg, Z=12) sẽ nhường hay nhận bao nhiêu electron để đạt quy tắc Octet?'
+      },
+      {
+        ten: '21st Century Lewis Dots (InteractiveChem)',
+        url: 'https://interactivechemistry.org/2-DMolecularModels/',
+        embed: true,
+        mucTieu: 'Tập biểu diễn công thức chấm electron (Lewis) và đếm đủ 8e xung quanh mỗi nguyên tử.',
+        buoc: [
+          'Chọn nguyên tử trung tâm và các nguyên tử xung quanh, ghép các cặp electron dùng chung (liên kết đơn, đôi, ba).',
+          'Kiểm tra xem mỗi nguyên tử đã đủ 8 electron (4 cặp e) xung quanh chưa.'
+        ],
+        tuDien: [
+          ['Lewis Dot Structure', 'Công thức chấm Lewis'], ['Bonding Pair', 'Cặp e liên kết (dùng chung)'],
+          ['Lone Pair', 'Cặp e riêng (chưa liên kết)'], ['Octet Rule', 'Quy tắc 8 electron']
+        ],
+        cauHoi: 'Trong phân tử CO2 (O=C=O), quanh nguyên tử Carbon có mấy cặp electron dùng chung và mấy cặp electron riêng?'
+      }
     ]},
     { bai: '11', ten: 'Liên kết ion', links: [
-      { ten: 'Build a Molecule (PhET)', url: 'https://phet.colorado.edu/sims/html/build-a-molecule/latest/build-a-molecule_all.html?locale=vi' },
-      { ten: 'Matchmaker: Ionic Bonding (InteractiveChem)', url: 'https://interactivechemistry.org/Matchmaker/' },
-      { ten: 'Ionic Bond – NaCl (JavaLab)', url: 'https://javalab.org/en/nacl_ionic_bond_en/' },
-      { ten: 'Ionic Bond (JavaLab)', url: 'https://javalab.org/en/ionic_bond_2_en/' }
+      {
+        ten: 'Ionic Bond – NaCl (JavaLab)',
+        url: 'https://javalab.org/en/nacl_ionic_bond_en/',
+        embed: true,
+        mucTieu: 'Mô phỏng từng bước quá trình nguyên tử Na nhường 1e cho nguyên tử Cl tạo ion Na⁺ và Cl⁻, sau đó hút nhau bằng lực tĩnh điện tạo phân tử NaCl.',
+        buoc: [
+          'Kéo nguyên tử <b>Na</b> và nguyên tử <b>Cl</b> lại gần nhau trên màn hình.',
+          'Quan sát 1 electron ở lớp ngoài cùng của Na nhảy sang lớp ngoài cùng của Cl.',
+          'Sau khi thành ion <b>Na⁺</b> và <b>Cl⁻</b>, hai ion trái dấu tự hút chặt vào nhau tạo liên kết ion.'
+        ],
+        tuDien: [
+          ['Sodium atom (Na)', 'Nguyên tử Na (2,8,1)'], ['Chlorine atom (Cl)', 'Nguyên tử Cl (2,8,7)'],
+          ['Cation (Na⁺)', 'Ion dương Na⁺ (2,8)'], ['Anion (Cl⁻)', 'Ion âm Cl⁻ (2,8,8)'],
+          ['Electrostatic force', 'Lực hút tĩnh điện']
+        ],
+        cauHoi: 'Vì sao sau khi nhường 1 electron, bán kính của ion Na⁺ lại nhỏ hơn hẳn bán kính nguyên tử Na ban đầu?'
+      },
+      {
+        ten: 'Ionic Bond 2 – MgO, CaCl2, Na2O (JavaLab)',
+        url: 'https://javalab.org/en/ionic_bond_2_en/',
+        embed: true,
+        mucTieu: 'Thử nghiệm tạo liên kết ion với tỉ lệ ion 1:1, 1:2, 2:1 (như MgCl2, Na2O, CaO) để tổng điện tích dương bằng tổng điện tích âm.',
+        buoc: [
+          'Chọn kim loại (Na, Mg, Ca) và phi kim (Cl, O) ở thanh chọn.',
+          'Kéo đủ số lượng nguyên tử cần thiết lại gần nhau (ví dụ 1 nguyên tử Mg cần 2 nguyên tử Cl để nhường đủ 2e).'
+        ],
+        tuDien: [
+          ['Cation', 'Ion dương (kim loại nhường e)'], ['Anion', 'Ion âm (phi kim nhận e)'],
+          ['Ionic compound', 'Hợp chất ion']
+        ],
+        cauHoi: 'Khi Calcium (Ca, nhóm IIA) liên kết với Fluorine (F, nhóm VIIA), tỉ lệ số ion Ca²⁺ và F⁻ trong phân tử là bao nhiêu?'
+      },
+      {
+        ten: 'Matchmaker: Ionic Bonding (InteractiveChem)',
+        url: 'https://interactivechemistry.org/Matchmaker/',
+        embed: true,
+        mucTieu: 'Thực hành ghép các cặp cation và anion tạo mạng tinh thể ion trung hòa điện.',
+        buoc: [
+          'Chọn cấp độ và ghép các ion dương với ion âm sao cho tổng điện tích bằng 0.'
+        ],
+        tuDien: [
+          ['Crystal Lattice', 'Mạng tinh thể ion'], ['Charge Balance', 'Cân bằng điện tích']
+        ],
+        cauHoi: 'Vì sao các hợp chất ion (như muối ăn NaCl) đều là chất rắn ở điều kiện thường và có nhiệt độ nóng chảy rất cao?'
+      },
+      {
+        ten: 'Build a Molecule (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/build-a-molecule/latest/build-a-molecule_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'So sánh sự khác biệt giữa phân tử cộng hóa trị rời rạc với hợp chất ion.',
+        buoc: [
+          'Ghép các phân tử trong bộ Kit và xem cấu trúc 3D của chúng.'
+        ],
+        tuDien: [
+          ['Spacefill', 'Mô hình đặc'], ['Ball and Stick', 'Mô hình rỗng (cầu – que)']
+        ],
+        cauHoi: 'Liên kết ion thường được hình thành giữa hai nguyên tố có hiệu độ âm điện (Δχ) từ bao nhiêu trở lên?'
+      }
     ]},
     { bai: '12', ten: 'Liên kết cộng hóa trị', links: [
-      { ten: 'Molecule Shapes (PhET)', url: 'https://phet.colorado.edu/sims/html/molecule-shapes/latest/molecule-shapes_all.html?locale=vi' },
-      { ten: 'Molecule Polarity (PhET)', url: 'https://phet.colorado.edu/sims/html/molecule-polarity/latest/molecule-polarity_all.html?locale=vi' },
-      { ten: 'MolView – phân tử 3D', url: 'https://molview.org' },
-      { ten: '21st Century Lewis Dots (InteractiveChem)', url: 'https://interactivechemistry.org/2-DMolecularModels/' },
-      { ten: 'Covalent Bond (JavaLab)', url: 'https://javalab.org/en/covalent_bond_en/' },
-      { ten: 'Polarity Checker (Luminous)', url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/polarity-checker/' },
-      { ten: '3D molecular lab (MrChemCoach)', url: 'https://mrchemcoach.com/molecularlab' }
+      {
+        ten: 'Molecule Shapes – Hình học phân tử 3D (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/molecule-shapes/latest/molecule-shapes_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'Xoay mô hình 3D để quan sát góc liên kết, liên kết đơn/đôi/ba và ảnh hưởng của cặp electron riêng (Lone Pair) làm ép góc liên kết.',
+        buoc: [
+          'Chọn chế độ <b>Real Molecules (Phân tử thực tế)</b> ở bên phải.',
+          'Ở hộp chọn góc trên bên phải, chọn lần lượt <code>H2O</code> (góc 104,5°), <code>NH3</code> (chóp tam giác 107,8°), <code>CH4</code> (tứ diện đều 109,5°), <code>CO2</code> (thẳng 180°).',
+          'Tích chọn <b>Show Lone Pairs (Hiện cặp e riêng)</b> và <b>Show Bond Angles (Hiện góc liên kết)</b> rồi dùng chuột xoay phân tử 360°!'
+        ],
+        tuDien: [
+          ['Model / Real Molecules', 'Mô hình tự tạo / Phân tử thực tế'],
+          ['Bonding', 'Các liên kết đơn, đôi, ba'], ['Lone Pair', 'Cặp electron chưa liên kết'],
+          ['Show Bond Angles', 'Hiển thị góc liên kết'], ['Molecule Geometry', 'Hình học phân tử'],
+          ['Linear / Bent / Tetrahedral', 'Thẳng / Gấp khúc / Tứ diện']
+        ],
+        cauHoi: 'Vì sao phân tử CO2 có dạng đường thẳng (180°) còn phân tử H2O lại có dạng góc gấp khúc (104,5°)?'
+      },
+      {
+        ten: 'Molecule Polarity – Độ phân cực phân tử (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/molecule-polarity/latest/molecule-polarity_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'Hiểu mối liên hệ giữa hiệu độ âm điện (Δχ) và sự dịch chuyển đám mây electron về phía nguyên tử có độ âm điện lớn hơn (liên kết CHT phân cực và không phân cực).',
+        buoc: [
+          'Chọn chế độ <b>Two Atoms (2 nguyên tử)</b>.',
+          'Tích chọn <b>Bond Dipole (Vector lưỡng cực)</b>, <b>Partial Charges (Điện tích phần δ+, δ−)</b> và bật <b>Electric Field (Điện trường)</b>.',
+          'Kéo thanh trượt <b>Electronegativity (Độ âm điện)</b> của nguyên tử A và B lệch nhau để thấy đám mây electron dồn về nguyên tử có độ âm điện lớn hơn (More).'
+        ],
+        tuDien: [
+          ['Electronegativity (Less / More)', 'Độ âm điện (Nhỏ / Lớn)'],
+          ['Bond Dipole', 'Vector cực của liên kết'], ['Partial Charges (δ+, δ−)', 'Điện tích phần dương/âm'],
+          ['Electron Density', 'Mật độ đám mây electron'], ['Electric Field (On/Off)', 'Bật/Tắt bản tụ điện'],
+          ['Covalent / Ionic character', 'Tính cộng hóa trị / Tính ion']
+        ],
+        cauHoi: 'Khi hai nguyên tử có độ âm điện bằng nhau (như trong H2, Cl2), cặp electron dùng chung nằm ở đâu và liên kết có phân cực không?'
+      },
+      {
+        ten: 'Covalent Bond – Góp chung electron (JavaLab)',
+        url: 'https://javalab.org/en/covalent_bond_en/',
+        embed: true,
+        mucTieu: 'Quan sát trực tiếp các cặp electron quay chung quanh cả hai hạt nhân trong phân tử H2, O2, N2, H2O, CH4.',
+        buoc: [
+          'Kéo các nguyên tử lại gần nhau để các lớp vỏ ngoài cùng giao nhau.',
+          'Đếm số cặp electron nằm ở vùng giao nhau: 1 cặp = liên kết đơn (H–H), 2 cặp = liên kết đôi (O=O), 3 cặp = liên kết ba (N≡N).'
+        ],
+        tuDien: [
+          ['Shared electrons', 'Cặp electron dùng chung'], ['Single bond', 'Liên kết đơn (1 cặp e)'],
+          ['Double bond', 'Liên kết đôi (2 cặp e = 1σ + 1π)'], ['Triple bond', 'Liên kết ba (3 cặp e = 1σ + 2π)']
+        ],
+        cauHoi: 'Liên kết ba trong phân tử N2 (N≡N) gồm bao nhiêu liên kết sigma (σ) và bao nhiêu liên kết pi (π)?'
+      },
+      {
+        ten: 'MolView – Vẽ & xoay phân tử 3D',
+        url: 'https://molview.org',
+        embed: true,
+        mucTieu: 'Nhập tên hoặc vẽ bất kỳ công thức cấu tạo nào bên trái để xem mô hình phân tử 3D thực tế bên phải.',
+        buoc: [
+          'Gõ công thức hoặc tên chất vào ô tìm kiếm trên cùng (ví dụ: <code>H2O</code>, <code>NH3</code>, <code>CH4</code>, <code>C2H4</code>, <code>SO2</code>) rồi nhấn Enter.',
+          'Dùng chuột xoay mô hình 3D bên khung phải; vào menu <b>Jmol</b> để đo độ dài liên kết và góc liên kết.'
+        ],
+        tuDien: [
+          ['2D to 3D', 'Chuyển công thức phẳng sang 3D'], ['Ball and Stick', 'Mô hình cầu – que'],
+          ['Van der Waals spheres', 'Mô hình đặc'], ['Energy Minimization', 'Tối ưu hình học bền nhất']
+        ],
+        cauHoi: 'Trong phân tử ethylene (C2H4), liên kết đôi C=C gồm những loại liên kết nào?'
+      },
+      {
+        ten: 'Polarity Checker (Luminous)',
+        url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/polarity-checker/',
+        embed: true,
+        mucTieu: 'Tra nhanh hiệu độ âm điện Δχ = |χA − χB| để phân loại liên kết: CHT không phân cực (0 ≤ Δχ < 0,4), CHT phân cực (0,4 ≤ Δχ < 1,7) hay Ion (Δχ ≥ 1,7).',
+        buoc: [
+          'Chọn nguyên tố thứ nhất và nguyên tố thứ hai trong bảng.',
+          'Xem giá trị hiệu độ âm điện Δχ và kết luận loại liên kết theo thang Pauling.'
+        ],
+        tuDien: [
+          ['Nonpolar Covalent', 'CHT không phân cực (< 0,4)'],
+          ['Polar Covalent', 'CHT có cực (0,4 đến < 1,7)'],
+          ['Ionic Bond', 'Liên kết ion (≥ 1,7)']
+        ],
+        cauHoi: 'Biết độ âm điện của H là 2,20 và Cl là 3,16. Hiệu độ âm điện của HCl là bao nhiêu và thuộc loại liên kết gì?'
+      },
+      {
+        ten: '21st Century Lewis Dots (InteractiveChem)',
+        url: 'https://interactivechemistry.org/2-DMolecularModels/',
+        embed: true,
+        mucTieu: 'Luyện viết công thức electron và công thức Lewis cho các phân tử cộng hóa trị.',
+        buoc: ['Ghép các nguyên tử và sắp xếp cặp electron liên kết / chưa liên kết.'],
+        tuDien: [['Lewis structure', 'Công thức Lewis'], ['Coordinate bond', 'Liên kết cho – nhận']],
+        cauHoi: 'Trong ion ammonium (NH4⁺), có mấy liên kết cộng hóa trị thông thường và mấy liên kết cho – nhận?'
+      },
+      {
+        ten: '3D molecular lab (MrChemCoach)',
+        url: 'https://mrchemcoach.com/molecularlab',
+        embed: true,
+        mucTieu: 'Khảo sát mô hình không gian 3 chiều của các phân tử vô cơ và hữu cơ phổ biến.',
+        buoc: ['Chọn phân tử trong danh sách và xoay để quan sát cấu trúc không gian.'],
+        tuDien: [['Bond length', 'Độ dài liên kết'], ['Bond energy', 'Năng lượng liên kết (Eb)']],
+        cauHoi: 'Từ HF → HCl → HBr → HI, độ dài liên kết tăng dần thì năng lượng liên kết (độ bền liên kết) biến đổi thế nào?'
+      }
     ]},
     { bai: '13', ten: 'Liên kết hydrogen và tương tác van der Waals', links: [
-      { ten: 'Molecule Polarity (PhET)', url: 'https://phet.colorado.edu/sims/html/molecule-polarity/latest/molecule-polarity_all.html?locale=vi' },
-      { ten: 'States of Matter: Basics (PhET)', url: 'https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_all.html?locale=vi' },
-      { ten: 'Intermolecular Forces Visualizer (Luminous)', url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/intermolecular-forces-visualizer/' },
-      { ten: 'ChemLEAP: Intermolecular Forces (InteractiveChem)', url: 'https://interactivechemistry.org/IntermolecularForces/' },
-      { ten: 'Structure of Ice 3D (JavaLab)', url: 'https://javalab.org/en/structure_of_ice_3d_en/' }
+      {
+        ten: 'States of Matter: Basics – Trạng thái chất & Liên kết (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'So sánh tương tác van der Waals yếu giữa các nguyên tử khí hiếm (Ne, Ar) với liên kết hydrogen mạnh tạo cấu trúc rỗng của nước đá (H2O).',
+        buoc: [
+          'Chọn chế độ <b>States (Trạng thái Rắn – Lỏng – Khí)</b>.',
+          'Ở bảng góc phải, bấm chọn <b>Neon (Ne)</b> hoặc <b>Argon (Ar)</b> rồi so sánh với <b>Water (H2O)</b> ở các trạng thái <b>Solid (Rắn)</b>, <b>Liquid (Lỏng)</b>, <b>Gas (Khí)</b>.',
+          'Chú ý ở trạng thái Rắn (nước đá), các phân tử H2O liên kết hydrogen tạo cấu trúc rỗng làm nước đá nhẹ hơn nước lỏng!'
+        ],
+        tuDien: [
+          ['Solid / Liquid / Gas', 'Rắn / Lỏng / Khí'], ['Water (H₂O)', 'Phân tử nước (có LK hydrogen)'],
+          ['Neon / Argon', 'Khí hiếm (chỉ có tương tác van der Waals)'],
+          ['Heat / Cool', 'Đun nóng / Làm lạnh'], ['K / °C', 'Nhiệt độ Kelvin / Độ C']
+        ],
+        cauHoi: 'Vì sao nước đá (H2O rắn) lại nổi trên mặt nước lỏng, trong khi hầu hết các chất rắn khác đều chìm trong chất lỏng của chính nó?'
+      },
+      {
+        ten: 'Structure of Ice 3D – Tinh thể nước đá rỗng (JavaLab)',
+        url: 'https://javalab.org/en/structure_of_ice_3d_en/',
+        embed: true,
+        mucTieu: 'Xoay mô hình 3D mạng tinh thể nước đá để thấy rõ các cầu nối liên kết hydrogen (dấu chấm) tạo nên các hốc lục giác rỗng.',
+        buoc: [
+          'Dùng chuột xoay khối tinh thể nước đá 3D trên màn hình.',
+          'Quan sát mỗi phân tử H2O (đỏ – trắng) tạo tối đa 4 liên kết hydrogen với 4 phân tử H2O xung quanh tạo cấu trúc tứ diện rỗng.'
+        ],
+        tuDien: [
+          ['Hydrogen bond', 'Liên kết hydrogen (nét đứt)'], ['Hexagonal cage', 'Cấu trúc lục giác rỗng'],
+          ['Ice crystal', 'Tinh thể nước đá']
+        ],
+        cauHoi: 'Bản chất của liên kết hydrogen là lực hút tĩnh điện giữa nguyên tử H (đã gắn với F, O, N) với cái gì của nguyên tử F, O, N ở phân tử bên cạnh?'
+      },
+      {
+        ten: 'Molecule Polarity (PhET)',
+        url: 'https://phet.colorado.edu/sims/html/molecule-polarity/latest/molecule-polarity_all.html?locale=vi',
+        embed: true,
+        mucTieu: 'Quan sát sự phân bố điện tích δ+ trên nguyên tử H và δ− trên nguyên tử F, O, N — điều kiện tiên quyết để tạo liên kết hydrogen.',
+        buoc: [
+          'Chọn tab <b>Real Molecules (Phân tử thực)</b> nếu có hoặc <b>Three Atoms (3 nguyên tử)</b>.',
+          'Bật <b>Partial Charges (Điện tích phần)</b> để thấy đầu H mang δ+ và đầu O/F/N mang δ−.'
+        ],
+        tuDien: [
+          ['Molecular Dipole', 'Lưỡng cực tổng của cả phân tử'], ['Electrostatic Potential', 'Bề mặt thế tĩnh điện (Đỏ = âm, Xanh = dương)']
+        ],
+        cauHoi: 'Trong hai chất C2H5OH (ethanol) và CH3OCH3 (dimethyl ether) có cùng phân tử khối M = 46, chất nào có nhiệt độ sôi cao hơn hẳn? Vì sao?'
+      },
+      {
+        ten: 'Intermolecular Forces Visualizer (Luminous)',
+        url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/intermolecular-forces-visualizer/',
+        embed: true,
+        mucTieu: 'So sánh độ mạnh giữa liên kết hydrogen và các kiểu tương tác van der Waals (lưỡng cực – lưỡng cực, lưỡng cực tạm thời).',
+        buoc: [
+          'Chọn cặp phân tử để quan sát lực tương tác liên phân tử hình thành giữa chúng.'
+        ],
+        tuDien: [
+          ['Hydrogen Bonding', 'Liên kết hydrogen (mạnh nhất)'],
+          ['Dipole–Dipole', 'Tương tác lưỡng cực – lưỡng cực'],
+          ['London Dispersion', 'Tương tác khuếch tán (van der Waals)']
+        ],
+        cauHoi: 'Từ F2 → Cl2 → Br2 → I2, kích thước và số electron tăng làm tương tác van der Waals biến đổi thế nào?'
+      },
+      {
+        ten: 'ChemLEAP: Intermolecular Forces (InteractiveChem)',
+        url: 'https://interactivechemistry.org/IntermolecularForces/',
+        embed: true,
+        mucTieu: 'Khảo sát năng lượng cần thiết để thắng lực tương tác liên phân tử khi đun sôi chất lỏng.',
+        buoc: ['Tương tác với các phân tử và quan sát ảnh hưởng của lực liên phân tử đến nhiệt độ sôi.'],
+        tuDien: [['Boiling point', 'Nhiệt độ sôi'], ['Intermolecular force', 'Lực tương tác liên phân tử']],
+        cauHoi: 'Vì sao ở điều kiện thường, HF có nhiệt độ sôi (+19,5 °C) cao bất thường so với HCl (-85 °C), HBr (-67 °C) và HI (-35 °C)?'
+      }
     ]},
     { bai: '15', ten: 'Phản ứng oxi hóa – khử', links: [
-      { ten: 'ChemCollective Virtual Lab', url: 'https://chemcollective.org/vlabs' },
-      { ten: 'Electron Transfer (InteractiveChem)', url: 'https://interactivechemistry.org/ElectronTransfer2020/' },
-      { ten: 'Reactivity Series Simulator (Luminous)', url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/reactivity-series-simulator/' },
-      { ten: 'Thermite reaction (MrChemCoach)', url: 'https://mrchemcoach.com/thermite-reaction' },
-      { ten: 'Burning magnesium ribbon (MrChemCoach)', url: 'https://mrchemcoach.com/burning-magnesium-ribbon' },
-      { ten: 'Rusting of iron (MrChemCoach)', url: 'https://mrchemcoach.com/rusting-of-iron' }
+      {
+        ten: 'Electron Transfer – Nhường nhận e (InteractiveChem)',
+        url: 'https://interactivechemistry.org/ElectronTransfer2020/',
+        embed: true,
+        mucTieu: 'Quan sát trực tiếp sự di chuyển electron từ nguyên tử kim loại (chất khử) sang ion kim loại yếu hơn (chất oxi hóa) trong dung dịch.',
+        buoc: [
+          'Nhúng thanh kim loại (ví dụ Zn hoặc Cu) vào dung dịch muối tương ứng.',
+          'Quan sát ở mức vi mô: nguyên tử Zn nhường 2e biến thành ion Zn²⁺ tan vào dung dịch, còn ion Cu²⁺ nhận 2e bám thành kim loại Cu đỏ lên thanh kẽm.'
+        ],
+        tuDien: [
+          ['Reducing agent', 'Chất khử (nhường e, số oxi hóa tăng)'],
+          ['Oxidizing agent', 'Chất oxi hóa (nhận e, số oxi hóa giảm)'],
+          ['Oxidation', 'Quá trình oxi hóa (sự nhường e)'],
+          ['Reduction', 'Quá trình khử (sự nhận e)']
+        ],
+        cauHoi: 'Trong phản ứng Zn + CuSO4 -> ZnSO4 + Cu, chất nào là chất khử, chất nào là chất oxi hóa?'
+      },
+      {
+        ten: 'Reactivity Series Simulator – Dãy hoạt động (Luminous)',
+        url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/reactivity-series-simulator/',
+        embed: true,
+        mucTieu: 'Thử nghiệm thả các kim loại (Mg, Zn, Fe, Cu, Ag) vào các dung dịch muối và acid HCl để so sánh tính khử của kim loại.',
+        buoc: [
+          'Chọn kim loại cần thử và dung dịch muối/acid.',
+          'Bấm chạy thí nghiệm để xem phản ứng có xảy ra hay không (kim loại mạnh đẩy kim loại yếu ra khỏi muối, kim loại đứng trước H giải phóng khí H2).'
+        ],
+        tuDien: [
+          ['More reactive', 'Tính khử mạnh hơn'], ['Displacement reaction', 'Phản ứng thế kim loại'],
+          ['Hydrogen gas bubbles', 'Bọt khí H₂ thoát ra'], ['No reaction', 'Không phản ứng']
+        ],
+        cauHoi: 'Khi cho đinh sắt (Fe) vào dung dịch HCl loãng, sắt bị oxi hóa lên số oxi hóa +2 hay +3?'
+      },
+      {
+        ten: 'Burning magnesium ribbon – Đốt dây Mg (MrChemCoach)',
+        url: 'https://mrchemcoach.com/burning-magnesium-ribbon',
+        embed: true,
+        mucTieu: 'Quan sát phản ứng oxi hóa – khử mãnh liệt khi đốt dây Magnesium trong không khí tạo ngọn lửa sáng chói và bột trắng MgO.',
+        buoc: [
+          'Dùng kẹp gắp băng kim loại Magnesium đưa vào ngọn lửa đèn Bunsen.',
+          'Quan sát ánh sáng trắng chói lòa và chất rắn màu trắng MgO tạo thành (2Mg + O2 -> 2MgO).'
+        ],
+        tuDien: [
+          ['Magnesium ribbon', 'Băng kim loại Mg'], ['Bunsen burner', 'Đèn khí Bunsen'],
+          ['White ash (MgO)', 'Bột trắng Magnesium oxide']
+        ],
+        cauHoi: 'Trong phản ứng 2Mg + O2 -> 2MgO, mỗi nguyên tử Mg đã nhường bao nhiêu electron?'
+      },
+      {
+        ten: 'Thermite reaction – Phản ứng nhiệt nhôm (MrChemCoach)',
+        url: 'https://mrchemcoach.com/thermite-reaction',
+        embed: true,
+        mucTieu: 'Xem mô phỏng phản ứng nhiệt nhôm (2Al + Fe2O3 -> Al2O3 + 2Fe) tỏa nhiệt cực lớn làm sắt nóng chảy dùng để hàn đường ray tàu hỏa.',
+        buoc: [
+          'Trộn bột Aluminium (Al) và Iron(III) oxide (Fe2O3), châm mồi lửa bằng dây Mg.',
+          'Quan sát phản ứng tỏa nhiệt rực lửa tạo ra sắt nóng chảy ở đáy chậu.'
+        ],
+        tuDien: [
+          ['Thermite mixture', 'Hỗn hợp nhiệt nhôm (Al + Fe₂O₃)'],
+          ['Molten iron', 'Sắt nóng chảy'], ['Exothermic', 'Tỏa nhiệt mạnh']
+        ],
+        cauHoi: 'Tổng hệ số tối giản của tất cả các chất trong phương trình 2Al + Fe2O3 -> Al2O3 + 2Fe là bao nhiêu?'
+      },
+      {
+        ten: 'Rusting of iron – Sự gỉ sắt trong tự nhiên (MrChemCoach)',
+        url: 'https://mrchemcoach.com/rusting-of-iron',
+        embed: true,
+        mucTieu: 'Tìm hiểu điều kiện để phản ứng oxi hóa – khử tạo gỉ sắt (Fe2O3·nH2O) xảy ra trong thực tế và cách chống ăn mòn.',
+        buoc: [
+          'So sánh các ống nghiệm chứa đinh sắt trong các môi trường: có đủ cả O2 + H2O, chỉ có nước đun sôi (không có O2), và không khí khô (có CaCl2 hút ẩm).',
+          'Nhận xét ống nghiệm nào đinh sắt bị gỉ đỏ nâu nhanh nhất.'
+        ],
+        tuDien: [
+          ['Rust (Fe₂O₃·nH₂O)', 'Lớp gỉ sắt màu nâu đỏ'], ['Anhydrous CaCl₂', 'Chất hút ẩm (làm khô không khí)'],
+          ['Boiled water + Oil layer', 'Nước đun sôi ngăn O₂ hòa tan']
+        ],
+        cauHoi: 'Để đinh sắt bị gỉ trong không khí ẩm, cần sự có mặt đồng thời của hai chất nào?'
+      },
+      {
+        ten: 'ChemCollective Virtual Lab',
+        url: 'https://chemcollective.org/vlabs',
+        embed: true,
+        mucTieu: 'Phòng thí nghiệm hóa học mở với đầy đủ hóa chất, cốc, bình tam giác, cân điện tử và đèn đun.',
+        buoc: ['Chọn hóa chất từ kho bên trái (Stockroom), lấy dụng cụ (Glassware) và kéo hóa chất đổ vào nhau để đo nhiệt độ, pH và khối lượng kết tủa.'],
+        tuDien: [['Stockroom', 'Kho hóa chất'], ['Glassware', 'Dụng cụ thủy tinh'], ['Scale', 'Cân điện tử']],
+        cauHoi: 'Khi chuẩn độ dung dịch FeSO4 (trong H2SO4 loãng) bằng dung dịch KMnO4, dấu hiệu nhận biết điểm tương đương là gì?'
+      }
     ]},
     { bai: '17', ten: 'Biến thiên enthalpy trong các phản ứng hóa học', links: [
-      { ten: "Hess's Law Cycle Solver (Luminous)", url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/hess-law-cycle-solver/' },
-      { ten: 'Combustion Simulator (InteractiveChem)', url: 'https://interactivechemistry.org/CombustionReactions/' }
+      {
+        ten: 'Combustion Simulator – Phản ứng đốt cháy & Nhiệt lượng (InteractiveChem)',
+        url: 'https://interactivechemistry.org/CombustionReactions/',
+        embed: true,
+        mucTieu: 'Quan sát quá trình bẻ gãy liên kết cũ (thu năng lượng) và hình thành liên kết mới (tỏa năng lượng) trong các phản ứng đốt cháy nhiên liệu.',
+        buoc: [
+          'Chọn phân tử nhiên liệu (như CH4, C2H5OH, H2) và bật tia lửa kích hoạt phản ứng với O2.',
+          'So sánh tổng năng lượng liên kết của chất đầu (∑Eb(cđ)) và sản phẩm (∑Eb(sp)) để thấy vì sao ΔrH°298 < 0.'
+        ],
+        tuDien: [
+          ['Exothermic (ΔH < 0)', 'Phản ứng tỏa nhiệt'], ['Endothermic (ΔH > 0)', 'Phản ứng thu nhiệt'],
+          ['Bond Breaking', 'Phá vỡ liên kết (cần thu nhiệt)'], ['Bond Forming', 'Hình thành liên kết (tỏa nhiệt)'],
+          ['Activation Energy', 'Năng lượng hoạt hóa']
+        ],
+        cauHoi: 'Khi tính biến thiên enthalpy theo năng lượng liên kết (Eb), công thức đúng là lấy tổng Eb(chất đầu) trừ tổng Eb(sản phẩm) hay ngược lại?'
+      },
+      {
+        ten: "Hess's Law Cycle Solver – Tính ΔrH°298 (Luminous)",
+        url: 'https://luminouslearner.com/science/chemistry/chemistry-tool/hess-law-cycle-solver/',
+        embed: true,
+        mucTieu: 'Công cụ trực quan hóa sơ đồ năng lượng và tính biến thiên enthalpy chuẩn của phản ứng theo nhiệt tạo thành chuẩn ΔfH°298.',
+        buoc: [
+          'Nhập các chất tham gia và sản phẩm kèm hệ số cân bằng.',
+          'Quan sát giản đồ mức năng lượng (chất đầu cao hơn sản phẩm → tỏa nhiệt ΔrH < 0; chất đầu thấp hơn sản phẩm → thu nhiệt ΔrH > 0).'
+        ],
+        tuDien: [
+          ['Enthalpy of Formation (ΔfH°)', 'Nhiệt tạo thành chuẩn (đơn chất bền = 0)'],
+          ['Enthalpy of Reaction (ΔrH°)', 'Biến thiên enthalpy của phản ứng'],
+          ['Reactants', 'Chất tham gia (chất đầu)'], ['Products', 'Sản phẩm']
+        ],
+        cauHoi: 'Nhiệt tạo thành chuẩn ΔfH°298 của các đơn chất bền (như O2(g), H2(g), C(graphite), Fe(s)) luôn có giá trị bằng bao nhiêu?'
+      }
     ]},
     { bai: '19', ten: 'Tốc độ phản ứng', links: [
-      { ten: 'Rate of reaction (MrChemCoach)', url: 'https://mrchemcoach.com/rate-of-reaction' },
-      { ten: 'Concentration and rate (MrChemCoach)', url: 'https://mrchemcoach.com/concentration-and-rate' },
-      { ten: 'Catalysis (InteractiveChem)', url: 'https://interactivechemistry.org/Catalysis/' }
+      {
+        ten: 'Rate of reaction – Các yếu tố ảnh hưởng tốc độ (MrChemCoach)',
+        url: 'https://mrchemcoach.com/rate-of-reaction',
+        embed: true,
+        mucTieu: 'Thay đổi Nồng độ, Nhiệt độ, Diện tích bề mặt (kích thước hạt) và Chất xúc tác để xem tần số va chạm hiệu quả và đồ thị thể tích khí theo thời gian.',
+        buoc: [
+          'Điều chỉnh thanh trượt <b>Temperature (Nhiệt độ)</b>, <b>Concentration (Nồng độ acid)</b> hoặc kích thước viên đá vôi CaCO3 / kẽm Zn.',
+          'Bấm <b>Start (Bắt đầu)</b> và quan sát tốc độ bọt khí thoát ra cũng như độ dốc của đường đồ thị (đường càng dốc đứng = tốc độ ban đầu càng lớn).'
+        ],
+        tuDien: [
+          ['Rate of Reaction', 'Tốc độ phản ứng'], ['Concentration', 'Nồng độ chất phản ứng'],
+          ['Temperature', 'Nhiệt độ'], ['Surface Area (Powder / Lumps)', 'Diện tích bề mặt (Bột mịn / Viên to)'],
+          ['Catalyst', 'Chất xúc tác'], ['Effective Collision', 'Va chạm hiệu quả']
+        ],
+        cauHoi: 'Khi dùng cùng một lượng CaCO3 (dư) tác dụng với cùng lượng HCl, việc đập nhỏ đá vôi thành bột mịn làm thay đổi tốc độ thoát khí và tổng thể tích khí cuối cùng như thế nào?'
+      },
+      {
+        ten: 'Concentration and rate – Thí nghiệm Na2S2O3 + HCl (MrChemCoach)',
+        url: 'https://mrchemcoach.com/concentration-and-rate',
+        embed: true,
+        mucTieu: 'Làm thí nghiệm kinh điển trong SGK Hóa 10 (Bài 19): phản ứng giữa Na2S2O3 và HCl tạo kết tủa Sulfur (S) màu vàng đục làm che khuất dấu chữ thập (×) dưới đáy bình.',
+        buoc: [
+          'Chọn nồng độ dung dịch <b>Sodium thiosulfate (Na2S2O3)</b> rồi rót acid <b>HCl</b> vào bình tam giác đặt trên tờ giấy vẽ dấu ×.',
+          'Bấm đồng hồ bấm giây và dừng ngay khi lớp kết tủa S đục che mất dấu × khi nhìn từ trên xuống.',
+          'So sánh thời gian dấu × biến mất ở các nồng độ khác nhau.'
+        ],
+        tuDien: [
+          ['Sodium thiosulfate (Na₂S₂O₃)', 'Dung dịch Na₂S₂O₃'],
+          ['Sulfur precipitate (S↓)', 'Kết tủa lưu huỳnh làm đục dung dịch'],
+          ['Disappearing cross (×)', 'Dấu chữ thập bị che khuất'],
+          ['Stopwatch', 'Đồng hồ bấm giây']
+        ],
+        cauHoi: 'Trong thí nghiệm Na2S2O3 + HCl, nồng độ Na2S2O3 càng lớn thì thời gian để dấu chữ thập (×) bị che khuất càng dài hay càng ngắn?'
+      },
+      {
+        ten: 'Catalysis – Cơ chế chất xúc tác (InteractiveChem)',
+        url: 'https://interactivechemistry.org/Catalysis/',
+        embed: true,
+        mucTieu: 'Quan sát cách chất xúc tác làm giảm năng lượng hoạt hóa (Ea) giúp phản ứng xảy ra nhanh hơn mà bản thân chất xúc tác được hoàn nguyên sau phản ứng.',
+        buoc: [
+          'So sánh tốc độ chuyển hóa phân tử khi không có xúc tác và khi thêm bề mặt chất xúc tác.',
+          'Quan sát giản đồ năng lượng hoạt hóa thấp xuống khi có mặt chất xúc tác.'
+        ],
+        tuDien: [
+          ['Catalyst', 'Chất xúc tác (không bị tiêu hao)'],
+          ['Activation Energy (Ea)', 'Năng lượng hoạt hóa (rào năng lượng)'],
+          ['Active site', 'Tâm hoạt động của xúc tác / enzyme']
+        ],
+        cauHoi: 'Chất xúc tác làm tăng tốc độ phản ứng bằng cách làm tăng hay làm giảm năng lượng hoạt hóa của phản ứng?'
+      }
     ]},
     { bai: '21', ten: 'Nhóm halogen', links: [
-      { ten: 'ChemCollective Virtual Lab', url: 'https://chemcollective.org/vlabs' },
-      { ten: 'Bảng tuần hoàn Ptable', url: 'https://ptable.com/?lang=vi' },
-      { ten: 'Chlor-alkali process (MrChemCoach)', url: 'https://mrchemcoach.com/chlor-alkali-process' }
+      {
+        ten: 'Chlor-alkali process – Điện phân dung dịch NaCl có màng ngăn (MrChemCoach)',
+        url: 'https://mrchemcoach.com/chlor-alkali-process',
+        embed: true,
+        mucTieu: 'Mô phỏng bình điện phân dung dịch NaCl bão hòa có màng ngăn xốp trong công nghiệp để sản xuất khí Cl2, khí H2 và xút NaOH.',
+        buoc: [
+          'Bật nguồn điện một chiều của bình điện phân dung dịch nước muối bão hòa (Brine – NaCl).',
+          'Quan sát ở <b>Anode (+)</b>: ion Cl⁻ nhường e tạo khí <b>Cl2 (vàng lục)</b>; ở <b>Cathode (−)</b>: H2O nhận e tạo khí <b>H2</b> và ion OH⁻ (tạo dung dịch <b>NaOH</b>).',
+          'Xem vai trò của màng ngăn xốp (Diaphragm/Membrane) ngăn không cho Cl2 tác dụng với NaOH tạo nước Javel.'
+        ],
+        tuDien: [
+          ['Brine (concentrated NaCl)', 'Dung dịch NaCl bão hòa'],
+          ['Anode (+)', 'Cực dương (thoát khí Cl₂)'], ['Cathode (−)', 'Cực âm (thoát khí H₂)'],
+          ['Membrane / Diaphragm', 'Màng ngăn giữa 2 điện cực'],
+          ['Sodium hydroxide (NaOH)', 'Dung dịch xút lấy ra ở cực âm']
+        ],
+        cauHoi: 'Nếu tháo bỏ màng ngăn khi điện phân dung dịch NaCl thì khí Cl2 sinh ra sẽ phản ứng với dung dịch NaOH ở nhiệt độ thường tạo thành dung dịch gì?'
+      },
+      {
+        ten: 'Bảng tuần hoàn Ptable (Nhóm VIIA – Halogen)',
+        url: 'https://ptable.com/?lang=vi',
+        embed: true,
+        mucTieu: 'So sánh cấu hình electron ns²np⁵, độ âm điện, bán kính và nhiệt độ nóng chảy/sôi của F, Cl, Br, I.',
+        buoc: ['Bấm vào cột nhóm 17 (VIIA): F (Z=9), Cl (Z=17), Br (Z=35), I (Z=53) để đối chiếu thông số vật lí và hóa học.'],
+        tuDien: [['Halogens (Group 17)', 'Nhóm VIIA (7e lớp ngoài cùng)'], ['Melting / Boiling point', 'Nhiệt độ nóng chảy / sôi']],
+        cauHoi: 'Từ F2 → Cl2 → Br2 → I2, tính oxi hóa của các đơn chất halogen tăng dần hay giảm dần?'
+      },
+      {
+        ten: 'ChemCollective Virtual Lab',
+        url: 'https://chemcollective.org/vlabs',
+        embed: true,
+        mucTieu: 'Thực hành pha chế và thử tính oxi hóa của nước halogen trong phòng thí nghiệm ảo.',
+        buoc: ['Chọn dung dịch từ kho hóa chất (Stockroom) và thực hiện phản ứng trong bình tam giác.'],
+        tuDien: [['Halogen displacement', 'Phản ứng thế halogen (Cl₂ đẩy Br⁻, I⁻)']],
+        cauHoi: 'Khi sục khí Cl2 vào dung dịch NaBr không màu, dung dịch chuyển sang màu gì?'
+      }
     ]},
     { bai: '22', ten: 'Hydrogen halide. Muối halide', links: [
-      { ten: 'ChemCollective Virtual Lab', url: 'https://chemcollective.org/vlabs' },
-      { ten: 'Cation and anion tests (MrChemCoach)', url: 'https://mrchemcoach.com/tests-for-cations-and-anions' },
-      { ten: 'Precipitation Reaction (JavaLab)', url: 'https://javalab.org/en/precipitation_reaction_en/' }
+      {
+        ten: 'Cation and anion tests – Nhận biết ion Halide Cl⁻, Br⁻, I⁻ (MrChemCoach)',
+        url: 'https://mrchemcoach.com/tests-for-cations-and-anions',
+        embed: true,
+        mucTieu: 'Thực hành nhỏ dung dịch AgNO3 (trong HNO3 loãng) vào các ống nghiệm chứa Cl⁻, Br⁻, I⁻ để quan sát trực tiếp 3 màu kết tủa trắng, vàng nhạt, vàng đậm.',
+        buoc: [
+          'Chọn phần thử <b>Anions (Ion âm)</b> → chọn các muối Halide (<code>Cl-</code>, <code>Br-</code>, <code>I-</code>).',
+          'Nhỏ vài giọt dung dịch <b>Dilute HNO3</b> rồi nhỏ tiếp dung dịch <b>Silver nitrate (AgNO3)</b> vào ống nghiệm.',
+          'Quan sát màu kết tủa tạo thành: <b>AgCl (trắng)</b>, <b>AgBr (vàng nhạt/kem)</b>, <b>AgI (vàng đậm)</b>.'
+        ],
+        tuDien: [
+          ['Anion test', 'Nhận biết ion âm'], ['Silver nitrate (AgNO₃)', 'Thuốc thử AgNO₃'],
+          ['White precipitate (AgCl)', 'Kết tủa trắng AgCl↓'],
+          ['Cream / Pale yellow (AgBr)', 'Kết tủa vàng nhạt AgBr↓'],
+          ['Yellow precipitate (AgI)', 'Kết tủa vàng đậm AgI↓']
+        ],
+        cauHoi: 'Vì sao không dùng được dung dịch AgNO3 để nhận biết ion F⁻ (trong dung dịch NaF)?'
+      },
+      {
+        ten: 'Precipitation Reaction – Bản chất vi mô phản ứng kết tủa AgCl (JavaLab)',
+        url: 'https://javalab.org/en/precipitation_reaction_en/',
+        embed: true,
+        mucTieu: 'Quan sát ở cấp độ ion khi đổ dung dịch AgNO3 vào dung dịch NaCl: các ion Ag⁺ và Cl⁻ kết hợp tạo tinh thể AgCl↓ lắng xuống đáy cốc, còn Na⁺ và NO3⁻ vẫn bơi tự do.',
+        buoc: [
+          'Bấm nút đổ cốc dung dịch <b>AgNO3</b> vào cốc dung dịch <b>NaCl</b>.',
+          'Quan sát các hạt cầu <b>Ag⁺</b> và <b>Cl⁻</b> hút chặt nhau lắng xuống đáy tạo kết tủa trắng AgCl, trong khi ion Na⁺ và NO3⁻ không tham gia phản ứng.'
+        ],
+        tuDien: [
+          ['Precipitate (AgCl↓)', 'Chất kết tủa lắng xuống đáy'],
+          ['Spectator ions (Na⁺, NO₃⁻)', 'Các ion tự do trong dung dịch'],
+          ['Net ionic equation', 'Phương trình ion rút gọn: Ag⁺ + Cl⁻ → AgCl↓']
+        ],
+        cauHoi: 'Khi cho dung dịch HCl đến dư vào dung dịch AgNO3, sau phản ứng thu được kết tủa màu gì?'
+      },
+      {
+        ten: 'ChemCollective Virtual Lab',
+        url: 'https://chemcollective.org/vlabs',
+        embed: true,
+        mucTieu: 'Đo pH và chuẩn độ các dung dịch hydrohalic acid (HF, HCl, HBr, HI).',
+        buoc: ['Lấy dung dịch HCl và máy đo pH từ kho dụng cụ để kiểm tra tính acid mạnh của HCl.'],
+        tuDien: [['Weak acid (HF)', 'Acid yếu'], ['Strong acid (HCl, HBr, HI)', 'Acid mạnh']],
+        cauHoi: 'Trong dãy HF → HCl → HBr → HI, tính acid và tính khử biến đổi theo chiều tăng dần hay giảm dần?'
+      }
     ]}
   ];
 
@@ -1253,22 +2248,91 @@ window.H10 = (function () {
     }
   }
 
+  function moPhongLab(baiObj, linkObj) {
+    const hop = document.createElement('div');
+    hop.className = 'lab-modal';
+    hop.setAttribute('role', 'dialog');
+    hop.setAttribute('aria-modal', 'true');
+    const coNhung = linkObj.embed !== false;
+    let anHD = false;
+
+    const vocabHtml = (linkObj.tuDien && linkObj.tuDien.length)
+      ? ('<div class="lab-sec"><h3>🔤 Từ điển nút bấm (Anh – Việt)</h3><div class="lab-vocab">' +
+          linkObj.tuDien.map(function (kv) {
+            return '<div class="lab-voc-item"><code>' + esc(kv[0]) + '</code><div class="phu" style="font-size:11.5px">' + esc(kv[1]) + '</div></div>';
+          }).join('') +
+        '</div></div>')
+      : '';
+
+    const stepsHtml = (linkObj.buoc && linkObj.buoc.length)
+      ? ('<div class="lab-sec"><h3>👆 Các bước thực hành</h3><ol class="lab-steps">' +
+          linkObj.buoc.map(function (b) { return '<li>' + b + '</li>'; }).join('') +
+        '</ol></div>')
+      : '';
+
+    const guideContent =
+      '<div class="lab-sec" style="border-left:3.5px solid var(--tim)">' +
+        '<h3>🎯 Mục tiêu bài học (Bài ' + esc(baiObj.bai) + ')</h3>' +
+        '<div style="font-size:13.2px;line-height:1.5">' + md(linkObj.mucTieu || baiObj.ten) + '</div>' +
+      '</div>' +
+      stepsHtml +
+      vocabHtml +
+      (linkObj.cauHoi ? ('<div class="lab-sec" style="background:var(--ok-n);border-color:var(--ok-v)"><h3 style="color:var(--ok)">💡 Câu hỏi tự kiểm tra</h3><div style="font-size:13.2px;line-height:1.5;font-weight:600">' + md(linkObj.cauHoi) + '</div></div>') : '') +
+      '<div class="phu" style="font-size:11.8px;line-height:1.45">📌 Nếu màn hình mô phỏng bên cạnh chưa hiện hoặc bị chặn bởi trình duyệt của trường, em bấm nút <b>↗ Mở cửa sổ riêng</b> ở thanh trên cùng nhé.</div>';
+
+    hop.innerHTML = '<div class="lab-shell">' +
+      '<div class="lab-bar">' +
+        '<div class="lab-bar-title">' +
+          '<span class="chip sky">Bài ' + esc(baiObj.bai) + '</span>' +
+          '<b>' + esc(linkObj.ten) + '</b>' +
+        '</div>' +
+        '<div class="hang-nut">' +
+          (coNhung ? '<button type="button" class="nut nho tim" data-x="tog-hd">📖 Ẩn/Hiện hướng dẫn Tiếng Việt</button>' : '') +
+          '<a class="nut nho vien" href="' + esc(linkObj.url) + '" target="h10_ngoai" rel="noopener">↗ Mở cửa sổ riêng</a>' +
+          '<button type="button" class="nut nho chinh" data-x="dong">✕ Đóng</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="lab-body' + (coNhung ? '' : ' ngoai-only') + '" data-x="body">' +
+        (coNhung
+          ? ('<div class="lab-stage"><iframe src="' + esc(linkObj.url) + '" allowfullscreen allow="fullscreen; autoplay"></iframe></div>' +
+             '<aside class="lab-guide" aria-label="Hướng dẫn Tiếng Việt">' + guideContent + '</aside>')
+          : ('<div class="lab-guide" style="max-width:760px;margin:0 auto;width:100%;border:0">' +
+               '<div class="thongbao info" style="margin:0"><div>Trang mô phỏng này cần mở trên cửa sổ riêng. Em đọc kỹ <b>Hướng dẫn Tiếng Việt &amp; Từ điển nút bấm</b> bên dưới rồi bấm nút mở thí nghiệm nhé!</div></div>' +
+               '<a class="nut chinh to rong" href="' + esc(linkObj.url) + '" target="h10_ngoai" rel="noopener">↗ Bấm để mở cửa sổ thí nghiệm song song</a>' +
+               guideContent +
+             '</div>')) +
+      '</div>' +
+    '</div>';
+
+    document.body.appendChild(hop);
+    const dong = function () { hop.remove(); document.removeEventListener('keydown', onEsc); };
+    const onEsc = function (e) { if (e.key === 'Escape') dong(); };
+    document.addEventListener('keydown', onEsc);
+    hop.onclick = function (e) { if (e.target === hop) dong(); };
+    hop.querySelector('[data-x="dong"]').onclick = dong;
+    const tog = hop.querySelector('[data-x="tog-hd"]');
+    if (tog) tog.onclick = function () {
+      anHD = !anHD;
+      hop.querySelector('[data-x="body"]').classList.toggle('an-hd', anHD);
+    };
+  }
+
   function veTrang() {
     const cfg = (data && data.caiDatTrang) || {};
     const tk = loc.tk.trim().toLowerCase();
     const ds = BAI_THI_NGHIEM.filter(function (b) {
       if (loc.bai && b.bai !== loc.bai) return false;
       if (tk) {
-        const text = ('bài ' + b.bai + ' ' + b.ten + ' ' + b.links.map(l => l.ten).join(' ')).toLowerCase();
+        const text = ('bài ' + b.bai + ' ' + b.ten + ' ' + b.links.map(l => l.ten + ' ' + (l.mucTieu || '')).join(' ')).toLowerCase();
         if (text.indexOf(tk) < 0) return false;
       }
       return true;
     });
 
-    let h = '<div class="hero-box art-flask" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">' +
-      '<div><span class="chip sky">PHÒNG THÍ NGHIỆM ẢO</span>' +
-      '<h1>Thí nghiệm ảo &amp; Trang web tham khảo</h1>' +
-      '<p class="phu" style="margin:0">Mô phỏng trực quan theo từng bài SGK Hóa 10. Các mô phỏng mở chung trên 1 cửa sổ để tránh tràn tab.</p></div>';
+    let h = '<div class="hero-box art-flask has-right" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">' +
+      '<div><span class="chip sky">PHÒNG LAB ẢO TRỰC TIẾP · CÓ HƯỚNG DẪN TIẾNG VIỆT</span>' +
+      '<h1>Thí nghiệm ảo &amp; Sổ tay thực hành Hóa 10</h1>' +
+      '<p class="phu" style="margin:0">Bấm <b>▶ Làm ngay trên web</b> để mở trực tiếp mô phỏng PhET / JavaLab / Ptable kèm <b>Hướng dẫn từng bước &amp; Từ điển nút bấm Tiếng Việt</b> bên cạnh.</p></div>';
     if (cfg.linkThuMucThiNghiem) {
       h += '<a class="nut chinh" href="' + esc(cfg.linkThuMucThiNghiem) + '" target="h10_ngoai" rel="noopener">Thư mục thí nghiệm (Drive)</a>';
     }
@@ -1276,7 +2340,7 @@ window.H10 = (function () {
 
     h += '<section class="the" style="margin-bottom:14px">' +
       '<div class="hang" style="align-items:flex-end">' +
-        '<div class="truong" style="flex:2 1 240px"><label for="tn-tk">Tìm thí nghiệm / tên bài</label><input id="tn-tk" type="search" placeholder="Ví dụ: nguyên tử, ion, PhET, enthalpy..." value="' + esc(loc.tk) + '"></div>' +
+        '<div class="truong" style="flex:2 1 240px"><label for="tn-tk">Tìm thí nghiệm / tên bài / hiện tượng</label><input id="tn-tk" type="search" placeholder="Ví dụ: nguyên tử, đồng vị, ion, PhET, kết tủa AgCl, tốc độ..." value="' + esc(loc.tk) + '"></div>' +
         '<div class="truong" style="flex:1 1 220px"><label for="tn-bai">Lọc theo bài SGK</label><select id="tn-bai"><option value="">Tất cả (' + BAI_THI_NGHIEM.length + ' bài có mô phỏng)</option>' +
           BAI_THI_NGHIEM.map(b => '<option value="' + esc(b.bai) + '"' + (loc.bai === b.bai ? ' selected' : '') + '>Bài ' + esc(b.bai) + ' · ' + esc(b.ten) + '</option>').join('') +
         '</select></div>' +
@@ -1287,32 +2351,53 @@ window.H10 = (function () {
         ((loc.bai || tk) ? '<button type="button" class="nut nho xoa" id="tn-xoa-loc">Xóa lọc</button>' : '') +
       '</div></section>';
 
-    h += '<div class="nhan-muc">Thí nghiệm ảo theo bài (' + ds.length + ')</div>';
+    h += '<div class="nhan-muc">Phòng thí nghiệm theo bài SGK (' + ds.length + ' bài)</div>';
     if (!ds.length) {
       h += '<div class="the"><p class="phu" style="margin:0;text-align:center">Không tìm thấy thí nghiệm phù hợp.</p></div>';
     } else {
       h += '<div class="tn-grid">';
-      ds.forEach(function (b) {
+      ds.forEach(function (b, bIdx) {
         h += '<div class="tn-row">' +
           '<div class="tn-head"><span class="tn-badge"><small>Bài</small>' + esc(b.bai) + '</span>' +
-            '<div class="tn-ten"><b>' + esc(b.ten) + '</b><span class="phu">' + b.links.length + ' mô phỏng tương tác</span></div></div>' +
-          '<div class="tn-pills">' + b.links.map(l => '<a class="tn-pill" href="' + esc(l.url) + '" target="h10_ngoai" rel="noopener"><span aria-hidden="true">⚗</span>' + esc(l.ten) + '<span class="tn-go" aria-hidden="true">↗</span></a>').join('') + '</div>' +
+            '<div class="tn-ten"><b>' + esc(b.ten) + '</b><span class="phu">' + b.links.length + ' thí nghiệm có hướng dẫn Tiếng Việt</span></div></div>' +
+          '<div class="tn-sim-list">' + b.links.map(function (l, lIdx) {
+            const coNhung = l.embed !== false;
+            return '<div class="tn-sim-card">' +
+              '<div class="tn-sim-info">' +
+                '<b><span>⚗️ ' + esc(l.ten) + '</span><span class="chip ' + (coNhung ? 'ok' : 'tim') + '" style="font-size:10.5px;padding:1px 7px">' + (coNhung ? 'Chạy trên web + Tiếng Việt' : 'Kèm HD Tiếng Việt') + '</span></b>' +
+                (l.mucTieu ? '<span class="phu">' + md(l.mucTieu) + '</span>' : '') +
+              '</div>' +
+              '<div class="hang-nut">' +
+                '<button type="button" class="nut nho ' + (coNhung ? 'chinh' : 'tim') + '" data-open-bai="' + esc(b.bai) + '" data-open-idx="' + lIdx + '">' + (coNhung ? '▶ Làm ngay trên web' : '📖 Xem HD &amp; Mở') + '</button>' +
+                '<a class="nut nho" href="' + esc(l.url) + '" target="h10_ngoai" rel="noopener" title="Mở trên tab riêng">↗</a>' +
+              '</div>' +
+            '</div>';
+          }).join('') + '</div>' +
         '</div>';
       });
       h += '</div>';
     }
 
-    h += '<div class="nhan-muc">Trang web tham khảo (' + WEB_THAM_KHAO.length + ')</div>' +
+    h += '<div id="gallery-tn-slot"></div>';
+
+    h += '<div class="nhan-muc">10 Kho mô phỏng Hóa học quốc tế &amp; trong nước (' + WEB_THAM_KHAO.length + ')</div>' +
       '<div class="tn-cards">' + WEB_THAM_KHAO.map(w => '<a class="tn-card" href="' + esc(w.url) + '" target="h10_ngoai" rel="noopener"><strong><span>' + esc(w.ten) + '</span><span aria-hidden="true" style="opacity:.6;font-size:13px">↗</span></strong><span>' + esc(w.moTa) + '</span></a>').join('') + '</div>';
 
     h += '<div id="slogan-slot"></div>';
     app.innerHTML = h;
+    renderGalleryHoa10(document.getElementById('gallery-tn-slot'), 'Sắc màu & Hiện tượng Thí nghiệm Hóa 10');
     renderSlogan(document.getElementById('slogan-slot'));
 
     $('#tn-tk').oninput = function () { loc.tk = this.value; veTrang(); $('#tn-tk').focus(); const l = $('#tn-tk').value.length; $('#tn-tk').setSelectionRange(l, l); };
     $('#tn-bai').onchange = function () { loc.bai = this.value; veTrang(); };
     const txl = $('#tn-xoa-loc'); if (txl) txl.onclick = function () { loc = { bai: '', tk: '' }; veTrang(); };
     app.querySelectorAll('[data-b]').forEach(btn => btn.onclick = () => { loc.bai = btn.getAttribute('data-b'); veTrang(); });
+    app.querySelectorAll('[data-open-bai]').forEach(btn => btn.onclick = () => {
+      const maBai = btn.getAttribute('data-open-bai');
+      const idx = Number(btn.getAttribute('data-open-idx')) || 0;
+      const baiObj = BAI_THI_NGHIEM.find(x => x.bai === maBai);
+      if (baiObj && baiObj.links[idx]) moPhongLab(baiObj, baiObj.links[idx]);
+    });
   }
 
   app.innerHTML = skelCards(4);

@@ -37,6 +37,7 @@ html[data-theme="classic"]{
   --hex-bg:none;
 }
 html[data-theme="dark"]{
+  color-scheme:dark;
   --do:#C24156; --do2:#E1586E; --do3:#9F2D40; --do-n:rgba(194,65,86,.18); --do-v:rgba(225,88,110,.35);
   --tim:#A78BFA; --tim2:#8B5CF6; --tim-n:rgba(167,139,250,.16); --tim-v:rgba(167,139,250,.32);
   --xanh:#2DD4BF; --xanh-n:rgba(45,212,191,.15); --xanh-v:rgba(45,212,191,.3);
@@ -106,6 +107,7 @@ body.dang-lam .khung-hep{max-width:1160px}
 .hero-box::before{content:"";position:absolute;top:0;left:0;right:0;height:3.5px;background:var(--grad)}
 html[data-theme="dark"] .hero-box{background:linear-gradient(135deg,rgba(194,65,86,.22) 0%,var(--the) 48%,rgba(109,40,217,.22) 100%)}
 .hero-box::after{content:"";position:absolute;inset:0;background-image:var(--hero-art),var(--hex-bg);background-size:150px 115px,64px 56px;background-position:right 10px center,0 0;background-repeat:no-repeat,repeat;pointer-events:none;opacity:.92;mask-image:linear-gradient(108deg,transparent 24%,rgba(0,0,0,.96) 100%);-webkit-mask-image:linear-gradient(108deg,transparent 24%,rgba(0,0,0,.96) 100%)}
+.hero-box.has-right::after{background-position:right 34% center,0 0;background-size:132px 102px,64px 56px;opacity:.48}
 .hero-box > *{position:relative;z-index:1}
 .hero-box h1{margin:6px 0 4px;font-size:clamp(20px,3vw,24px);font-weight:800;letter-spacing:-.015em;line-height:1.25}
 h1.tieu-trang{margin:0 0 12px;font-size:22px;font-weight:800;letter-spacing:-.015em}
@@ -147,6 +149,7 @@ h2.tieu-khoi{margin:0;font-size:16.5px;font-weight:700;display:flex;align-items:
 input[type=text],input[type=number],input[type=search],input[type=date],input[type=datetime-local],input[type=password],input[type=url],select,textarea{min-height:40px;padding:0 12px;border:1px solid var(--vien);border-radius:10px;background:var(--the);color:var(--chu);font-size:14px;width:100%;max-width:100%;min-width:0;transition:border-color .14s,box-shadow .14s}
 textarea{min-height:84px;padding:9px 12px;resize:vertical;line-height:1.5}
 input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(109,40,217,.16);border-color:var(--tim)}
+input[type=checkbox],input[type=radio]{accent-color:var(--do)}
 .chon{display:flex;align-items:center;gap:9px;min-height:36px;font-size:13.5px;cursor:pointer}
 .chon input{width:17px;height:17px;flex-shrink:0;accent-color:var(--do)}
 .hang{display:flex;flex-wrap:wrap;gap:12px}
@@ -171,6 +174,7 @@ input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(1
 .hop-bang{border:1px solid var(--vien);border-radius:13px;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--the);box-shadow:var(--shadow)}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 th{background:var(--nen2);text-align:left;font-weight:700;color:var(--mo);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:10px 12px;white-space:nowrap;border-bottom:1px solid var(--vien);position:sticky;top:0;z-index:1}
+th.so{text-align:right}
 td{padding:10px 12px;border-top:1px solid var(--vien2);vertical-align:middle}
 tbody tr:hover td{background:var(--nen2)}
 .so{text-align:right}
@@ -325,6 +329,17 @@ body.dang-lam .topbar{position:static}
 .dock-act{align-self:center}
 .dock-t2{margin-top:12px;padding-top:12px;border-top:1px solid var(--vien);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
 .dock-xuat{margin-left:auto}
+.dock-sticky{position:sticky;top:60px;z-index:28;margin-top:10px;padding:10px 14px;border-radius:14px;background:var(--the);border:1.5px solid var(--tim-v);box-shadow:var(--shadow-lg);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.top-more-wrap{position:relative;display:none}
+.top-more-menu{position:absolute;right:0;top:calc(100% + 6px);min-width:176px;background:var(--the);border:1px solid var(--vien);border-radius:13px;padding:6px;box-shadow:var(--shadow-lg);display:none;flex-direction:column;gap:4px;z-index:60}
+.top-more-menu.mo{display:flex}
+.top-more-menu .top-pill{width:100%;justify-content:flex-start}
+.th-cards{display:none;flex-direction:column;gap:8px}
+.th-card{background:var(--the);border:1px solid var(--vien);border-left:4px solid var(--tim);border-radius:13px;padding:11px 13px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.th-card.cay{border-left-color:var(--canh);background:var(--canh-n)}
+.th-card.chua{border-left-color:var(--loi);background:var(--nen2)}
+.th-card-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.th-card-meta{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--mo)}
 .dx-box{margin-top:8px;padding:12px 14px;border-radius:13px;border:1.5px solid var(--tim-v);background:linear-gradient(180deg,var(--tim-n) 0%,var(--the) 100%);font-size:13.5px;display:flex;flex-direction:column;gap:7px;box-shadow:0 3px 10px rgba(109,40,217,.08)}
 .luoi-chuong{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px;align-items:start}
 .chuong{border:1px solid var(--vien);border-radius:12px;padding:4px 12px;background:var(--nen2);transition:border-color .14s}
@@ -445,6 +460,94 @@ body.dang-lam .topbar{position:static}
 .tn-card:hover{transform:translateY(-2px);border-color:var(--tim-v);box-shadow:var(--shadow-lg);text-decoration:none}
 .tn-card strong{color:var(--do);font-size:14.5px;display:flex;align-items:center;justify-content:space-between;gap:6px}
 .tn-card span{color:var(--mo);font-size:12.5px;line-height:1.45}
+
+/* Gallery Sac Mau Hoa Hoc 10, Poster 7 Chuong, Flashcard 3D & Lab Studio */
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:18px 2px 10px}
+.sec-head h2{margin:0;font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:-.01em}
+.sec-head .phu{font-size:12.5px}
+
+/* Poster 7 Chuong SGK */
+.ch-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px}
+.ch-card{position:relative;overflow:hidden;border-radius:16px;padding:13px 14px;color:#fff;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;min-height:112px;box-shadow:0 6px 18px rgba(24,18,40,.14);border:1px solid rgba(255,255,255,.22);transition:transform .16s,box-shadow .16s}
+.ch-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(24,18,40,.22);text-decoration:none;color:#fff}
+.ch-card::after{content:"";position:absolute;right:-14px;bottom:-14px;width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
+.ch-card .ch-num{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.92;display:inline-flex;align-items:center;gap:5px}
+.ch-card .ch-ic{font-size:22px;line-height:1}
+.ch-card b{font-size:14.5px;font-weight:800;line-height:1.25;margin-top:6px;text-shadow:0 1px 4px rgba(0,0,0,.18)}
+.ch-card .ch-sub{font-size:11.5px;opacity:.9;margin-top:4px;font-weight:600}
+.ch-c1{background:linear-gradient(135deg,#7A2230 0%,#B83B5E 100%)}
+.ch-c2{background:linear-gradient(135deg,#5B21B6 0%,#8B5CF6 100%)}
+.ch-c3{background:linear-gradient(135deg,#0F766E 0%,#14B8A6 100%)}
+.ch-c4{background:linear-gradient(135deg,#B45309 0%,#F59E0B 100%)}
+.ch-c5{background:linear-gradient(135deg,#BE123C 0%,#FB7185 100%)}
+.ch-c6{background:linear-gradient(135deg,#0369A1 0%,#38BDF8 100%)}
+.ch-c7{background:linear-gradient(135deg,#4338CA 0%,#EC4899 100%)}
+
+/* Visual Gallery Sac Mau Hoa Hoc 10 */
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px}
+.gal-card{background:var(--the);border:1px solid var(--vien);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;transition:transform .16s,box-shadow .16s,border-color .16s;text-align:left;padding:0}
+.gal-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--tim-v)}
+.gal-art{position:relative;height:132px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:12px}
+.gal-art svg{width:100%;height:100%;max-height:112px;overflow:visible}
+.gal-tag{position:absolute;top:9px;left:10px;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(15,18,30,.66);color:#fff;backdrop-filter:blur(4px);letter-spacing:.03em}
+.gal-zoom{position:absolute;bottom:8px;right:9px;font-size:11px;font-weight:700;padding:2.5px 8px;border-radius:8px;background:rgba(255,255,255,.88);color:#1E1B24;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.gal-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
+.gal-body b{font-size:14.5px;font-weight:800;color:var(--chu);line-height:1.3}
+.gal-body .phu{font-size:12.5px;line-height:1.45}
+.gal-swatches{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.gal-sw{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--nen2);border:1px solid var(--vien)}
+.gal-sw i{width:9px;height:9px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+
+/* Flashcard 3D Thu thach 10 giay */
+.fc-wrap{perspective:1000px}
+.fc-box{position:relative;border-radius:16px;background:linear-gradient(135deg,var(--tim-n) 0%,var(--the) 52%,var(--do-n) 100%);border:1.5px solid var(--tim-v);padding:15px 18px;box-shadow:var(--shadow);cursor:pointer;user-select:none;transition:transform .28s cubic-bezier(.2,.85,.35,1),box-shadow .18s}
+.fc-box:hover{box-shadow:var(--shadow-lg)}
+.fc-box.lat{background:linear-gradient(135deg,var(--ok-n) 0%,var(--the) 58%,var(--tim-n) 100%);border-color:var(--ok-v)}
+.fc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.fc-q{font-size:15.5px;font-weight:800;line-height:1.45;color:var(--chu);min-height:44px;display:flex;align-items:center}
+.fc-a{margin-top:8px;padding-top:9px;border-top:1px dashed var(--ok-v);font-size:14px;line-height:1.5;color:var(--ok);font-weight:700;display:none}
+.fc-box.lat .fc-a{display:block}
+.fc-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:12px;color:var(--mo)}
+
+/* Virtual Lab Studio (Inline iframe + Huong dan Tieng Viet) */
+.tn-sim-list{display:flex;flex-direction:column;gap:8px}
+.tn-sim-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:var(--nen2);border:1px solid var(--vien);transition:border-color .14s,background-color .14s,transform .12s;flex-wrap:wrap}
+.tn-sim-card:hover{border-color:var(--tim-v);background:var(--the);transform:translateY(-1px)}
+.tn-sim-info{flex:1 1 200px;min-width:0}
+.tn-sim-info b{display:flex;align-items:center;gap:6px;font-size:13.8px;color:var(--chu);line-height:1.35;flex-wrap:wrap}
+.tn-sim-info .phu{font-size:12px;margin-top:2px;display:block}
+.lab-modal{position:fixed;inset:0;background:rgba(12,10,22,.76);z-index:85;display:flex;align-items:center;justify-content:center;padding:10px}
+.lab-shell{width:100%;max-width:1360px;height:94vh;height:94dvh;background:var(--the);border-radius:18px;border:1px solid var(--vien);box-shadow:0 20px 50px rgba(0,0,0,.45);display:flex;flex-direction:column;overflow:hidden}
+.lab-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:var(--the);border-bottom:1px solid var(--vien);flex-wrap:wrap}
+.lab-bar-title{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.lab-bar-title b{font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lab-body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 350px;background:var(--nen)}
+.lab-body.an-hd{grid-template-columns:minmax(0,1fr)}
+.lab-body.ngoai-only{grid-template-columns:minmax(0,1fr)}
+.lab-stage{position:relative;width:100%;height:100%;background:#0F111A;display:flex;flex-direction:column;min-height:300px}
+.lab-stage iframe{width:100%;height:100%;border:0;flex:1;background:#fff}
+.lab-guide{background:var(--the);border-left:1px solid var(--vien);padding:14px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.lab-body.an-hd .lab-guide{display:none}
+.lab-sec{background:var(--nen2);border:1px solid var(--vien2);border-radius:12px;padding:11px 13px}
+.lab-sec h3{margin:0 0 6px;font-size:13px;font-weight:800;color:var(--do);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:6px}
+.lab-steps{margin:0;padding-left:18px;font-size:13.2px;line-height:1.55;display:flex;flex-direction:column;gap:5px}
+.lab-vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:6px}
+.lab-voc-item{background:var(--the);border:1px solid var(--vien);border-radius:8px;padding:5px 8px;font-size:12px;line-height:1.35}
+.lab-voc-item code{font-weight:800;color:var(--tim);font-family:inherit}
+@media (max-width:920px){
+  .lab-shell{height:96dvh}
+  .lab-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(280px,54%) minmax(0,46%)}
+  .lab-body.an-hd{grid-template-rows:minmax(0,1fr)}
+  .lab-guide{border-left:0;border-top:1px solid var(--vien)}
+}
+@media (max-width:640px){
+  .ch-strip{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:9px;padding-bottom:4px}
+  .ch-strip::-webkit-scrollbar{display:none}
+  .ch-card{flex:0 0 162px;min-height:104px}
+  .gal-grid{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:10px;padding-bottom:4px}
+  .gal-grid::-webkit-scrollbar{display:none}
+  .gal-card{flex:0 0 246px}
+}
 
 /* Scrollable chip bar */
 .chip-scroll{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
@@ -614,6 +717,19 @@ body.embed-ok .topbar-in{max-width:1280px}
   #btn-theme{padding:0 10px;min-width:40px;justify-content:center}
   .hero-mascot .hm-star{display:none}
   .hero-mascot .hm-kicker{letter-spacing:.08em}
+  /* Admin mobile: gom menu topbar, kho đề trượt ngang, chấm lịch, thẻ điểm */
+  .top-extra{display:none!important}
+  .top-more-wrap{display:inline-block}
+  .cay-tm{flex-direction:row!important;flex-wrap:nowrap!important;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;max-height:none!important;padding:6px;gap:6px}
+  .cay-tm::-webkit-scrollbar{display:none}
+  .cay-tm button{width:auto!important;flex:none;white-space:nowrap;min-height:32px;padding:4px 10px}
+  .cay-tm button.b{padding-left:10px}
+  .cay-tm button[data-loc="nhieu"]{border-top:0!important;margin-top:0!important;padding-top:4px!important}
+  .cal-pill.de{width:10px;height:10px;min-width:10px;padding:0;border-radius:50%;background:var(--tim);border:0;font-size:0;color:transparent;display:inline-block}
+  .cal-ev-list{flex-direction:row;flex-wrap:wrap;align-items:center}
+  .th-bang-pc{display:none}
+  .th-cards{display:flex}
+  .dock-sticky{top:96px;padding:8px 10px}
   /* Kho tài liệu: gập bộ lọc chi tiết */
   .tl-loc-nut{display:inline-flex}
   .tl-loc-chi-tiet{display:none!important}
@@ -670,11 +786,11 @@ body.embed-ok .topbar-in{max-width:1280px}
         </div>
       </div>
       <div class="top-right">
-        <a class="top-pill an" id="btn-home" href="#" target="_self">← Trang chủ</a>
-        <a class="top-pill an" id="btn-btvn" href="#" target="_top">Làm BTVN</a>
-        <span class="top-pill on">Kho tài liệu</span>
-        <a class="top-pill an" id="btn-lab" href="#" target="_self">Thí nghiệm</a>
-        <a class="top-pill an" id="btn-game" href="#" target="_self">Trò chơi</a>
+        <a class="top-pill an" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
+        <a class="top-pill an" id="btn-btvn" href="#" target="_top">📝 Làm BTVN</a>
+        <span class="top-pill on">📚 Tài liệu</span>
+        <a class="top-pill an" id="btn-lab" href="#" target="_self">🔬 Thí nghiệm</a>
+        <a class="top-pill an" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
         <a class="top-pill an" id="btn-full" href="#" target="_top"></a>
         <button type="button" class="top-pill" id="btn-theme"></button>
       </div>
@@ -1085,6 +1201,159 @@ window.H10 = (function () {
     setTimeout(function () { vung.remove(); }, 4600);
   }
 
+  // ---- Bộ Gallery "Sắc màu Hóa học 10" (SVG trực quan + Lightbox chi tiết) ----
+  const GALLERY_HOA10 = [
+    {
+      id: 'flame',
+      tag: 'Chương 1 · Quang phổ',
+      ten: 'Màu ngọn lửa ion kim loại',
+      tomTat: 'Khi đốt nóng, electron nhảy lên mức năng lượng cao rồi phát xạ ánh sáng màu đặc trưng cho từng nguyên tố.',
+      nen: 'linear-gradient(135deg,#1E112A 0%,#3B1432 55%,#131A2E 100%)',
+      swatches: [
+        { ten: 'Li⁺ Đỏ tía', mau: '#FF2A5F' },
+        { ten: 'Na⁺ Vàng rực', mau: '#FFB800' },
+        { ten: 'K⁺ Tím hoa cà', mau: '#C084FC' },
+        { ten: 'Cu²⁺ Xanh lục', mau: '#10B981' }
+      ],
+      svg: '<svg viewBox="0 0 260 110" aria-hidden="true">' +
+        '<g transform="translate(22,12)"><path d="M18 76 C4 58 8 32 18 10 C28 32 32 58 18 76Z" fill="#FF2A5F" opacity=".92"/><path d="M18 74 C11 60 13 42 18 26 C23 42 25 60 18 74Z" fill="#FF9EBB"/><rect x="12" y="76" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="102" fill="#FFE4EC" font-size="11" font-weight="800" text-anchor="middle">Li⁺</text></g>' +
+        '<g transform="translate(82,8)"><path d="M18 80 C2 60 6 30 18 6 C30 30 34 60 18 80Z" fill="#FFB800" opacity=".95"/><path d="M18 78 C10 62 12 42 18 24 C24 42 26 62 18 78Z" fill="#FFF3B0"/><rect x="12" y="80" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="106" fill="#FEF08A" font-size="11" font-weight="800" text-anchor="middle">Na⁺</text></g>' +
+        '<g transform="translate(142,12)"><path d="M18 76 C4 58 8 32 18 10 C28 32 32 58 18 76Z" fill="#C084FC" opacity=".92"/><path d="M18 74 C11 60 13 42 18 26 C23 42 25 60 18 74Z" fill="#F3E8FF"/><rect x="12" y="76" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="102" fill="#E9D5FF" font-size="11" font-weight="800" text-anchor="middle">K⁺</text></g>' +
+        '<g transform="translate(202,10)"><path d="M18 78 C4 58 8 30 18 8 C28 30 32 58 18 78Z" fill="#10B981" opacity=".95"/><path d="M18 76 C11 60 13 42 18 24 C23 42 25 60 18 76Z" fill="#A7F3D0"/><rect x="12" y="78" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="104" fill="#A7F3D0" font-size="11" font-weight="800" text-anchor="middle">Cu²⁺</text></g>' +
+      '</svg>',
+      chiTiet: '<b>Bản chất (Bài 3 – Lớp vỏ electron):</b> Khi nhúng dây platinum sạch vào dung dịch muối rồi đốt trên đèn khí, các electron hấp thụ năng lượng nhảy lên orbital cao hơn, sau đó trở về trạng thái cơ bản và phát ra bức xạ có bước sóng đặc trưng trong vùng nhìn thấy:\n' +
+        '• <b>Muối Lithium (Li⁺):</b> Ngọn lửa màu đỏ tía (λ ≈ 671 nm).\n' +
+        '• <b>Muối Sodium (Na⁺):</b> Ngọn lửa màu vàng tươi rực rỡ (λ ≈ 589 nm, dùng làm đèn cao áp đường phố).\n' +
+        '• <b>Muối Potassium (K⁺):</b> Ngọn lửa màu tím hoa cà.\n' +
+        '• <b>Muối Calcium (Ca²⁺):</b> Đỏ cam · <b>Barium (Ba²⁺):</b> Lục vàng · <b>Copper (Cu²⁺):</b> Xanh lục (ứng dụng chế tạo pháo hoa).'
+    },
+    {
+      id: 'halogen',
+      tag: 'Chương 7 · Bài 21',
+      ten: 'Sắc màu 4 đơn chất Halogen',
+      tomTat: 'Từ F2 → Cl2 → Br2 → I2: màu sắc đậm dần và nhiệt độ nóng chảy, nhiệt độ sôi tăng dần do tương tác van der Waals tăng.',
+      nen: 'linear-gradient(135deg,#1B2838 0%,#2B1E3F 58%,#3A1828 100%)',
+      swatches: [
+        { ten: 'F₂ Lục nhạt', mau: '#D9F99D' },
+        { ten: 'Cl₂ Vàng lục', mau: '#A3E635' },
+        { ten: 'Br₂ Nâu đỏ', mau: '#B91C1C' },
+        { ten: 'I₂ Tím đen', mau: '#6B21A8' }
+      ],
+      svg: '<svg viewBox="0 0 260 110" aria-hidden="true">' +
+        '<g transform="translate(18,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(217,249,157,.38)" stroke="#E2E8F0" stroke-width="2"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#ECFCCB" font-size="11" font-weight="800" text-anchor="middle">F₂ (khí)</text></g>' +
+        '<g transform="translate(80,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(163,230,53,.52)" stroke="#E2E8F0" stroke-width="2"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#D9F99D" font-size="11" font-weight="800" text-anchor="middle">Cl₂ (khí)</text></g>' +
+        '<g transform="translate(142,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(239,68,68,.28)" stroke="#E2E8F0" stroke-width="2"/><path d="M5 46 H31 V62 A13 13 0 0 1 5 62 Z" fill="#991B1B"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#FCA5A5" font-size="11" font-weight="800" text-anchor="middle">Br₂ (lỏng)</text></g>' +
+        '<g transform="translate(204,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(168,85,247,.34)" stroke="#E2E8F0" stroke-width="2"/><circle cx="14" cy="64" r="5" fill="#3B0764"/><circle cx="22" cy="66" r="4.5" fill="#4C1D95"/><circle cx="18" cy="59" r="4" fill="#581C87"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#E9D5FF" font-size="11" font-weight="800" text-anchor="middle">I₂ (rắn)</text></g>' +
+      '</svg>',
+      chiTiet: '<b>Quy luật biến đổi nhóm VIIA (Bài 21 – Nhóm Halogen):</b>\n' +
+        '• <b>Fluorine (F2):</b> Khí màu lục nhạt, rất độc, tính oxi hóa mạnh nhất (oxi hóa mãnh liệt H2O tạo O2).\n' +
+        '• <b>Chlorine (Cl2):</b> Khí màu vàng lục, mùi xốc, tan một phần trong nước tạo nước chlorine (HCl + HClO có tính tẩy màu).\n' +
+        '• <b>Bromine (Br2):</b> Chất lỏng màu nâu đỏ, dễ bay hơi, gây bỏng sâu khi rơi vào da.\n' +
+        '• <b>Iodine (I2):</b> Tinh thể màu đen tím; khi đun nóng <b>thăng hoa</b> trực tiếp từ thể rắn sang hơi màu tím mà không qua trạng thái lỏng; gặp hồ tinh bột tạo phức màu <b>xanh tím</b> đặc trưng.'
+    },
+    {
+      id: 'agx',
+      tag: 'Chương 7 · Bài 22',
+      ten: 'Nhận biết ion Halide bằng AgNO3',
+      tomTat: 'Phản ứng chuẩn trong phòng Lab: F⁻ không kết tủa, Cl⁻ kết tủa trắng, Br⁻ vàng nhạt, I⁻ vàng đậm.',
+      nen: 'linear-gradient(135deg,#0F292E 0%,#1E293B 55%,#3B2818 100%)',
+      swatches: [
+        { ten: 'AgF Tan', mau: '#38BDF8' },
+        { ten: 'AgCl↓ Trắng', mau: '#F8FAFC' },
+        { ten: 'AgBr↓ Vàng nhạt', mau: '#FEF08A' },
+        { ten: 'AgI↓ Vàng đậm', mau: '#EAB308' }
+      ],
+      svg: '<svg viewBox="0 0 260 110" aria-hidden="true">' +
+        '<g transform="translate(18,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(56,189,248,.22)" stroke="#CBD5E1" stroke-width="2"/><text x="18" y="46" fill="#BAE6FD" font-size="9" font-weight="700" text-anchor="middle">Trong</text><text x="18" y="92" fill="#BAE6FD" font-size="11" font-weight="800" text-anchor="middle">NaF</text></g>' +
+        '<g transform="translate(80,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(255,255,255,.15)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 50 H31 V62 A13 13 0 0 1 5 62 Z" fill="#F8FAFC"/><text x="18" y="92" fill="#F8FAFC" font-size="11" font-weight="800" text-anchor="middle">AgCl↓</text></g>' +
+        '<g transform="translate(142,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(255,255,255,.15)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 50 H31 V62 A13 13 0 0 1 5 62 Z" fill="#FEF08A"/><text x="18" y="92" fill="#FEF08A" font-size="11" font-weight="800" text-anchor="middle">AgBr↓</text></g>' +
+        '<g transform="translate(204,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(255,255,255,.15)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 50 H31 V62 A13 13 0 0 1 5 62 Z" fill="#EAB308"/><text x="18" y="92" fill="#FACC15" font-size="11" font-weight="800" text-anchor="middle">AgI↓</text></g>' +
+      '</svg>',
+      chiTiet: '<b>Phương trình phân biệt các muối Halide (Bài 22):</b>\n' +
+        '• <b>NaF + AgNO3:</b> Không hiện tượng (vì AgF tan tốt trong nước).\n' +
+        '• <b>NaCl + AgNO3 -> AgCl↓ (kết tủa trắng) + NaNO3</b> (kết tủa AgCl hóa đen ngoài ánh sáng: 2AgCl -> 2Ag + Cl2).\n' +
+        '• <b>NaBr + AgNO3 -> AgBr↓ (kết tủa vàng nhạt) + NaNO3</b>.\n' +
+        '• <b>NaI + AgNO3 -> AgI↓ (kết tủa vàng đậm) + NaNO3</b>.'
+    },
+    {
+      id: 'redox',
+      tag: 'Chương 4 & 5 · Thí nghiệm',
+      ten: 'Sắc màu Ion chuyển tiếp & Nhiệt phản ứng',
+      tomTat: 'Sự đổi màu ấn tượng của KMnO4, muối sắt Fe2+/Fe3+, đồng Cu2+ và so sánh phản ứng tỏa nhiệt – thu nhiệt.',
+      nen: 'linear-gradient(135deg,#2D122B 0%,#1F243D 52%,#112C29 100%)',
+      swatches: [
+        { ten: 'MnO₄⁻ Tím đậm', mau: '#9333EA' },
+        { ten: 'Cu²⁺ Xanh lam', mau: '#0284C7' },
+        { ten: 'Fe³⁺ Vàng nâu', mau: '#D97706' },
+        { ten: 'ΔrH < 0 Tỏa nhiệt', mau: '#EF4444' }
+      ],
+      svg: '<svg viewBox="0 0 260 110" aria-hidden="true">' +
+        '<g transform="translate(22,12)"><path d="M22 10 H36 M25 10 V30 L8 68 A7 7 0 0 0 14 78 H44 A7 7 0 0 0 50 68 L33 30 V10" fill="none" stroke="#E2E8F0" stroke-width="2"/><path d="M13 54 H45 L49 68 A5 5 0 0 1 44 76 H14 A5 5 0 0 1 9 68 Z" fill="#9333EA"/><text x="29" y="96" fill="#E9D5FF" font-size="10.5" font-weight="800" text-anchor="middle">KMnO₄</text></g>' +
+        '<g transform="translate(100,12)"><path d="M22 10 H36 M25 10 V30 L8 68 A7 7 0 0 0 14 78 H44 A7 7 0 0 0 50 68 L33 30 V10" fill="none" stroke="#E2E8F0" stroke-width="2"/><path d="M13 54 H45 L49 68 A5 5 0 0 1 44 76 H14 A5 5 0 0 1 9 68 Z" fill="#0284C7"/><text x="29" y="96" fill="#BAE6FD" font-size="10.5" font-weight="800" text-anchor="middle">CuSO₄</text></g>' +
+        '<g transform="translate(178,12)"><path d="M22 10 H36 M25 10 V30 L8 68 A7 7 0 0 0 14 78 H44 A7 7 0 0 0 50 68 L33 30 V10" fill="none" stroke="#E2E8F0" stroke-width="2"/><path d="M13 54 H45 L49 68 A5 5 0 0 1 44 76 H14 A5 5 0 0 1 9 68 Z" fill="#D97706"/><text x="29" y="96" fill="#FDE68A" font-size="10.5" font-weight="800" text-anchor="middle">FeCl₃</text></g>' +
+      '</svg>',
+      chiTiet: '<b>Nhận biết nhanh hiện tượng trong các bài toán Hóa 10:</b>\n' +
+        '• <b>Dung dịch KMnO4 (thuốc tím):</b> Màu tím đặc trưng; khi oxi hóa chất khử trong môi trường acid (H2SO4 loãng) sẽ <b>mất màu tím</b> tạo Mn2+ không màu.\n' +
+        '• <b>Dung dịch muối Cu2+ (CuSO4):</b> Màu xanh lam; tác dụng với NaOH tạo kết tủa <b>Cu(OH)2 xanh lam</b>.\n' +
+        '• <b>Dung dịch Fe2+ → Fe3+:</b> Từ lục nhạt chuyển sang vàng nâu; tạo kết tủa Fe(OH)3 màu <b>nâu đỏ</b>.\n' +
+        '• <b>Biến thiên Enthalpy (Chương 5):</b> $\\Delta_r H^\\circ_{298} < 0$ là phản ứng <b>tỏa nhiệt</b> (bình nóng lên, như đốt cháy, tôi vôi CaO + H2O); $\\Delta_r H^\\circ_{298} > 0$ là phản ứng <b>thu nhiệt</b> (bình lạnh đi, như hòa tan viên sủi hoặc NH4Cl).'
+    }
+  ];
+
+  function moLightboxGallery(id) {
+    const item = GALLERY_HOA10.find(function (x) { return x.id === id; });
+    if (!item) return;
+    const hop = document.createElement('div');
+    hop.className = 'hopdn';
+    hop.innerHTML = '<div class="the vua" style="padding:0;overflow:hidden">' +
+      '<div class="gal-art" style="height:175px;background:' + item.nen + '">' +
+        '<span class="gal-tag">' + esc(item.tag) + '</span>' +
+        item.svg +
+      '</div>' +
+      '<div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">' +
+        '<h2 style="margin:0;font-size:18px;font-weight:800">' + md(item.ten) + '</h2>' +
+        '<div class="gal-swatches">' + item.swatches.map(function (s) {
+          return '<span class="gal-sw"><i style="background:' + s.mau + '"></i>' + esc(s.ten) + '</span>';
+        }).join('') + '</div>' +
+        '<div style="font-size:13.8px;line-height:1.6;background:var(--nen2);border:1px solid var(--vien);border-radius:12px;padding:12px 14px">' + md(item.chiTiet) + '</div>' +
+        '<div class="hang-nut" style="justify-content:flex-end"><button type="button" class="nut nho chinh" data-x="dong">Đã hiểu ✓</button></div>' +
+      '</div></div>';
+    document.body.appendChild(hop);
+    const dong = function () { hop.remove(); document.removeEventListener('keydown', onEsc); };
+    const onEsc = function (e) { if (e.key === 'Escape') dong(); };
+    document.addEventListener('keydown', onEsc);
+    hop.onclick = function (e) { if (e.target === hop) dong(); };
+    hop.querySelector('[data-x="dong"]').onclick = dong;
+  }
+
+  function renderGalleryHoa10(el, tieuDe) {
+    if (!el) return;
+    let h = '<div class="sec-head">' +
+      '<h2>📸 ' + esc(tieuDe || 'Gallery Sắc màu & Hiện tượng Hóa 10') + '</h2>' +
+      '<span class="phu">Chạm vào từng thẻ để xem phương trình &amp; giải thích</span>' +
+    '</div><div class="gal-grid">';
+    GALLERY_HOA10.forEach(function (g) {
+      h += '<button type="button" class="gal-card" data-gal="' + esc(g.id) + '">' +
+        '<div class="gal-art" style="background:' + g.nen + '">' +
+          '<span class="gal-tag">' + esc(g.tag) + '</span>' +
+          g.svg +
+          '<span class="gal-zoom">🔍 Xem chi tiết</span>' +
+        '</div>' +
+        '<div class="gal-body">' +
+          '<b>' + md(g.ten) + '</b>' +
+          '<span class="phu">' + md(g.tomTat) + '</span>' +
+          '<div class="gal-swatches">' + g.swatches.map(function (s) {
+            return '<span class="gal-sw"><i style="background:' + s.mau + '"></i>' + esc(s.ten) + '</span>';
+          }).join('') + '</div>' +
+        '</div></button>';
+    });
+    h += '</div>';
+    el.innerHTML = h;
+    el.querySelectorAll('[data-gal]').forEach(function (btn) {
+      btn.onclick = function () { moLightboxGallery(btn.getAttribute('data-gal')); };
+    });
+  }
+
   try {
     if (window.top !== window.self) document.documentElement.classList.add('in-iframe');
   } catch (e) {
@@ -1110,6 +1379,8 @@ window.H10 = (function () {
     skelCards: skelCards,
     laDienThoai: laDienThoai,
     renderSlogan: renderSlogan,
+    renderGalleryHoa10: renderGalleryHoa10,
+    GALLERY_HOA10: GALLERY_HOA10,
     ganBungCoVu: ganBungCoVu,
     ganNutLenDau: ganNutLenDau,
     ICONS: ICONS
@@ -1134,6 +1405,10 @@ window.H10 = (function () {
 
   getLocation(function (l) {
     laFull = !!(l && l.parameter && l.parameter.full);
+    if (l && l.parameter && l.parameter.bai) {
+      loc.bai = String(l.parameter.bai);
+      if (data) veTrang();
+    }
     veTopLinks();
   });
 
