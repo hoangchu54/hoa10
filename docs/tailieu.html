@@ -876,9 +876,63 @@ body.embed-ok .topbar-in{max-width:1280px}
 @media (prefers-reduced-motion:reduce){.hm-hop,.hm-armL,.hm-armR,.hm-liq{animation:none!important}}
 @media print{
   body *{visibility:hidden}
-  .btn-top{display:none!important}
+  .btn-top,.btn-casio-fab{display:none!important}
   #a4-print-area, #a4-print-area *{visibility:visible}
   #a4-print-area{position:absolute;left:0;top:0;width:100%;padding:0;margin:0;box-shadow:none}
+}
+
+/* ==== PHA 10: BẢNG SỐ LIỆU, ẢNH ĐỀ, TIẾN BỘ HS, IUPAC, CHẾ ĐỘ KIỂM TRA ==== */
+.brand.brand-link{cursor:pointer;border-radius:10px;padding:2px 6px;margin-left:-6px;transition:background .15s,transform .12s}
+.brand.brand-link:hover{background:var(--do-m)}
+.brand.brand-link:active{transform:scale(.98)}
+
+/* Bảng số liệu & Ảnh minh họa trong câu hỏi */
+.md-tbl-wrap{overflow-x:auto;margin:8px 0;border:1px solid var(--vien);border-radius:10px;background:var(--the)}
+.md-tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.md-tbl th,.md-tbl td{padding:7px 11px;border-bottom:1px solid var(--vien);border-right:1px solid var(--vien);text-align:center}
+.md-tbl th:last-child,.md-tbl td:last-child{border-right:0}
+.md-tbl tr:last-child td{border-bottom:0}
+.md-tbl th{background:var(--nen2);font-weight:700;color:var(--chu)}
+.md-img{display:block;max-width:min(100%,520px);max-height:340px;width:auto;height:auto;margin:8px auto;border-radius:10px;border:1px solid var(--vien);background:#fff;padding:4px;object-fit:contain}
+
+/* Highlight câu đang điều khiển bằng bàn phím & đồng hồ đếm ngược gấp */
+.cau-hs.active-kbd{border-color:var(--tim);box-shadow:0 0 0 3px var(--tim-m),var(--bong)}
+.dong-ho.gap,.exam-clock-box.gap{color:var(--sai)!important;background:var(--sai-n)!important;border-color:rgba(190,18,60,.45)!important;animation:nhapNhayGap 1s ease-in-out infinite}
+@keyframes nhapNhayGap{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+/* Bản đồ câu hỏi khi xem lại bài / đáp án */
+.o-so.kq-dung{background:var(--dung-n);color:var(--dung);border-color:rgba(13,122,95,.42)}
+.o-so.kq-phan{background:var(--vang-n);color:var(--vang);border-color:rgba(180,83,9,.42)}
+.o-so.kq-sai{background:var(--sai-n);color:var(--sai);border-color:rgba(190,18,60,.42)}
+
+/* Góc tiến bộ & Phòng tự luyện của học sinh */
+.prog-box{background:linear-gradient(135deg,var(--the),var(--nen2));border:1px solid var(--vien2);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:14px;box-shadow:var(--bong),inset 0 1px 0 rgba(255,255,255,.55)}
+[data-theme="dark"] .prog-box{box-shadow:var(--bong),inset 0 1px 0 rgba(255,255,255,.06)}
+.prog-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;align-items:stretch;margin-top:10px}
+.prog-chart-card,.prog-prac-card{background:var(--the);border:1px solid var(--vien);border-radius:13px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px}
+.weak-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--vang-n);color:var(--vang);border:1px solid rgba(180,83,9,.28);cursor:pointer;transition:.14s}
+.weak-chip:hover{border-color:var(--do);background:var(--do-m);color:var(--do)}
+
+/* Kho tài liệu: Ghim đầu trang & Đánh dấu Sao */
+.tl-card.ghim{border-color:rgba(158,30,76,.42);background:linear-gradient(135deg,var(--the),var(--do-m))}
+.nut-sao{width:32px;height:32px;border-radius:9px;border:1px solid var(--vien);background:var(--nen2);color:var(--mo);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex:none;transition:.14s}
+.nut-sao:hover{border-color:var(--vang);color:var(--vang)}
+.nut-sao.on{background:var(--vang-n);border-color:rgba(180,83,9,.4);color:#d97706}
+
+/* Từ điển Danh pháp IUPAC & phát âm */
+.iupac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:8px;max-height:360px;overflow-y:auto;padding-right:2px}
+.iupac-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;border-radius:11px;border:1px solid var(--vien);background:var(--nen2);transition:border-color .14s}
+.iupac-item:hover{border-color:var(--tim)}
+.btn-speak{width:34px;height:34px;border-radius:50%;border:1px solid var(--tim);background:var(--tim-m);color:var(--tim);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex:none;transition:.14s}
+.btn-speak:hover{background:var(--tim);color:#fff;transform:scale(1.06)}
+
+/* Admin: link xem bài học sinh & gợi ý gộp tên trùng */
+.th-hs-link{background:none;border:0;padding:0;color:var(--chu);font:inherit;font-weight:700;cursor:pointer;text-align:left;text-decoration:underline;text-decoration-color:rgba(158,30,76,.35);text-underline-offset:3px}
+.th-hs-link:hover{color:var(--do);text-decoration-color:var(--do)}
+.dup-banner{background:var(--vang-n);border:1px solid rgba(180,83,9,.32);border-radius:12px;padding:11px 14px;margin-bottom:12px}
+
+@media (max-width:760px){
+  .prog-grid{grid-template-columns:minmax(0,1fr)}
 }
 </style>
 </head>
@@ -958,13 +1012,77 @@ window.H10 = (function () {
       .replace(/(^|[\s(])-+&gt;(?=[\s)]|$)/g, '$1→');
   }
 
-  /** Parser công thức hóa học nhẹ: tự định dạng H2SO4/Fe3+/⇌, _{...}, ^{...}, **đậm**, xuống dòng. */
-  function md(s) {
-    return dinhDangCongThuc(esc(s))
+  function mdInline_(s) {
+    const imgs = [];
+    const tam = String(s === null || s === undefined ? '' : s).replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, function (all, alt, url) {
+      const u = String(url || '').trim();
+      if (!/^(https?:\/\/|data:image\/)/i.test(u)) return all;
+      const idx = imgs.length;
+      imgs.push('<img class="md-img" src="' + esc(u) + '" alt="' + esc(alt || 'Hình minh họa') + '" loading="lazy">');
+      return '@@img_' + idx + '@@';
+    });
+    let out = dinhDangCongThuc(esc(tam))
       .replace(/_\{([^}]*)\}/g, '<sub>$1</sub>')
       .replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>')
-      .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
-      .replace(/\n/g, '<br>');
+      .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+    imgs.forEach(function (tag, idx) {
+      out = out.replace('@@img_' + idx + '@@', tag);
+    });
+    return out;
+  }
+
+  function renderBangMd_(lines) {
+    const rows = [];
+    let coSep = false;
+    lines.forEach(function (ln) {
+      const t = ln.trim();
+      if (/^\|[\s:|-]+\|$/.test(t) && t.indexOf('-') >= 0) { coSep = true; return; }
+      const cells = t.replace(/^\||\|$/g, '').split('|').map(function (c) { return c.trim(); });
+      if (cells.length) rows.push(cells);
+    });
+    if (rows.length < 1 || (!coSep && rows.length < 2)) return lines.map(mdInline_).join('<br>');
+    let h = '<div class="md-tbl-wrap"><table class="md-tbl">';
+    rows.forEach(function (r, idx) {
+      const tag = idx === 0 ? 'th' : 'td';
+      h += '<tr>' + r.map(function (c) { return '<' + tag + '>' + mdInline_(c) + '</' + tag + '>'; }).join('') + '</tr>';
+    });
+    h += '</table></div>';
+    return h;
+  }
+
+  /** Parser công thức hóa học nhẹ: tự định dạng H2SO4/Fe3+/⇌, _{...}, ^{...}, **đậm**, bảng |A|B| & ảnh ![alt](url). */
+  function md(s) {
+    const raw = String(s === null || s === undefined ? '' : s);
+    if (raw.indexOf('|') < 0 && raw.indexOf('![') < 0) {
+      return dinhDangCongThuc(esc(raw))
+        .replace(/_\{([^}]*)\}/g, '<sub>$1</sub>')
+        .replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>')
+        .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+        .replace(/\n/g, '<br>');
+    }
+    const lines = raw.split(/\r?\n/);
+    const out = [];
+    let i = 0;
+    while (i < lines.length) {
+      if (/^\s*\|.+\|\s*$/.test(lines[i])) {
+        const tbl = [];
+        while (i < lines.length && /^\s*\|.+\|\s*$/.test(lines[i])) {
+          tbl.push(lines[i]);
+          i++;
+        }
+        if (tbl.length >= 2) out.push({ loai: 'tbl', html: renderBangMd_(tbl) });
+        else out.push({ loai: 'txt', html: mdInline_(tbl[0]) });
+      } else {
+        out.push({ loai: 'txt', html: mdInline_(lines[i]) });
+        i++;
+      }
+    }
+    let kq = '';
+    for (let j = 0; j < out.length; j++) {
+      if (j > 0 && out[j].loai === 'txt' && out[j - 1].loai === 'txt') kq += '<br>';
+      kq += out[j].html;
+    }
+    return kq;
   }
 
   function layTheme() {
@@ -1058,16 +1176,24 @@ window.H10 = (function () {
     admin: 'admin.html'
   };
 
+  function noiQuery_(base, extra) {
+    if (!extra) return base;
+    const q = String(extra).replace(/^[?&]+/, '');
+    if (!q) return base;
+    return base + (base.indexOf('?') >= 0 ? '&' : '?') + q;
+  }
+
   function linkTrang(page, opts) {
     opts = opts || {};
     const cfg = opts.cfg || {};
     const webUrl = opts.webUrl || '';
     const laFull = !!opts.laFull;
+    const qExtra = opts.query || '';
     if (!laGAS) {
-      if (page === 'thinghiem' && cfg.linkThiNghiem) return { href: cfg.linkThiNghiem, target: 'h10_ngoai' };
-      if (page === 'trochoi' && cfg.linkTroChoi) return { href: cfg.linkTroChoi, target: '_self' };
+      if (page === 'thinghiem' && cfg.linkThiNghiem) return { href: noiQuery_(cfg.linkThiNghiem, qExtra), target: 'h10_ngoai' };
+      if (page === 'trochoi' && cfg.linkTroChoi) return { href: noiQuery_(cfg.linkTroChoi, qExtra), target: '_self' };
       return {
-        href: (STATIC_PAGES[page] || 'index.html') + (opts.query || ''),
+        href: noiQuery_(STATIC_PAGES[page] || 'index.html', qExtra),
         target: opts.target || (page === 'admin' ? 'h10_admin' : '_self')
       };
     }
@@ -1076,39 +1202,35 @@ window.H10 = (function () {
     const trongIframe = document.documentElement.classList.contains('in-iframe');
     const navTarget = (!laFull && trongIframe) ? '_blank' : '_top';
     if (!laFull && trongIframe) {
-      if (page === 'thinghiem' && cfg.linkThiNghiem) return { href: cfg.linkThiNghiem, target: 'h10_ngoai' };
-      if (page === 'trochoi' && cfg.linkTroChoi) return { href: cfg.linkTroChoi, target: '_blank' };
+      if (page === 'thinghiem' && cfg.linkThiNghiem) return { href: noiQuery_(cfg.linkThiNghiem, qExtra), target: 'h10_ngoai' };
+      if (page === 'trochoi' && cfg.linkTroChoi) return { href: noiQuery_(cfg.linkTroChoi, qExtra), target: '_blank' };
       return {
-        href: GH_PAGES_BASE + (STATIC_PAGES[page] || 'index.html') + (opts.query || ''),
+        href: noiQuery_(GH_PAGES_BASE + (STATIC_PAGES[page] || 'index.html'), qExtra),
         target: page === 'admin' ? (opts.target || 'h10_admin') : '_blank'
       };
     }
     const suf = laFull ? '&full=1' : '';
     if (page === 'home') {
-      return {
-        href: (!laFull && cfg.trangChuSites) ? cfg.trangChuSites : (webUrl + '?page=home' + suf),
-        target: navTarget
-      };
+      const baseHome = (!laFull && cfg.trangChuSites && !qExtra) ? cfg.trangChuSites : (webUrl + '?page=home' + suf);
+      return { href: noiQuery_(baseHome, qExtra), target: navTarget };
     }
     if (page === 'btvn') {
-      return {
-        href: laFull ? (webUrl + '?full=1') : (cfg.trangBtvnSites || webUrl),
-        target: navTarget
-      };
+      const baseBtvn = laFull ? (webUrl + '?full=1') : (qExtra ? webUrl : (cfg.trangBtvnSites || webUrl));
+      return { href: noiQuery_(baseBtvn, qExtra), target: navTarget };
     }
-    if (page === 'tailieu') return { href: webUrl + '?page=tailieu' + suf, target: navTarget };
+    if (page === 'tailieu') return { href: noiQuery_(webUrl + '?page=tailieu' + suf, qExtra), target: navTarget };
     if (page === 'thinghiem') {
       return cfg.linkThiNghiem
-        ? { href: cfg.linkThiNghiem, target: 'h10_ngoai' }
-        : { href: webUrl + '?page=thinghiem' + suf, target: navTarget };
+        ? { href: noiQuery_(cfg.linkThiNghiem, qExtra), target: 'h10_ngoai' }
+        : { href: noiQuery_(webUrl + '?page=thinghiem' + suf, qExtra), target: navTarget };
     }
     if (page === 'trochoi') {
       return cfg.linkTroChoi
-        ? { href: cfg.linkTroChoi, target: navTarget }
-        : { href: webUrl + '?page=trochoi' + suf, target: navTarget };
+        ? { href: noiQuery_(cfg.linkTroChoi, qExtra), target: navTarget }
+        : { href: noiQuery_(webUrl + '?page=trochoi' + suf, qExtra), target: navTarget };
     }
-    if (page === 'admin') return { href: webUrl + '?page=admin' + suf, target: opts.target || 'h10_admin' };
-    return { href: webUrl, target: navTarget };
+    if (page === 'admin') return { href: noiQuery_(webUrl + '?page=admin' + suf, qExtra), target: opts.target || 'h10_admin' };
+    return { href: noiQuery_(webUrl, qExtra), target: navTarget };
   }
 
   let henToast = null;
@@ -1329,11 +1451,11 @@ window.H10 = (function () {
         '<g transform="translate(142,12)"><path d="M18 76 C4 58 8 32 18 10 C28 32 32 58 18 76Z" fill="#C084FC" opacity=".92"/><path d="M18 74 C11 60 13 42 18 26 C23 42 25 60 18 74Z" fill="#F3E8FF"/><rect x="12" y="76" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="102" fill="#E9D5FF" font-size="11" font-weight="800" text-anchor="middle">K⁺</text></g>' +
         '<g transform="translate(202,10)"><path d="M18 78 C4 58 8 30 18 8 C28 30 32 58 18 78Z" fill="#10B981" opacity=".95"/><path d="M18 76 C11 60 13 42 18 24 C23 42 25 60 18 76Z" fill="#A7F3D0"/><rect x="12" y="78" width="12" height="14" rx="2" fill="#94A3B8"/><text x="18" y="104" fill="#A7F3D0" font-size="11" font-weight="800" text-anchor="middle">Cu²⁺</text></g>' +
       '</svg>',
-      chiTiet: '<b>Bản chất (Bài 3 – Lớp vỏ electron):</b> Khi nhúng dây platinum sạch vào dung dịch muối rồi đốt trên đèn khí, các electron hấp thụ năng lượng nhảy lên orbital cao hơn, sau đó trở về trạng thái cơ bản và phát ra bức xạ có bước sóng đặc trưng trong vùng nhìn thấy:\n' +
-        '• <b>Muối Lithium (Li⁺):</b> Ngọn lửa màu đỏ tía (λ ≈ 671 nm).\n' +
-        '• <b>Muối Sodium (Na⁺):</b> Ngọn lửa màu vàng tươi rực rỡ (λ ≈ 589 nm, dùng làm đèn cao áp đường phố).\n' +
-        '• <b>Muối Potassium (K⁺):</b> Ngọn lửa màu tím hoa cà.\n' +
-        '• <b>Muối Calcium (Ca²⁺):</b> Đỏ cam · <b>Barium (Ba²⁺):</b> Lục vàng · <b>Copper (Cu²⁺):</b> Xanh lục (ứng dụng chế tạo pháo hoa).'
+      chiTiet: '**Bản chất (Bài 3 – Lớp vỏ electron):** Khi nhúng dây platinum sạch vào dung dịch muối rồi đốt trên đèn khí, các electron hấp thụ năng lượng nhảy lên orbital cao hơn, sau đó trở về trạng thái cơ bản và phát ra bức xạ có bước sóng đặc trưng trong vùng nhìn thấy:\n' +
+        '• **Muối Lithium (Li⁺):** Ngọn lửa màu đỏ tía (λ ≈ 671 nm).\n' +
+        '• **Muối Sodium (Na⁺):** Ngọn lửa màu vàng tươi rực rỡ (λ ≈ 589 nm, dùng làm đèn cao áp đường phố).\n' +
+        '• **Muối Potassium (K⁺):** Ngọn lửa màu tím hoa cà.\n' +
+        '• **Muối Calcium (Ca²⁺):** Đỏ cam · **Barium (Ba²⁺):** Lục vàng · **Copper (Cu²⁺):** Xanh lục (ứng dụng chế tạo pháo hoa).'
     },
     {
       id: 'halogen',
@@ -1353,11 +1475,11 @@ window.H10 = (function () {
         '<g transform="translate(142,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(239,68,68,.28)" stroke="#E2E8F0" stroke-width="2"/><path d="M5 46 H31 V62 A13 13 0 0 1 5 62 Z" fill="#991B1B"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#FCA5A5" font-size="11" font-weight="800" text-anchor="middle">Br₂ (lỏng)</text></g>' +
         '<g transform="translate(204,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(168,85,247,.34)" stroke="#E2E8F0" stroke-width="2"/><circle cx="14" cy="64" r="5" fill="#3B0764"/><circle cx="22" cy="66" r="4.5" fill="#4C1D95"/><circle cx="18" cy="59" r="4" fill="#581C87"/><rect x="1" y="3" width="34" height="5" rx="2.5" fill="#E2E8F0"/><text x="18" y="92" fill="#E9D5FF" font-size="11" font-weight="800" text-anchor="middle">I₂ (rắn)</text></g>' +
       '</svg>',
-      chiTiet: '<b>Quy luật biến đổi nhóm VIIA (Bài 21 – Nhóm Halogen):</b>\n' +
-        '• <b>Fluorine (F2):</b> Khí màu lục nhạt, rất độc, tính oxi hóa mạnh nhất (oxi hóa mãnh liệt H2O tạo O2).\n' +
-        '• <b>Chlorine (Cl2):</b> Khí màu vàng lục, mùi xốc, tan một phần trong nước tạo nước chlorine (HCl + HClO có tính tẩy màu).\n' +
-        '• <b>Bromine (Br2):</b> Chất lỏng màu nâu đỏ, dễ bay hơi, gây bỏng sâu khi rơi vào da.\n' +
-        '• <b>Iodine (I2):</b> Tinh thể màu đen tím; khi đun nóng <b>thăng hoa</b> trực tiếp từ thể rắn sang hơi màu tím mà không qua trạng thái lỏng; gặp hồ tinh bột tạo phức màu <b>xanh tím</b> đặc trưng.'
+      chiTiet: '**Quy luật biến đổi nhóm VIIA (Bài 21 – Nhóm Halogen):**\n' +
+        '• **Fluorine (F2):** Khí màu lục nhạt, rất độc, tính oxi hóa mạnh nhất (oxi hóa mãnh liệt H2O tạo O2).\n' +
+        '• **Chlorine (Cl2):** Khí màu vàng lục, mùi xốc, tan một phần trong nước tạo nước chlorine (HCl + HClO có tính tẩy màu).\n' +
+        '• **Bromine (Br2):** Chất lỏng màu nâu đỏ, dễ bay hơi, gây bỏng sâu khi rơi vào da.\n' +
+        '• **Iodine (I2):** Tinh thể màu đen tím; khi đun nóng **thăng hoa** trực tiếp từ thể rắn sang hơi màu tím mà không qua trạng thái lỏng; gặp hồ tinh bột tạo phức màu **xanh tím** đặc trưng.'
     },
     {
       id: 'agx',
@@ -1377,11 +1499,11 @@ window.H10 = (function () {
         '<g transform="translate(142,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(255,255,255,.15)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 50 H31 V62 A13 13 0 0 1 5 62 Z" fill="#FEF08A"/><text x="18" y="92" fill="#FEF08A" font-size="11" font-weight="800" text-anchor="middle">AgBr↓</text></g>' +
         '<g transform="translate(204,14)"><rect x="4" y="6" width="28" height="70" rx="14" fill="rgba(255,255,255,.15)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 50 H31 V62 A13 13 0 0 1 5 62 Z" fill="#EAB308"/><text x="18" y="92" fill="#FACC15" font-size="11" font-weight="800" text-anchor="middle">AgI↓</text></g>' +
       '</svg>',
-      chiTiet: '<b>Phương trình phân biệt các muối Halide (Bài 22):</b>\n' +
-        '• <b>NaF + AgNO3:</b> Không hiện tượng (vì AgF tan tốt trong nước).\n' +
-        '• <b>NaCl + AgNO3 -> AgCl↓ (kết tủa trắng) + NaNO3</b> (kết tủa AgCl hóa đen ngoài ánh sáng: 2AgCl -> 2Ag + Cl2).\n' +
-        '• <b>NaBr + AgNO3 -> AgBr↓ (kết tủa vàng nhạt) + NaNO3</b>.\n' +
-        '• <b>NaI + AgNO3 -> AgI↓ (kết tủa vàng đậm) + NaNO3</b>.'
+      chiTiet: '**Phương trình phân biệt các muối Halide (Bài 22):**\n' +
+        '• **NaF + AgNO3:** Không hiện tượng (vì AgF tan tốt trong nước).\n' +
+        '• **NaCl + AgNO3 -> AgCl↓ (kết tủa trắng) + NaNO3** (kết tủa AgCl hóa đen ngoài ánh sáng: 2AgCl -> 2Ag + Cl2).\n' +
+        '• **NaBr + AgNO3 -> AgBr↓ (kết tủa vàng nhạt) + NaNO3**.\n' +
+        '• **NaI + AgNO3 -> AgI↓ (kết tủa vàng đậm) + NaNO3**.'
     },
     {
       id: 'redox',
@@ -1400,11 +1522,11 @@ window.H10 = (function () {
         '<g transform="translate(100,12)"><path d="M22 10 H36 M25 10 V30 L8 68 A7 7 0 0 0 14 78 H44 A7 7 0 0 0 50 68 L33 30 V10" fill="none" stroke="#E2E8F0" stroke-width="2"/><path d="M13 54 H45 L49 68 A5 5 0 0 1 44 76 H14 A5 5 0 0 1 9 68 Z" fill="#0284C7"/><text x="29" y="96" fill="#BAE6FD" font-size="10.5" font-weight="800" text-anchor="middle">CuSO₄</text></g>' +
         '<g transform="translate(178,12)"><path d="M22 10 H36 M25 10 V30 L8 68 A7 7 0 0 0 14 78 H44 A7 7 0 0 0 50 68 L33 30 V10" fill="none" stroke="#E2E8F0" stroke-width="2"/><path d="M13 54 H45 L49 68 A5 5 0 0 1 44 76 H14 A5 5 0 0 1 9 68 Z" fill="#D97706"/><text x="29" y="96" fill="#FDE68A" font-size="10.5" font-weight="800" text-anchor="middle">FeCl₃</text></g>' +
       '</svg>',
-      chiTiet: '<b>Nhận biết nhanh hiện tượng trong các bài toán Hóa 10:</b>\n' +
-        '• <b>Dung dịch KMnO4 (thuốc tím):</b> Màu tím đặc trưng; khi oxi hóa chất khử trong môi trường acid (H2SO4 loãng) sẽ <b>mất màu tím</b> tạo Mn2+ không màu.\n' +
-        '• <b>Dung dịch muối Cu2+ (CuSO4):</b> Màu xanh lam; tác dụng với NaOH tạo kết tủa <b>Cu(OH)2 xanh lam</b>.\n' +
-        '• <b>Dung dịch Fe2+ → Fe3+:</b> Từ lục nhạt chuyển sang vàng nâu; tạo kết tủa Fe(OH)3 màu <b>nâu đỏ</b>.\n' +
-        '• <b>Biến thiên Enthalpy (Chương 5):</b> $\\Delta_r H^\\circ_{298} < 0$ là phản ứng <b>tỏa nhiệt</b> (bình nóng lên, như đốt cháy, tôi vôi CaO + H2O); $\\Delta_r H^\\circ_{298} > 0$ là phản ứng <b>thu nhiệt</b> (bình lạnh đi, như hòa tan viên sủi hoặc NH4Cl).'
+      chiTiet: '**Nhận biết nhanh hiện tượng trong các bài toán Hóa 10:**\n' +
+        '• **Dung dịch KMnO4 (thuốc tím):** Màu tím đặc trưng; khi oxi hóa chất khử trong môi trường acid (H2SO4 loãng) sẽ **mất màu tím** tạo Mn2+ không màu.\n' +
+        '• **Dung dịch muối Cu2+ (CuSO4):** Màu xanh lam; tác dụng với NaOH tạo kết tủa **Cu(OH)2 xanh lam**.\n' +
+        '• **Dung dịch Fe2+ → Fe3+:** Từ lục nhạt chuyển sang vàng nâu; tạo kết tủa Fe(OH)3 màu **nâu đỏ**.\n' +
+        '• **Biến thiên Enthalpy (Chương 5):** Δ_{r}H°_{298} < 0 là phản ứng **tỏa nhiệt** (bình nóng lên, như đốt cháy, tôi vôi CaO + H2O); Δ_{r}H°_{298} > 0 là phản ứng **thu nhiệt** (bình lạnh đi, như hòa tan viên sủi hoặc NH4Cl).'
     }
   ];
 
@@ -1595,13 +1717,113 @@ window.H10 = (function () {
     return { M: M, ct: ct };
   }
 
-  let casioExp = '', casioAns = 0, casioVal = null, casioFormula = 'H2SO4';
+  // ---- Từ điển Danh pháp IUPAC Hóa 10 (GDPT 2018 – kèm phát âm tiếng Anh chuẩn) ----
+  const BANG_IUPAC_HOA10 = [
+    { ct: 'H', en: 'Hydrogen', pa: '/ˈhaɪ.drə.dʒən/', vi: 'Nguyên tố Z = 1 (trước gọi là Hiđro)', loai: 'nt' },
+    { ct: 'He', en: 'Helium', pa: '/ˈhiː.li.əm/', vi: 'Khí hiếm Z = 2', loai: 'nt' },
+    { ct: 'Li', en: 'Lithium', pa: '/ˈlɪθ.i.əm/', vi: 'Kim loại kiềm Z = 3', loai: 'nt' },
+    { ct: 'C', en: 'Carbon', pa: '/ˈkɑːr.bən/', vi: 'Phi kim Z = 6 (Cacbon)', loai: 'nt' },
+    { ct: 'N', en: 'Nitrogen', pa: '/ˈnaɪ.trə.dʒən/', vi: 'Phi kim Z = 7 (Nitơ)', loai: 'nt' },
+    { ct: 'O', en: 'Oxygen', pa: '/ˈɒk.sɪ.dʒən/', vi: 'Phi kim Z = 8 (Oxi)', loai: 'nt' },
+    { ct: 'F', en: 'Fluorine', pa: '/ˈflɔː.riːn/', vi: 'Halogen Z = 9 (Flo)', loai: 'nt' },
+    { ct: 'Na', en: 'Sodium', pa: '/ˈsəʊ.di.əm/', vi: 'Kim loại kiềm Z = 11 (Natri)', loai: 'nt' },
+    { ct: 'Mg', en: 'Magnesium', pa: '/mæɡˈniː.zi.əm/', vi: 'Kim loại kiềm thổ Z = 12 (Magiê)', loai: 'nt' },
+    { ct: 'Al', en: 'Aluminium', pa: '/ˌæl.jəˈmɪn.i.əm/', vi: 'Kim loại Z = 13 (Nhôm)', loai: 'nt' },
+    { ct: 'Si', en: 'Silicon', pa: '/ˈsɪl.ɪ.kən/', vi: 'Phi kim Z = 14 (Silic)', loai: 'nt' },
+    { ct: 'P', en: 'Phosphorus', pa: '/ˈfɒs.fər.əs/', vi: 'Phi kim Z = 15 (Photpho)', loai: 'nt' },
+    { ct: 'S', en: 'Sulfur', pa: '/ˈsʌl.fər/', vi: 'Phi kim Z = 16 (Lưu huỳnh)', loai: 'nt' },
+    { ct: 'Cl', en: 'Chlorine', pa: '/ˈklɔː.riːn/', vi: 'Halogen Z = 17 (Clo)', loai: 'nt' },
+    { ct: 'K', en: 'Potassium', pa: '/pəˈtæs.i.əm/', vi: 'Kim loại kiềm Z = 19 (Kali)', loai: 'nt' },
+    { ct: 'Ca', en: 'Calcium', pa: '/ˈkæl.si.əm/', vi: 'Kim loại kiềm thổ Z = 20 (Canxi)', loai: 'nt' },
+    { ct: 'Cr', en: 'Chromium', pa: '/ˈkrəʊ.mi.əm/', vi: 'Kim loại chuyển tiếp Z = 24 (Crom)', loai: 'nt' },
+    { ct: 'Mn', en: 'Manganese', pa: '/ˈmæŋ.ɡə.niːz/', vi: 'Kim loại chuyển tiếp Z = 25 (Mangan)', loai: 'nt' },
+    { ct: 'Fe', en: 'Iron', pa: '/ˈaɪ.ən/', vi: 'Kim loại chuyển tiếp Z = 26 (Sắt)', loai: 'nt' },
+    { ct: 'Cu', en: 'Copper', pa: '/ˈkɒp.ər/', vi: 'Kim loại chuyển tiếp Z = 29 (Đồng)', loai: 'nt' },
+    { ct: 'Zn', en: 'Zinc', pa: '/zɪŋk/', vi: 'Kim loại Z = 30 (Kẽm)', loai: 'nt' },
+    { ct: 'Br', en: 'Bromine', pa: '/ˈbrəʊ.miːn/', vi: 'Halogen Z = 35 (Brom)', loai: 'nt' },
+    { ct: 'Ag', en: 'Silver', pa: '/ˈsɪl.vər/', vi: 'Kim loại Z = 47 (Bạc)', loai: 'nt' },
+    { ct: 'I', en: 'Iodine', pa: '/ˈaɪ.ə.diːn/', vi: 'Halogen Z = 53 (Iốt)', loai: 'nt' },
+    { ct: 'Ba', en: 'Barium', pa: '/ˈbeə.ri.əm/', vi: 'Kim loại kiềm thổ Z = 56 (Bari)', loai: 'nt' },
+    { ct: 'Au', en: 'Gold', pa: '/ɡəʊld/', vi: 'Kim loại quý Z = 79 (Vàng)', loai: 'nt' },
+    { ct: 'Hg', en: 'Mercury', pa: '/ˈmɜː.kjʊ.ri/', vi: 'Kim loại lỏng Z = 80 (Thủy ngân)', loai: 'nt' },
+    { ct: 'Pb', en: 'Lead', pa: '/led/', vi: 'Kim loại Z = 82 (Chì)', loai: 'nt' },
+
+    { ct: 'OH-', en: 'Hydroxide', pa: '/haɪˈdrɒk.saɪd/', vi: 'Ion hiđroxit (nhóm -OH của base)', loai: 'ion' },
+    { ct: 'Cl-', en: 'Chloride', pa: '/ˈklɔː.raɪd/', vi: 'Ion clorua (tương tự: Fluoride, Bromide, Iodide)', loai: 'ion' },
+    { ct: 'S2-', en: 'Sulfide', pa: '/ˈsʌl.faɪd/', vi: 'Ion sunfua (đuôi -ide cho anion không chứa O)', loai: 'ion' },
+    { ct: 'SO3^{2-}', en: 'Sulfite', pa: '/ˈsʌl.faɪt/', vi: 'Ion sunfit (ít O hơn dùng đuôi -ite)', loai: 'ion' },
+    { ct: 'SO4^{2-}', en: 'Sulfate', pa: '/ˈsʌl.feɪt/', vi: 'Ion sunfat (nhiều O hơn dùng đuôi -ate)', loai: 'ion' },
+    { ct: 'NO3-', en: 'Nitrate', pa: '/ˈnaɪ.treɪt/', vi: 'Ion nitrat (NO2- là Nitrite)', loai: 'ion' },
+    { ct: 'CO3^{2-}', en: 'Carbonate', pa: '/ˈkɑː.bə.neɪt/', vi: 'Ion cacbonat (HCO3- là Hydrogencarbonate)', loai: 'ion' },
+    { ct: 'PO4^{3-}', en: 'Phosphate', pa: '/ˈfɒs.feɪt/', vi: 'Ion photphat', loai: 'ion' },
+    { ct: 'ClO-', en: 'Hypochlorite', pa: '/ˌhaɪ.pəʊˈklɔː.raɪt/', vi: 'Ion hipoclorit (trong nước Javel NaClO)', loai: 'ion' },
+    { ct: 'ClO3-', en: 'Chlorate', pa: '/ˈklɔː.reɪt/', vi: 'Ion clorat (ClO4- là Perchlorate)', loai: 'ion' },
+    { ct: 'MnO4-', en: 'Permanganate', pa: '/pəˈmæŋ.ɡə.neɪt/', vi: 'Ion pemanganat (màu tím đậm)', loai: 'ion' },
+    { ct: 'NH4+', en: 'Ammonium', pa: '/əˈməʊ.ni.əm/', vi: 'Cation amoni (NH3 là Ammonia)', loai: 'ion' },
+
+    { ct: 'HCl (aq)', en: 'Hydrochloric acid', pa: '/ˌhaɪ.drəˈklɒr.ɪk ˈæs.ɪd/', vi: 'Dung dịch acid HCl (khí HCl đọc là Hydrogen chloride)', loai: 'hc' },
+    { ct: 'H2SO4', en: 'Sulfuric acid', pa: '/sʌlˈfjʊə.rɪk ˈæs.ɪd/', vi: 'Axit sunfuric (H2SO3 là Sulfurous acid)', loai: 'hc' },
+    { ct: 'HNO3', en: 'Nitric acid', pa: '/ˈnaɪ.trɪk ˈæs.ɪd/', vi: 'Axit nitric', loai: 'hc' },
+    { ct: 'HClO', en: 'Hypochlorous acid', pa: '/ˌhaɪ.pəʊˈklɔː.rəs ˈæs.ɪd/', vi: 'Có tính oxi hóa mạnh, tẩy màu trong nước Cl2', loai: 'hc' },
+    { ct: 'NaOH', en: 'Sodium hydroxide', pa: '/ˈsəʊ.di.əm haɪˈdrɒk.saɪd/', vi: 'Xút ăn da (kiềm mạnh)', loai: 'hc' },
+    { ct: 'Ca(OH)2', en: 'Calcium hydroxide', pa: '/ˈkæl.si.əm haɪˈdrɒk.saɪd/', vi: 'Vôi tôi / Dung dịch nước vôi trong', loai: 'hc' },
+    { ct: 'Fe2O3', en: 'Iron(III) oxide', pa: '/ˈaɪ.ən θriː ˈɒk.saɪd/', vi: 'Kim loại nhiều hóa trị phải kèm số La Mã', loai: 'hc' },
+    { ct: 'SO2 / SO3', en: 'Sulfur dioxide / Sulfur trioxide', pa: '/ˈsʌl.fər daɪˈɒk.saɪd/', vi: 'Oxide phi kim dùng tiền tố mono-, di-, tri-, pent-...', loai: 'hc' },
+    { ct: 'CuSO4.5H2O', en: 'Copper(II) sulfate pentahydrate', pa: '/ˈkɒp.ər tuː ˈsʌl.feɪt/', vi: 'Phèn xanh (muối ngậm 5 phân tử nước)', loai: 'hc' },
+    { ct: 'KMnO4', en: 'Potassium permanganate', pa: '/pəˈtæs.i.əm pəˈmæŋ.ɡə.neɪt/', vi: 'Thuốc tím', loai: 'hc' },
+
+    { ct: 'AO (s, p, d, f)', en: 'Atomic orbital', pa: '/əˈtɒm.ɪk ˈɔː.bɪ.təl/', vi: 'Vùng không gian quanh hạt nhân xác suất gặp e ≈ 90%', loai: 'tn' },
+    { ct: 'χ (Pauling)', en: 'Electronegativity', pa: '/ɪˌlek.trəʊˌneɡ.əˈtɪv.ə.ti/', vi: 'Độ âm điện – đại lượng đặc trưng khả năng hút e', loai: 'tn' },
+    { ct: 'ΔrH°298', en: 'Enthalpy', pa: '/ˈen.θəl.pi/', vi: 'Nhiệt phản ứng đẳng áp (< 0 tỏa nhiệt, > 0 thu nhiệt)', loai: 'tn' },
+    { ct: 'Chất xúc tác', en: 'Catalyst', pa: '/ˈkæt.əl.ɪst/', vi: 'Chất làm tăng tốc độ phản ứng nhưng còn nguyên sau PƯ', loai: 'tn' }
+  ];
+
+  function phatAmIUPAC_(text) {
+    try {
+      if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+        toast('Trình duyệt trên thiết bị này chưa hỗ trợ đọc phát âm tự động.', true);
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(String(text || '').replace(/\s*\/.*$/, ''));
+      u.lang = 'en-US';
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) {
+      toast('Không phát được âm thanh trên trình duyệt này.', true);
+    }
+  }
+
+  let casioExp = '', casioAns = 0, casioVal = null, casioFormula = 'H2SO4', lastTraLoiInput = null;
+  document.addEventListener('focusin', function (e) {
+    const t = e && e.target;
+    if (t && t.classList && t.classList.contains('o-tra-loi')) lastTraLoiInput = t;
+  });
+
+  function timOTraLoiDangLam_() {
+    if (lastTraLoiInput && document.body.contains(lastTraLoiInput) && !lastTraLoiInput.disabled) return lastTraLoiInput;
+    const kbdInp = document.querySelector('.cau-hs.active-kbd .o-tra-loi');
+    if (kbdInp && !kbdInp.disabled) return kbdInp;
+    const ds = Array.prototype.slice.call(document.querySelectorAll('.o-tra-loi')).filter(function (el) {
+      return !el.disabled && el.offsetParent !== null;
+    });
+    if (!ds.length) return null;
+    const mid = window.innerHeight / 2;
+    let best = ds[0], bestDist = 1e9;
+    ds.forEach(function (el) {
+      const r = el.getBoundingClientRect();
+      const d = Math.abs((r.top + r.bottom) / 2 - mid);
+      if (d < bestDist) { bestDist = d; best = el; }
+    });
+    return best;
+  }
 
   function moBangTraCuu(tabMacDinh) {
     const cu = document.getElementById('h10-ref-modal');
     if (cu) { cu.remove(); return; }
     let tabRef = (typeof tabMacDinh === 'string' && tabMacDinh) ? tabMacDinh : 'casio';
-    let qRef = '', loaiRef = '', thuNho = laDienThoai() && document.body.classList.contains('dang-lam');
+    let qRef = '', loaiRef = '', qIupac = '', loaiIupac = '', soLeChon = undefined;
+    let thuNho = laDienThoai() && document.body.classList.contains('dang-lam');
     const hop = document.createElement('div');
     hop.id = 'h10-ref-modal';
     hop.className = 'hopdn' + (thuNho ? ' half-sheet' : '');
@@ -1624,7 +1846,6 @@ window.H10 = (function () {
         .replace(/Ans/g, '(' + (Number(casioAns) || 0) + ')')
         .replace(/√\(/g, 'Math.sqrt(')
         .replace(/\^/g, '**');
-      // Chỉ cho phép số, toán tử và Math.sqrt
       const clean = s.replace(/Math\.sqrt/g, '');
       if (/[^0-9.+\-*/()\s]/.test(clean)) return NaN;
       try {
@@ -1633,15 +1854,19 @@ window.H10 = (function () {
       } catch (e) { return NaN; }
     }
 
+    let casioApi = null;
+
     function veNoiDung() {
       const vung = hop.querySelector('[data-x="body"]');
+      casioApi = null;
       if (tabRef === 'casio') {
         const kqM = tinhPhanTuKhoi(casioFormula);
-        const hienRes = casioVal !== null ? dinhDangSoCasio(casioVal) : (casioExp ? '…' : '0');
+        const oDangLam = timOTraLoiDangLam_();
+        const hienRes = casioVal !== null ? dinhDangSoCasio(casioVal, soLeChon) : (casioExp ? '…' : '0');
         vung.innerHTML =
           '<div class="casio-layout">' +
             '<div class="casio-body">' +
-              '<div class="casio-brand"><b>CASIO HÓA 10</b><span>fx-580KNTT · CLASSWIZ</span></div>' +
+              '<div class="casio-brand"><b>CASIO HÓA 10</b><span>fx-580KNTT · BẤM PHÍM SỐ ĐƯỢC</span></div>' +
               '<div class="casio-lcd">' +
                 '<div class="casio-exp" id="cs-exp">' + esc(casioExp || '0') + '</div>' +
                 '<div class="casio-res" id="cs-res">' + esc(hienRes) + '</div>' +
@@ -1681,14 +1906,15 @@ window.H10 = (function () {
                 '<button type="button" class="ck" data-ck="√(">√</button>' +
                 '<button type="button" class="ck" data-ck="*10^">10ˣ</button>' +
                 '<button type="button" class="ck" data-ck="Ans">Ans</button>' +
-                '<button type="button" class="ck" data-act="copy" title="Copy kết quả để dán vào ô trả lời">Copy</button>' +
+                '<button type="button" class="ck" data-act="copy" title="Copy kết quả vào bộ nhớ tạm">Copy</button>' +
               '</div>' +
-              '<div class="casio-round">' +
-                '<span>Làm tròn kết quả:</span>' +
-                '<div style="display:flex;gap:4px">' +
-                  '<button type="button" data-rnd="1">1 số lẻ</button>' +
-                  '<button type="button" data-rnd="2">2 số lẻ</button>' +
-                  '<button type="button" data-rnd="3">3 số lẻ</button>' +
+              '<div class="casio-round" style="flex-wrap:wrap;gap:6px">' +
+                '<span>Làm tròn:</span>' +
+                '<div style="display:flex;gap:4px;flex-wrap:wrap">' +
+                  '<button type="button" data-rnd="1">1 lẻ</button>' +
+                  '<button type="button" data-rnd="2">2 lẻ</button>' +
+                  '<button type="button" data-rnd="3">3 lẻ</button>' +
+                  (oDangLam ? '<button type="button" data-act="fill" style="background:#0f766e;color:#fff;border-color:#14b8a6;font-weight:800" title="Điền thẳng kết quả vào ô Trả lời ngắn đang mở">↳ Điền đáp số</button>' : '') +
                 '</div>' +
               '</div>' +
             '</div>' +
@@ -1737,9 +1963,10 @@ window.H10 = (function () {
         const capNhatLCD = function () {
           const eEl = vung.querySelector('#cs-exp'), rEl = vung.querySelector('#cs-res');
           if (eEl) eEl.textContent = casioExp || '0';
-          if (rEl) rEl.textContent = casioVal !== null ? dinhDangSoCasio(casioVal) : (casioExp ? '…' : '0');
+          if (rEl) rEl.textContent = casioVal !== null ? dinhDangSoCasio(casioVal, soLeChon) : (casioExp ? '…' : '0');
         };
         const bamCasio = function (tok) {
+          soLeChon = undefined;
           if (casioVal !== null && /^[0-9.(√]/.test(tok)) {
             casioExp = '';
           } else if (casioVal !== null && /^[+−×÷*/^]/.test(tok)) {
@@ -1752,34 +1979,51 @@ window.H10 = (function () {
           if (eEl) eEl.textContent = casioExp;
           if (rEl) rEl.textContent = (!isNaN(thu) && isFinite(thu)) ? ('= ' + dinhDangSoCasio(thu)) : '…';
         };
+        const thucHienAct = function (act) {
+          if (act === 'ac') { casioExp = ''; casioVal = null; soLeChon = undefined; capNhatLCD(); }
+          else if (act === 'del') { casioExp = casioExp.slice(0, -1); casioVal = null; soLeChon = undefined; capNhatLCD(); }
+          else if (act === 'eq') {
+            const kq = tinhBieuThucCasio(casioExp);
+            casioVal = kq;
+            if (!isNaN(kq) && isFinite(kq)) casioAns = kq;
+            capNhatLCD();
+          } else if (act === 'copy' || act === 'fill') {
+            const v = casioVal !== null ? casioVal : tinhBieuThucCasio(casioExp);
+            if (!isNaN(v) && isFinite(v)) {
+              const str = dinhDangSoCasio(v, soLeChon);
+              if (act === 'copy') {
+                try { navigator.clipboard.writeText(str); } catch (e) {}
+                toast('Đã copy kết quả: ' + str);
+              } else {
+                const targetInp = timOTraLoiDangLam_();
+                if (!targetInp) { toast('Không tìm thấy ô Trả lời ngắn đang mở.', true); return; }
+                targetInp.value = str;
+                targetInp.dispatchEvent(new Event('input', { bubbles: true }));
+                targetInp.style.boxShadow = '0 0 0 3px var(--ok-v)';
+                setTimeout(function () { targetInp.style.boxShadow = ''; }, 1400);
+                toast('Đã điền "' + str + '" vào ô trả lời ngắn ✓');
+              }
+            } else {
+              toast('Chưa có kết quả số hợp lệ để lấy.', true);
+            }
+          }
+        };
+        casioApi = { bam: bamCasio, act: thucHienAct };
+
         vung.querySelectorAll('[data-ck]').forEach(function (b) {
           b.onclick = function () { bamCasio(b.getAttribute('data-ck')); };
         });
         vung.querySelectorAll('[data-act]').forEach(function (b) {
-          b.onclick = function () {
-            const act = b.getAttribute('data-act');
-            if (act === 'ac') { casioExp = ''; casioVal = null; capNhatLCD(); }
-            else if (act === 'del') { casioExp = casioExp.slice(0, -1); casioVal = null; capNhatLCD(); }
-            else if (act === 'eq') {
-              const kq = tinhBieuThucCasio(casioExp);
-              casioVal = kq;
-              if (!isNaN(kq) && isFinite(kq)) casioAns = kq;
-              capNhatLCD();
-            } else if (act === 'copy') {
-              const v = casioVal !== null ? casioVal : tinhBieuThucCasio(casioExp);
-              if (!isNaN(v) && isFinite(v)) {
-                const str = dinhDangSoCasio(v);
-                try { navigator.clipboard.writeText(str); } catch (e) {}
-                toast('Đã copy kết quả: ' + str);
-              }
-            }
-          };
+          b.onclick = function () { thucHienAct(b.getAttribute('data-act')); };
         });
         vung.querySelectorAll('[data-rnd]').forEach(function (b) {
           b.onclick = function () {
             const soLe = Number(b.getAttribute('data-rnd'));
             const v = casioVal !== null ? casioVal : tinhBieuThucCasio(casioExp);
             if (!isNaN(v) && isFinite(v)) {
+              soLeChon = soLe;
+              casioVal = v;
+              casioAns = v;
               const rEl = vung.querySelector('#cs-res');
               if (rEl) rEl.textContent = dinhDangSoCasio(v, soLe);
             }
@@ -1857,8 +2101,11 @@ window.H10 = (function () {
           '</div>' +
           '<div class="ref-grid">' + (ds.length ? ds.map(function (e) {
             return '<div class="ref-el ' + e.loai + '">' +
-              '<div class="ref-el-top"><span class="ref-el-kh">' + esc(e.kh) + '</span><span class="ref-el-z">Z = ' + e.z + '</span></div>' +
-              '<div class="ref-el-ten">' + esc(e.ten) + '</div>' +
+              '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                '<span class="ref-el-kh">' + esc(e.kh) + '</span>' +
+                '<button type="button" class="btn-speak" style="width:24px;height:24px;font-size:11px" data-say="' + esc(e.ten.replace(/\s*\(.*\)/, '')) + '" title="Nghe phát âm IUPAC">🔊</button>' +
+              '</div>' +
+              '<div class="ref-el-ten">' + esc(e.ten) + ' <span class="phu" style="font-size:10.5px">(Z=' + e.z + ')</span></div>' +
               '<div class="ref-el-m">M = ' + esc(e.m) + ' <span class="phu" style="font-weight:500;font-size:11px">· χ = ' + esc(e.chi) + '</span></div>' +
               '<div class="ref-el-cfg">' + esc(e.cfg) + '</div>' +
               '<div class="phu" style="font-size:10.8px">CK ' + e.ck + ' · Nhóm ' + esc(e.nhom) + '</div>' +
@@ -1877,6 +2124,57 @@ window.H10 = (function () {
         }
         vung.querySelectorAll('[data-rl]').forEach(function (b) {
           b.onclick = function () { loaiRef = b.getAttribute('data-rl'); veNoiDung(); };
+        });
+        vung.querySelectorAll('[data-say]').forEach(function (b) {
+          b.onclick = function () { phatAmIUPAC_(b.getAttribute('data-say')); };
+        });
+      } else if (tabRef === 'iupac') {
+        const q = qIupac.trim().toLowerCase();
+        const ds = BANG_IUPAC_HOA10.filter(function (x) {
+          if (loaiIupac && x.loai !== loaiIupac) return false;
+          if (!q) return true;
+          return (x.ct + ' ' + x.en + ' ' + x.vi).toLowerCase().indexOf(q) >= 0;
+        });
+        vung.innerHTML =
+          '<div class="hang" style="margin-bottom:10px;align-items:center">' +
+            '<input id="iupac-q" type="search" placeholder="Tìm công thức, tên Anh hoặc tên Việt cũ (VD: sulfate, sunfat, KMnO4, sắt)..." value="' + esc(qIupac) + '" style="flex:2 1 220px">' +
+            '<div class="seg">' +
+              '<button type="button" data-il="" class="' + (!loaiIupac ? 'on' : '') + '">Tất cả (' + BANG_IUPAC_HOA10.length + ')</button>' +
+              '<button type="button" data-il="nt" class="' + (loaiIupac === 'nt' ? 'on' : '') + '">Nguyên tố</button>' +
+              '<button type="button" data-il="ion" class="' + (loaiIupac === 'ion' ? 'on' : '') + '">Ion / Gốc acid</button>' +
+              '<button type="button" data-il="hc" class="' + (loaiIupac === 'hc' ? 'on' : '') + '">Hợp chất</button>' +
+              '<button type="button" data-il="tn" class="' + (loaiIupac === 'tn' ? 'on' : '') + '">Thuật ngữ</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="iupac-grid">' + (ds.length ? ds.map(function (x) {
+            return '<div class="iupac-item">' +
+              '<div style="min-width:0">' +
+                '<div style="display:flex;align-items:baseline;gap:7px;flex-wrap:wrap">' +
+                  '<b style="color:var(--do);font-size:14.5px">' + md(x.ct) + '</b>' +
+                  '<b style="font-size:14px">' + esc(x.en) + '</b>' +
+                '</div>' +
+                '<div style="font-size:12px;color:var(--tim);font-family:monospace">' + esc(x.pa) + '</div>' +
+                '<div class="phu" style="font-size:11.8px;margin-top:2px">' + esc(x.vi) + '</div>' +
+              '</div>' +
+              '<button type="button" class="btn-speak" data-say="' + esc(x.en) + '" title="Bấm để nghe phát âm tiếng Anh chuẩn">🔊</button>' +
+            '</div>';
+          }).join('') : '<div class="phu" style="grid-column:1/-1;text-align:center;padding:18px">Không tìm thấy mục nào khớp từ khóa.</div>') +
+          '</div>';
+        const inpI = vung.querySelector('#iupac-q');
+        if (inpI) {
+          inpI.oninput = function () {
+            qIupac = this.value;
+            const pos = this.selectionStart;
+            veNoiDung();
+            const inp2 = hop.querySelector('#iupac-q');
+            if (inp2) { inp2.focus(); try { inp2.setSelectionRange(pos, pos); } catch (e) {} }
+          };
+        }
+        vung.querySelectorAll('[data-il]').forEach(function (b) {
+          b.onclick = function () { loaiIupac = b.getAttribute('data-il'); veNoiDung(); };
+        });
+        vung.querySelectorAll('[data-say]').forEach(function (b) {
+          b.onclick = function () { phatAmIUPAC_(b.getAttribute('data-say')); };
         });
       } else {
         vung.innerHTML =
@@ -1912,14 +2210,15 @@ window.H10 = (function () {
       }
     }
 
-    hop.innerHTML = '<div class="the rong" style="max-width:820px;display:flex;flex-direction:column;gap:12px">' +
+    hop.innerHTML = '<div class="the rong" style="max-width:860px;display:flex;flex-direction:column;gap:12px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">' +
         '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
           '<b style="font-size:16.5px">⚛️ Casio &amp; Sổ tay Hóa 10</b>' +
-          '<div class="seg">' +
-            '<button type="button" data-rt="casio" class="' + (tabRef === 'casio' ? 'on' : '') + '">🧮 Máy tính Casio &amp; M</button>' +
-            '<button type="button" data-rt="nt" class="' + (tabRef === 'nt' ? 'on' : '') + '">⚛️ Bảng Nguyên tố</button>' +
-            '<button type="button" data-rt="ct" class="' + (tabRef === 'ct' ? 'on' : '') + '">📐 Công thức SGK</button>' +
+          '<div class="seg" style="flex-wrap:wrap">' +
+            '<button type="button" data-rt="casio" class="' + (tabRef === 'casio' ? 'on' : '') + '">🧮 Casio &amp; M</button>' +
+            '<button type="button" data-rt="nt" class="' + (tabRef === 'nt' ? 'on' : '') + '">⚛️ Nguyên tố</button>' +
+            '<button type="button" data-rt="iupac" class="' + (tabRef === 'iupac' ? 'on' : '') + '">🔤 Danh pháp IUPAC</button>' +
+            '<button type="button" data-rt="ct" class="' + (tabRef === 'ct' ? 'on' : '') + '">📐 Công thức</button>' +
           '</div>' +
         '</div>' +
         '<div class="hang-nut" style="gap:6px">' +
@@ -1933,9 +2232,25 @@ window.H10 = (function () {
     document.body.appendChild(hop);
     veNoiDung();
 
-    const dong = function () { hop.remove(); document.removeEventListener('keydown', onEsc); };
-    const onEsc = function (e) { if (e.key === 'Escape') dong(); };
-    document.addEventListener('keydown', onEsc);
+    const dong = function () { hop.remove(); document.removeEventListener('keydown', onKeyModal); };
+    const onKeyModal = function (e) {
+      if (e.key === 'Escape') { dong(); return; }
+      if (tabRef !== 'casio' || !casioApi || e.ctrlKey || e.metaKey || e.altKey) return;
+      const ae = document.activeElement;
+      if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) return;
+      const k = e.key;
+      if (/^[0-9]$/.test(k)) { e.preventDefault(); casioApi.bam(k); }
+      else if (k === '.' || k === ',') { e.preventDefault(); casioApi.bam('.'); }
+      else if (k === '+') { e.preventDefault(); casioApi.bam('+'); }
+      else if (k === '-') { e.preventDefault(); casioApi.bam('−'); }
+      else if (k === '*') { e.preventDefault(); casioApi.bam('×'); }
+      else if (k === '/') { e.preventDefault(); casioApi.bam('÷'); }
+      else if (k === '^' || k === '(' || k === ')') { e.preventDefault(); casioApi.bam(k); }
+      else if (k === 'Enter' || k === '=') { e.preventDefault(); casioApi.act('eq'); }
+      else if (k === 'Backspace') { e.preventDefault(); casioApi.act('del'); }
+      else if (k === 'Delete') { e.preventDefault(); casioApi.act('ac'); }
+    };
+    document.addEventListener('keydown', onKeyModal);
     hop.onclick = function (e) { if (e.target === hop) dong(); };
     hop.querySelector('[data-x="dong"]').onclick = dong;
     const btnHalf = hop.querySelector('[data-x="half"]');
@@ -1953,20 +2268,38 @@ window.H10 = (function () {
     });
   }
 
-  // ---- Thanh Dock dưới đáy cho Điện thoại + Nút Tra cứu ⚛️ trên Topbar ----
+  // ---- Thanh Dock dưới đáy cho Điện thoại + Nút Tra cứu Casio trên Topbar + Brand về Trang chủ ----
   function ganThanhDieuHuongHS(activePage, opts) {
     opts = opts || {};
     prefetchPages();
     document.body.classList.add('has-mob-dock');
 
-    // Thêm nút "⚛️ Tra cứu" vào .top-right nếu chưa có
+    // Cho phép bấm vào .brand ở các trang con để về Trang chủ
+    const brand = document.querySelector('.topbar .brand');
+    if (brand && activePage !== 'home') {
+      brand.classList.add('brand-link');
+      brand.title = 'Về Trang chủ Hóa 10';
+      brand.setAttribute('role', 'link');
+      brand.tabIndex = 0;
+      const veHome = function () {
+        if (document.body.classList.contains('dang-lam')) return;
+        const l = linkTrang('home', opts);
+        if (l.target === '_blank') window.open(l.href, '_blank');
+        else if (l.target === '_top') { try { window.top.location.href = l.href; } catch (e) { window.location.href = l.href; } }
+        else window.location.href = l.href;
+      };
+      brand.onclick = veHome;
+      brand.onkeydown = function (e) { if (e.key === 'Enter') veHome(); };
+    }
+
+    // Thêm nút "🧮 Casio" vào .top-right nếu chưa có
     const tr = document.querySelector('.topbar .top-right');
     if (tr && !document.getElementById('btn-quick-ref')) {
       const b = document.createElement('button');
       b.type = 'button';
       b.id = 'btn-quick-ref';
       b.className = 'top-pill';
-      b.title = 'Mở Máy tính Casio Hóa học, Bảng nguyên tử khối & Công thức (Phím tắt: Alt + P)';
+      b.title = 'Mở Máy tính Casio Hóa học, Danh pháp IUPAC & Công thức (Phím tắt: Alt + P)';
       b.innerHTML = '🧮 <span>Casio</span>';
       b.onclick = function () { moBangTraCuu('casio'); };
       const themeBtn = document.getElementById('btn-theme');
@@ -1980,7 +2313,7 @@ window.H10 = (function () {
       fab.type = 'button';
       fab.id = 'h10-casio-fab';
       fab.className = 'btn-casio-fab';
-      fab.title = 'Mở Máy tính Casio & Tra cứu Hóa 10 (Alt + P)';
+      fab.title = 'Mở Máy tính Casio & Danh pháp IUPAC Hóa 10 (Alt + P)';
       fab.innerHTML = '🧮 <span>Casio</span>';
       fab.onclick = function () { moBangTraCuu('casio'); };
       document.body.appendChild(fab);
@@ -2075,19 +2408,47 @@ window.H10 = (function () {
 
   const $ = s => document.querySelector(s);
   const app = $('#app');
+  const SAO_KEY = 'h10_tl_sao';
   let data = null;
   let laFull = false;
-  let loc = { thuMuc: '', bai: '', loai: '', tk: '' };
+  let xemTuUrl = '';
+  let daMoXemTuUrl = false;
+  let loc = { thuMuc: '', bai: '', loai: '', tk: '', sao: false };
   const tenBaiMap = {};
+
+  function docSao() {
+    try { return JSON.parse(localStorage.getItem(SAO_KEY) || '{}') || {}; } catch (e) { return {}; }
+  }
+  function batTatSao(fid) {
+    const m = docSao();
+    if (m[fid]) delete m[fid]; else m[fid] = 1;
+    try { localStorage.setItem(SAO_KEY, JSON.stringify(m)); } catch (e) {}
+    return !!m[fid];
+  }
 
   getLocation(function (l) {
     laFull = !!(l && l.parameter && l.parameter.full);
     if (l && l.parameter && l.parameter.bai) {
       loc.bai = String(l.parameter.bai);
-      if (data) veTrang();
+    }
+    if (l && l.parameter && l.parameter.xem) {
+      xemTuUrl = String(l.parameter.xem);
+    }
+    if (data) {
+      veTrang();
+      thuMoXemTuUrl_();
     }
     veTopLinks();
   });
+
+  function thuMoXemTuUrl_() {
+    if (!xemTuUrl || daMoXemTuUrl || !data || !Array.isArray(data.items)) return;
+    const it = data.items.find(function (x) { return x.fileId === xemTuUrl; });
+    if (it) {
+      daMoXemTuUrl = true;
+      moXemTaiLieu(it);
+    }
+  }
 
   function veTopLinks() {
     const cfg = (data && data.caiDatTrang) || {};
@@ -2309,8 +2670,11 @@ window.H10 = (function () {
     items.forEach(x => { if (x.thuMuc) demTm[x.thuMuc] = (demTm[x.thuMuc] || 0) + 1; });
     const dsThuMuc = (data.thuMuc || []).filter(tm => demTm[tm.ten]);
 
+    const saoMap = docSao();
+    const soSao = items.filter(x => saoMap[x.fileId]).length;
     const tk = loc.tk.trim().toLowerCase();
     const locDs = items.filter(function (x) {
+      if (loc.sao && !saoMap[x.fileId]) return false;
       if (loc.thuMuc && x.thuMuc !== loc.thuMuc) return false;
       if (loc.loai && x.loai !== loc.loai) return false;
       if (loc.bai && !hopLocBai(x.bai, loc.bai)) return false;
@@ -2357,11 +2721,12 @@ window.H10 = (function () {
         '</div>' +
       '</div>';
 
-    const dangLoc = !!(loc.thuMuc || loc.loai || loc.bai || tk);
-    if (dsThuMuc.length || dangLoc) {
+    const dangLoc = !!(loc.thuMuc || loc.loai || loc.bai || tk || loc.sao);
+    if (dsThuMuc.length || dangLoc || soSao > 0) {
       h += '<div class="chip-scroll" style="margin-top:10px">' +
-        '<button type="button" class="nut nho ' + (!loc.thuMuc ? 'chinh' : '') + '" data-tm="">Tất cả</button>' +
-        dsThuMuc.map(tm => '<button type="button" class="nut nho ' + (loc.thuMuc === tm.ten ? 'chinh' : '') + '" data-tm="' + esc(tm.ten) + '">' + esc(tm.ten) + '</button>').join('') +
+        '<button type="button" class="nut nho ' + (!loc.thuMuc && !loc.sao ? 'chinh' : '') + '" data-tm="">Tất cả</button>' +
+        '<button type="button" class="nut nho ' + (loc.sao ? 'chinh' : '') + '" id="tl-loc-sao">⭐ Đã lưu' + (soSao ? ' (' + soSao + ')' : '') + '</button>' +
+        dsThuMuc.map(tm => '<button type="button" class="nut nho ' + (loc.thuMuc === tm.ten && !loc.sao ? 'chinh' : '') + '" data-tm="' + esc(tm.ten) + '">' + esc(tm.ten) + '</button>').join('') +
         (dangLoc ? '<button type="button" class="nut nho xoa" id="tl-xoa-loc">Xóa lọc</button>' : '') +
       '</div>';
     }
@@ -2369,13 +2734,29 @@ window.H10 = (function () {
 
     // Danh sách
     if (!locDs.length) {
-      h += '<div class="the"><p class="phu" style="margin:0;text-align:center">Không tìm thấy tài liệu phù hợp bộ lọc. Bấm chọn "Tất cả" để xem lại toàn bộ nhé.</p></div>';
+      h += '<div class="the"><p class="phu" style="margin:0;text-align:center">' +
+        (loc.sao ? 'Em chưa đánh dấu ⭐ tài liệu nào. Bấm nút ☆ trên thẻ tài liệu để lưu nhanh các file hay xem nhé!' : 'Không tìm thấy tài liệu phù hợp bộ lọc. Bấm chọn "Tất cả" để xem lại toàn bộ nhé.') +
+      '</p></div>';
     } else {
       h += '<div class="nhan-muc">Tìm thấy ' + locDs.length + ' tài liệu</div>';
+      const hienKhungGhim = !loc.thuMuc;
+      const dsGhim = hienKhungGhim ? locDs.filter(function (x) { return !!x.ghim; }) : [];
+      const dsThuong = hienKhungGhim ? locDs.filter(function (x) { return !x.ghim; }) : locDs;
+
+      if (dsGhim.length) {
+        h += '<section class="the" style="margin-bottom:16px;border-color:rgba(158,30,76,.35)">' +
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
+            '<b style="font-size:15.5px;color:var(--do)">📌 Tài liệu trọng tâm được Thầy ghim</b>' +
+            '<span class="chip chinh">' + dsGhim.length + ' tài liệu</span>' +
+          '</div><div class="tl-grid">';
+        dsGhim.forEach(veTheTL);
+        h += '</div></section>';
+      }
+
       // Gom theo buổi/thư mục (danh sách đã được backend sắp Buổi mới → cũ)
       const nhom = [];
       const viTri = {};
-      locDs.forEach(function (x) {
+      dsThuong.forEach(function (x) {
         const k = x.thuMuc || 'Chung';
         if (viTri[k] === undefined) { viTri[k] = nhom.length; nhom.push({ ten: k, ds: [] }); }
         nhom[viTri[k]].ds.push(x);
@@ -2394,21 +2775,26 @@ window.H10 = (function () {
 
     function veTheTL(x) {
         const tenHien = tenDep(x.ten);
+        const daSao = !!saoMap[x.fileId];
         const badgeTen = x.dinhDang === 'pdf' ? 'PDF' : (x.dinhDang === 'ppt' ? 'SLIDE' : (x.dinhDang === 'doc' ? 'WORD' : 'FILE'));
         const baiTen = x.bai ? (tenBaiMap[x.bai] || (x.bai === 'MD' ? 'Mở đầu' : (/^C\d$/.test(x.bai) ? 'Chương ' + x.bai.slice(1) : 'Bài ' + x.bai))) : '';
-        h += '<div class="tl-card ' + esc(x.dinhDang) + '">' +
+        h += '<div class="tl-card ' + esc(x.dinhDang) + (x.ghim ? ' ghim' : '') + '">' +
           '<div class="tl-body">' +
           '<div class="tl-ic ' + esc(x.dinhDang) + '" aria-hidden="true">' + badgeTen + '</div>' +
           '<div style="min-width:0;flex:1">' +
             '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px">' +
+              (x.ghim ? '<span class="chip chinh">📌 Ghim</span>' : '') +
               '<span class="chip">' + esc(x.loai) + '</span>' +
               (baiTen ? '<span class="chip ok">' + esc(baiTen) + '</span>' : '') +
+              (x.ghim && x.thuMuc ? '<span class="chip tim">' + esc(x.thuMuc) + '</span>' : '') +
             '</div>' +
             '<div style="font-weight:700;font-size:15px;overflow-wrap:anywhere" title="' + esc(x.ten) + '">' + esc(tenHien) + '</div>' +
             (tenHien !== x.ten ? '<div class="tl-goc" title="Tên file gốc trên Drive">' + esc(x.ten) + '</div>' : '') +
             (x.ghiChu ? '<div class="phu" style="font-size:13px;margin-top:4px">' + md(x.ghiChu) + '</div>' : '') +
             '<div class="phu" style="font-size:12px;margin-top:5px">' + [dinhDangSize(x.size), x.ngay ? 'Cập nhật ' + ngayDep(x.ngay) : ''].filter(Boolean).join(' · ') + '</div>' +
-          '</div></div>' +
+          '</div>' +
+          '<button type="button" class="nut-sao' + (daSao ? ' on' : '') + '" data-sao="' + esc(x.fileId) + '" title="' + (daSao ? 'Bỏ lưu tài liệu này' : 'Đánh dấu ⭐ lưu tài liệu hay xem') + '" aria-label="Lưu tài liệu">' + (daSao ? '★' : '☆') + '</button>' +
+          '</div>' +
           '<div class="hang-nut tl-act">' +
             '<button type="button" class="nut nho chinh" data-xem="' + esc(x.fileId) + '">Xem ngay</button>' +
             '<a class="nut nho" href="https://drive.google.com/uc?export=download&id=' + esc(x.fileId) + '" target="_blank" rel="noopener">Tải về</a>' +
@@ -2424,7 +2810,8 @@ window.H10 = (function () {
     $('#tl-tm').onchange = function () { loc.thuMuc = this.value; veTrang(); };
     $('#tl-bai').onchange = function () { loc.bai = this.value; veTrang(); };
     $('#tl-loai').onchange = function () { loc.loai = this.value; veTrang(); };
-    const xl = $('#tl-xoa-loc'); if (xl) xl.onclick = function () { loc = { thuMuc: '', bai: '', loai: '', tk: '' }; veTrang(); };
+    const ls = $('#tl-loc-sao'); if (ls) ls.onclick = function () { loc.sao = !loc.sao; veTrang(); };
+    const xl = $('#tl-xoa-loc'); if (xl) xl.onclick = function () { loc = { thuMuc: '', bai: '', loai: '', tk: '', sao: false }; veTrang(); };
     const ln = $('#tl-loc-nut'); if (ln) ln.onclick = function () { moLocChiTiet = !moLocChiTiet; veTrang(); };
     const lm = $('#tl-lam-moi');
     if (lm) lm.onclick = function () {
@@ -2436,7 +2823,12 @@ window.H10 = (function () {
         toast('Đã cập nhật danh sách thư mục & tài liệu mới nhất từ Drive.');
       }).catch(function (e) { lm.disabled = false; lm.textContent = '🔄 Làm mới Drive'; toast(e.message, true); });
     };
-    app.querySelectorAll('[data-tm]').forEach(b => b.onclick = () => { loc.thuMuc = b.getAttribute('data-tm'); veTrang(); });
+    app.querySelectorAll('[data-tm]').forEach(b => b.onclick = () => { loc.sao = false; loc.thuMuc = b.getAttribute('data-tm'); veTrang(); });
+    app.querySelectorAll('[data-sao]').forEach(b => b.onclick = () => {
+      const bat = batTatSao(b.getAttribute('data-sao'));
+      toast(bat ? 'Đã lưu vào mục ⭐ Đã lưu!' : 'Đã bỏ đánh dấu ⭐');
+      veTrang();
+    });
     app.querySelectorAll('[data-xem]').forEach(b => b.onclick = () => {
       const fid = b.getAttribute('data-xem');
       const item = (data.items || []).find(x => x.fileId === fid);
@@ -2452,6 +2844,7 @@ window.H10 = (function () {
     });
     veTopLinks();
     veTrang();
+    thuMoXemTuUrl_();
   }
 
   ganThanhDieuHuongHS('tailieu', {});
