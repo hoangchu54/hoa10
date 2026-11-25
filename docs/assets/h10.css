@@ -541,6 +541,11 @@ body.dang-lam .topbar{position:static}
   .lab-body.mob-hd .lab-stage{display:none}
   .lab-body.mob-hd .lab-guide{display:flex}
 }
+@media (max-width:640px){
+  .lab-bar{padding:8px 10px;gap:6px}
+  .lab-bar-title{flex-basis:100%}
+  .lab-bar-title b{white-space:normal;font-size:14px;line-height:1.3}
+}
 
 /* Mobile Bottom Navigation Dock & Quick Reference Modal */
 .mob-dock{display:none;position:fixed;left:0;right:0;bottom:0;z-index:45;background:var(--the);border-top:1px solid var(--vien);box-shadow:0 -4px 18px rgba(20,16,36,.09);padding:4px 6px calc(4px + env(safe-area-inset-bottom));justify-content:space-around;align-items:center;gap:2px}

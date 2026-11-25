@@ -208,6 +208,7 @@ window.H10 = (function () {
     btvn: 'btvn.html',
     tailieu: 'tailieu.html',
     thinghiem: 'thinghiem.html',
+    lab: 'lab.html',
     trochoi: 'trochoi.html',
     admin: 'admin.html'
   };
@@ -259,6 +260,9 @@ window.H10 = (function () {
       return cfg.linkThiNghiem
         ? { href: noiQuery_(cfg.linkThiNghiem, qExtra), target: 'h10_ngoai' }
         : { href: noiQuery_(webUrl + '?page=thinghiem' + suf, qExtra), target: navTarget };
+    }
+    if (page === 'lab') {
+      return { href: noiQuery_(webUrl + '?page=lab' + suf, qExtra), target: navTarget };
     }
     if (page === 'trochoi') {
       return cfg.linkTroChoi
