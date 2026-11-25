@@ -1,0 +1,25 @@
+{
+  "name": "Hóa 10 – Thầy Hoàng",
+  "short_name": "Hóa 10",
+  "description": "Cổng học tập Hóa học 10 (Kết nối tri thức) của Thầy Hoàng: bài tập về nhà, kho tài liệu, thí nghiệm ảo và trò chơi Hóa học.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F4F5FA",
+  "theme_color": "#5B1126",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
