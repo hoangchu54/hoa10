@@ -21,12 +21,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=fba761b5df">
+<link rel="stylesheet" href="assets/h10.css?v=0e9b13a5ac">
 <style>
+  body.lab-viewing {
+    overflow: hidden;
+  }
+  body.lab-viewing .app {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  body.lab-viewing #app,
+  .lab3d-view {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
   .lab3d-frame-wrap{
+    flex:1 1 auto;
+    min-height:0;
+    height:auto;
     display:flex;
     flex-direction:column;
-    height:calc(100dvh - 60px);
     background:#080610;
     position:relative;
   }
@@ -34,6 +56,7 @@
     position:fixed;
     inset:0;
     z-index:99;
+    flex:none;
     height:100vh;
     height:100dvh;
     width:100vw;
@@ -73,6 +96,7 @@
     background:var(--the);
     border-bottom:1px solid var(--vien);
     flex-wrap:nowrap;
+    flex-shrink:0;
   }
   .lab3d-bar-l{
     display:flex;
@@ -85,17 +109,47 @@
     flex:1 1 auto;
     max-width:440px;
     min-width:0;
-    padding:6px 9px;
+    min-height:34px;
+    padding:4px 9px;
     border-radius:10px;
     border:1px solid var(--vien);
-    background:var(--nen-phu, var(--nen));
+    background:var(--nen2);
     color:var(--chu);
     font:inherit;
     font-size:12.5px;
     font-weight:700;
   }
+  .lab3d-stage{
+    flex:1 1 auto;
+    min-height:0;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    background:#080610;
+  }
+  .lab3d-loader{
+    position:absolute;
+    inset:0;
+    z-index:5;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:rgba(8,6,16,.88);
+    color:#E2E8F0;
+    font-size:13.5px;
+    font-weight:600;
+    transition:opacity .25s ease, visibility .25s ease;
+    pointer-events:none;
+  }
+  .lab3d-loader.xong{
+    opacity:0;
+    visibility:hidden;
+  }
   .lab3d-iframe{
     flex:1 1 auto;
+    min-height:0;
     width:100%;
     height:100%;
     border:0;
@@ -105,11 +159,32 @@
   body.lab-embed .topbar,
   body.lab-embed .lab3d-bar,
   body.lab-embed #h10-mob-dock,
-  body.lab-embed #h10-casio-fab{
+  body.lab-embed .mob-dock,
+  body.lab-embed #h10-casio-fab,
+  body.lab-embed .btn-casio-fab,
+  body.lab-embed .btn-top{
     display:none !important;
   }
-  body.lab-embed .lab3d-frame-wrap{
-    height:100dvh;
+  .hub3d-toolbar{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .hub3d-search-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .hub3d-search-row input{
+    flex:1 1 auto;
+    min-width:0;
+  }
+  .hub3d-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    align-items:center;
   }
   .hub3d-grid{
     display:grid;
@@ -126,7 +201,7 @@
     display:flex;
     flex-direction:column;
     gap:8px;
-    box-shadow:var(--bong);
+    box-shadow:var(--shadow);
     transition:transform .16s ease, border-color .16s ease;
   }
   .hub3d-card:hover{
@@ -163,7 +238,7 @@
   .hub3d-desc{
     font-size:12.8px;
     line-height:1.52;
-    color:var(--phu);
+    color:var(--mo);
     flex:1;
   }
   .hub3d-actions{
@@ -171,10 +246,21 @@
     gap:6px;
     margin-top:2px;
   }
+  @media (max-width:760px){
+    .hub3d-chips{
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      padding-bottom:3px;
+    }
+    .hub3d-chips::-webkit-scrollbar{ display:none; }
+    .hub3d-chips > button{ flex-shrink:0; }
+  }
   @media (max-width:640px){
-    .lab3d-frame-wrap{ height:calc(100dvh - 54px); }
     .lab3d-bar{ padding:5px 8px; }
     .lab3d-bar .fs-lbl{ display:none; }
+    .lab3d-bar select{ font-size:14px; }
     .hub3d-grid{ grid-template-columns:1fr; }
   }
 </style>
@@ -191,12 +277,12 @@
         </div>
       </div>
       <div class="top-right">
-        <a class="top-pill an" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
-        <a class="top-pill an" id="btn-btvn" href="#" target="_top">📝 Làm BTVN</a>
-        <a class="top-pill an" id="btn-tailieu" href="#" target="_self">📚 Tài liệu</a>
-        <a class="top-pill an" id="btn-tn" href="#" target="_self">🔬 Thí nghiệm</a>
-        <span class="top-pill on">🧊 Lab 3D</span>
-        <a class="top-pill an" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
+        <a class="top-pill top-nav-link an" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
+        <a class="top-pill top-nav-link an" id="btn-btvn" href="#" target="_top">📝 Làm BTVN</a>
+        <a class="top-pill top-nav-link an" id="btn-tailieu" href="#" target="_self">📚 Tài liệu</a>
+        <a class="top-pill top-nav-link an" id="btn-tn" href="#" target="_self">🔬 Thí nghiệm</a>
+        <span class="top-pill top-nav-link on">🧊 Lab 3D</span>
+        <a class="top-pill top-nav-link an" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
         <button type="button" class="top-pill" id="btn-theme"></button>
       </div>
     </div>
@@ -205,10 +291,14 @@
   <main id="app" aria-live="polite"></main>
 </div>
 
-<script src="assets/h10.js?v=f65a9f6233"></script>
+<script src="assets/h10.js?v=2416061e55"></script>
 <script>
 (function () {
-  const { esc, md, laGAS, getLocation, linkTrang, ICONS, ganNutTheme, renderSlogan, ganThanhDieuHuongHS, ganNutLenDau } = window.H10;
+  const { esc, md, api, laGAS, getLocation, linkTrang, ICONS, ganNutTheme, renderSlogan, ganThanhDieuHuongHS, ganNutLenDau } = window.H10;
+  const boDau = window.H10.boDau || (s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').toLowerCase());
+  function chuanTK(s) {
+    return String(boDau(s) || '').toLowerCase();
+  }
   const GH_LABS3D_BASE = 'https://hoangchu54.github.io/hoa10/labs3d/';
   document.getElementById('brand-ic').innerHTML = ICONS.lab;
   ganNutTheme(document.getElementById('btn-theme'));
@@ -250,7 +340,7 @@
     { id: 'hydrogen', file: 'hydrogen3d.html', ch: 'C3', bai: 'Bài 13', ic: '❄️',
       ten: 'Liên kết Hydrogen & Nước đá nổi 3D',
       moTa: '54 phân tử H₂O định hướng mạng lục giác rỗng Ice Iₕ (D = 0,92 g/cm³) khi hạ về 0 °C, sụp đặc khi tan lỏng và bay tự do lúc sôi + cốc băng nổi.' },
-    { id: 'oxh', file: 'oxh3d.html', ch: 'C4', bai: 'Bài 15', ic: '✨',
+    { id: 'oxh', file: 'oxh3d.html', ch: 'C4', bai: 'Bài 15, 16', ic: '✨',
       ten: 'Phản ứng Oxi hóa – Khử 3D (Cây bạc & Zn)',
       moTa: 'Nhúng dây Cu xoắn vào AgNO₃ mọc tinh thể bạc óng ánh & dd hóa xanh lam; nhúng lá Zn vào CuSO₄ lá kẽm mòn phủ đồng đỏ & dd mất màu xanh.' },
     { id: 'nhiet-luong-ke', file: 'enthalpy3d.html', ch: 'C5', bai: 'Bài 17, 18', ic: '🌡️',
@@ -269,6 +359,11 @@
       ten: 'Ống nghiệm Halide, Chiết 2 lớp & Giải mã 3D',
       moTa: '4 chế độ: AgNO₃ nhận biết F⁻/Cl⁻/Br⁻/I⁻ (hòa tan AgCl bằng NH₃, chiếu sáng UV), thế halogen & chiết tách 2 lớp Hexane, muối rắn + H₂SO₄ đặc, giải mã 4 lọ.' }
   ];
+
+  LABS_3D.forEach(function (lb) {
+    const raw = lb.id + ' ' + lb.ch + ' ' + lb.bai + ' ' + lb.ten + ' ' + lb.moTa;
+    lb._search = raw.toLowerCase() + ' ' + chuanTK(raw);
+  });
 
   const ALIAS = {
     'kiem-luong-tinh': 'kiem',
@@ -291,12 +386,19 @@
   }
 
   let curCh = '';
+  let curTk = '';
   let curLab = null;
   let isEmbed = false;
+  let pushedFromHub = false;
+  let webUrl = laGAS ? (window.H10.GAS_EXEC_URL || '') : '';
+  let caiDatTrang = {};
+  let laFull = !document.documentElement.classList.contains('in-iframe');
+  let loaderTimer = null;
 
   function parseRoute(locObj) {
     const p = (locObj && locObj.parameter) || {};
-    const rawHash = (locObj && locObj.hash ? String(locObj.hash) : (location.hash || '')).replace(/^#/, '');
+    if (p.full) laFull = true;
+    const rawHash = (locObj && typeof locObj.hash === 'string' ? locObj.hash : (location.hash || '')).replace(/^#/, '');
     const qi = rawHash.indexOf('?');
     const hashId = qi >= 0 ? rawHash.slice(0, qi) : rawHash;
     const hashSub = qi >= 0 ? (new URLSearchParams(rawHash.slice(qi + 1)).get('sub') || '') : '';
@@ -308,7 +410,11 @@
   }
 
   function veTopLinks() {
-    const opt = { cfg: {}, webUrl: '', laFull: true };
+    const opt = {
+      cfg: caiDatTrang,
+      webUrl: laGAS ? (webUrl || window.H10.GAS_EXEC_URL || '') : '',
+      laFull: laFull
+    };
     ganThanhDieuHuongHS('thinghiem', opt);
     const map = [
       ['btn-home', linkTrang('home', opt)],
@@ -324,20 +430,6 @@
       el.target = pair[1].target;
       el.classList.remove('an');
     });
-  }
-
-  function moLab(id) {
-    const lab = timLab(id, '');
-    if (!lab) return;
-    curLab = lab;
-    try { history.replaceState(null, '', '#' + lab.id); } catch (_) { location.hash = lab.id; }
-    ve();
-  }
-
-  function veSanh() {
-    curLab = null;
-    try { history.replaceState(null, '', location.pathname + location.search); } catch (_) { location.hash = ''; }
-    ve();
   }
 
   let isHubFs = false;
@@ -361,26 +453,117 @@
     }
   }
 
+  function moLab(id) {
+    const lab = timLab(id, '');
+    if (!lab) return;
+    if (isHubFs || document.fullscreenElement || document.webkitFullscreenElement) {
+      setHubFs(false, false);
+    }
+    const wasAtHub = !curLab;
+    curLab = lab;
+    if (wasAtHub) {
+      pushedFromHub = true;
+      try {
+        history.pushState({ h10Lab: lab.id, fromHub: true }, '', '#' + lab.id);
+      } catch (_) {
+        location.hash = lab.id;
+      }
+    } else {
+      try {
+        history.replaceState({ h10Lab: lab.id, fromHub: pushedFromHub }, '', '#' + lab.id);
+      } catch (_) {
+        location.hash = lab.id;
+      }
+    }
+    ve();
+  }
+
+  function veSanh() {
+    if (isHubFs || document.fullscreenElement || document.webkitFullscreenElement) {
+      setHubFs(false, false);
+    }
+    if (pushedFromHub) {
+      pushedFromHub = false;
+      history.back();
+      return;
+    }
+    curLab = null;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (_) { location.hash = ''; }
+    ve();
+  }
+
   window.addEventListener('message', function (ev) {
     if (!ev || !ev.data || ev.data.type !== 'h10-lab-fs') return;
+    const frame = document.getElementById('lab3d-iframe');
+    if (!frame || ev.source !== frame.contentWindow) return;
     setHubFs(ev.data.on, true);
   });
-  document.addEventListener('fullscreenchange', function () {
+
+  function onHubFsChange() {
     if (!document.fullscreenElement && !document.webkitFullscreenElement && isHubFs) {
       setHubFs(false, false);
     }
-  });
+  }
+  document.addEventListener('fullscreenchange', onHubFsChange);
+  document.addEventListener('webkitfullscreenchange', onHubFsChange);
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && isHubFs) setHubFs(false, false);
   });
 
+  function capNhatLuoiSanh() {
+    const gridWrap = document.getElementById('hub3d-grid-wrap');
+    if (!gridWrap) return;
+    const qRaw = curTk.trim();
+    const qNorm = chuanTK(qRaw);
+
+    const xoaBtn = document.getElementById('hub3d-xoa-loc');
+    if (xoaBtn) xoaBtn.classList.toggle('an', !(curCh || qRaw));
+
+    document.querySelectorAll('[data-ch]').forEach(function (b) {
+      b.classList.toggle('chinh', b.getAttribute('data-ch') === curCh);
+    });
+
+    const ds = LABS_3D.filter(function (x) {
+      if (curCh && x.ch !== curCh) return false;
+      if (qNorm && x._search.indexOf(qNorm) < 0) return false;
+      return true;
+    });
+
+    if (!ds.length) {
+      gridWrap.innerHTML = '<div class="the" style="margin-bottom:18px"><p class="phu" style="margin:0;text-align:center">Không tìm thấy phòng Lab 3D phù hợp với từ khóa.</p></div>';
+      return;
+    }
+
+    gridWrap.innerHTML = '<div class="hub3d-grid">' +
+      ds.map(function (lb) {
+        const src = urlFile3D(lb.file);
+        return '<article class="hub3d-card">' +
+          '<div class="hub3d-top">' +
+            '<div class="hub3d-ic" aria-hidden="true">' + lb.ic + '</div>' +
+            '<div class="hub3d-meta">' +
+              '<b>' + esc(lb.ten) + '</b>' +
+              '<span class="phu" style="font-size:12px">🧊 3D Real-time · ' + esc(lb.bai) + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="hub3d-desc">' + md(lb.moTa) + '</div>' +
+          '<div class="hub3d-actions">' +
+            '<button type="button" class="nut nho chinh" style="flex:1" data-open="' + esc(lb.id) + '">▶ Mở Phòng Lab 3D</button>' +
+            '<a class="nut nho" href="' + esc(src) + '" target="h10_ngoai" rel="noopener" title="Mở riêng trên tab mới">↗</a>' +
+          '</div>' +
+        '</article>';
+      }).join('') +
+    '</div>';
+  }
+
   function ve() {
     const app = document.getElementById('app');
+    if (loaderTimer) { clearTimeout(loaderTimer); loaderTimer = null; }
+
     if (curLab) {
       isHubFs = false;
       document.body.classList.add('lab-viewing');
       const src = urlFile3D(curLab.file);
-      app.className = '';
+      app.className = 'lab3d-view';
       app.innerHTML =
         '<div class="lab3d-frame-wrap" id="lab3d-wrap">' +
           '<button type="button" class="lab3d-fs-exit" id="btn-exit-fs">✕ Thu nhỏ</button>' +
@@ -395,12 +578,22 @@
               '</select>' +
             '</div>' +
             '<div class="hang-nut" style="gap:5px;flex-shrink:0">' +
+              '<a class="nut nho" href="' + esc(src) + '" target="h10_ngoai" rel="noopener" title="Mở riêng file Lab 3D trên tab mới">↗ <span class="fs-lbl">Tab riêng</span></a>' +
               '<button type="button" class="nut nho chinh" id="btn-hub-fs" title="Mở toàn màn hình tại chỗ">⛶ <span class="fs-lbl">Toàn màn hình</span></button>' +
             '</div>' +
           '</div>' +
-          '<iframe class="lab3d-iframe" id="lab3d-iframe" src="' + esc(src) + '" title="' + esc(curLab.ten) + '" allowfullscreen allow="fullscreen; autoplay"></iframe>' +
+          '<div class="lab3d-stage">' +
+            '<div class="lab3d-loader" id="lab3d-loader" aria-hidden="true"><span class="cho" style="width:24px;height:24px;border-width:2.5px;color:#A78BFA"></span><span>Đang nạp không gian 3D...</span></div>' +
+            '<iframe class="lab3d-iframe" id="lab3d-iframe" src="' + esc(src) + '" title="' + esc(curLab.ten) + '" allowfullscreen allow="fullscreen; autoplay"></iframe>' +
+          '</div>' +
         '</div>';
       document.title = curLab.ten + ' – Hóa 10';
+      const loaderEl = document.getElementById('lab3d-loader');
+      const frameEl = document.getElementById('lab3d-iframe');
+      const anLoader = function () { if (loaderEl) loaderEl.classList.add('xong'); };
+      loaderTimer = setTimeout(anLoader, 3500);
+      if (frameEl) frameEl.addEventListener('load', anLoader);
+
       const backBtn = document.getElementById('btn-back-hub');
       if (backBtn) backBtn.onclick = veSanh;
       const sel = document.getElementById('sel-lab3d');
@@ -413,61 +606,96 @@
     }
 
     document.body.classList.remove('lab-viewing');
-
     document.title = '14 Phòng Lab 3D Hóa 10 – Thầy Hoàng';
     app.className = 'khung-chinh';
-    const ds = curCh ? LABS_3D.filter(function (x) { return x.ch === curCh; }) : LABS_3D;
     app.innerHTML =
       '<div class="hero-box art-flask" style="margin-bottom:14px">' +
         '<span class="chip chinh">🧊 14 PHÒNG THÍ NGHIỆM 3D REAL-TIME · TIẾNG VIỆT</span>' +
         '<h1>Sảnh Phòng Lab 3D Hóa Học 10</h1>' +
         '<p class="phu" style="margin:0">Xoay 360°, trực tiếp nhỏ giọt, gắp hóa chất, bật bếp, chiếu sáng và quan sát hiện tượng chuẩn SGK Kết nối tri thức.</p>' +
       '</div>' +
-      '<div class="chip-scroll" style="margin-bottom:14px">' +
-        CHUONGS.map(function (c) {
-          return '<button type="button" class="nut nho ' + (curCh === c.id ? 'chinh' : '') + '" data-ch="' + esc(c.id) + '">' + esc(c.ten) + '</button>';
-        }).join('') +
+      '<div class="hub3d-toolbar">' +
+        '<div class="hub3d-search-row">' +
+          '<input id="hub3d-tk" type="search" aria-label="Tìm phòng Lab 3D" placeholder="Tìm nhanh Lab 3D (gõ có dấu hoặc không dấu: ngọn lửa, NaCl, AgCl, tốc độ, orbital...)..." value="' + esc(curTk) + '">' +
+          '<button type="button" class="nut nho xoa' + ((curCh || curTk.trim()) ? '' : ' an') + '" id="hub3d-xoa-loc">Xóa lọc</button>' +
+        '</div>' +
+        '<div class="hub3d-chips chip-scroll">' +
+          CHUONGS.map(function (c) {
+            return '<button type="button" class="nut nho ' + (curCh === c.id ? 'chinh' : '') + '" data-ch="' + esc(c.id) + '">' + esc(c.ten) + '</button>';
+          }).join('') +
+        '</div>' +
       '</div>' +
-      '<div class="hub3d-grid">' +
-        ds.map(function (lb) {
-          const src = urlFile3D(lb.file);
-          return '<article class="hub3d-card">' +
-            '<div class="hub3d-top">' +
-              '<div class="hub3d-ic" aria-hidden="true">' + lb.ic + '</div>' +
-              '<div class="hub3d-meta">' +
-                '<b>' + esc(lb.ten) + '</b>' +
-                '<span class="phu" style="font-size:12px">🧊 3D Real-time · ' + esc(lb.bai) + '</span>' +
-              '</div>' +
-            '</div>' +
-            '<div class="hub3d-desc">' + md(lb.moTa) + '</div>' +
-            '<div class="hub3d-actions">' +
-              '<button type="button" class="nut nho chinh" style="flex:1" data-open="' + esc(lb.id) + '">▶ Mở Phòng Lab 3D</button>' +
-              '<a class="nut nho" href="' + esc(src) + '" target="h10_ngoai" rel="noopener" title="Mở toàn màn hình">↗</a>' +
-            '</div>' +
-          '</article>';
-        }).join('') +
-      '</div>' +
+      '<div id="hub3d-grid-wrap"></div>' +
       '<div id="slogan-slot"></div>';
 
+    capNhatLuoiSanh();
     renderSlogan(document.getElementById('slogan-slot'));
-    app.querySelectorAll('[data-ch]').forEach(function (b) {
-      b.onclick = function () { curCh = b.getAttribute('data-ch'); ve(); };
-    });
-    app.querySelectorAll('[data-open]').forEach(function (b) {
-      b.onclick = function () { moLab(b.getAttribute('data-open')); };
-    });
+
+    const inp = document.getElementById('hub3d-tk');
+    if (inp) {
+      inp.addEventListener('input', function () {
+        curTk = this.value;
+        capNhatLuoiSanh();
+      });
+    }
+    const xoaBtn = document.getElementById('hub3d-xoa-loc');
+    if (xoaBtn) {
+      xoaBtn.onclick = function () {
+        curCh = '';
+        curTk = '';
+        if (inp) inp.value = '';
+        capNhatLuoiSanh();
+      };
+    }
   }
 
-  window.addEventListener('hashchange', function () {
-    parseRoute({ parameter: {}, hash: location.hash });
-    ve();
+  document.getElementById('app').addEventListener('click', function (e) {
+    const chBtn = e.target.closest('[data-ch]');
+    if (chBtn) {
+      curCh = chBtn.getAttribute('data-ch') || '';
+      capNhatLuoiSanh();
+      return;
+    }
+    const openBtn = e.target.closest('[data-open]');
+    if (openBtn) {
+      moLab(openBtn.getAttribute('data-open'));
+    }
   });
+
+  function dongBoLichSu(ev) {
+    const prevId = curLab ? curLab.id : '';
+    parseRoute({ parameter: {}, hash: location.hash });
+    if (!curLab) {
+      pushedFromHub = false;
+    } else if (ev && ev.state && ev.state.fromHub) {
+      pushedFromHub = true;
+    }
+    const nextId = curLab ? curLab.id : '';
+    if (prevId !== nextId) {
+      if (isHubFs || document.fullscreenElement || document.webkitFullscreenElement) {
+        setHubFs(false, false);
+      }
+      ve();
+    }
+  }
+
+  window.addEventListener('popstate', dongBoLichSu);
+  window.addEventListener('hashchange', function () { dongBoLichSu(null); });
 
   veTopLinks();
   getLocation(function (locObj) {
     parseRoute(locObj);
+    veTopLinks();
     ve();
   });
+  if (laGAS) {
+    api('tnKhoiDong').then(function (r) {
+      if (!r) return;
+      if (r.webUrl) webUrl = r.webUrl;
+      if (r.caiDatTrang) caiDatTrang = r.caiDatTrang;
+      veTopLinks();
+    }).catch(function () {});
+  }
 })();
 </script>
 </body>

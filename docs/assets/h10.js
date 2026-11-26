@@ -13,7 +13,11 @@ window.H10 = (function () {
     });
   }
 
-  // ---- Tự định dạng công thức hóa học khi hiển thị (H2SO4 → H₂SO₄, Fe3+ → Fe³⁺, <=> → ⇌) ----
+  function boDau(s) {
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').toLowerCase();
+  }
+
+  // ---- Tự định dạng công thức hóa học khi hiển thị (H2SO4 → H₂SO₄, Fe3+ → Fe³⁺, NH4+ → NH₄⁺, OH- → OH⁻, <=> → ⇌) ----
   const KI_HIEU_NT = ('H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr ' +
     'Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os ' +
     'Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr').split(' ');
@@ -22,6 +26,9 @@ window.H10 = (function () {
   const SO_DUOI = { '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉' };
   const SO_TREN = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '+': '⁺', '-': '⁻' };
   function doiSo_(s, bang) { return String(s).split('').map(function (c) { return bang[c] || c; }).join(''); }
+  function haChiSo_(ct) {
+    return ct.replace(/([A-Za-z)])(\d+)/g, function (x, a, so) { return a + doiSo_(so, SO_DUOI); });
+  }
   /** Token có phải chuỗi kí hiệu nguyên tố hợp lệ (vd: H2SO4, Ca(OH)2, CO2) không. */
   function laCongThuc_(tok) {
     const bo = tok.replace(/[()\d]/g, '');
@@ -30,18 +37,35 @@ window.H10 = (function () {
     return m.every(function (k) { return NT_SET[k]; });
   }
   function dinhDangCongThuc(t) {
-    // Ion đơn nguyên tử: Fe3+, Mg2+, Cl-, Na+ (đứng trước khoảng trắng/dấu câu/cuối)
-    t = t.replace(/(^|[^\w&#])([A-Z][a-z]?)(\d?)([+-])(?=$|[\s,.;:)\]!?])/g, function (all, pre, k, so, dau) {
+    // 1. Anion đa điện tích phổ biến viết liền không dấu ^ (SO42-, CO32-, PO43-, Cr2O72-...)
+    t = t.replace(/(^|[^\w&#])(Cr2O7|S2O3|HPO4|ZnO2|SiO3|CrO4|SO4|SO3|CO3)(2-)(?=$|[\s,.;:)\]!?/])/g, function (all, pre, ct, chg) {
+      return pre + haChiSo_(ct) + doiSo_(chg, SO_TREN);
+    });
+    t = t.replace(/(^|[^\w&#])(PO4|AsO4)(3-)(?=$|[\s,.;:)\]!?/])/g, function (all, pre, ct, chg) {
+      return pre + haChiSo_(ct) + doiSo_(chg, SO_TREN);
+    });
+    // 2. Ion có dấu ^ trước điện tích (SO4^2-, CO3^2-, PO4^3-, NH4^+, Fe^3+...)
+    t = t.replace(/(^|[^\w&#])((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d+)+)\^(\d*[+-])(?=$|[\s,.;:)\]!?/])/g, function (all, pre, tok, chg) {
+      if (!laCongThuc_(tok)) return all;
+      return pre + haChiSo_(tok) + doiSo_(chg, SO_TREN);
+    });
+    // 3. Ion đa nguyên tử điện tích ±1 (OH-, NO3-, NO2-, ClO-, ClO2-, ClO3-, ClO4-, MnO4-, HCO3-, HSO4-, HSO3-, H2PO4-, CH3COO-, NH4+, H3O+...)
+    t = t.replace(/(^|[^\w&#])((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d*){2,})([+-])(?=$|[\s,.;:)\]!?/])/g, function (all, pre, tok, dau) {
+      if (!laCongThuc_(tok)) return all;
+      if (!/\d/.test(tok) && !/^(OH|HS|CN|SCN|OCN|ClO|BrO|IO|NO|HCOO|CH3COO)$/.test(tok)) return all;
+      return pre + haChiSo_(tok) + doiSo_(dau, SO_TREN);
+    });
+    // 4. Ion đơn nguyên tử: Fe3+, Mg2+, Cl-, Na+, S2- (đứng trước khoảng trắng/dấu câu/gạch chéo/cuối)
+    t = t.replace(/(^|[^\w&#])([A-Z][a-z]?)(\d?)([+-])(?=$|[\s,.;:)\]!?/])/g, function (all, pre, k, so, dau) {
       if (!NT_SET[k]) return all;
       return pre + k + doiSo_(so + dau, SO_TREN);
     });
-    // Phân tử (có thể kèm hệ số đứng trước: 2H2O): chỉ đổi khi token gồm toàn kí hiệu nguyên tố và có chữ số sau kí hiệu.
-    // Token chỉ 1 nguyên tố (O2, Cl2, S8...) chỉ đổi với các đơn chất hay gặp để tránh nhầm mã như "C1", "B12".
-    t = t.replace(/(^|[^\w&#])(\d*)((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d+)+)(?![\w])/g, function (all, pre, heSo, tok) {
+    // 5. Phân tử trung hòa (có thể kèm hệ số đứng trước: 2H2O, H2SO4, Ca(OH)2)
+    t = t.replace(/(^|[^\w&#])(\d*)((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d+)+)(?![\w⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻₀₁₂₃₄₅₆₇₈₉])/g, function (all, pre, heSo, tok) {
       if (!/[A-Za-z)]\d/.test(tok) || !laCongThuc_(tok)) return all;
       const kh = tok.replace(/[()\d]/g, '').match(/[A-Z][a-z]?/g) || [];
       if (kh.length === 1 && !/^(H|N|O|F|Cl|Br|I|S|P)$/.test(kh[0])) return all;
-      return pre + heSo + tok.replace(/([A-Za-z)])(\d+)/g, function (x, a, so) { return a + doiSo_(so, SO_DUOI); });
+      return pre + heSo + haChiSo_(tok);
     });
     return t
       .replace(/&lt;=+&gt;|&lt;-+&gt;/g, '⇌')
@@ -175,11 +199,15 @@ window.H10 = (function () {
       });
     }
     const url = window.H10_GAS_URL || GAS_EXEC_URL;
+    const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const henHuy = ctrl ? setTimeout(function () { ctrl.abort(); }, 25000) : null;
     return fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ fn: ten, args: args })
+      body: JSON.stringify({ fn: ten, args: args }),
+      signal: ctrl ? ctrl.signal : undefined
     }).then(function (res) {
+      if (henHuy) clearTimeout(henHuy);
       return res.text().then(function (txt) {
         let j = null;
         try { j = JSON.parse(txt); } catch (e) {}
@@ -187,6 +215,12 @@ window.H10 = (function () {
         if (!j.ok) throw new Error(j.error || 'Lỗi máy chủ.');
         return j.data;
       });
+    }).catch(function (err) {
+      if (henHuy) clearTimeout(henHuy);
+      if (err && err.name === 'AbortError') {
+        throw new Error('Kết nối quá hạn (25 giây). Vui lòng kiểm tra mạng và thử lại.');
+      }
+      throw err;
     });
   }
 
@@ -220,6 +254,11 @@ window.H10 = (function () {
     return base + (base.indexOf('?') >= 0 ? '&' : '?') + q;
   }
 
+  function goiLink_(href, target) {
+    const rel = (target && target !== '_self' && target !== '_top') ? 'noopener noreferrer' : '';
+    return { href: href, target: target, rel: rel };
+  }
+
   function linkTrang(page, opts) {
     opts = opts || {};
     const cfg = opts.cfg || {};
@@ -227,50 +266,50 @@ window.H10 = (function () {
     const laFull = !!opts.laFull;
     const qExtra = opts.query || '';
     if (!laGAS) {
-      if (page === 'thinghiem' && cfg.linkThiNghiem) return { href: noiQuery_(cfg.linkThiNghiem, qExtra), target: 'h10_ngoai' };
-      if (page === 'trochoi' && cfg.linkTroChoi) return { href: noiQuery_(cfg.linkTroChoi, qExtra), target: '_self' };
-      return {
-        href: noiQuery_(STATIC_PAGES[page] || 'index.html', qExtra),
-        target: opts.target || (page === 'admin' ? 'h10_admin' : '_self')
-      };
+      if (page === 'thinghiem' && cfg.linkThiNghiem) return goiLink_(noiQuery_(cfg.linkThiNghiem, qExtra), 'h10_ngoai');
+      if (page === 'trochoi' && cfg.linkTroChoi) return goiLink_(noiQuery_(cfg.linkTroChoi, qExtra), '_self');
+      return goiLink_(
+        noiQuery_(STATIC_PAGES[page] || 'index.html', qExtra),
+        opts.target || (page === 'admin' ? 'h10_admin' : '_self')
+      );
     }
     // Khi nhung tren Google Sites (iframe sandbox khong cap allow-top-navigation),
     // target="_top" bi trinh duyet chan. Mo qua GitHub Pages voi target="_blank" (allow-popups-to-escape-sandbox)
     const trongIframe = document.documentElement.classList.contains('in-iframe');
     const navTarget = (!laFull && trongIframe) ? '_blank' : '_top';
     if (!laFull && trongIframe) {
-      if (page === 'thinghiem' && cfg.linkThiNghiem) return { href: noiQuery_(cfg.linkThiNghiem, qExtra), target: 'h10_ngoai' };
-      if (page === 'trochoi' && cfg.linkTroChoi) return { href: noiQuery_(cfg.linkTroChoi, qExtra), target: '_blank' };
-      return {
-        href: noiQuery_(GH_PAGES_BASE + (STATIC_PAGES[page] || 'index.html'), qExtra),
-        target: page === 'admin' ? (opts.target || 'h10_admin') : '_blank'
-      };
+      if (page === 'thinghiem' && cfg.linkThiNghiem) return goiLink_(noiQuery_(cfg.linkThiNghiem, qExtra), 'h10_ngoai');
+      if (page === 'trochoi' && cfg.linkTroChoi) return goiLink_(noiQuery_(cfg.linkTroChoi, qExtra), '_blank');
+      return goiLink_(
+        noiQuery_(GH_PAGES_BASE + (STATIC_PAGES[page] || 'index.html'), qExtra),
+        page === 'admin' ? (opts.target || 'h10_admin') : '_blank'
+      );
     }
     const suf = laFull ? '&full=1' : '';
     if (page === 'home') {
       const baseHome = (!laFull && cfg.trangChuSites && !qExtra) ? cfg.trangChuSites : (webUrl + '?page=home' + suf);
-      return { href: noiQuery_(baseHome, qExtra), target: navTarget };
+      return goiLink_(noiQuery_(baseHome, qExtra), navTarget);
     }
     if (page === 'btvn') {
       const baseBtvn = laFull ? (webUrl + '?full=1') : (qExtra ? webUrl : (cfg.trangBtvnSites || webUrl));
-      return { href: noiQuery_(baseBtvn, qExtra), target: navTarget };
+      return goiLink_(noiQuery_(baseBtvn, qExtra), navTarget);
     }
-    if (page === 'tailieu') return { href: noiQuery_(webUrl + '?page=tailieu' + suf, qExtra), target: navTarget };
+    if (page === 'tailieu') return goiLink_(noiQuery_(webUrl + '?page=tailieu' + suf, qExtra), navTarget);
     if (page === 'thinghiem') {
       return cfg.linkThiNghiem
-        ? { href: noiQuery_(cfg.linkThiNghiem, qExtra), target: 'h10_ngoai' }
-        : { href: noiQuery_(webUrl + '?page=thinghiem' + suf, qExtra), target: navTarget };
+        ? goiLink_(noiQuery_(cfg.linkThiNghiem, qExtra), 'h10_ngoai')
+        : goiLink_(noiQuery_(webUrl + '?page=thinghiem' + suf, qExtra), navTarget);
     }
     if (page === 'lab') {
-      return { href: noiQuery_(webUrl + '?page=lab' + suf, qExtra), target: navTarget };
+      return goiLink_(noiQuery_(webUrl + '?page=lab' + suf, qExtra), navTarget);
     }
     if (page === 'trochoi') {
       return cfg.linkTroChoi
-        ? { href: noiQuery_(cfg.linkTroChoi, qExtra), target: navTarget }
-        : { href: noiQuery_(webUrl + '?page=trochoi' + suf, qExtra), target: navTarget };
+        ? goiLink_(noiQuery_(cfg.linkTroChoi, qExtra), navTarget)
+        : goiLink_(noiQuery_(webUrl + '?page=trochoi' + suf, qExtra), navTarget);
     }
-    if (page === 'admin') return { href: noiQuery_(webUrl + '?page=admin' + suf, qExtra), target: opts.target || 'h10_admin' };
-    return { href: noiQuery_(webUrl, qExtra), target: navTarget };
+    if (page === 'admin') return goiLink_(noiQuery_(webUrl + '?page=admin' + suf, qExtra), opts.target || 'h10_admin');
+    return goiLink_(noiQuery_(webUrl, qExtra), navTarget);
   }
 
   let henToast = null;
@@ -484,17 +523,32 @@ window.H10 = (function () {
     [/\boxi hoa khu\b/gi, 'Oxi hóa – khử'], [/\bhalogen\b/gi, 'Halogen'], [/\bchuong\b/gi, 'Chương'],
     [/\bbai\b/gi, 'Bài'], [/\bhoa\b/gi, 'Hóa'], [/\bma\b/gi, 'mã'], [/\bde\b/gi, 'Đề'], [/\bgiua ki\b/gi, 'giữa kì']
   ];
+  function laCongThucTrongTen_(tok) {
+    if (!tok || !laCongThuc_(tok)) return false;
+    const kh = tok.replace(/[()\d]/g, '').match(/[A-Z][a-z]?/g) || [];
+    if (kh.length >= 2) return true;
+    return kh.length === 1 && /\d/.test(tok) && /^(H|N|O|F|Cl|Br|I|S|P)$/.test(kh[0]);
+  }
   function tenDep(ten) {
     let s = String(ten || '').normalize('NFC')
       .replace(/\.(pdf|docx?|pptx?|xlsx?|txt|png|jpe?g)$/i, '')
       .replace(/\s*\(\d+\)\s*$/g, '').replace(/\s*\(\d+\)(?=\s|$)/g, '')
       .replace(/[_]+/g, ' ')
       .replace(/\s+/g, ' ').trim();
-    // Chỉ tách chữ dính liền & thêm dấu khi tên viết hoàn toàn không dấu (ASCII)
+    // Chỉ tách chữ dính liền & thêm dấu khi tên viết hoàn toàn không dấu (ASCII), bảo toàn công thức hóa học (H2SO4, NaOH, Fe2O3, Cl2...)
     if (/^[\x20-\x7E]*$/.test(s)) {
+      s = s.replace(/([a-z]{2,})([A-Z])/g, '$1 $2');
+      const ctStash = [];
+      s = s.replace(/(^|[\s\-.,()])((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d+)+)(?=$|[\s\-.,()])/g, function (all, pre, tok) {
+        if (!laCongThucTrongTen_(tok)) return all;
+        const idx = ctStash.length;
+        ctStash.push(tok);
+        return pre + '\x01' + idx + '\x02';
+      });
       s = s.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/\s+/g, ' ');
       TU_CO_DAU.forEach(function (p) { s = s.replace(p[0], p[1]); });
       s = s.replace(/\bGHK\s?(\d)\b/gi, 'giữa HK$1').replace(/\bHoa 10\b/g, 'Hóa 10');
+      s = s.replace(/\x01(\d+)\x02/g, function (all, idx) { return ctStash[Number(idx)] || ''; });
     }
     return s ? s.charAt(0).toUpperCase() + s.slice(1) : String(ten || '');
   }
@@ -623,15 +677,272 @@ window.H10 = (function () {
     }
   ];
 
+  function capNhatKhoaCuon_() {
+    const coModal = !!document.querySelector('.h10-zoom-lb, .hopdn:not(.half-sheet)');
+    document.body.classList.toggle('modal-open', coModal);
+  }
+
+  // ---- Global Lightbox Pinch-to-Zoom (1x–4x), Double-Tap (2.2x), Pan & Swipe-Down-to-Close ----
+  function moAnhZoom(src, alt) {
+    const u = String(src || '').trim();
+    if (!u) return;
+    const cu = document.getElementById('h10-zoom-lb');
+    if (cu) {
+      if (typeof cu._dong === 'function') cu._dong();
+      else cu.remove();
+    }
+
+    const lb = document.createElement('div');
+    lb.id = 'h10-zoom-lb';
+    lb.className = 'h10-zoom-lb';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', alt || 'Xem ảnh phóng to');
+    lb.innerHTML =
+      '<button type="button" class="h10-zoom-close" data-z="dong" aria-label="Đóng">✕ Đóng</button>' +
+      (alt ? '<div class="h10-zoom-cap">' + esc(alt) + '</div>' : '') +
+      '<div class="h10-zoom-stage" data-z="stage">' +
+        '<img class="h10-zoom-media smooth" data-z="img" src="' + esc(u) + '" alt="' + esc(alt || 'Hình phóng to') + '" draggable="false">' +
+      '</div>' +
+      '<div class="h10-zoom-hint" data-z="hint">Chạm đúp hoặc dùng 2 ngón để phóng to</div>';
+
+    document.body.appendChild(lb);
+    capNhatKhoaCuon_();
+
+    const stage = lb.querySelector('[data-z="stage"]');
+    const img = lb.querySelector('[data-z="img"]');
+    const hint = lb.querySelector('[data-z="hint"]');
+    let scale = 1, tx = 0, ty = 0;
+    let henHint = setTimeout(function () { if (hint) hint.classList.add('mo'); }, 2600);
+    function anHint() {
+      if (henHint) { clearTimeout(henHint); henHint = null; }
+      if (hint) hint.classList.add('mo');
+    }
+
+    function gioiHanKeo() {
+      if (scale <= 1.01) { scale = 1; tx = 0; ty = 0; return; }
+      const rW = img.offsetWidth || (window.innerWidth * 0.85);
+      const rH = img.offsetHeight || (window.innerHeight * 0.65);
+      const maxX = Math.max(0, (rW * scale - window.innerWidth) / 2 + 48);
+      const maxY = Math.max(0, (rH * scale - window.innerHeight) / 2 + 48);
+      tx = Math.max(-maxX, Math.min(maxX, tx));
+      ty = Math.max(-maxY, Math.min(maxY, ty));
+    }
+
+    function apBienDoi(muot) {
+      img.classList.toggle('smooth', !!muot);
+      img.style.transform = 'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0) scale(' + scale.toFixed(3) + ')';
+    }
+
+    function zoomTaiDiem(clientX, clientY, mucZoom) {
+      anHint();
+      if (scale > 1.08 && mucZoom === undefined) {
+        scale = 1; tx = 0; ty = 0;
+        apBienDoi(true);
+        return;
+      }
+      const next = Math.min(4, Math.max(1, mucZoom !== undefined ? mucZoom : 2.2));
+      const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+      const ratio = next / scale;
+      tx = (clientX - cx) - ((clientX - cx - tx) * ratio);
+      ty = (clientY - cy) - ((clientY - cy - ty) * ratio);
+      scale = next;
+      gioiHanKeo();
+      apBienDoi(true);
+    }
+
+    let daDong = false;
+    function dong() {
+      if (daDong) return;
+      daDong = true;
+      if (henHint) clearTimeout(henHint);
+      document.removeEventListener('keydown', onKey);
+      lb.remove();
+      capNhatKhoaCuon_();
+    }
+    lb._dong = dong;
+
+    function onKey(e) {
+      if (e.key === 'Escape') dong();
+    }
+    document.addEventListener('keydown', onKey);
+    lb.querySelector('[data-z="dong"]').onclick = dong;
+
+    // Touch: Pinch 2 ngón, Pan 1 ngón, Vuốt dọc đóng ở 1x, Double-tap 2.2x
+    let mode = '', startDist = 0, startScale = 1, midX0 = 0, midY0 = 0, tx0 = 0, ty0 = 0;
+    let pX0 = 0, pY0 = 0, moved = false, vuotDong = false;
+    let lastTapT = 0, lastTapX = 0, lastTapY = 0, blockBackdropClick = false;
+
+    stage.addEventListener('touchstart', function (e) {
+      if (e.touches.length === 2) {
+        mode = 'pinch';
+        vuotDong = false;
+        moved = true;
+        const t0 = e.touches[0], t1 = e.touches[1];
+        startDist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY) || 1;
+        startScale = scale;
+        midX0 = (t0.clientX + t1.clientX) / 2;
+        midY0 = (t0.clientY + t1.clientY) / 2;
+        tx0 = tx; ty0 = ty;
+        anHint();
+      } else if (e.touches.length === 1) {
+        mode = scale > 1.02 ? 'pan' : 'swipe';
+        vuotDong = false;
+        moved = false;
+        pX0 = e.touches[0].clientX;
+        pY0 = e.touches[0].clientY;
+        tx0 = tx; ty0 = ty;
+      }
+    }, { passive: true });
+
+    stage.addEventListener('touchmove', function (e) {
+      if (mode === 'pinch' && e.touches.length === 2) {
+        e.preventDefault();
+        const t0 = e.touches[0], t1 = e.touches[1];
+        const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY) || 1;
+        const midX = (t0.clientX + t1.clientX) / 2;
+        const midY = (t0.clientY + t1.clientY) / 2;
+        const next = Math.min(4, Math.max(1, startScale * (dist / startDist)));
+        const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+        const k = next / startScale;
+        tx = (midX - cx) - ((midX0 - cx - tx0) * k);
+        ty = (midY - cy) - ((midY0 - cy - ty0) * k);
+        scale = next;
+        gioiHanKeo();
+        apBienDoi(false);
+      } else if (e.touches.length === 1) {
+        const dx = e.touches[0].clientX - pX0;
+        const dy = e.touches[0].clientY - pY0;
+        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) moved = true;
+        if (mode === 'pan' && scale > 1.02) {
+          e.preventDefault();
+          tx = tx0 + dx;
+          ty = ty0 + dy;
+          gioiHanKeo();
+          apBienDoi(false);
+        } else if (mode === 'swipe' && scale <= 1.02) {
+          if (!vuotDong && dy > 10 && Math.abs(dy) > Math.abs(dx) * 1.15) vuotDong = true;
+          if (vuotDong) {
+            e.preventDefault();
+            const d = Math.max(0, dy);
+            ty = d;
+            const op = Math.max(0.22, 1 - d / 320);
+            lb.style.background = 'rgba(10,10,18,' + (0.92 * op).toFixed(2) + ')';
+            img.classList.remove('smooth');
+            img.style.transform = 'translate3d(0,' + d.toFixed(1) + 'px,0) scale(' + Math.max(0.84, 1 - d / 900).toFixed(3) + ')';
+          }
+        }
+      }
+    }, { passive: false });
+
+    stage.addEventListener('touchend', function (e) {
+      if (e.touches.length === 1 && mode === 'pinch') {
+        mode = scale > 1.02 ? 'pan' : 'swipe';
+        pX0 = e.touches[0].clientX;
+        pY0 = e.touches[0].clientY;
+        tx0 = tx; ty0 = ty;
+        return;
+      }
+      if (e.touches.length === 0) {
+        if (vuotDong) {
+          if (ty > 85) { dong(); return; }
+          ty = 0;
+          lb.style.background = '';
+          apBienDoi(true);
+          vuotDong = false;
+          mode = '';
+          return;
+        }
+        if (!moved && mode !== 'pinch' && e.changedTouches && e.changedTouches.length === 1) {
+          const ct = e.changedTouches[0];
+          const now = Date.now();
+          if (now - lastTapT < 290 && Math.hypot(ct.clientX - lastTapX, ct.clientY - lastTapY) < 32) {
+            blockBackdropClick = true;
+            lastTapT = 0;
+            zoomTaiDiem(ct.clientX, ct.clientY);
+            setTimeout(function () { blockBackdropClick = false; }, 320);
+          } else {
+            lastTapT = now;
+            lastTapX = ct.clientX;
+            lastTapY = ct.clientY;
+          }
+        } else {
+          gioiHanKeo();
+          apBienDoi(true);
+        }
+        mode = '';
+      }
+    });
+
+    // Desktop: double-click zoom, wheel zoom, mouse drag pan, backdrop click close
+    stage.addEventListener('dblclick', function (e) {
+      e.preventDefault();
+      zoomTaiDiem(e.clientX, e.clientY);
+    });
+    stage.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.18 : (1 / 1.18);
+      const next = Math.min(4, Math.max(1, scale * factor));
+      if (next <= 1.01) { scale = 1; tx = 0; ty = 0; apBienDoi(true); return; }
+      zoomTaiDiem(e.clientX, e.clientY, next);
+      img.classList.remove('smooth');
+    }, { passive: false });
+
+    let mouseDown = false, mMoved = false;
+    stage.addEventListener('mousedown', function (e) {
+      if (e.button !== 0 || scale <= 1.02) return;
+      mouseDown = true; mMoved = false;
+      pX0 = e.clientX; pY0 = e.clientY; tx0 = tx; ty0 = ty;
+      stage.classList.add('dragging');
+    });
+    window.addEventListener('mousemove', function (e) {
+      if (!mouseDown || daDong) return;
+      const dx = e.clientX - pX0, dy = e.clientY - pY0;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) mMoved = true;
+      tx = tx0 + dx; ty = ty0 + dy;
+      gioiHanKeo();
+      apBienDoi(false);
+    });
+    window.addEventListener('mouseup', function () {
+      if (!mouseDown) return;
+      mouseDown = false;
+      stage.classList.remove('dragging');
+    });
+    stage.addEventListener('click', function (e) {
+      if (blockBackdropClick || mMoved) { mMoved = false; return; }
+      if (e.target === stage && scale <= 1.02) dong();
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    const t = e.target && e.target.closest && e.target.closest('img.md-img, [data-zoom-src]');
+    if (!t) return;
+    const src = t.getAttribute('data-zoom-src') || t.getAttribute('src');
+    if (!src) return;
+    e.preventDefault();
+    e.stopPropagation();
+    moAnhZoom(src, t.getAttribute('alt') || t.getAttribute('title') || '');
+  });
+
+  function svgGalleryDataUri_(item) {
+    const inner = String(item.svg || '').replace(/^<svg[^>]*>|<\/svg>$/g, '');
+    const fullSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="780" height="330" viewBox="0 0 260 110">' +
+      '<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1E132C"/><stop offset="55%" stop-color="#271B3D"/><stop offset="100%" stop-color="#112233"/></linearGradient></defs>' +
+      '<rect width="260" height="110" rx="8" fill="url(#bg)"/>' + inner + '</svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(fullSvg);
+  }
+
   function moLightboxGallery(id) {
     const item = GALLERY_HOA10.find(function (x) { return x.id === id; });
     if (!item) return;
+    const zoomUri = svgGalleryDataUri_(item);
     const hop = document.createElement('div');
     hop.className = 'hopdn';
     hop.innerHTML = '<div class="the vua" style="padding:0;overflow:hidden">' +
-      '<div class="gal-art" style="height:175px;background:' + item.nen + '">' +
+      '<div class="gal-art" data-x="art" style="height:185px;background:' + item.nen + ';cursor:zoom-in;touch-action:manipulation" title="Chạm đúp hoặc bấm nút để phóng to hình">' +
         '<span class="gal-tag">' + esc(item.tag) + '</span>' +
         item.svg +
+        '<button type="button" class="gal-zoom" data-x="zoom" style="border:0;cursor:pointer">🔍 Phóng to hình</button>' +
       '</div>' +
       '<div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">' +
         '<h2 style="margin:0;font-size:18px;font-weight:800">' + md(item.ten) + '</h2>' +
@@ -642,11 +953,33 @@ window.H10 = (function () {
         '<div class="hang-nut" style="justify-content:flex-end"><button type="button" class="nut nho chinh" data-x="dong">Đã hiểu ✓</button></div>' +
       '</div></div>';
     document.body.appendChild(hop);
-    const dong = function () { hop.remove(); document.removeEventListener('keydown', onEsc); };
-    const onEsc = function (e) { if (e.key === 'Escape') dong(); };
+    capNhatKhoaCuon_();
+    const dong = function () {
+      hop.remove();
+      document.removeEventListener('keydown', onEsc);
+      capNhatKhoaCuon_();
+    };
+    hop._dong = dong;
+    const onEsc = function (e) {
+      if (e.key === 'Escape' && !document.getElementById('h10-zoom-lb')) dong();
+    };
     document.addEventListener('keydown', onEsc);
     hop.onclick = function (e) { if (e.target === hop) dong(); };
     hop.querySelector('[data-x="dong"]').onclick = dong;
+    const moZoomGal = function (e) {
+      if (e) e.stopPropagation();
+      moAnhZoom(zoomUri, item.ten);
+    };
+    hop.querySelector('[data-x="zoom"]').onclick = moZoomGal;
+    const artEl = hop.querySelector('[data-x="art"]');
+    artEl.ondblclick = moZoomGal;
+    let lastArtTap = 0;
+    artEl.addEventListener('touchstart', function (e) {
+      if (e.touches.length === 2) { moZoomGal(); return; }
+      const now = Date.now();
+      if (now - lastArtTap < 300) { e.preventDefault(); moZoomGal(); lastArtTap = 0; }
+      else lastArtTap = now;
+    }, { passive: false });
   }
 
   function renderGalleryHoa10(el, tieuDe) {
@@ -654,7 +987,7 @@ window.H10 = (function () {
     let h = '<div class="sec-head">' +
       '<h2>📸 ' + esc(tieuDe || 'Gallery Sắc màu & Hiện tượng Hóa 10') + '</h2>' +
       '<span class="phu">Chạm vào từng thẻ để xem phương trình &amp; giải thích</span>' +
-    '</div><div class="gal-grid">';
+    '</div><div class="gal-grid h-carousel">';
     GALLERY_HOA10.forEach(function (g) {
       h += '<button type="button" class="gal-card" data-gal="' + esc(g.id) + '">' +
         '<div class="gal-art" style="background:' + g.nen + '">' +
@@ -703,7 +1036,7 @@ window.H10 = (function () {
   }
 
   // Chỉ tải trước trang khi học sinh sắp bấm (rê chuột / chạm vào link), không tải cả 4 trang mỗi lần mở
-  const TRANG_TINH = ['index.html', 'btvn.html', 'tailieu.html', 'thinghiem.html', 'trochoi.html'];
+  const TRANG_TINH = ['index.html', 'btvn.html', 'tailieu.html', 'thinghiem.html', 'lab.html', 'trochoi.html'];
   const daTaiTruoc = {};
   function prefetchPages() {
     if (daPrefetch || laGAS || tietKiemTaiNguyen_(false)) return;
@@ -768,8 +1101,10 @@ window.H10 = (function () {
     H: 1, He: 4, Li: 7, Be: 9, B: 11, C: 12, N: 14, O: 16, F: 19, Ne: 20,
     Na: 23, Mg: 24, Al: 27, Si: 28, P: 31, S: 32, Cl: 35.5, Ar: 40,
     K: 39, Ca: 40, Sc: 45, Ti: 48, V: 51, Cr: 52, Mn: 55, Fe: 56, Co: 59, Ni: 59, Cu: 64, Zn: 65,
-    Ga: 70, Ge: 73, As: 75, Se: 79, Br: 80, Kr: 84, Rb: 85, Sr: 88, Ag: 108, Cd: 112, Sn: 119, Sb: 122,
-    I: 127, Xe: 131, Cs: 133, Ba: 137, Pt: 195, Au: 197, Hg: 201, Pb: 207, Bi: 209
+    Ga: 70, Ge: 73, As: 75, Se: 79, Br: 80, Kr: 84,
+    Rb: 85, Sr: 88, Y: 89, Zr: 91, Nb: 93, Mo: 96, Ru: 101, Rh: 103, Pd: 106, Ag: 108, Cd: 112, In: 115, Sn: 119, Sb: 122, Te: 128, I: 127, Xe: 131,
+    Cs: 133, Ba: 137, La: 139, Ce: 140, Hf: 178.5, Ta: 181, W: 184, Re: 186, Os: 190, Ir: 192, Pt: 195, Au: 197, Hg: 201, Tl: 204, Pb: 207, Bi: 209,
+    Po: 209, At: 210, Rn: 222, Fr: 223, Ra: 226, Th: 232, U: 238
   };
 
   /** Phân tích công thức hóa học (hỗ trợ ngoặc tròn/vuông và muối ngậm nước vd CuSO4.5H2O, Fe2(SO4)3) → { M, ct: [{kh, so, m, pct}] } */
@@ -783,7 +1118,11 @@ window.H10 = (function () {
       if (!part) continue;
       let heSo = 1;
       const mHs = part.match(/^(\d+)(.*)$/);
-      if (mHs) { heSo = parseInt(mHs[1], 10) || 1; part = mHs[2]; }
+      if (mHs) {
+        heSo = parseInt(mHs[1], 10);
+        if (!(heSo > 0)) continue;
+        part = mHs[2];
+      }
       const stack = [{}];
       let i = 0;
       while (i < part.length) {
@@ -799,7 +1138,9 @@ window.H10 = (function () {
           const mult = numStr ? parseInt(numStr, 10) : 1;
           const top = stack.pop();
           const cur = stack[stack.length - 1];
-          Object.keys(top).forEach(function (k) { cur[k] = (cur[k] || 0) + top[k] * mult; });
+          if (mult > 0) {
+            Object.keys(top).forEach(function (k) { cur[k] = (cur[k] || 0) + top[k] * mult; });
+          }
         } else if (/[A-Z]/.test(ch)) {
           let sym = ch;
           i++;
@@ -808,21 +1149,26 @@ window.H10 = (function () {
           let numStr = '';
           while (i < part.length && /\d/.test(part.charAt(i))) { numStr += part.charAt(i); i++; }
           const cnt = numStr ? parseInt(numStr, 10) : 1;
-          const cur = stack[stack.length - 1];
-          cur[sym] = (cur[sym] || 0) + cnt;
+          if (cnt > 0) {
+            const cur = stack[stack.length - 1];
+            cur[sym] = (cur[sym] || 0) + cnt;
+          }
         } else {
           return null;
         }
       }
       if (stack.length !== 1) return null;
       const mapP = stack[0];
-      Object.keys(mapP).forEach(function (k) { tongDem[k] = (tongDem[k] || 0) + mapP[k] * heSo; });
+      Object.keys(mapP).forEach(function (k) {
+        if (mapP[k] > 0) tongDem[k] = (tongDem[k] || 0) + mapP[k] * heSo;
+      });
     }
-    const keys = Object.keys(tongDem);
+    const keys = Object.keys(tongDem).filter(function (k) { return tongDem[k] > 0; });
     if (!keys.length) return null;
     let M = 0;
     keys.forEach(function (k) { M += NT_KHOI_MAP[k] * tongDem[k]; });
     M = Math.round(M * 100) / 100;
+    if (!(M > 0)) return null;
     const ct = keys.map(function (k) {
       const m = Math.round(NT_KHOI_MAP[k] * tongDem[k] * 100) / 100;
       return { kh: k, so: tongDem[k], ntk: NT_KHOI_MAP[k], m: m, pct: Math.round(m / M * 10000) / 100 };
@@ -933,7 +1279,11 @@ window.H10 = (function () {
 
   function moBangTraCuu(tabMacDinh) {
     const cu = document.getElementById('h10-ref-modal');
-    if (cu) { cu.remove(); return; }
+    if (cu) {
+      if (typeof cu._dong === 'function') cu._dong();
+      else { cu.remove(); capNhatKhoaCuon_(); }
+      return;
+    }
     let tabRef = (typeof tabMacDinh === 'string' && tabMacDinh) ? tabMacDinh : 'casio';
     let qRef = '', loaiRef = '', qIupac = '', loaiIupac = '', soLeChon = undefined;
     let thuNho = laDienThoai() && document.body.classList.contains('dang-lam');
@@ -957,14 +1307,41 @@ window.H10 = (function () {
         .replace(/÷/g, '/')
         .replace(/−/g, '-')
         .replace(/Ans/g, '(' + (Number(casioAns) || 0) + ')')
-        .replace(/√\(/g, 'Math.sqrt(')
-        .replace(/\^/g, '**');
+        .replace(/√\(/g, 'Math.sqrt(');
+      let mo = 0;
+      for (let i = 0; i < s.length; i++) {
+        const ch = s.charAt(i);
+        if (ch === '(') mo++;
+        else if (ch === ')') { if (mo > 0) mo--; else return NaN; }
+      }
+      if (mo > 0) s += ')'.repeat(mo);
+      // Bọc số mũ âm/dương (10^-3 → 10^(-3)) và dấu âm đầu lũy thừa (-2^2 → -(2**2) chuẩn Casio)
+      s = s.replace(/\^\s*([+-]\s*(?:Math\.sqrt\([^()]*\)|\([^()]*\)|\d+(?:\.\d+)?))/g, '^($1)');
+      s = s.replace(/\^/g, '**');
+      s = s.replace(/(^|[(+\-*/]\s*)([+-])\s*((?:Math\.sqrt\([^()]*\)|\d+(?:\.\d+)?)(?:\s*\*\*\s*(?:Math\.sqrt\([^()]*\)|\([^()]*\)|\d+(?:\.\d+)?))+)/g, '$1$2($3)');
       const clean = s.replace(/Math\.sqrt/g, '');
       if (/[^0-9.+\-*/()\s]/.test(clean)) return NaN;
       try {
         const kq = Function('"use strict"; return (' + s + ')')();
         return typeof kq === 'number' ? kq : NaN;
       } catch (e) { return NaN; }
+    }
+
+    function htmlKetQuaM_(kqM) {
+      return kqM
+        ? ('<div style="background:var(--the);border:1px solid var(--ok-v);border-radius:11px;padding:10px 12px">' +
+            '<div style="font-size:16px;font-weight:800;color:var(--ok)">M(' + md(casioFormula) + ') = ' + String(kqM.M).replace('.', ',') + ' g/mol</div>' +
+            '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">' +
+              kqM.ct.map(function (x) {
+                return '<span class="chip"><b>' + esc(x.kh) + '</b>×' + x.so + ' = ' + String(x.m).replace('.', ',') + ' (' + String(x.pct).replace('.', ',') + '%)</span>';
+              }).join('') +
+            '</div>' +
+          '</div>')
+        : '<div class="phu" style="font-size:12.5px">Nhập đúng kí hiệu nguyên tố viết hoa chữ cái đầu (ví dụ: <code>Na2CO3</code>, <code>Fe(OH)3</code>).</div>';
+    }
+
+    function htmlHintChuyenDoi_(kqM) {
+      return 'Gõ vào 1 trong 3 ô trên, 2 ô còn lại sẽ tự nhảy theo M(' + md(casioFormula) + ') = <b>' + (kqM ? String(kqM.M).replace('.', ',') : '–') + '</b> và <b>24,79 L/mol</b>.';
     }
 
     let casioApi = null;
@@ -1024,9 +1401,9 @@ window.H10 = (function () {
               '<div class="casio-round" style="flex-wrap:wrap;gap:6px">' +
                 '<span>Làm tròn:</span>' +
                 '<div style="display:flex;gap:4px;flex-wrap:wrap">' +
-                  '<button type="button" data-rnd="1">1 lẻ</button>' +
-                  '<button type="button" data-rnd="2">2 lẻ</button>' +
-                  '<button type="button" data-rnd="3">3 lẻ</button>' +
+                  '<button type="button" data-rnd="1" class="' + (soLeChon === 1 ? 'on' : '') + '">1 lẻ</button>' +
+                  '<button type="button" data-rnd="2" class="' + (soLeChon === 2 ? 'on' : '') + '">2 lẻ</button>' +
+                  '<button type="button" data-rnd="3" class="' + (soLeChon === 3 ? 'on' : '') + '">3 lẻ</button>' +
                   (oDangLam ? '<button type="button" data-act="fill" style="background:#0f766e;color:#fff;border-color:#14b8a6;font-weight:800" title="Điền thẳng kết quả vào ô Trả lời ngắn đang mở">↳ Điền đáp số</button>' : '') +
                 '</div>' +
               '</div>' +
@@ -1038,27 +1415,16 @@ window.H10 = (function () {
                   '<b style="font-size:14px;color:var(--do)">🧪 Tính tự động Phân tử khối M &amp; % Nguyên tố</b>' +
                   '<span class="chip tim">Chuẩn SGK KNTT</span>' +
                 '</div>' +
-                '<div style="display:flex;gap:6px">' +
+                '<div style="display:flex;gap:6px;align-items:center">' +
                   '<input id="mm-inp" type="text" value="' + esc(casioFormula) + '" placeholder="Gõ công thức: H2SO4, Fe2(SO4)3, CuSO4.5H2O..." style="flex:1;font-weight:700">' +
-                  (kqM ? '<button type="button" class="nut nho chinh" id="mm-to-casio">Đưa M=' + String(kqM.M).replace('.', ',') + ' vào Casio</button>' : '') +
+                  '<span id="mm-to-casio-slot">' + (kqM ? '<button type="button" class="nut nho chinh" id="mm-to-casio">Đưa M=' + String(kqM.M).replace('.', ',') + ' vào Casio</button>' : '') + '</span>' +
                 '</div>' +
                 '<div class="mm-chips">' +
                   ['H2SO4', 'HCl', 'HNO3', 'NaOH', 'Ca(OH)2', 'NaCl', 'AgNO3', 'CaCO3', 'Fe2O3', 'Fe2(SO4)3', 'CuSO4.5H2O', 'Al2(SO4)3', 'KMnO4'].map(function (c) {
                     return '<button type="button" class="mm-chip" data-f="' + c + '">' + md(c) + '</button>';
                   }).join('') +
                 '</div>' +
-                '<div id="mm-kq">' +
-                  (kqM
-                    ? ('<div style="background:var(--the);border:1px solid var(--ok-v);border-radius:11px;padding:10px 12px">' +
-                        '<div style="font-size:16px;font-weight:800;color:var(--ok)">M(' + md(casioFormula) + ') = ' + String(kqM.M).replace('.', ',') + ' g/mol</div>' +
-                        '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">' +
-                          kqM.ct.map(function (x) {
-                            return '<span class="chip"><b>' + esc(x.kh) + '</b>×' + x.so + ' = ' + String(x.m).replace('.', ',') + ' (' + String(x.pct).replace('.', ',') + '%)</span>';
-                          }).join('') +
-                        '</div>' +
-                      '</div>')
-                    : '<div class="phu" style="font-size:12.5px">Nhập đúng kí hiệu nguyên tố viết hoa chữ cái đầu (ví dụ: <code>Na2CO3</code>, <code>Fe(OH)3</code>).</div>') +
-                '</div>' +
+                '<div id="mm-kq">' + htmlKetQuaM_(kqM) + '</div>' +
               '</div>' +
 
               '<div class="mm-card">' +
@@ -1068,11 +1434,16 @@ window.H10 = (function () {
                   '<div class="truong" style="flex:1 1 115px"><label style="font-size:11.5px">Khối lượng m (g)</label><input id="cv-m" type="text" inputmode="decimal" placeholder="m = n × M"></div>' +
                   '<div class="truong" style="flex:1 1 115px"><label style="font-size:11.5px">V khí đkc (L)</label><input id="cv-v" type="text" inputmode="decimal" placeholder="V = n × 24,79"></div>' +
                 '</div>' +
-                '<span class="phu" style="font-size:11.5px">Gõ vào 1 trong 3 ô trên, 2 ô còn lại sẽ tự nhảy theo M(' + md(casioFormula) + ') = <b>' + (kqM ? String(kqM.M).replace('.', ',') : '–') + '</b> và <b>24,79 L/mol</b>.</span>' +
+                '<span class="phu" id="cv-hint" style="font-size:11.5px">' + htmlHintChuyenDoi_(kqM) + '</span>' +
               '</div>' +
             '</div>' +
           '</div>';
 
+        const capNhatNutLamTron_ = function () {
+          vung.querySelectorAll('[data-rnd]').forEach(function (btn) {
+            btn.classList.toggle('on', soLeChon !== undefined && Number(btn.getAttribute('data-rnd')) === soLeChon);
+          });
+        };
         const capNhatLCD = function () {
           const eEl = vung.querySelector('#cs-exp'), rEl = vung.querySelector('#cs-res');
           if (eEl) eEl.textContent = casioExp || '0';
@@ -1080,10 +1451,21 @@ window.H10 = (function () {
         };
         const bamCasio = function (tok) {
           soLeChon = undefined;
-          if (casioVal !== null && /^[0-9.(√]/.test(tok)) {
-            casioExp = '';
-          } else if (casioVal !== null && /^[+−×÷*/^]/.test(tok)) {
-            casioExp = 'Ans';
+          capNhatNutLamTron_();
+          if (casioVal !== null) {
+            if (tok === 'Ans') {
+              casioExp = 'Ans';
+              casioVal = null;
+              const thuAns = tinhBieuThucCasio(casioExp);
+              const rA = vung.querySelector('#cs-res'), eA = vung.querySelector('#cs-exp');
+              if (eA) eA.textContent = casioExp;
+              if (rA) rA.textContent = (!isNaN(thuAns) && isFinite(thuAns)) ? ('= ' + dinhDangSoCasio(thuAns)) : '…';
+              return;
+            } else if (/^[+−×÷*/^]/.test(tok)) {
+              casioExp = 'Ans';
+            } else {
+              casioExp = '';
+            }
           }
           casioVal = null;
           casioExp += tok;
@@ -1093,9 +1475,16 @@ window.H10 = (function () {
           if (rEl) rEl.textContent = (!isNaN(thu) && isFinite(thu)) ? ('= ' + dinhDangSoCasio(thu)) : '…';
         };
         const thucHienAct = function (act) {
-          if (act === 'ac') { casioExp = ''; casioVal = null; soLeChon = undefined; capNhatLCD(); }
-          else if (act === 'del') { casioExp = casioExp.slice(0, -1); casioVal = null; soLeChon = undefined; capNhatLCD(); }
-          else if (act === 'eq') {
+          if (act === 'ac') {
+            casioExp = ''; casioVal = null; soLeChon = undefined;
+            capNhatNutLamTron_(); capNhatLCD();
+          } else if (act === 'del') {
+            if (casioExp.slice(-3) === 'Ans') casioExp = casioExp.slice(0, -3);
+            else if (casioExp.slice(-2) === '√(') casioExp = casioExp.slice(0, -2);
+            else casioExp = casioExp.slice(0, -1);
+            casioVal = null; soLeChon = undefined;
+            capNhatNutLamTron_(); capNhatLCD();
+          } else if (act === 'eq') {
             const kq = tinhBieuThucCasio(casioExp);
             casioVal = kq;
             if (!isNaN(kq) && isFinite(kq)) casioAns = kq;
@@ -1105,8 +1494,27 @@ window.H10 = (function () {
             if (!isNaN(v) && isFinite(v)) {
               const str = dinhDangSoCasio(v, soLeChon);
               if (act === 'copy') {
-                try { navigator.clipboard.writeText(str); } catch (e) {}
-                toast('Đã copy kết quả: ' + str);
+                const copyDuPhong = function () {
+                  try {
+                    const ta = document.createElement('textarea');
+                    ta.value = str;
+                    ta.style.cssText = 'position:fixed;left:-9999px;opacity:0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    ta.remove();
+                    toast('Đã copy kết quả: ' + str);
+                  } catch (e2) {
+                    toast('Kết quả: ' + str);
+                  }
+                };
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                  navigator.clipboard.writeText(str).then(function () {
+                    toast('Đã copy kết quả: ' + str);
+                  }).catch(copyDuPhong);
+                } else {
+                  copyDuPhong();
+                }
               } else {
                 const targetInp = timOTraLoiDangLam_();
                 if (!targetInp) { toast('Không tìm thấy ô Trả lời ngắn đang mở.', true); return; }
@@ -1134,41 +1542,65 @@ window.H10 = (function () {
             const soLe = Number(b.getAttribute('data-rnd'));
             const v = casioVal !== null ? casioVal : tinhBieuThucCasio(casioExp);
             if (!isNaN(v) && isFinite(v)) {
-              soLeChon = soLe;
+              soLeChon = (soLeChon === soLe) ? undefined : soLe;
               casioVal = v;
               casioAns = v;
+              capNhatNutLamTron_();
               const rEl = vung.querySelector('#cs-res');
-              if (rEl) rEl.textContent = dinhDangSoCasio(v, soLe);
+              if (rEl) rEl.textContent = dinhDangSoCasio(v, soLeChon);
             }
           };
         });
+
+        const duaMVaoCasio = function () {
+          const mObj = tinhPhanTuKhoi(casioFormula);
+          if (mObj) bamCasio(String(mObj.M));
+        };
         const useM = vung.querySelector('#cs-use-m');
-        if (useM) useM.onclick = function () {
+        if (useM) useM.onclick = duaMVaoCasio;
+
+        const inpN = vung.querySelector('#cv-n'), inpM = vung.querySelector('#cv-m'), inpV = vung.querySelector('#cv-v');
+        const docSo = function (s) { return parseFloat(String(s || '').replace(',', '.')); };
+
+        // Chỉ cập nhật vùng kết quả M mà KHÔNG render lại #mm-inp / #cv-n,m,v (giữ nguyên bàn phím & IME Tiếng Việt)
+        const capNhatPhanTuKhoiUI_ = function () {
           const mObj = tinhPhanTuKhoi(casioFormula);
-          if (mObj) bamCasio(String(mObj.M));
+          const kqEl = vung.querySelector('#mm-kq');
+          if (kqEl) kqEl.innerHTML = htmlKetQuaM_(mObj);
+          if (useM) useM.textContent = mObj ? ('M=' + String(mObj.M).replace('.', ',')) : 'Chèn M';
+          const slotBtn = vung.querySelector('#mm-to-casio-slot');
+          if (slotBtn) {
+            slotBtn.innerHTML = mObj ? '<button type="button" class="nut nho chinh" id="mm-to-casio">Đưa M=' + String(mObj.M).replace('.', ',') + ' vào Casio</button>' : '';
+            const btnM = slotBtn.querySelector('#mm-to-casio');
+            if (btnM) btnM.onclick = duaMVaoCasio;
+          }
+          const cvHint = vung.querySelector('#cv-hint');
+          if (cvHint) cvHint.innerHTML = htmlHintChuyenDoi_(mObj);
+          if (inpN && inpM && mObj && inpN.value.trim()) {
+            const n = docSo(inpN.value);
+            if (!isNaN(n)) inpM.value = dinhDangSoCasio(n * mObj.M, 3);
+          }
         };
-        const toCasio = vung.querySelector('#mm-to-casio');
-        if (toCasio) toCasio.onclick = function () {
-          const mObj = tinhPhanTuKhoi(casioFormula);
-          if (mObj) bamCasio(String(mObj.M));
-        };
+
+        const toCasioInit = vung.querySelector('#mm-to-casio');
+        if (toCasioInit) toCasioInit.onclick = duaMVaoCasio;
+
         const mmInp = vung.querySelector('#mm-inp');
         if (mmInp) {
           mmInp.oninput = function () {
             casioFormula = this.value;
-            const pos = this.selectionStart;
-            veNoiDung();
-            const inp2 = hop.querySelector('#mm-inp');
-            if (inp2) { inp2.focus(); try { inp2.setSelectionRange(pos, pos); } catch (e) {} }
+            capNhatPhanTuKhoiUI_();
           };
         }
         vung.querySelectorAll('[data-f]').forEach(function (b) {
-          b.onclick = function () { casioFormula = b.getAttribute('data-f'); veNoiDung(); };
+          b.onclick = function () {
+            casioFormula = b.getAttribute('data-f');
+            if (mmInp) mmInp.value = casioFormula;
+            capNhatPhanTuKhoiUI_();
+          };
         });
 
         // Đổi nhanh n - m - V
-        const inpN = vung.querySelector('#cv-n'), inpM = vung.querySelector('#cv-m'), inpV = vung.querySelector('#cv-v');
-        const docSo = function (s) { return parseFloat(String(s || '').replace(',', '.')); };
         if (inpN && inpM && inpV) {
           inpN.oninput = function () {
             const n = docSo(this.value);
@@ -1195,16 +1627,9 @@ window.H10 = (function () {
           };
         }
       } else if (tabRef === 'nt') {
-        const q = qRef.trim().toLowerCase();
-        const ds = BANG_NT_SGK.filter(function (e) {
-          if (loaiRef && e.loai !== loaiRef) return false;
-          if (!q) return true;
-          return (e.kh.toLowerCase() === q) || (String(e.z) === q) ||
-            ((e.kh + ' ' + e.ten + ' ' + e.m + ' ' + e.nhom).toLowerCase().indexOf(q) >= 0);
-        });
         vung.innerHTML =
           '<div class="hang" style="margin-bottom:10px;align-items:center">' +
-            '<input id="ref-q" type="search" placeholder="Gõ kí hiệu, số hiệu Z, tên hoặc M (VD: Fe, 26, 35,5, Cl)..." value="' + esc(qRef) + '" style="flex:2 1 220px">' +
+            '<input id="ref-q" type="search" placeholder="Gõ kí hiệu, số hiệu Z, tên không dấu hoặc M (VD: Fe, sat, dong, 26, 35,5)..." value="' + esc(qRef) + '" style="flex:2 1 220px">' +
             '<div class="seg">' +
               '<button type="button" data-rl="" class="' + (!loaiRef ? 'on' : '') + '">Tất cả (' + BANG_NT_SGK.length + ')</button>' +
               '<button type="button" data-rl="kl" class="' + (loaiRef === 'kl' ? 'on' : '') + '">Kim loại</button>' +
@@ -1212,7 +1637,17 @@ window.H10 = (function () {
               '<button type="button" data-rl="kh" class="' + (loaiRef === 'kh' ? 'on' : '') + '">Khí hiếm</button>' +
             '</div>' +
           '</div>' +
-          '<div class="ref-grid">' + (ds.length ? ds.map(function (e) {
+          '<div class="ref-grid" id="ref-grid-slot"></div>';
+        const gridSlot = vung.querySelector('#ref-grid-slot');
+        const veLuoiNguyenTo_ = function () {
+          const q = boDau(qRef.trim());
+          const ds = BANG_NT_SGK.filter(function (e) {
+            if (loaiRef && e.loai !== loaiRef) return false;
+            if (!q) return true;
+            return (e.kh.toLowerCase() === q) || (String(e.z) === q) ||
+              (boDau(e.kh + ' ' + e.ten + ' ' + e.m + ' ' + e.nhom).indexOf(q) >= 0);
+          });
+          gridSlot.innerHTML = ds.length ? ds.map(function (e) {
             return '<div class="ref-el ' + e.loai + '">' +
               '<div style="display:flex;justify-content:space-between;align-items:center">' +
                 '<span class="ref-el-kh">' + esc(e.kh) + '</span>' +
@@ -1223,34 +1658,30 @@ window.H10 = (function () {
               '<div class="ref-el-cfg">' + esc(e.cfg) + '</div>' +
               '<div class="phu" style="font-size:10.8px">CK ' + e.ck + ' · Nhóm ' + esc(e.nhom) + '</div>' +
             '</div>';
-          }).join('') : '<div class="phu" style="grid-column:1/-1;text-align:center;padding:18px">Không tìm thấy nguyên tố khớp từ khóa.</div>') +
-          '</div>';
+          }).join('') : '<div class="phu" style="grid-column:1/-1;text-align:center;padding:18px">Không tìm thấy nguyên tố khớp từ khóa.</div>';
+          gridSlot.querySelectorAll('[data-say]').forEach(function (b) {
+            b.onclick = function () { phatAmIUPAC_(b.getAttribute('data-say')); };
+          });
+        };
+        veLuoiNguyenTo_();
         const inp = vung.querySelector('#ref-q');
         if (inp) {
           inp.oninput = function () {
             qRef = this.value;
-            const pos = this.selectionStart;
-            veNoiDung();
-            const inp2 = hop.querySelector('#ref-q');
-            if (inp2) { inp2.focus(); try { inp2.setSelectionRange(pos, pos); } catch (e) {} }
+            veLuoiNguyenTo_();
           };
         }
         vung.querySelectorAll('[data-rl]').forEach(function (b) {
-          b.onclick = function () { loaiRef = b.getAttribute('data-rl'); veNoiDung(); };
-        });
-        vung.querySelectorAll('[data-say]').forEach(function (b) {
-          b.onclick = function () { phatAmIUPAC_(b.getAttribute('data-say')); };
+          b.onclick = function () {
+            loaiRef = b.getAttribute('data-rl');
+            vung.querySelectorAll('[data-rl]').forEach(function (x) { x.classList.toggle('on', x === b); });
+            veLuoiNguyenTo_();
+          };
         });
       } else if (tabRef === 'iupac') {
-        const q = qIupac.trim().toLowerCase();
-        const ds = BANG_IUPAC_HOA10.filter(function (x) {
-          if (loaiIupac && x.loai !== loaiIupac) return false;
-          if (!q) return true;
-          return (x.ct + ' ' + x.en + ' ' + x.vi).toLowerCase().indexOf(q) >= 0;
-        });
         vung.innerHTML =
           '<div class="hang" style="margin-bottom:10px;align-items:center">' +
-            '<input id="iupac-q" type="search" placeholder="Tìm công thức, tên Anh hoặc tên Việt cũ (VD: sulfate, sunfat, KMnO4, sắt)..." value="' + esc(qIupac) + '" style="flex:2 1 220px">' +
+            '<input id="iupac-q" type="search" placeholder="Tìm công thức, tên Anh hoặc tên Việt không dấu (VD: sulfate, sunfat, thuoc tim, sat)..." value="' + esc(qIupac) + '" style="flex:2 1 220px">' +
             '<div class="seg">' +
               '<button type="button" data-il="" class="' + (!loaiIupac ? 'on' : '') + '">Tất cả (' + BANG_IUPAC_HOA10.length + ')</button>' +
               '<button type="button" data-il="nt" class="' + (loaiIupac === 'nt' ? 'on' : '') + '">Nguyên tố</button>' +
@@ -1259,7 +1690,16 @@ window.H10 = (function () {
               '<button type="button" data-il="tn" class="' + (loaiIupac === 'tn' ? 'on' : '') + '">Thuật ngữ</button>' +
             '</div>' +
           '</div>' +
-          '<div class="iupac-grid">' + (ds.length ? ds.map(function (x) {
+          '<div class="iupac-grid" id="iupac-grid-slot"></div>';
+        const iupacSlot = vung.querySelector('#iupac-grid-slot');
+        const veDanhSachIupac_ = function () {
+          const q = boDau(qIupac.trim());
+          const ds = BANG_IUPAC_HOA10.filter(function (x) {
+            if (loaiIupac && x.loai !== loaiIupac) return false;
+            if (!q) return true;
+            return boDau(x.ct + ' ' + x.en + ' ' + x.vi).indexOf(q) >= 0;
+          });
+          iupacSlot.innerHTML = ds.length ? ds.map(function (x) {
             return '<div class="iupac-item">' +
               '<div style="min-width:0">' +
                 '<div style="display:flex;align-items:baseline;gap:7px;flex-wrap:wrap">' +
@@ -1271,23 +1711,25 @@ window.H10 = (function () {
               '</div>' +
               '<button type="button" class="btn-speak" data-say="' + esc(x.en) + '" title="Bấm để nghe phát âm tiếng Anh chuẩn">🔊</button>' +
             '</div>';
-          }).join('') : '<div class="phu" style="grid-column:1/-1;text-align:center;padding:18px">Không tìm thấy mục nào khớp từ khóa.</div>') +
-          '</div>';
+          }).join('') : '<div class="phu" style="grid-column:1/-1;text-align:center;padding:18px">Không tìm thấy mục nào khớp từ khóa.</div>';
+          iupacSlot.querySelectorAll('[data-say]').forEach(function (b) {
+            b.onclick = function () { phatAmIUPAC_(b.getAttribute('data-say')); };
+          });
+        };
+        veDanhSachIupac_();
         const inpI = vung.querySelector('#iupac-q');
         if (inpI) {
           inpI.oninput = function () {
             qIupac = this.value;
-            const pos = this.selectionStart;
-            veNoiDung();
-            const inp2 = hop.querySelector('#iupac-q');
-            if (inp2) { inp2.focus(); try { inp2.setSelectionRange(pos, pos); } catch (e) {} }
+            veDanhSachIupac_();
           };
         }
         vung.querySelectorAll('[data-il]').forEach(function (b) {
-          b.onclick = function () { loaiIupac = b.getAttribute('data-il'); veNoiDung(); };
-        });
-        vung.querySelectorAll('[data-say]').forEach(function (b) {
-          b.onclick = function () { phatAmIUPAC_(b.getAttribute('data-say')); };
+          b.onclick = function () {
+            loaiIupac = b.getAttribute('data-il');
+            vung.querySelectorAll('[data-il]').forEach(function (x) { x.classList.toggle('on', x === b); });
+            veDanhSachIupac_();
+          };
         });
       } else {
         vung.innerHTML =
@@ -1323,8 +1765,9 @@ window.H10 = (function () {
       }
     }
 
-    hop.innerHTML = '<div class="the rong" style="max-width:860px;display:flex;flex-direction:column;gap:12px">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">' +
+    hop.innerHTML = '<div class="the rong" data-x="sheet-the" style="max-width:860px;display:flex;flex-direction:column;gap:12px">' +
+      '<div class="sheet-drag-bar" data-x="drag-bar" title="Chạm để đổi chế độ nửa màn hình · Vuốt xuống để đóng"><span class="sheet-handle"></span></div>' +
+      '<div data-x="sheet-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">' +
         '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
           '<b style="font-size:16.5px">⚛️ Casio &amp; Sổ tay Hóa 10</b>' +
           '<div class="seg" style="flex-wrap:wrap">' +
@@ -1343,9 +1786,69 @@ window.H10 = (function () {
     '</div>';
 
     document.body.appendChild(hop);
+    capNhatKhoaCuon_();
     veNoiDung();
 
-    const dong = function () { hop.remove(); document.removeEventListener('keydown', onKeyModal); };
+    const dong = function () {
+      document.removeEventListener('keydown', onKeyModal);
+      hop.remove();
+      capNhatKhoaCuon_();
+    };
+    hop._dong = dong;
+
+    const btnHalf = hop.querySelector('[data-x="half"]');
+    const datThuNho_ = function (val) {
+      thuNho = !!val;
+      hop.classList.toggle('half-sheet', thuNho);
+      if (btnHalf) btnHalf.textContent = thuNho ? '⛶ Mở rộng' : '⬓ Vừa nhìn đề';
+      capNhatKhoaCuon_();
+    };
+    if (btnHalf) btnHalf.onclick = function () { datThuNho_(!thuNho); };
+
+    // Handle bar trên đỉnh Bottom Sheet (chạm để chuyển Half-Sheet, vuốt xuống để thu gọn / đóng)
+    const dragBar = hop.querySelector('[data-x="drag-bar"]');
+    const sheetHead = hop.querySelector('[data-x="sheet-head"]');
+    const sheetThe = hop.querySelector('[data-x="sheet-the"]');
+    if (dragBar) {
+      dragBar.onclick = function () { datThuNho_(!thuNho); };
+    }
+    [dragBar, sheetHead].forEach(function (vungKeo) {
+      if (!vungKeo || !sheetThe) return;
+      let sy = 0, dy = 0, dangKeo = false;
+      vungKeo.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 1) return;
+        const tg = e.target;
+        if (vungKeo === sheetHead && tg && tg.closest && tg.closest('button, .seg')) return;
+        sy = e.touches[0].clientY;
+        dy = 0;
+        dangKeo = true;
+        sheetThe.style.transition = 'none';
+      }, { passive: true });
+      vungKeo.addEventListener('touchmove', function (e) {
+        if (!dangKeo || e.touches.length !== 1) return;
+        dy = e.touches[0].clientY - sy;
+        if (dy > 4) {
+          if (e.cancelable) e.preventDefault();
+          sheetThe.style.transform = 'translateY(' + Math.min(260, dy).toFixed(1) + 'px)';
+        } else if (dy < -10 && thuNho) {
+          if (e.cancelable) e.preventDefault();
+          sheetThe.style.transform = 'translateY(' + Math.max(-36, dy * 0.35).toFixed(1) + 'px)';
+        }
+      }, { passive: false });
+      vungKeo.addEventListener('touchend', function () {
+        if (!dangKeo) return;
+        dangKeo = false;
+        sheetThe.style.transition = 'transform .18s ease';
+        sheetThe.style.transform = '';
+        if (dy > 62) {
+          if (!thuNho && document.body.classList.contains('dang-lam')) datThuNho_(true);
+          else dong();
+        } else if (dy < -42 && thuNho) {
+          datThuNho_(false);
+        }
+      });
+    });
+
     const onKeyModal = function (e) {
       if (e.key === 'Escape') { dong(); return; }
       if (tabRef !== 'casio' || !casioApi || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -1366,12 +1869,6 @@ window.H10 = (function () {
     document.addEventListener('keydown', onKeyModal);
     hop.onclick = function (e) { if (e.target === hop) dong(); };
     hop.querySelector('[data-x="dong"]').onclick = dong;
-    const btnHalf = hop.querySelector('[data-x="half"]');
-    if (btnHalf) btnHalf.onclick = function () {
-      thuNho = !thuNho;
-      hop.classList.toggle('half-sheet', thuNho);
-      btnHalf.textContent = thuNho ? '⛶ Mở rộng' : '⬓ Vừa nhìn đề';
-    };
     hop.querySelectorAll('[data-rt]').forEach(function (b) {
       b.onclick = function () {
         tabRef = b.getAttribute('data-rt');
@@ -1415,7 +1912,7 @@ window.H10 = (function () {
       const veHome = function () {
         if (document.body.classList.contains('dang-lam')) return;
         const l = linkTrang('home', opts);
-        if (l.target === '_blank') window.open(l.href, '_blank');
+        if (l.target === '_blank') window.open(l.href, '_blank', 'noopener,noreferrer');
         else if (l.target === '_top') { try { window.top.location.href = l.href; } catch (e) { window.location.href = l.href; } }
         else window.location.href = l.href;
       };
@@ -1478,7 +1975,8 @@ window.H10 = (function () {
     dock.innerHTML = items.map(function (it) {
       const l = linkTrang(it.id, opts);
       const isCur = it.id === activePage;
-      return '<a href="' + esc(l.href) + '" target="' + l.target + '" class="' + (isCur ? 'on' : '') + '"' + (isCur ? ' aria-current="page"' : '') + '>' +
+      const rel = (l.target && l.target !== '_self' && l.target !== '_top') ? ' rel="noopener noreferrer"' : '';
+      return '<a href="' + esc(l.href) + '" target="' + l.target + '"' + rel + ' class="' + (isCur ? 'on' : '') + '"' + (isCur ? ' aria-current="page"' : '') + '>' +
         '<i aria-hidden="true">' + it.ic + '</i><span>' + esc(it.ten) + '</span></a>';
     }).join('');
   }
@@ -1500,10 +1998,12 @@ window.H10 = (function () {
 
   return {
     esc: esc,
+    boDau: boDau,
     md: md,
     dinhDangCongThuc: dinhDangCongThuc,
     tenDep: tenDep,
     phaoGiay: phaoGiay,
+    moAnhZoom: moAnhZoom,
     laGAS: laGAS,
     GAS_EXEC_URL: GAS_EXEC_URL,
     layTheme: layTheme,

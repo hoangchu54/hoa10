@@ -21,7 +21,41 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=fba761b5df">
+<link rel="stylesheet" href="assets/h10.css?v=0e9b13a5ac">
+<style>
+body.modal-open{overflow:hidden!important}
+body.modal-open .mob-dock,body.modal-open .btn-casio-fab,body.modal-open .btn-top{pointer-events:none}
+.hopdn.pdf-hop{padding:10px;z-index:80}
+.hopdn .the.rong.pdf-modal-card{max-width:980px;width:100%;height:94vh;height:94dvh;max-height:94vh;max-height:94dvh;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.pdf-bar{flex-shrink:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--vien);background:var(--the);z-index:2}
+.pdf-title{font-size:15px;font-weight:800;margin-right:auto;min-width:0;flex:1 1 200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdf-tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pdf-vung{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y;background:var(--nen2);position:relative}
+.pdf-track{min-width:100%;width:max-content;padding:14px;display:flex;flex-direction:column;align-items:center;gap:12px;transform-origin:0 0;will-change:transform;box-sizing:border-box}
+.pdf-slot{background:#fff;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.14);display:grid;place-items:center;overflow:hidden;user-select:none;-webkit-user-select:none}
+.pdf-slot-txt{font-size:12.5px;font-weight:600;color:#5c566b;padding:8px 12px;text-align:center}
+.pdf-status-wrap{min-height:240px;padding:22px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.tl-active-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:9px 13px;margin-bottom:12px;border-radius:13px;background:linear-gradient(135deg,var(--do-n),var(--tim-n));border:1.5px solid var(--do-v);box-shadow:var(--shadow)}
+.tl-active-lbl{font-size:13.5px;color:var(--chu);line-height:1.4;min-width:0;flex:1}
+.tl-active-lbl b{color:var(--do);font-weight:800}
+.tl-ghim-box{margin-bottom:16px;border-color:var(--do-v)}
+.tl-card.ghim{border-color:var(--do-v)}
+@media (max-width:640px){
+  .hopdn.pdf-hop{padding:4px}
+  .hopdn .the.rong.pdf-modal-card{height:96dvh;max-height:96dvh;border-radius:14px}
+  .pdf-bar{padding:8px 10px;gap:6px}
+  .pdf-title{flex:1 1 100%;font-size:13.5px}
+  .pdf-tools{width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:5px}
+  .pdf-tools::-webkit-scrollbar{display:none}
+  .pdf-tools > *{flex-shrink:0}
+  .pdf-bar .nut.nho{min-height:30px;padding:0 8px;font-size:12px}
+  .pdf-bar .an-mob{display:none}
+  .pdf-track{padding:8px;gap:10px}
+  .tl-chip-bar{display:flex;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:7px;padding-bottom:3px}
+  .tl-chip-bar::-webkit-scrollbar{display:none}
+  .tl-chip-bar > *{flex-shrink:0}
+}
+</style>
 </head>
 <body class="embed-ok">
 <div class="app">
@@ -35,11 +69,11 @@
         </div>
       </div>
       <div class="top-right">
-        <a class="top-pill an" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
-        <a class="top-pill an" id="btn-btvn" href="#" target="_top">📝 Làm BTVN</a>
-        <span class="top-pill on">📚 Tài liệu</span>
-        <a class="top-pill an" id="btn-lab" href="#" target="_self">🔬 Thí nghiệm</a>
-        <a class="top-pill an" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
+        <a class="top-pill an top-nav-link" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
+        <a class="top-pill an top-nav-link" id="btn-btvn" href="#" target="_top">📝 Làm BTVN</a>
+        <span class="top-pill on top-nav-link" id="btn-tailieu-cur">📚 Tài liệu</span>
+        <a class="top-pill an top-nav-link" id="btn-lab" href="#" target="_self">🔬 Thí nghiệm</a>
+        <a class="top-pill an top-nav-link" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
         <a class="top-pill an" id="btn-full" href="#" target="_top"></a>
         <button type="button" class="top-pill" id="btn-theme"></button>
       </div>
@@ -49,10 +83,11 @@
   <main class="khung-chinh" id="app" aria-live="polite"></main>
 </div>
 
-<script src="assets/h10.js?v=f65a9f6233"></script>
+<script src="assets/h10.js?v=2416061e55"></script>
 <script>
 (function () {
   const { esc, md, api, laGAS, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, toast, renderSlogan, ganThanhDieuHuongHS, docCacheUI, ghiCacheUI, ganNutLenDau, tenDep } = window.H10;
+  const boDau = window.H10.boDau || (s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').toLowerCase());
   let moLocChiTiet = false; // điện thoại: bộ lọc chi tiết gập/mở
   document.getElementById('brand-ic').innerHTML = ICONS.doc;
   ganNutTheme(document.getElementById('btn-theme'));
@@ -65,8 +100,63 @@
   let laFull = false;
   let xemTuUrl = '';
   let daMoXemTuUrl = false;
+  let dangMoPdf = false;
+  let _pdfJsPromise = null;
+  let chuKyCache = '';
   let loc = { thuMuc: '', bai: '', loai: '', tk: '', sao: false };
   const tenBaiMap = {};
+
+  function laUrlAnToan_(u) {
+    return /^https?:\/\//i.test(String(u || '').trim());
+  }
+
+  function layLinkDrive_(item, uuTienUrl) {
+    if (laUrlAnToan_(uuTienUrl)) return String(uuTienUrl).trim();
+    if (item && laUrlAnToan_(item.link)) return String(item.link).trim();
+    if (item && item.fileId && /^[\w-]{10,}$/.test(String(item.fileId).trim())) {
+      return 'https://drive.google.com/file/d/' + encodeURIComponent(String(item.fileId).trim()) + '/view';
+    }
+    return '';
+  }
+
+  function layLinkTai_(item) {
+    if (item && item.fileId && /^[\w-]{10,}$/.test(String(item.fileId).trim())) {
+      return 'https://drive.google.com/uc?export=download&id=' + encodeURIComponent(String(item.fileId).trim());
+    }
+    if (item && laUrlAnToan_(item.link)) return String(item.link).trim();
+    return '';
+  }
+
+  function taoChuKyTL_(r) {
+    if (!r) return '';
+    return JSON.stringify({
+      w: r.webUrl || '',
+      c: r.caiDatTrang || {},
+      tm: (r.thuMuc || []).map(function (t) { return (t.id || '') + ':' + (t.ten || ''); }),
+      ml: (r.mucLuc || []).length,
+      it: (r.items || []).map(function (x) {
+        return [x.fileId, x.ten, x.loai, x.bai, x.dinhDang, x.size, x.thuMuc, x.link, x.ghiChu || '', x.ghim ? 1 : 0, x.ngay || 0];
+      })
+    });
+  }
+
+  function capNhatTenBaiMap_(r) {
+    (r && r.mucLuc || []).forEach(function (c) {
+      tenBaiMap[c.id] = c.ten;
+      (c.bai || []).forEach(function (b) { tenBaiMap[b.id] = b.ten; });
+    });
+  }
+
+  function xoaThamSoBaiUrl_() {
+    if (laGAS || !window.history || !window.history.replaceState) return;
+    try {
+      const u = new URL(window.location.href);
+      if (u.searchParams.has('bai')) {
+        u.searchParams.delete('bai');
+        window.history.replaceState(null, '', u.pathname + (u.searchParams.toString() ? '?' + u.searchParams.toString() : '') + u.hash);
+      }
+    } catch (e) {}
+  }
 
   function docSao() {
     try { return JSON.parse(localStorage.getItem(SAO_KEY) || '{}') || {}; } catch (e) { return {}; }
@@ -79,15 +169,19 @@
   }
 
   getLocation(function (l) {
-    laFull = !!(l && l.parameter && l.parameter.full);
-    if (l && l.parameter && l.parameter.bai) {
-      loc.bai = String(l.parameter.bai);
-    }
+    const fullMoi = !!(l && l.parameter && l.parameter.full);
+    const baiMoi = (l && l.parameter && l.parameter.bai) ? String(l.parameter.bai) : '';
     if (l && l.parameter && l.parameter.xem) {
       xemTuUrl = String(l.parameter.xem);
     }
+    const doiBai = !!(baiMoi && baiMoi !== loc.bai);
+    laFull = fullMoi;
+    if (baiMoi) loc.bai = baiMoi;
     if (data) {
-      veTrang();
+      if (doiBai) {
+        if ($('#tl-bai')) $('#tl-bai').value = loc.bai;
+        veKetQuaLoc();
+      }
       thuMoXemTuUrl_();
     }
     veTopLinks();
@@ -148,7 +242,8 @@
 
   function napPdfJs() {
     if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
-    return new Promise(function (ok, loi) {
+    if (_pdfJsPromise) return _pdfJsPromise;
+    _pdfJsPromise = new Promise(function (ok, loi) {
       const s = document.createElement('script');
       const cdn = 'https://' + 'cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/';
       s.src = cdn + 'pdf.min.js';
@@ -156,32 +251,78 @@
         window.pdfjsLib.GlobalWorkerOptions.workerSrc = cdn + 'pdf.worker.min.js';
         ok(window.pdfjsLib);
       };
-      s.onerror = function () { loi(new Error('Không tải được thư viện xem PDF')); };
+      s.onerror = function () {
+        _pdfJsPromise = null;
+        s.remove();
+        loi(new Error('Không tải được thư viện xem PDF'));
+      };
       document.head.appendChild(s);
     });
+    return _pdfJsPromise;
   }
 
-  async function moXemTaiLieu(item) {
+  async function moXemPdf(item) {
+    if (dangMoPdf) return;
+    dangMoPdf = true;
+    let daDong = false;
+    let pdfDoc = null;
+    let loadingTask = null;
+    let obs = null;
+    let scrollRaf = 0;
+    let doubleTapRaf = 0;
+    let onResize = null;
+    const activeTasks = {};
+    const hangDoi = [];
+
+    const driveUrlBanDau = layLinkDrive_(item);
+    const taiUrlBanDau = layLinkTai_(item);
+
     const hop = document.createElement('div');
-    hop.className = 'hopdn';
-    hop.innerHTML = '<div class="the rong" style="padding:0;display:flex;flex-direction:column;max-height:92vh">' +
-      '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--vien);position:sticky;top:0;background:var(--the);z-index:2">' +
-        '<b style="font-size:15.5px;margin-right:auto;overflow-wrap:anywhere">' + esc(tenDep(item.ten)) + '</b>' +
-        '<span class="chip" data-x="meta">Đang mở...</span>' +
-        '<div class="hang-nut an" data-x="zoom-box" style="gap:4px">' +
-          '<button type="button" class="nut nho" data-x="z-out" title="Thu nhỏ">−</button>' +
-          '<button type="button" class="nut nho" data-x="z-txt" title="Đặt về 100%">100%</button>' +
-          '<button type="button" class="nut nho" data-x="z-in" title="Phóng to">+</button>' +
+    hop.className = 'hopdn pdf-hop';
+    hop.innerHTML = '<div class="the rong pdf-modal-card">' +
+      '<div class="pdf-bar">' +
+        '<b class="pdf-title" title="' + esc(tenDep(item.ten)) + '">' + esc(tenDep(item.ten)) + '</b>' +
+        '<div class="pdf-tools">' +
+          '<span class="chip chinh" data-x="meta">Đang mở...</span>' +
+          '<div class="hang-nut an" data-x="zoom-box" style="gap:4px;flex-wrap:nowrap">' +
+            '<button type="button" class="nut nho" data-x="z-out" title="Thu nhỏ" aria-label="Thu nhỏ">−</button>' +
+            '<button type="button" class="nut nho" data-x="z-txt" title="Đặt về 100%">100%</button>' +
+            '<button type="button" class="nut nho" data-x="z-in" title="Phóng to" aria-label="Phóng to">+</button>' +
+          '</div>' +
+          (driveUrlBanDau ? '<a class="nut nho" data-x="drive" href="' + esc(driveUrlBanDau) + '" target="_blank" rel="noopener" title="Mở trong Google Drive">↗ Drive</a>' : '<a class="nut nho an" data-x="drive" href="#" target="_blank" rel="noopener">↗ Drive</a>') +
+          (taiUrlBanDau ? '<a class="nut nho" data-x="tai" href="' + esc(taiUrlBanDau) + '" target="_blank" rel="noopener">Tải<span class="an-mob"> về</span></a>' : '') +
+          '<button type="button" class="nut nho chinh" data-x="dong">Đóng</button>' +
         '</div>' +
-        '<a class="nut nho" data-x="tai" href="https://drive.google.com/uc?export=download&id=' + esc(item.fileId) + '" target="_blank" rel="noopener">Tải về</a>' +
-        '<button type="button" class="nut nho chinh" data-x="dong">Đóng</button>' +
       '</div>' +
-      '<div data-x="vung" style="background:var(--nen2);padding:14px;display:flex;flex-direction:column;align-items:center;gap:12px;overflow:auto;min-height:260px">' +
-        '<div class="phu"><span class="cho"></span> Đang chuẩn bị bản xem trước...</div>' +
+      '<div class="pdf-vung" data-x="vung">' +
+        '<div class="pdf-status-wrap"><div class="phu"><span class="cho"></span> Đang chuẩn bị bản xem trước...</div></div>' +
       '</div></div>';
     document.body.appendChild(hop);
+    document.body.classList.add('modal-open');
 
-    const dong = function () { hop.remove(); document.removeEventListener('keydown', onEsc); };
+    const dong = function () {
+      if (daDong) return;
+      daDong = true;
+      dangMoPdf = false;
+      document.body.classList.remove('modal-open');
+      document.removeEventListener('keydown', onEsc);
+      if (onResize) window.removeEventListener('resize', onResize);
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      if (doubleTapRaf) cancelAnimationFrame(doubleTapRaf);
+      if (obs) { try { obs.disconnect(); } catch (e) {} obs = null; }
+      hangDoi.length = 0;
+      Object.keys(activeTasks).forEach(function (k) {
+        try { activeTasks[k].cancel(); } catch (e) {}
+        delete activeTasks[k];
+      });
+      hop.querySelectorAll('canvas').forEach(function (cv) {
+        cv.width = 0;
+        cv.height = 0;
+      });
+      if (pdfDoc) { try { pdfDoc.destroy(); } catch (e) {} pdfDoc = null; }
+      if (loadingTask) { try { loadingTask.destroy(); } catch (e) {} loadingTask = null; }
+      hop.remove();
+    };
     const onEsc = function (e) { if (e.key === 'Escape') dong(); };
     document.addEventListener('keydown', onEsc);
     hop.onclick = function (e) { if (e.target === hop) dong(); };
@@ -189,214 +330,809 @@
 
     const vung = hop.querySelector('[data-x="vung"]');
     const meta = hop.querySelector('[data-x="meta"]');
+    const driveNut = hop.querySelector('[data-x="drive"]');
+
     try {
       const f = await api('tlTaiFilePdf', item.fileId);
+      if (daDong) return;
+
+      const safeDriveUrl = layLinkDrive_(item, f && f.viewUrl);
+      if (driveNut && safeDriveUrl) {
+        driveNut.href = safeDriveUrl;
+        driveNut.classList.remove('an');
+      }
+
       if (f.quaLon) {
         meta.textContent = 'File lớn';
-        vung.innerHTML = '<div class="thongbao canh">File quá lớn để hiển thị trực tiếp trong trang. Em bấm <b>Mở trên Drive</b> hoặc <b>Tải về</b> nhé.</div>' +
-          '<a class="nut chinh" href="' + esc(f.viewUrl) + '" target="_blank" rel="noopener">Mở trên Google Drive</a>';
+        vung.innerHTML = '<div class="pdf-status-wrap">' +
+          '<div class="thongbao canh">File quá lớn để hiển thị trực tiếp trong trang. Em bấm <b>Mở trên Drive</b> hoặc <b>Tải về</b> nhé.</div>' +
+          (safeDriveUrl ? '<a class="nut chinh" href="' + esc(safeDriveUrl) + '" target="_blank" rel="noopener">↗ Mở trên Google Drive</a>' : '') +
+        '</div>';
         return;
       }
       if (f.khongPhaiPdf) {
-        meta.textContent = item.loai;
-        vung.style.padding = '0';
-        vung.innerHTML = '<iframe src="' + esc(f.previewUrl) + '" style="width:100%;height:74vh;border:0;background:#fff" allow="autoplay"></iframe>';
+        meta.textContent = item.loai || 'Xem trước';
+        if (laUrlAnToan_(f.previewUrl)) {
+          vung.innerHTML = '<iframe src="' + esc(f.previewUrl) + '" style="width:100%;height:100%;min-height:72vh;border:0;background:#fff;display:block" allow="autoplay"></iframe>';
+        } else {
+          vung.innerHTML = '<div class="pdf-status-wrap">' +
+            '<div class="thongbao info">Định dạng này mở tốt nhất trực tiếp trên Google Drive.</div>' +
+            (safeDriveUrl ? '<a class="nut chinh" href="' + esc(safeDriveUrl) + '" target="_blank" rel="noopener">↗ Mở trên Google Drive</a>' : '') +
+          '</div>';
+        }
         return;
       }
+
       const u8 = b64U8(f.base64);
       const taiNut = hop.querySelector('[data-x="tai"]');
-      taiNut.removeAttribute('href');
-      taiNut.onclick = function (ev) {
-        ev.preventDefault();
-        const url = URL.createObjectURL(new Blob([u8], { type: 'application/pdf' }));
-        const a = document.createElement('a'); a.href = url; a.download = f.ten || (item.ten + '.pdf');
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
-      };
+      if (taiNut) {
+        taiNut.setAttribute('href', '#');
+        taiNut.removeAttribute('target');
+        taiNut.removeAttribute('rel');
+        taiNut.onclick = function (ev) {
+          ev.preventDefault();
+          const url = URL.createObjectURL(new Blob([u8], { type: 'application/pdf' }));
+          const a = document.createElement('a');
+          a.href = url;
+          const tenTep = String(f.ten || item.ten || 'tai-lieu');
+          a.download = /\.pdf$/i.test(tenTep) ? tenTep : (tenTep + '.pdf');
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
+        };
+      }
 
       const lib = await napPdfJs();
-      const pdf = await lib.getDocument({ data: u8.slice() }).promise;
-      vung.innerHTML = '';
-      const rongGoc = Math.min(820, Math.max(260, vung.clientWidth - 28));
-      let zoomPct = 100;
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
-      const daVe = {};
+      if (daDong) return;
+      loadingTask = lib.getDocument({ data: u8.slice() });
+      pdfDoc = await loadingTask.promise;
+      if (daDong) {
+        try { pdfDoc.destroy(); } catch (e) {}
+        pdfDoc = null;
+        return;
+      }
 
-      const trang1 = await pdf.getPage(1);
+      const numPages = pdfDoc.numPages;
+      const trang1 = await pdfDoc.getPage(1);
+      if (daDong) {
+        try { trang1.cleanup(); } catch (e) {}
+        try { pdfDoc.destroy(); } catch (e) {}
+        pdfDoc = null;
+        return;
+      }
       const vp1 = trang1.getViewport({ scale: 1 });
-      const tiLeCao = vp1.height / vp1.width;
+      const tiLeMacDinh = vp1.height / vp1.width;
+      try { trang1.cleanup(); } catch (e) {}
 
-      const veTrangPdf = async function (soTrang, slot) {
-        if (daVe[soTrang]) return;
-        daVe[soTrang] = true;
-        const trang = await pdf.getPage(soTrang);
-        const vp0 = trang.getViewport({ scale: 1 });
-        const rongRender = Math.round(rongGoc * 1.45);
-        const tl = rongRender / vp0.width;
-        const vp = trang.getViewport({ scale: tl * dpr });
-        const cv = document.createElement('canvas');
-        cv.width = vp.width; cv.height = vp.height;
-        cv.style.width = '100%';
-        cv.style.height = 'auto';
-        cv.style.display = 'block';
-        slot.innerHTML = '';
-        slot.style.minHeight = '0';
-        slot.appendChild(cv);
-        await trang.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+      vung.innerHTML = '';
+      const track = document.createElement('div');
+      track.className = 'pdf-track';
+      vung.appendChild(track);
+
+      const tinhRongGoc = function () {
+        const pad = window.innerWidth <= 640 ? 16 : 28;
+        return Math.min(820, Math.max(240, vung.clientWidth - pad));
+      };
+      let rongGoc = tinhRongGoc();
+      let mucZoom = 100;
+      let trangHienTai = 1;
+      let dangChay = 0;
+      const MAX_CONCURRENT = 2;
+      const slots = {};
+      const tiLeTrang = {};
+      // 0: chưa vẽ / đã thu hồi, 1: chờ trong hàng đợi, 2: đang vẽ, 3: đã vẽ xong
+      const trangThai = {};
+
+      const layRongHienTai = function () {
+        return Math.round(rongGoc * mucZoom / 100);
       };
 
-      const obs = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+      const datChuGiuCho = function (slot, p) {
+        slot.innerHTML = '<span class="pdf-slot-txt">Trang ' + p + ' / ' + numPages + '</span>';
+      };
+
+      const thuHoiTrangXa = function (tam) {
+        if (daDong) return;
+        const vRect = vung.getBoundingClientRect();
+        const vTop = vRect.top - 520;
+        const vBot = vRect.bottom + 520;
+        for (let p = 1; p <= numPages; p++) {
+          if (Math.abs(p - tam) <= 4) continue;
+          const sl = slots[p];
+          if (!sl) continue;
+          const r = sl.getBoundingClientRect();
+          if (r.bottom >= vTop && r.top <= vBot) continue;
+
+          if (trangThai[p] === 1) {
+            const idx = hangDoi.indexOf(p);
+            if (idx >= 0) hangDoi.splice(idx, 1);
+            trangThai[p] = 0;
+          } else if (trangThai[p] === 2) {
+            if (activeTasks[p]) {
+              try { activeTasks[p].cancel(); } catch (e) {}
+              delete activeTasks[p];
+            }
+            trangThai[p] = 0;
+          } else if (trangThai[p] === 3) {
+            const cv = sl.querySelector('canvas');
+            if (cv) {
+              cv.width = 0;
+              cv.height = 0;
+              cv.remove();
+            }
+            sl.style.minHeight = Math.round(layRongHienTai() * (tiLeTrang[p] || tiLeMacDinh)) + 'px';
+            datChuGiuCho(sl, p);
+            trangThai[p] = 0;
+          }
+        }
+      };
+
+      const veTrangPdf = async function (p) {
+        if (daDong || !pdfDoc) { trangThai[p] = 0; return; }
+        trangThai[p] = 2;
+        let cv = null;
+        let trang = null;
+        try {
+          trang = await pdfDoc.getPage(p);
+          if (daDong || trangThai[p] !== 2) {
+            if (trang) { try { trang.cleanup(); } catch (e) {} }
+            return;
+          }
+          const vp0 = trang.getViewport({ scale: 1 });
+          tiLeTrang[p] = vp0.height / vp0.width;
+          const nho = window.innerWidth <= 768;
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const rongRender = nho ? Math.round(Math.min(rongGoc * 1.2, 680)) : Math.round(rongGoc * 1.45);
+          const tl = rongRender / vp0.width;
+          const vp = trang.getViewport({ scale: tl * dpr });
+
+          cv = document.createElement('canvas');
+          cv.width = Math.round(vp.width);
+          cv.height = Math.round(vp.height);
+          cv.style.width = '100%';
+          cv.style.height = 'auto';
+          cv.style.display = 'block';
+
+          const task = trang.render({ canvasContext: cv.getContext('2d', { alpha: false }), viewport: vp });
+          activeTasks[p] = task;
+          await task.promise;
+          delete activeTasks[p];
+
+          if (daDong || trangThai[p] !== 2) {
+            cv.width = 0;
+            cv.height = 0;
+            if (trang) { try { trang.cleanup(); } catch (e) {} }
+            return;
+          }
+          const slot = slots[p];
+          if (slot) {
+            slot.style.minHeight = Math.round(layRongHienTai() * tiLeTrang[p]) + 'px';
+            slot.innerHTML = '';
+            slot.appendChild(cv);
+            trangThai[p] = 3;
+          }
+          try { trang.cleanup(); } catch (e) {}
+        } catch (err) {
+          delete activeTasks[p];
+          if (cv) { cv.width = 0; cv.height = 0; }
+          if (trang) { try { trang.cleanup(); } catch (e) {} }
+          if (trangThai[p] === 2) trangThai[p] = 0;
+        }
+      };
+
+      const chayHangDoi = function () {
+        if (daDong) return;
+        while (dangChay < MAX_CONCURRENT && hangDoi.length > 0) {
+          hangDoi.sort(function (a, b) {
+            return Math.abs(a - trangHienTai) - Math.abs(b - trangHienTai);
+          });
+          const p = hangDoi.shift();
+          if (trangThai[p] !== 1) continue;
+          if (Math.abs(p - trangHienTai) > 5) {
+            trangThai[p] = 0;
+            continue;
+          }
+          dangChay++;
+          veTrangPdf(p).finally(function () {
+            dangChay--;
+            if (!daDong) chayHangDoi();
+          });
+        }
+      };
+
+      const yeuCauVe = function (p) {
+        if (daDong || p < 1 || p > numPages) return;
+        if (trangThai[p] === 1 || trangThai[p] === 2 || trangThai[p] === 3) return;
+        trangThai[p] = 1;
+        hangDoi.push(p);
+        chayHangDoi();
+      };
+
+      obs = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+        if (daDong) return;
         entries.forEach(function (en) {
           if (en.isIntersecting) {
             const p = Number(en.target.getAttribute('data-pdf-p'));
-            obs.unobserve(en.target);
-            veTrangPdf(p, en.target);
+            yeuCauVe(p);
           }
         });
-      }, { root: vung, rootMargin: '420px 0px' }) : null;
+      }, { root: vung, rootMargin: '460px 0px' }) : null;
 
-      for (let i = 1; i <= pdf.numPages; i++) {
+      for (let i = 1; i <= numPages; i++) {
+        tiLeTrang[i] = tiLeMacDinh;
+        trangThai[i] = 0;
         const slot = document.createElement('div');
+        slot.className = 'pdf-slot';
         slot.setAttribute('data-pdf-p', String(i));
         slot.style.width = rongGoc + 'px';
-        slot.style.maxWidth = '100%';
-        slot.style.minHeight = Math.round(rongGoc * tiLeCao) + 'px';
-        slot.style.background = '#fff';
-        slot.style.borderRadius = '6px';
-        slot.style.boxShadow = '0 2px 10px rgba(0,0,0,.14)';
-        slot.style.display = 'grid';
-        slot.style.placeItems = 'center';
-        slot.innerHTML = '<span class="phu" style="font-size:12px">Trang ' + i + '/' + pdf.numPages + '</span>';
-        vung.appendChild(slot);
-        if (i <= 2 || !obs) {
-          await veTrangPdf(i, slot);
-        } else {
-          obs.observe(slot);
-        }
+        slot.style.minHeight = Math.round(rongGoc * tiLeMacDinh) + 'px';
+        datChuGiuCho(slot, i);
+        track.appendChild(slot);
+        slots[i] = slot;
+        if (obs) obs.observe(slot);
       }
-      meta.textContent = pdf.numPages + ' trang';
+
+      meta.textContent = 'Trang 1 / ' + numPages;
+      yeuCauVe(1);
+      if (numPages >= 2) yeuCauVe(2);
+      if (!obs) {
+        for (let i = 3; i <= Math.min(numPages, 5); i++) yeuCauVe(i);
+      }
+
+      const capNhatTrangHienTai = function (epKiemTra) {
+        if (daDong || !numPages) return;
+        const vRect = vung.getBoundingClientRect();
+        const vTop = vRect.top;
+        const vBot = vRect.bottom;
+        let totNhat = trangHienTai;
+        let maxGiao = -1;
+        for (let i = 1; i <= numPages; i++) {
+          const sl = slots[i];
+          if (!sl) continue;
+          const r = sl.getBoundingClientRect();
+          if (r.bottom < vTop - 240) continue;
+          if (r.top > vBot + 240) break;
+          const giao = Math.max(0, Math.min(r.bottom, vBot) - Math.max(r.top, vTop));
+          if (giao > maxGiao) {
+            maxGiao = giao;
+            totNhat = i;
+          }
+        }
+        const doiTrang = totNhat !== trangHienTai;
+        if (doiTrang) {
+          trangHienTai = totNhat;
+          meta.textContent = 'Trang ' + trangHienTai + ' / ' + numPages;
+        }
+        if (doiTrang || epKiemTra) {
+          thuHoiTrangXa(trangHienTai);
+          for (let d = -2; d <= 2; d++) {
+            const k = trangHienTai + d;
+            if (k >= 1 && k <= numPages) yeuCauVe(k);
+          }
+        }
+      };
+
+      vung.addEventListener('scroll', function () {
+        if (daDong || scrollRaf) return;
+        scrollRaf = requestAnimationFrame(function () {
+          scrollRaf = 0;
+          capNhatTrangHienTai(false);
+        });
+      }, { passive: true });
 
       const zoomBox = hop.querySelector('[data-x="zoom-box"]');
       const zTxt = hop.querySelector('[data-x="z-txt"]');
+
       const apZoom = function (pct) {
-        zoomPct = Math.max(75, Math.min(200, pct));
-        if (zTxt) zTxt.textContent = zoomPct + '%';
-        const w = Math.round(rongGoc * zoomPct / 100);
-        vung.style.alignItems = zoomPct > 100 ? 'flex-start' : 'center';
-        vung.querySelectorAll('[data-pdf-p]').forEach(function (sl) {
+        mucZoom = Math.max(60, Math.min(260, Math.round(pct)));
+        if (zTxt) zTxt.textContent = mucZoom + '%';
+        const w = layRongHienTai();
+        for (let i = 1; i <= numPages; i++) {
+          const sl = slots[i];
+          if (!sl) continue;
           sl.style.width = w + 'px';
-          sl.style.maxWidth = zoomPct > 100 ? 'none' : '100%';
-        });
+          sl.style.minHeight = Math.round(w * (tiLeTrang[i] || tiLeMacDinh)) + 'px';
+        }
       };
+
+      const apZoomTaiDiem = function (pctMoi, cx, cy, pxTruoc, pyTruoc) {
+        const zMoi = Math.max(60, Math.min(260, Math.round(pctMoi)));
+        const sl1 = slots[1];
+        const px0 = pxTruoc !== undefined ? pxTruoc : (vung.scrollLeft + cx);
+        const py0 = pyTruoc !== undefined ? pyTruoc : (vung.scrollTop + cy);
+        const leftTruoc = sl1 ? sl1.offsetLeft : 0;
+        const wTruoc = (sl1 && sl1.offsetWidth) ? sl1.offsetWidth : 1;
+        const hTruoc = track.offsetHeight || 1;
+        const xTrongTrang = px0 - leftTruoc;
+
+        track.style.transform = '';
+        apZoom(zMoi);
+
+        const leftSau = sl1 ? sl1.offsetLeft : 0;
+        const wSau = (sl1 && sl1.offsetWidth) ? sl1.offsetWidth : 1;
+        const hSau = track.offsetHeight || 1;
+        const pxSau = leftSau + xTrongTrang * (wSau / wTruoc);
+        const pySau = py0 * (hSau / hTruoc);
+        vung.scrollLeft = Math.max(0, Math.round(pxSau - cx));
+        vung.scrollTop = Math.max(0, Math.round(pySau - cy));
+        capNhatTrangHienTai(true);
+      };
+
+      const zoomMuotTaiDiem = function (pctDich, cx, cy) {
+        if (doubleTapRaf) {
+          cancelAnimationFrame(doubleTapRaf);
+          doubleTapRaf = 0;
+          track.style.transform = '';
+        }
+        const z0 = mucZoom;
+        const z1 = Math.max(60, Math.min(260, Math.round(pctDich)));
+        if (z0 === z1) return;
+        const sl0 = vung.scrollLeft;
+        const st0 = vung.scrollTop;
+        const px0 = sl0 + cx;
+        const py0 = st0 + cy;
+        const t0 = performance.now();
+        const step = function (now) {
+          if (daDong) return;
+          const t = Math.min(1, (now - t0) / 160);
+          const ease = 1 - Math.pow(1 - t, 3);
+          if (t < 1) {
+            const zCur = z0 + (z1 - z0) * ease;
+            const ratio = zCur / z0;
+            const tx = cx + sl0 - px0 * ratio;
+            const ty = cy + st0 - py0 * ratio;
+            track.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + ratio.toFixed(4) + ')';
+            if (zTxt) zTxt.textContent = Math.round(zCur) + '%';
+            doubleTapRaf = requestAnimationFrame(step);
+          } else {
+            doubleTapRaf = 0;
+            apZoomTaiDiem(z1, cx, cy, px0, py0);
+          }
+        };
+        doubleTapRaf = requestAnimationFrame(step);
+      };
+
       if (zoomBox) {
         zoomBox.classList.remove('an');
-        hop.querySelector('[data-x="z-in"]').onclick = function () { apZoom(zoomPct + 25); };
-        hop.querySelector('[data-x="z-out"]').onclick = function () { apZoom(zoomPct - 25); };
-        zTxt.onclick = function () { apZoom(100); };
+        hop.querySelector('[data-x="z-in"]').onclick = function () {
+          apZoomTaiDiem(mucZoom + 25, vung.clientWidth / 2, vung.clientHeight / 2);
+        };
+        hop.querySelector('[data-x="z-out"]').onclick = function () {
+          apZoomTaiDiem(mucZoom - 25, vung.clientWidth / 2, vung.clientHeight / 2);
+        };
+        if (zTxt) {
+          zTxt.onclick = function () {
+            apZoomTaiDiem(100, vung.clientWidth / 2, vung.clientHeight / 2);
+          };
+        }
       }
+
+      // ---- Cảm ứng Pinch-to-Zoom 2 ngón (60fps CSS transform) & Double-Tap (100% <-> 175%) ----
+      let pinching = false;
+      let hadMultiTouch = false;
+      let pinchD0 = 0;
+      let pinchStartZoom = 100;
+      let pinchLastZoom = 100;
+      let pinchSl0 = 0;
+      let pinchSt0 = 0;
+      let pinchPx = 0;
+      let pinchPy = 0;
+      let pinchLastCx = 0;
+      let pinchLastCy = 0;
+
+      let tapX0 = 0;
+      let tapY0 = 0;
+      let tapMoved = false;
+      let lastTapTs = 0;
+      let lastTapX = 0;
+      let lastTapY = 0;
+      let lastTouchEndTs = 0;
+
+      vung.addEventListener('touchstart', function (e) {
+        if (daDong) return;
+        if (doubleTapRaf) {
+          cancelAnimationFrame(doubleTapRaf);
+          doubleTapRaf = 0;
+          track.style.transform = '';
+        }
+        if (e.touches.length === 2) {
+          hadMultiTouch = true;
+          const t0 = e.touches[0];
+          const t1 = e.touches[1];
+          const d = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+          if (d < 12) return;
+          const vRect = vung.getBoundingClientRect();
+          const cx = (t0.clientX + t1.clientX) / 2 - vRect.left;
+          const cy = (t0.clientY + t1.clientY) / 2 - vRect.top;
+          pinching = true;
+          pinchD0 = d;
+          pinchStartZoom = mucZoom;
+          pinchLastZoom = mucZoom;
+          pinchSl0 = vung.scrollLeft;
+          pinchSt0 = vung.scrollTop;
+          pinchPx = pinchSl0 + cx;
+          pinchPy = pinchSt0 + cy;
+          pinchLastCx = cx;
+          pinchLastCy = cy;
+        } else if (e.touches.length === 1 && !pinching) {
+          hadMultiTouch = false;
+          tapMoved = false;
+          tapX0 = e.touches[0].clientX;
+          tapY0 = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      vung.addEventListener('touchmove', function (e) {
+        if (daDong) return;
+        if (pinching && e.touches.length === 2) {
+          e.preventDefault();
+          const t0 = e.touches[0];
+          const t1 = e.touches[1];
+          const d = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+          if (d < 8 || !pinchD0) return;
+          const vRect = vung.getBoundingClientRect();
+          const cx = (t0.clientX + t1.clientX) / 2 - vRect.left;
+          const cy = (t0.clientY + t1.clientY) / 2 - vRect.top;
+          const zTarget = Math.max(60, Math.min(260, pinchStartZoom * (d / pinchD0)));
+          const ratio = zTarget / pinchStartZoom;
+          const tx = cx + pinchSl0 - pinchPx * ratio;
+          const ty = cy + pinchSt0 - pinchPy * ratio;
+          track.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + ratio.toFixed(4) + ')';
+          if (zTxt) zTxt.textContent = Math.round(zTarget) + '%';
+          pinchLastZoom = zTarget;
+          pinchLastCx = cx;
+          pinchLastCy = cy;
+        } else if (e.touches.length === 1 && !hadMultiTouch) {
+          if (Math.hypot(e.touches[0].clientX - tapX0, e.touches[0].clientY - tapY0) > 10) {
+            tapMoved = true;
+          }
+        }
+      }, { passive: false });
+
+      const ketThucCham = function (e) {
+        if (daDong) return;
+        lastTouchEndTs = Date.now();
+        if (pinching && e.touches.length < 2) {
+          pinching = false;
+          apZoomTaiDiem(pinchLastZoom, pinchLastCx, pinchLastCy, pinchPx, pinchPy);
+          return;
+        }
+        if (!hadMultiTouch && !tapMoved && e.touches.length === 0) {
+          const now = Date.now();
+          if (now - lastTapTs < 300 && Math.hypot(tapX0 - lastTapX, tapY0 - lastTapY) < 36) {
+            if (e.cancelable) e.preventDefault();
+            lastTapTs = 0;
+            const vRect = vung.getBoundingClientRect();
+            const cx = tapX0 - vRect.left;
+            const cy = tapY0 - vRect.top;
+            const dich = Math.abs(mucZoom - 100) > 12 ? 100 : 175;
+            zoomMuotTaiDiem(dich, cx, cy);
+          } else {
+            lastTapTs = now;
+            lastTapX = tapX0;
+            lastTapY = tapY0;
+          }
+        }
+      };
+      vung.addEventListener('touchend', ketThucCham, { passive: false });
+      vung.addEventListener('touchcancel', function () {
+        if (daDong) return;
+        if (pinching) {
+          pinching = false;
+          apZoomTaiDiem(pinchLastZoom, pinchLastCx, pinchLastCy, pinchPx, pinchPy);
+        }
+      }, { passive: true });
+
+      track.addEventListener('dblclick', function (e) {
+        if (daDong || Date.now() - lastTouchEndTs < 500) return;
+        const vRect = vung.getBoundingClientRect();
+        const cx = e.clientX - vRect.left;
+        const cy = e.clientY - vRect.top;
+        const dich = Math.abs(mucZoom - 100) > 12 ? 100 : 175;
+        zoomMuotTaiDiem(dich, cx, cy);
+      });
+
+      onResize = function () {
+        if (daDong || pinching) return;
+        const moi = tinhRongGoc();
+        if (Math.abs(moi - rongGoc) > 6) {
+          rongGoc = moi;
+          apZoom(mucZoom);
+          capNhatTrangHienTai(true);
+        }
+      };
+      window.addEventListener('resize', onResize);
     } catch (e) {
+      if (daDong) return;
       meta.textContent = 'Lỗi xem trước';
-      vung.innerHTML = '<div class="thongbao loi">' + esc(e.message || e) + '</div>' +
-        '<a class="nut chinh" href="' + esc(item.link) + '" target="_blank" rel="noopener">Mở trực tiếp trên Google Drive</a>';
+      const safeFallback = layLinkDrive_(item);
+      vung.innerHTML = '<div class="pdf-status-wrap">' +
+        '<div class="thongbao loi">' + esc(e.message || e) + '</div>' +
+        (safeFallback ? '<a class="nut chinh" href="' + esc(safeFallback) + '" target="_blank" rel="noopener">↗ Mở trực tiếp trên Google Drive</a>' : '') +
+      '</div>';
     }
   }
+  const moXemTaiLieu = moXemPdf;
 
   function hopLocBai(baiItem, chon) {
     if (!chon) return true;
     if (!baiItem) return false;
     if (baiItem === chon) return true;
     if (/^C\d$/.test(chon)) {
-      const ch = data.mucLuc.find(c => c.id === chon);
-      if (ch && ch.bai.some(b => b.id === baiItem)) return true;
+      const ch = (data && data.mucLuc || []).find(function (c) { return c.id === chon; });
+      if (ch && (ch.bai || []).some(function (b) { return b.id === baiItem; })) return true;
     }
     return false;
   }
 
-  function veTrang() {
-    const items = data.items || [];
+  function tenNhanBai_(ma) {
+    if (!ma) return '';
+    if (tenBaiMap[ma]) return tenBaiMap[ma];
+    if (ma === 'MD' || ma === 'C0') return 'Mở đầu';
+    if (/^C\d$/.test(ma)) return 'Chương ' + ma.slice(1);
+    return 'Bài ' + ma;
+  }
+
+  function tinhDuLieuLoc_() {
+    const items = (data && data.items) || [];
     const loaiSet = {};
-    items.forEach(x => { if (x.loai) loaiSet[x.loai] = true; });
-    const loais = Object.keys(loaiSet);
-    // Chỉ hiện các buổi/thư mục đang có tài liệu (ẩn thư mục trống trên Drive)
     const demTm = {};
-    items.forEach(x => { if (x.thuMuc) demTm[x.thuMuc] = (demTm[x.thuMuc] || 0) + 1; });
-    const dsThuMuc = (data.thuMuc || []).filter(tm => demTm[tm.ten]);
+    const demCh = {};
+    items.forEach(function (x) {
+      if (x.loai) loaiSet[x.loai] = true;
+      if (x.thuMuc) demTm[x.thuMuc] = (demTm[x.thuMuc] || 0) + 1;
+    });
+    (data && data.mucLuc || []).forEach(function (c) {
+      demCh[c.id] = items.filter(function (x) { return hopLocBai(x.bai, c.id); }).length;
+    });
+    const loais = Object.keys(loaiSet);
+    const dsThuMuc = (data && data.thuMuc || []).filter(function (tm) { return demTm[tm.ten]; });
+    const dsChuong = (data && data.mucLuc || []).filter(function (c) { return demCh[c.id] > 0 || loc.bai === c.id; });
 
     const saoMap = docSao();
-    const soSao = items.filter(x => saoMap[x.fileId]).length;
-    const tk = loc.tk.trim().toLowerCase();
+    const soSao = items.filter(function (x) { return !!saoMap[x.fileId]; }).length;
+    const tkRaw = String(loc.tk || '').trim();
+    const tkNorm = boDau(tkRaw);
+    const tuKhoa = tkNorm ? tkNorm.split(/\s+/).filter(Boolean) : [];
+
     const locDs = items.filter(function (x) {
       if (loc.sao && !saoMap[x.fileId]) return false;
       if (loc.thuMuc && x.thuMuc !== loc.thuMuc) return false;
       if (loc.loai && x.loai !== loc.loai) return false;
       if (loc.bai && !hopLocBai(x.bai, loc.bai)) return false;
-      if (tk && (x.ten + ' ' + tenDep(x.ten) + ' ' + x.ghiChu + ' ' + x.thuMuc + ' ' + x.loai).toLowerCase().indexOf(tk) < 0) return false;
+      if (tkNorm) {
+        const baiTen = x.bai ? tenNhanBai_(x.bai) : '';
+        const chuoi = boDau([x.ten || '', tenDep(x.ten || ''), x.ghiChu || '', x.thuMuc || '', x.loai || '', baiTen].join(' '));
+        if (chuoi.indexOf(tkNorm) < 0 && !(tuKhoa.length > 1 && tuKhoa.every(function (w) { return chuoi.indexOf(w) >= 0; }))) {
+          return false;
+        }
+      }
       return true;
     });
 
-    let h = '<div class="hero-box art-crystal">' +
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">' +
-        '<div><span class="chip tim">KHO HỌC LIỆU HÓA 10</span>' +
-        '<h1>Tài liệu học tập &amp; Slide bài giảng</h1>' +
-        '<p class="phu" style="margin:0">Xem trực tiếp PDF, slide, phiếu bài tập và đề ôn tập theo từng buổi học.</p></div>' +
-        '<div class="hang-nut">' +
-          '<span class="chip chinh">' + items.length + ' tài liệu</span>' +
-          '<button type="button" class="nut nho" id="tl-lam-moi" title="Quét lại thư mục mới nhất từ Google Drive">🔄 Làm mới Drive</button>' +
-        '</div>' +
-      '</div></div>';
-
-    // Bộ lọc (điện thoại: chỉ hiện ô tìm + nút "Bộ lọc", các ô chọn gập lại)
     const soLocChiTiet = (loc.thuMuc ? 1 : 0) + (loc.bai ? 1 : 0) + (loc.loai ? 1 : 0);
-    h += '<section class="the" style="margin-bottom:14px">' +
-      '<div class="hang" style="align-items:flex-end">' +
-        '<div class="truong" style="flex:2 1 220px"><label for="tl-tk">Tìm kiếm tài liệu</label>' +
-          '<div style="display:flex;gap:8px"><input id="tl-tk" type="search" placeholder="Gõ tên bài, phiếu, đề..." value="' + esc(loc.tk) + '" style="flex:1;min-width:0">' +
-          '<button type="button" class="nut nho tl-loc-nut' + (moLocChiTiet ? ' chinh' : '') + '" id="tl-loc-nut" aria-expanded="' + moLocChiTiet + '" aria-controls="tl-loc-ct">Bộ lọc' + (soLocChiTiet ? ' (' + soLocChiTiet + ')' : '') + ' ' + (moLocChiTiet ? '▴' : '▾') + '</button></div></div>' +
-        '<div class="hang tl-loc-chi-tiet' + (moLocChiTiet ? ' mo' : '') + '" id="tl-loc-ct" style="flex:3 1 520px;align-items:flex-end;margin:0">' +
-        '<div class="truong" style="flex:1 1 170px"><label for="tl-tm">Buổi học / Thư mục</label>' +
-          '<select id="tl-tm"><option value="">Tất cả (' + dsThuMuc.length + ' buổi)</option>' +
-          dsThuMuc.map(tm => '<option value="' + esc(tm.ten) + '"' + (loc.thuMuc === tm.ten ? ' selected' : '') + '>' + esc(tm.ten) + ' · ' + demTm[tm.ten] + '</option>').join('') +
-          '</select></div>' +
-        '<div class="truong" style="flex:1 1 190px"><label for="tl-bai">Chương / Bài SGK</label>' +
-          '<select id="tl-bai"><option value="">Tất cả bài</option>';
-    (data.mucLuc || []).forEach(function (c) {
-      h += '<option value="' + esc(c.id) + '"' + (loc.bai === c.id ? ' selected' : '') + '>' + esc(c.ten) + '</option>';
-      c.bai.forEach(function (b) {
-        h += '<option value="' + esc(b.id) + '"' + (loc.bai === b.id ? ' selected' : '') + '>  ↳ ' + esc(b.ten) + '</option>';
-      });
-    });
-    h += '</select></div>' +
-        '<div class="truong" style="flex:1 1 160px"><label for="tl-loai">Loại tài liệu</label>' +
-          '<select id="tl-loai"><option value="">Tất cả</option>' +
-          loais.map(l => '<option value="' + esc(l) + '"' + (loc.loai === l ? ' selected' : '') + '>' + esc(l) + '</option>').join('') +
-          '</select></div>' +
-        '</div>' +
-      '</div>';
+    const dangLoc = !!(loc.thuMuc || loc.loai || loc.bai || tkRaw || loc.sao);
+    return {
+      items: items,
+      loais: loais,
+      demTm: demTm,
+      demCh: demCh,
+      dsThuMuc: dsThuMuc,
+      dsChuong: dsChuong,
+      saoMap: saoMap,
+      soSao: soSao,
+      tkRaw: tkRaw,
+      locDs: locDs,
+      soLocChiTiet: soLocChiTiet,
+      dangLoc: dangLoc
+    };
+  }
 
-    const dangLoc = !!(loc.thuMuc || loc.loai || loc.bai || tk || loc.sao);
-    if (dsThuMuc.length || dangLoc || soSao > 0) {
-      h += '<div class="chip-scroll" style="margin-top:10px">' +
-        '<button type="button" class="nut nho ' + (!loc.thuMuc && !loc.sao ? 'chinh' : '') + '" data-tm="">Tất cả</button>' +
-        '<button type="button" class="nut nho ' + (loc.sao ? 'chinh' : '') + '" id="tl-loc-sao">⭐ Đã lưu' + (soSao ? ' (' + soSao + ')' : '') + '</button>' +
-        dsThuMuc.map(tm => '<button type="button" class="nut nho ' + (loc.thuMuc === tm.ten && !loc.sao ? 'chinh' : '') + '" data-tm="' + esc(tm.ten) + '">' + esc(tm.ten) + '</button>').join('') +
-        (dangLoc ? '<button type="button" class="nut nho xoa" id="tl-xoa-loc">Xóa lọc</button>' : '') +
+  function datLaiBoLoc_() {
+    loc = { thuMuc: '', bai: '', loai: '', tk: '', sao: false };
+    xoaThamSoBaiUrl_();
+    const oTk = $('#tl-tk');
+    if (oTk && oTk.value !== '') oTk.value = '';
+    veKetQuaLoc();
+  }
+
+  function dongBoSelectLoc_(tt) {
+    const elTm = $('#tl-tm');
+    if (elTm) {
+      elTm.innerHTML = '<option value="">Tất cả (' + tt.dsThuMuc.length + ' buổi)</option>' +
+        tt.dsThuMuc.map(function (tm) {
+          return '<option value="' + esc(tm.ten) + '"' + (loc.thuMuc === tm.ten ? ' selected' : '') + '>' + esc(tm.ten) + ' · ' + tt.demTm[tm.ten] + '</option>';
+        }).join('');
+      elTm.value = loc.thuMuc;
+    }
+    const elBai = $('#tl-bai');
+    if (elBai) {
+      let hb = '<option value="">Tất cả bài</option>';
+      (data && data.mucLuc || []).forEach(function (c) {
+        hb += '<option value="' + esc(c.id) + '"' + (loc.bai === c.id ? ' selected' : '') + '>' + esc(c.ten) + '</option>';
+        (c.bai || []).forEach(function (b) {
+          hb += '<option value="' + esc(b.id) + '"' + (loc.bai === b.id ? ' selected' : '') + '>  ↳ ' + esc(b.ten) + '</option>';
+        });
+      });
+      elBai.innerHTML = hb;
+      elBai.value = loc.bai;
+    }
+    const elLoai = $('#tl-loai');
+    if (elLoai) {
+      elLoai.innerHTML = '<option value="">Tất cả</option>' +
+        tt.loais.map(function (l) {
+          return '<option value="' + esc(l) + '"' + (loc.loai === l ? ' selected' : '') + '>' + esc(l) + '</option>';
+        }).join('');
+      elLoai.value = loc.loai;
+    }
+  }
+
+  // Chỉ vẽ lại dải chip nhanh + thanh báo đang lọc + danh sách kết quả (TUYỆT ĐỐI không chạm vào <input id="tl-tk">)
+  function veKetQuaLoc() {
+    if (!data) return;
+    const tt = tinhDuLieuLoc_();
+
+    const tongChip = $('#tl-tong-chip');
+    if (tongChip) tongChip.textContent = tt.items.length + ' tài liệu';
+
+    const elTm = $('#tl-tm');
+    if (elTm && elTm.value !== loc.thuMuc) elTm.value = loc.thuMuc;
+    const elBai = $('#tl-bai');
+    if (elBai && elBai.value !== loc.bai) elBai.value = loc.bai;
+    const elLoai = $('#tl-loai');
+    if (elLoai && elLoai.value !== loc.loai) elLoai.value = loc.loai;
+
+    const ln = $('#tl-loc-nut');
+    if (ln) {
+      ln.className = 'nut nho tl-loc-nut' + ((moLocChiTiet || tt.soLocChiTiet) ? ' chinh' : '');
+      ln.setAttribute('aria-expanded', String(moLocChiTiet));
+      ln.textContent = 'Bộ lọc' + (tt.soLocChiTiet ? ' (' + tt.soLocChiTiet + ')' : '') + ' ' + (moLocChiTiet ? '▴' : '▾');
+    }
+    const lct = $('#tl-loc-ct');
+    if (lct) lct.classList.toggle('mo', moLocChiTiet);
+
+    // 1. Dải chip lọc nhanh Chương / Đã lưu / Buổi học (giữ nguyên vị trí cuộn ngang trên mobile)
+    const chipVung = $('#tl-chip-vung');
+    if (chipVung) {
+      const cuonCu = chipVung.firstElementChild ? chipVung.firstElementChild.scrollLeft : 0;
+      if (tt.dsThuMuc.length || tt.dsChuong.length || tt.dangLoc || tt.soSao > 0) {
+        let hc = '<div class="chip-scroll tl-chip-bar" style="margin-top:10px">' +
+          '<button type="button" class="nut nho ' + (!tt.dangLoc ? 'chinh' : '') + '" id="tl-tat-ca">Tất cả</button>' +
+          '<button type="button" class="nut nho ' + (loc.sao ? 'chinh' : '') + '" id="tl-loc-sao">⭐ Đã lưu' + (tt.soSao ? ' (' + tt.soSao + ')' : '') + '</button>';
+        tt.dsChuong.forEach(function (c) {
+          const nhanNgan = c.id === 'C0' ? 'Mở đầu' : ('Chương ' + c.id.slice(1));
+          hc += '<button type="button" class="nut nho ' + (loc.bai === c.id && !loc.sao ? 'chinh' : '') + '" data-ch="' + esc(c.id) + '" title="' + esc(c.ten) + '">' + esc(nhanNgan) + '</button>';
+        });
+        tt.dsThuMuc.forEach(function (tm) {
+          hc += '<button type="button" class="nut nho ' + (loc.thuMuc === tm.ten && !loc.sao ? 'chinh' : '') + '" data-tm="' + esc(tm.ten) + '">' + esc(tm.ten) + '</button>';
+        });
+        if (tt.dangLoc) {
+          hc += '<button type="button" class="nut nho xoa" id="tl-xoa-loc">✕ Xóa lọc</button>';
+        }
+        hc += '</div>';
+        chipVung.innerHTML = hc;
+        if (cuonCu && chipVung.firstElementChild) chipVung.firstElementChild.scrollLeft = cuonCu;
+
+        const btnTatCa = $('#tl-tat-ca');
+        if (btnTatCa) btnTatCa.onclick = datLaiBoLoc_;
+        const btnSao = $('#tl-loc-sao');
+        if (btnSao) {
+          btnSao.onclick = function () {
+            if (!loc.sao) {
+              loc.sao = true;
+              loc.thuMuc = '';
+              loc.bai = '';
+              loc.loai = '';
+              xoaThamSoBaiUrl_();
+            } else {
+              loc.sao = false;
+            }
+            veKetQuaLoc();
+          };
+        }
+        const btnXoa = $('#tl-xoa-loc');
+        if (btnXoa) btnXoa.onclick = datLaiBoLoc_;
+        chipVung.querySelectorAll('[data-ch]').forEach(function (b) {
+          b.onclick = function () {
+            const ma = b.getAttribute('data-ch');
+            loc.sao = false;
+            loc.bai = (loc.bai === ma) ? '' : ma;
+            if (!loc.bai) xoaThamSoBaiUrl_();
+            veKetQuaLoc();
+          };
+        });
+        chipVung.querySelectorAll('[data-tm]').forEach(function (b) {
+          b.onclick = function () {
+            const tm = b.getAttribute('data-tm');
+            loc.sao = false;
+            loc.thuMuc = (loc.thuMuc === tm) ? '' : tm;
+            veKetQuaLoc();
+          };
+        });
+      } else {
+        chipVung.innerHTML = '';
+      }
+    }
+
+    // 2. Chip nổi bật phía trên danh sách khi đang có bộ lọc (đặc biệt nhảy qua ?bai=C1..C7 hoặc lọc ẩn trên mobile)
+    const activeVung = $('#tl-active-vung');
+    if (activeVung) {
+      const nhanLoc = [];
+      if (loc.sao) nhanLoc.push('⭐ Đã lưu (' + tt.soSao + ')');
+      if (loc.bai) nhanLoc.push(tenNhanBai_(loc.bai));
+      if (loc.thuMuc) nhanLoc.push(loc.thuMuc);
+      if (loc.loai) nhanLoc.push(loc.loai);
+      if (tt.tkRaw) nhanLoc.push('Từ khóa "' + tt.tkRaw + '"');
+
+      if (nhanLoc.length) {
+        activeVung.innerHTML = '<div class="tl-active-bar">' +
+          '<span class="tl-active-lbl">📌 Đang lọc: <b>' + esc(nhanLoc.join(' · ')) + '</b></span>' +
+          '<button type="button" class="nut nho xoa" id="tl-bo-loc-nhanh">✕ Bỏ lọc</button>' +
+        '</div>';
+        const nutBo = $('#tl-bo-loc-nhanh');
+        if (nutBo) nutBo.onclick = datLaiBoLoc_;
+      } else {
+        activeVung.innerHTML = '';
+      }
+    }
+
+    // 3. Danh sách kết quả tài liệu
+    const kqVung = $('#tl-ket-qua');
+    if (!kqVung) return;
+
+    let h = '';
+    function veTheTL(x) {
+      const tenHien = tenDep(x.ten);
+      const daSao = !!tt.saoMap[x.fileId];
+      const badgeTen = x.dinhDang === 'pdf' ? 'PDF' : (x.dinhDang === 'ppt' ? 'SLIDE' : (x.dinhDang === 'doc' ? 'WORD' : 'FILE'));
+      const baiTen = x.bai ? tenNhanBai_(x.bai) : '';
+      const ghiChu = x.ghiChu || '';
+      const taiUrl = layLinkTai_(x);
+      h += '<div class="tl-card ' + esc(x.dinhDang) + (x.ghim ? ' ghim' : '') + '">' +
+        '<div class="tl-body">' +
+        '<div class="tl-ic ' + esc(x.dinhDang) + '" aria-hidden="true">' + badgeTen + '</div>' +
+        '<div style="min-width:0;flex:1">' +
+          '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px">' +
+            (x.ghim ? '<span class="chip chinh">📌 Ghim</span>' : '') +
+            (x.loai ? '<span class="chip">' + esc(x.loai) + '</span>' : '') +
+            (baiTen ? '<span class="chip ok">' + esc(baiTen) + '</span>' : '') +
+            (x.ghim && x.thuMuc ? '<span class="chip tim">' + esc(x.thuMuc) + '</span>' : '') +
+          '</div>' +
+          '<div style="font-weight:700;font-size:15px;overflow-wrap:anywhere" title="' + esc(x.ten) + '">' + esc(tenHien) + '</div>' +
+          (tenHien !== x.ten ? '<div class="tl-goc" title="Tên file gốc trên Drive">' + esc(x.ten) + '</div>' : '') +
+          (ghiChu ? '<div class="phu" style="font-size:13px;margin-top:4px">' + md(ghiChu) + '</div>' : '') +
+          '<div class="phu" style="font-size:12px;margin-top:5px">' + [dinhDangSize(x.size), x.ngay ? 'Cập nhật ' + ngayDep(x.ngay) : ''].filter(Boolean).join(' · ') + '</div>' +
+        '</div>' +
+        '<button type="button" class="nut-sao' + (daSao ? ' on' : '') + '" data-sao="' + esc(x.fileId) + '" title="' + (daSao ? 'Bỏ lưu tài liệu này' : 'Đánh dấu ⭐ lưu tài liệu hay xem') + '" aria-label="Lưu tài liệu">' + (daSao ? '★' : '☆') + '</button>' +
+        '</div>' +
+        '<div class="hang-nut tl-act">' +
+          '<button type="button" class="nut nho chinh" data-xem="' + esc(x.fileId) + '">Xem ngay</button>' +
+          (taiUrl ? '<a class="nut nho" href="' + esc(taiUrl) + '" target="_blank" rel="noopener">Tải về</a>' : '') +
+        '</div>' +
       '</div>';
     }
-    h += '</section>';
 
-    // Danh sách
-    if (!locDs.length) {
-      h += '<div class="the"><p class="phu" style="margin:0;text-align:center">' +
-        (loc.sao ? 'Em chưa đánh dấu ⭐ tài liệu nào. Bấm nút ☆ trên thẻ tài liệu để lưu nhanh các file hay xem nhé!' : 'Không tìm thấy tài liệu phù hợp bộ lọc. Bấm chọn "Tất cả" để xem lại toàn bộ nhé.') +
-      '</p></div>';
+    if (!tt.locDs.length) {
+      let msgRong = '';
+      if (!tt.items.length) {
+        msgRong = 'Kho học liệu hiện chưa có tài liệu nào được đăng tải. Em quay lại sau hoặc bấm "🔄 Làm mới Drive" nhé!';
+      } else if (loc.sao && tt.soSao === 0) {
+        msgRong = 'Em chưa đánh dấu ⭐ tài liệu nào. Bấm nút ☆ trên thẻ tài liệu để lưu nhanh các file hay xem nhé!';
+      } else if (loc.sao && tt.soSao > 0) {
+        msgRong = 'Không có tài liệu ⭐ Đã lưu nào khớp từ khóa đang tìm. Bấm "✕ Bỏ lọc" để xem đủ ' + tt.soSao + ' tài liệu đã lưu nhé.';
+      } else {
+        msgRong = 'Không tìm thấy tài liệu phù hợp bộ lọc đang chọn. Bấm "Tất cả" hoặc "✕ Bỏ lọc" để xem lại toàn bộ nhé.';
+      }
+      h += '<div class="the"><p class="phu" style="margin:0;text-align:center">' + esc(msgRong) + '</p></div>';
     } else {
-      h += '<div class="nhan-muc">Tìm thấy ' + locDs.length + ' tài liệu</div>';
+      h += '<div class="nhan-muc">' + (tt.dangLoc ? ('Tìm thấy ' + tt.locDs.length + ' / ' + tt.items.length + ' tài liệu') : ('Tất cả ' + tt.locDs.length + ' tài liệu')) + '</div>';
       const hienKhungGhim = !loc.thuMuc;
-      const dsGhim = hienKhungGhim ? locDs.filter(function (x) { return !!x.ghim; }) : [];
-      const dsThuong = hienKhungGhim ? locDs.filter(function (x) { return !x.ghim; }) : locDs;
+      const dsGhim = hienKhungGhim ? tt.locDs.filter(function (x) { return !!x.ghim; }) : [];
+      const dsThuong = hienKhungGhim ? tt.locDs.filter(function (x) { return !x.ghim; }) : tt.locDs;
 
       if (dsGhim.length) {
-        h += '<section class="the" style="margin-bottom:16px;border-color:rgba(158,30,76,.35)">' +
+        h += '<section class="the tl-ghim-box">' +
           '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
             '<b style="font-size:15.5px;color:var(--do)">📌 Tài liệu trọng tâm được Thầy ghim</b>' +
             '<span class="chip chinh">' + dsGhim.length + ' tài liệu</span>' +
@@ -405,7 +1141,6 @@
         h += '</div></section>';
       }
 
-      // Gom theo buổi/thư mục (danh sách đã được backend sắp Buổi mới → cũ)
       const nhom = [];
       const viTri = {};
       dsThuong.forEach(function (x) {
@@ -425,75 +1160,126 @@
       });
     }
 
-    function veTheTL(x) {
-        const tenHien = tenDep(x.ten);
-        const daSao = !!saoMap[x.fileId];
-        const badgeTen = x.dinhDang === 'pdf' ? 'PDF' : (x.dinhDang === 'ppt' ? 'SLIDE' : (x.dinhDang === 'doc' ? 'WORD' : 'FILE'));
-        const baiTen = x.bai ? (tenBaiMap[x.bai] || (x.bai === 'MD' ? 'Mở đầu' : (/^C\d$/.test(x.bai) ? 'Chương ' + x.bai.slice(1) : 'Bài ' + x.bai))) : '';
-        h += '<div class="tl-card ' + esc(x.dinhDang) + (x.ghim ? ' ghim' : '') + '">' +
-          '<div class="tl-body">' +
-          '<div class="tl-ic ' + esc(x.dinhDang) + '" aria-hidden="true">' + badgeTen + '</div>' +
-          '<div style="min-width:0;flex:1">' +
-            '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px">' +
-              (x.ghim ? '<span class="chip chinh">📌 Ghim</span>' : '') +
-              '<span class="chip">' + esc(x.loai) + '</span>' +
-              (baiTen ? '<span class="chip ok">' + esc(baiTen) + '</span>' : '') +
-              (x.ghim && x.thuMuc ? '<span class="chip tim">' + esc(x.thuMuc) + '</span>' : '') +
-            '</div>' +
-            '<div style="font-weight:700;font-size:15px;overflow-wrap:anywhere" title="' + esc(x.ten) + '">' + esc(tenHien) + '</div>' +
-            (tenHien !== x.ten ? '<div class="tl-goc" title="Tên file gốc trên Drive">' + esc(x.ten) + '</div>' : '') +
-            (x.ghiChu ? '<div class="phu" style="font-size:13px;margin-top:4px">' + md(x.ghiChu) + '</div>' : '') +
-            '<div class="phu" style="font-size:12px;margin-top:5px">' + [dinhDangSize(x.size), x.ngay ? 'Cập nhật ' + ngayDep(x.ngay) : ''].filter(Boolean).join(' · ') + '</div>' +
-          '</div>' +
-          '<button type="button" class="nut-sao' + (daSao ? ' on' : '') + '" data-sao="' + esc(x.fileId) + '" title="' + (daSao ? 'Bỏ lưu tài liệu này' : 'Đánh dấu ⭐ lưu tài liệu hay xem') + '" aria-label="Lưu tài liệu">' + (daSao ? '★' : '☆') + '</button>' +
-          '</div>' +
-          '<div class="hang-nut tl-act">' +
-            '<button type="button" class="nut nho chinh" data-xem="' + esc(x.fileId) + '">Xem ngay</button>' +
-            '<a class="nut nho" href="https://drive.google.com/uc?export=download&id=' + esc(x.fileId) + '" target="_blank" rel="noopener">Tải về</a>' +
-          '</div>' +
-        '</div>';
-    }
+    kqVung.innerHTML = h;
 
-    h += '<div id="slogan-slot"></div>';
+    kqVung.querySelectorAll('[data-sao]').forEach(function (b) {
+      b.onclick = function () {
+        const bat = batTatSao(b.getAttribute('data-sao'));
+        toast(bat ? 'Đã lưu vào mục ⭐ Đã lưu!' : 'Đã bỏ đánh dấu ⭐');
+        veKetQuaLoc();
+      };
+    });
+    kqVung.querySelectorAll('[data-xem]').forEach(function (b) {
+      b.onclick = function () {
+        const fid = b.getAttribute('data-xem');
+        const item = (data.items || []).find(function (x) { return x.fileId === fid; });
+        if (!item) return;
+        if (item.link && laUrlAnToan_(item.link) && !/drive\.google\.com|docs\.google\.com/i.test(item.link) && !/^[\w-]{15,}$/.test(String(item.fileId || ''))) {
+          window.open(item.link, '_blank', 'noopener');
+          return;
+        }
+        moXemTaiLieu(item);
+      };
+    });
+  }
+
+  function veTrang() {
+    const tt = tinhDuLieuLoc_();
+
+    let h = '<div class="hero-box art-crystal">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">' +
+        '<div><span class="chip tim">KHO HỌC LIỆU HÓA 10</span>' +
+        '<h1>Tài liệu học tập &amp; Slide bài giảng</h1>' +
+        '<p class="phu" style="margin:0">Xem trực tiếp PDF, slide, phiếu bài tập và đề ôn tập theo từng buổi học.</p></div>' +
+        '<div class="hang-nut">' +
+          '<span class="chip chinh" id="tl-tong-chip">' + tt.items.length + ' tài liệu</span>' +
+          '<button type="button" class="nut nho" id="tl-lam-moi" title="Quét lại thư mục mới nhất từ Google Drive">🔄 Làm mới Drive</button>' +
+        '</div>' +
+      '</div></div>';
+
+    h += '<section class="the" style="margin-bottom:14px">' +
+      '<div class="hang" style="align-items:flex-end">' +
+        '<div class="truong" style="flex:2 1 220px"><label for="tl-tk">Tìm kiếm tài liệu</label>' +
+          '<div style="display:flex;gap:8px"><input id="tl-tk" type="search" autocomplete="off" placeholder="Gõ tên bài, phiếu, đề (có hoặc không dấu)..." value="' + esc(loc.tk) + '" style="flex:1;min-width:0">' +
+          '<button type="button" class="nut nho tl-loc-nut' + ((moLocChiTiet || tt.soLocChiTiet) ? ' chinh' : '') + '" id="tl-loc-nut" aria-expanded="' + moLocChiTiet + '" aria-controls="tl-loc-ct">Bộ lọc' + (tt.soLocChiTiet ? ' (' + tt.soLocChiTiet + ')' : '') + ' ' + (moLocChiTiet ? '▴' : '▾') + '</button></div></div>' +
+        '<div class="hang tl-loc-chi-tiet' + (moLocChiTiet ? ' mo' : '') + '" id="tl-loc-ct" style="flex:3 1 520px;align-items:flex-end;margin:0">' +
+          '<div class="truong" style="flex:1 1 170px"><label for="tl-tm">Buổi học / Thư mục</label><select id="tl-tm"></select></div>' +
+          '<div class="truong" style="flex:1 1 190px"><label for="tl-bai">Chương / Bài SGK</label><select id="tl-bai"></select></div>' +
+          '<div class="truong" style="flex:1 1 160px"><label for="tl-loai">Loại tài liệu</label><select id="tl-loai"></select></div>' +
+        '</div>' +
+      '</div>' +
+      '<div id="tl-chip-vung"></div>' +
+    '</section>' +
+    '<div id="tl-active-vung"></div>' +
+    '<div id="tl-ket-qua"></div>' +
+    '<div id="slogan-slot"></div>';
+
     app.innerHTML = h;
+    dongBoSelectLoc_(tt);
+    veKetQuaLoc();
     renderSlogan(document.getElementById('slogan-slot'));
 
-    $('#tl-tk').oninput = function () { loc.tk = this.value; veTrang(); $('#tl-tk').focus(); const l = $('#tl-tk').value.length; $('#tl-tk').setSelectionRange(l, l); };
-    $('#tl-tm').onchange = function () { loc.thuMuc = this.value; veTrang(); };
-    $('#tl-bai').onchange = function () { loc.bai = this.value; veTrang(); };
-    $('#tl-loai').onchange = function () { loc.loai = this.value; veTrang(); };
-    const ls = $('#tl-loc-sao'); if (ls) ls.onclick = function () { loc.sao = !loc.sao; veTrang(); };
-    const xl = $('#tl-xoa-loc'); if (xl) xl.onclick = function () { loc = { thuMuc: '', bai: '', loai: '', tk: '', sao: false }; veTrang(); };
-    const ln = $('#tl-loc-nut'); if (ln) ln.onclick = function () { moLocChiTiet = !moLocChiTiet; veTrang(); };
+    const oTk = $('#tl-tk');
+    if (oTk) {
+      oTk.addEventListener('input', function () {
+        loc.tk = this.value;
+        veKetQuaLoc();
+      });
+    }
+    const elTm = $('#tl-tm');
+    if (elTm) {
+      elTm.onchange = function () {
+        loc.thuMuc = this.value;
+        if (loc.thuMuc) loc.sao = false;
+        veKetQuaLoc();
+      };
+    }
+    const elBai = $('#tl-bai');
+    if (elBai) {
+      elBai.onchange = function () {
+        loc.bai = this.value;
+        if (loc.bai) loc.sao = false;
+        else xoaThamSoBaiUrl_();
+        veKetQuaLoc();
+      };
+    }
+    const elLoai = $('#tl-loai');
+    if (elLoai) {
+      elLoai.onchange = function () {
+        loc.loai = this.value;
+        if (loc.loai) loc.sao = false;
+        veKetQuaLoc();
+      };
+    }
+    const ln = $('#tl-loc-nut');
+    if (ln) {
+      ln.onclick = function () {
+        moLocChiTiet = !moLocChiTiet;
+        veKetQuaLoc();
+      };
+    }
     const lm = $('#tl-lam-moi');
-    if (lm) lm.onclick = function () {
-      lm.disabled = true; lm.textContent = 'Đang quét Drive...';
-      api('tlKhoiDong', true).then(function (r) {
-        data = r;
-        veTopLinks();
-        veTrang();
-        toast('Đã cập nhật danh sách thư mục & tài liệu mới nhất từ Drive.');
-      }).catch(function (e) { lm.disabled = false; lm.textContent = '🔄 Làm mới Drive'; toast(e.message, true); });
-    };
-    app.querySelectorAll('[data-tm]').forEach(b => b.onclick = () => { loc.sao = false; loc.thuMuc = b.getAttribute('data-tm'); veTrang(); });
-    app.querySelectorAll('[data-sao]').forEach(b => b.onclick = () => {
-      const bat = batTatSao(b.getAttribute('data-sao'));
-      toast(bat ? 'Đã lưu vào mục ⭐ Đã lưu!' : 'Đã bỏ đánh dấu ⭐');
-      veTrang();
-    });
-    app.querySelectorAll('[data-xem]').forEach(b => b.onclick = () => {
-      const fid = b.getAttribute('data-xem');
-      const item = (data.items || []).find(x => x.fileId === fid);
-      if (item) moXemTaiLieu(item);
-    });
+    if (lm) {
+      lm.onclick = function () {
+        lm.disabled = true;
+        lm.textContent = 'Đang quét Drive...';
+        api('tlKhoiDong', true).then(function (r) {
+          ghiCacheUI('tailieu', r);
+          chuKyCache = taoChuKyTL_(r);
+          napDuLieuTL(r);
+          toast('Đã cập nhật danh sách thư mục & tài liệu mới nhất từ Drive.');
+        }).catch(function (e) {
+          lm.disabled = false;
+          lm.textContent = '🔄 Làm mới Drive';
+          toast(e.message, true);
+        });
+      };
+    }
   }
 
   function napDuLieuTL(r) {
     data = r;
-    (r.mucLuc || []).forEach(c => {
-      tenBaiMap[c.id] = c.ten;
-      c.bai.forEach(b => { tenBaiMap[b.id] = b.ten; });
-    });
+    capNhatTenBaiMap_(r);
     veTopLinks();
     veTrang();
     thuMoXemTuUrl_();
@@ -502,6 +1288,7 @@
   ganThanhDieuHuongHS('tailieu', {});
   const cachedTL = docCacheUI('tailieu');
   if (cachedTL) {
+    chuKyCache = taoChuKyTL_(cachedTL);
     napDuLieuTL(cachedTL);
   } else {
     app.innerHTML = '<div class="phu" style="margin:6px 2px 10px"><span class="cho"></span> Đang tải kho tài liệu...</div>' + skelCards(4);
@@ -509,6 +1296,22 @@
 
   api('tlKhoiDong').then(function (r) {
     ghiCacheUI('tailieu', r);
+    const chuKyMoi = taoChuKyTL_(r);
+    if (chuKyCache && chuKyMoi === chuKyCache) {
+      data = r;
+      thuMoXemTuUrl_();
+      return;
+    }
+    chuKyCache = chuKyMoi;
+    if (document.activeElement && document.activeElement.id === 'tl-tk' && $('#tl-ket-qua')) {
+      data = r;
+      capNhatTenBaiMap_(r);
+      veTopLinks();
+      dongBoSelectLoc_(tinhDuLieuLoc_());
+      veKetQuaLoc();
+      thuMoXemTuUrl_();
+      return;
+    }
     napDuLieuTL(r);
   }).catch(function (e) {
     if (cachedTL) return;

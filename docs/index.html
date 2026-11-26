@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=fba761b5df">
+<link rel="stylesheet" href="assets/h10.css?v=0e9b13a5ac">
 </head>
 <body class="embed-ok">
 <div class="app" style="min-height:auto">
@@ -45,13 +45,13 @@
     </div>
   </header>
 
-  <main class="khung-chinh" id="app" style="padding-bottom:14px"></main>
+  <main class="khung-chinh" id="app"></main>
 </div>
 
-<script src="assets/h10.js?v=f65a9f6233"></script>
+<script src="assets/h10.js?v=2416061e55"></script>
 <script>
 (function () {
-  const { esc, md, api, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, renderSlogan, renderGalleryHoa10, ganThanhDieuHuongHS, docCacheUI, ghiCacheUI, ganBungCoVu, veMascot, kichHoatMascot, tenDep } = window.H10;
+  const { esc, md, api, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, ganNutLenDau, renderSlogan, renderGalleryHoa10, ganThanhDieuHuongHS, docCacheUI, ghiCacheUI, ganBungCoVu, veMascot, kichHoatMascot, tenDep } = window.H10;
   const CHUONG_POSTERS = [
     { id: 'C1', so: 'Chương 1', ten: 'Cấu tạo nguyên tử', sub: 'Bài 1 – 4 · Hạt nhân & Orbital', ic: '⚛️', cls: 'ch-c1' },
     { id: 'C2', so: 'Chương 2', ten: 'Bảng tuần hoàn', sub: 'Bài 5 – 9 · Chu kì & Quy luật', ic: '🧭', cls: 'ch-c2' },
@@ -77,35 +77,27 @@
     return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + ' ' + THU[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1);
   }
   function conLai(ms) {
-    const gio = Math.max(0, Math.round((ms - Date.now()) / 3600e3));
+    const diff = ms - Date.now();
+    if (!(diff > 0)) return { txt: 'Đã hết hạn', gap: true };
+    const gio = Math.round(diff / 3600e3);
     return gio < 24 ? { txt: 'Còn ' + Math.max(1, gio) + ' giờ', gap: true } : { txt: 'Còn ' + Math.round(gio / 24) + ' ngày', gap: false };
   }
+  function ganThuocTinhLink_(el, l) {
+    if (!el || !l) return;
+    el.href = l.href;
+    el.target = l.target;
+    if (l.rel) el.rel = l.rel;
+    else el.removeAttribute('rel');
+  }
+  function attrLink_(l) {
+    return 'href="' + esc(l.href) + '" target="' + esc(l.target) + '"' + (l.rel ? ' rel="' + esc(l.rel) + '"' : '');
+  }
+
   document.getElementById('brand-ic').innerHTML = ICONS.binh;
   ganNutTheme(document.getElementById('btn-theme'));
+  ganNutLenDau();
 
   const app = document.getElementById('app');
-  app.innerHTML = skelCards(2);
-
-  let laFull = false;
-  getLocation(function (l) { laFull = !!(l && l.parameter && l.parameter.full); });
-
-  const SVG_BINH_LINH_VAT =
-    '<svg viewBox="0 0 200 200" aria-hidden="true">' +
-      '<circle cx="52" cy="48" r="5" fill="#FFD166" opacity=".75"/>' +
-      '<circle cx="148" cy="42" r="4" fill="#A78BFA" opacity=".8"/>' +
-      '<circle cx="158" cy="70" r="3" fill="#8FE3FF" opacity=".8"/>' +
-      '<g class="hm-hop">' +
-        '<path class="hm-armL" d="M62 120 L28 92" stroke="#fff" stroke-width="9" stroke-linecap="round"/>' +
-        '<path class="hm-armR" d="M138 120 L172 92" stroke="#fff" stroke-width="9" stroke-linecap="round"/>' +
-        '<path d="M84 40v42l-42 72a12 12 0 0 0 10 18h96a12 12 0 0 0 10-18l-42-72V40" fill="rgba(255,255,255,.18)" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>' +
-        '<path class="hm-liq" d="M63 120h74l25 40a8 8 0 0 1-7 12H45a8 8 0 0 1-7-12z" fill="#FF5A7A"/>' +
-        '<rect x="78" y="32" width="44" height="12" rx="5" fill="#FFD166"/>' +
-        '<circle cx="86" cy="140" r="5" fill="#2A0716"/><circle cx="114" cy="140" r="5" fill="#2A0716"/>' +
-        '<circle cx="88" cy="138" r="1.6" fill="#fff"/><circle cx="116" cy="138" r="1.6" fill="#fff"/>' +
-        '<path d="M90 152 Q100 162 110 152" stroke="#2A0716" stroke-width="3.5" fill="none" stroke-linecap="round"/>' +
-        '<circle cx="76" cy="150" r="5" fill="#FF9FB2" opacity=".8"/><circle cx="124" cy="150" r="5" fill="#FF9FB2" opacity=".8"/>' +
-      '</g>' +
-    '</svg>';
 
   const SVG_NGUYEN_TU =
     '<svg viewBox="0 0 200 200" aria-hidden="true">' +
@@ -119,17 +111,23 @@
       '</g>' +
     '</svg>';
 
-  function veHome(r) {
-    const cfg = r.caiDatTrang || {};
-    document.getElementById('site-title').textContent = 'Hóa học 10 · Thầy Hoàng';
+  let laFull = false;
+  const cachedHome = docCacheUI('home');
+  let curHomeData = cachedHome || { _tam: true, webUrl: window.H10.GAS_EXEC_URL };
+  let daVeKhung = false;
 
+  function capNhatLinksHome() {
+    const r = curHomeData || {};
+    const cfg = r.caiDatTrang || {};
     const opt = { cfg: cfg, webUrl: r.webUrl, laFull: laFull };
     ganThanhDieuHuongHS('home', opt);
+
     const lBtvn = linkTrang('btvn', opt);
     const lTailieu = linkTrang('tailieu', opt);
     const lGame = linkTrang('trochoi', opt);
     const lLab = linkTrang('thinghiem', opt);
     const lAdmin = linkTrang('admin', opt);
+
     [
       ['btn-btvn', lBtvn],
       ['btn-tailieu', lTailieu],
@@ -137,15 +135,97 @@
       ['btn-game', lGame]
     ].forEach(function (cap) {
       const el = document.getElementById(cap[0]);
-      if (el) { el.href = cap[1].href; el.target = cap[1].target; el.classList.remove('an'); }
+      if (el) { ganThuocTinhLink_(el, cap[1]); el.classList.remove('an'); }
     });
+
+    ganThuocTinhLink_(document.getElementById('hub-btvn'), lBtvn);
+    ganThuocTinhLink_(document.getElementById('hub-tailieu'), lTailieu);
+    ganThuocTinhLink_(document.getElementById('hub-game'), lGame);
+    ganThuocTinhLink_(document.getElementById('hub-lab'), lLab);
+    ganThuocTinhLink_(document.getElementById('btn-admin-link'), lAdmin);
+    ganThuocTinhLink_(document.getElementById('news-all-btvn'), lBtvn);
+    ganThuocTinhLink_(document.getElementById('news-all-tl'), lTailieu);
+
+    app.querySelectorAll('a.ch-card[data-ch-id]').forEach(function (a) {
+      const id = a.getAttribute('data-ch-id');
+      ganThuocTinhLink_(a, linkTrang('tailieu', { cfg: cfg, webUrl: r.webUrl, laFull: laFull, query: '?bai=' + id }));
+    });
+    app.querySelectorAll('a.news-item[data-de-id]').forEach(function (a) {
+      const id = a.getAttribute('data-de-id');
+      ganThuocTinhLink_(a, id ? linkTrang('btvn', { cfg: cfg, webUrl: r.webUrl, laFull: laFull, query: '?de=' + encodeURIComponent(id) }) : lBtvn);
+    });
+    app.querySelectorAll('a.news-item[data-file-id]').forEach(function (a) {
+      const id = a.getAttribute('data-file-id');
+      ganThuocTinhLink_(a, id ? linkTrang('tailieu', { cfg: cfg, webUrl: r.webUrl, laFull: laFull, query: '?xem=' + encodeURIComponent(id) }) : lTailieu);
+    });
+  }
+
+  function renderBangTinHtml_(r) {
+    const cfg = r.caiDatTrang || {};
+    const opt = { cfg: cfg, webUrl: r.webUrl, laFull: laFull };
+    const lBtvn = linkTrang('btvn', opt);
+    const lTailieu = linkTrang('tailieu', opt);
+    const deMo = Array.isArray(r.deMo) ? r.deMo : [];
+    const tlMoi = Array.isArray(r.taiLieuMoi) ? r.taiLieuMoi : [];
+    if (r._tam) {
+      return '<div class="home-news">' + skelCards(2) + '</div>';
+    }
+    if (!deMo.length && !tlMoi.length) return '';
+
+    let h = '<div class="home-news">';
+    h += '<section class="the" style="margin:0"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
+      '<h2 class="tieu-khoi" style="margin:0">📝 Đề đang mở</h2>' +
+      '<a class="hub-go" id="news-all-btvn" style="color:var(--do);margin:0" ' + attrLink_(lBtvn) + '>Tất cả →</a></div>';
+    if (deMo.length) {
+      h += '<div class="news-list">' + deMo.map(function (d) {
+        const cl = conLai(d.han);
+        const lDe = d.id ? linkTrang('btvn', { cfg: cfg, webUrl: r.webUrl, laFull: laFull, query: '?de=' + encodeURIComponent(d.id) }) : lBtvn;
+        return '<a class="news-item" data-de-id="' + esc(d.id || '') + '" ' + attrLink_(lDe) + '>' +
+          '<div class="hub-ic do" style="width:34px;height:34px;border-radius:10px">' + ICONS.binh + '</div>' +
+          '<div style="min-width:0;flex:1"><b>' + esc(d.ten) + '</b><span class="phu">' + (d.soCau ? d.soCau + ' câu · ' : '') + 'Hạn ' + hanNgan(d.han) + '</span></div>' +
+          '<span class="news-han' + (cl.gap ? ' gap' : '') + '">' + cl.txt + '</span></a>';
+      }).join('') + '</div>';
+    } else {
+      h += '<p class="phu" style="margin:10px 0 0;font-size:13px">Hiện chưa có đề nào đang mở. Em vào luyện lại đề cũ nhé!</p>';
+    }
+    h += '</section>';
+
+    h += '<section class="the" style="margin:0"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
+      '<h2 class="tieu-khoi" style="margin:0">📚 Tài liệu mới</h2>' +
+      '<a class="hub-go" id="news-all-tl" style="color:var(--tim);margin:0" ' + attrLink_(lTailieu) + '>Kho tài liệu →</a></div>';
+    if (tlMoi.length) {
+      h += '<div class="news-list">' + tlMoi.map(function (x) {
+        const dd = x.dinhDang === 'pdf' ? 'PDF' : (x.dinhDang === 'ppt' ? 'SLIDE' : (x.dinhDang === 'doc' ? 'WORD' : 'FILE'));
+        const lFile = x.fileId ? linkTrang('tailieu', { cfg: cfg, webUrl: r.webUrl, laFull: laFull, query: '?xem=' + encodeURIComponent(x.fileId) }) : lTailieu;
+        return '<a class="news-item" data-file-id="' + esc(x.fileId || '') + '" ' + attrLink_(lFile) + ' title="' + esc(x.ten) + '">' +
+          '<div class="tl-ic ' + esc(x.dinhDang) + '" aria-hidden="true">' + dd + '</div>' +
+          '<div style="min-width:0;flex:1"><b>' + esc(tenDep(x.ten)) + '</b><span class="phu">' + esc([x.loai, x.thuMuc].filter(Boolean).join(' · ')) + '</span></div></a>';
+      }).join('') + '</div>';
+    } else {
+      h += '<p class="phu" style="margin:10px 0 0;font-size:13px">Chưa có tài liệu nào.</p>';
+    }
+    h += '</section></div>';
+    return h;
+  }
+
+  function veKhungHome(r) {
+    curHomeData = r || {};
+    const cfg = curHomeData.caiDatTrang || {};
+    document.getElementById('site-title').textContent = 'Hóa học 10 · Thầy Hoàng';
+
+    const opt = { cfg: cfg, webUrl: curHomeData.webUrl, laFull: laFull };
+    const lBtvn = linkTrang('btvn', opt);
+    const lTailieu = linkTrang('tailieu', opt);
+    const lGame = linkTrang('trochoi', opt);
+    const lLab = linkTrang('thinghiem', opt);
+    const lAdmin = linkTrang('admin', opt);
 
     let h = '<div class="hero-mascot" id="hero-mascot" title="Chạm vào Thầy Hoàng để đổi câu nhắc &amp; nhận cổ vũ!">' +
       '<div class="hm-side l">' + veMascot({ cls: 'hm-mascot-img', alt: 'Thầy Hoàng CaFe Hóa 10' }) + '</div>' +
       '<div class="hm-mid">' +
         '<div class="hm-kicker"><span class="hm-star">✦ </span>KẾT NỐI TRI THỨC · HÓA HỌC 10<span class="hm-star"> ✦</span></div>' +
-        '<h1>' + esc(cfg.tieuDeTrang || 'Học tốt – Thi tốt – Hóa thật giỏi!') + '</h1>' +
-        '<p class="hm-sub">' + esc(cfg.phuDeTrang || 'Cố lên nào! Cùng Thầy Hoàng chinh phục Hóa 10') + '</p>' +
+        '<h1 id="hm-title">' + esc(cfg.tieuDeTrang || 'Học tốt – Thi tốt – Hóa thật giỏi!') + '</h1>' +
+        '<p class="hm-sub" id="hm-sub">' + esc(cfg.phuDeTrang || 'Cố lên nào! Cùng Thầy Hoàng chinh phục Hóa 10') + '</p>' +
         '<div class="hm-quote" id="hm-quote-txt"><b>☕ CaFe Hóa 10:</b> <span>Ca (Z=20) + Fe (Z=26) = CaFe nạp năng lượng học Hóa!</span></div>' +
         '<div class="hm-tags">' +
           '<span class="hm-hint">✨ Chạm vào thầy để đổi mẹo Hóa 10</span>' +
@@ -155,32 +235,32 @@
       '<div class="hm-side r">' + SVG_NGUYEN_TU + '</div>' +
     '</div>';
 
-    if (cfg.thongBao) {
-      h += '<div class="thongbao info" style="margin:0 0 14px">' + ICONS.tt + '<div><b>📢 Thông báo từ Thầy Hoàng:</b><div style="margin-top:2px">' + md(cfg.thongBao) + '</div></div></div>';
-    }
+    h += '<div id="home-tb-slot">' +
+      (cfg.thongBao ? '<div class="thongbao info" style="margin:0 0 14px">' + ICONS.tt + '<div><b>📢 Thông báo từ Thầy Hoàng:</b><div style="margin-top:2px">' + md(cfg.thongBao) + '</div></div></div>' : '') +
+    '</div>';
 
     h += '<div class="hub-grid">' +
-      '<a class="hub-card" href="' + esc(lBtvn.href) + '" target="' + lBtvn.target + '">' +
+      '<a class="hub-card" id="hub-btvn" ' + attrLink_(lBtvn) + '>' +
         '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
           '<div class="hub-ic do">' + ICONS.binh + '</div>' +
-          '<span class="chip chinh">' + (r.soDeDangMo ? r.soDeDangMo + ' đề đang mở' : 'Luyện tập') + '</span>' +
+          '<span class="chip chinh" id="chip-so-de">' + (curHomeData.soDeDangMo ? curHomeData.soDeDangMo + ' đề đang mở' : 'Luyện tập') + '</span>' +
         '</div>' +
         '<b style="font-size:17px">Bài tập về nhà</b>' +
         '<span class="phu" style="font-size:13px">Làm bài trắc nghiệm, đúng/sai, trả lời ngắn, tự luyện câu sai &amp; xem tiến bộ.</span>' +
         '<span class="hub-go" style="color:var(--do)">Vào làm bài →</span>' +
       '</a>' +
 
-      '<a class="hub-card" href="' + esc(lTailieu.href) + '" target="' + lTailieu.target + '">' +
+      '<a class="hub-card" id="hub-tailieu" ' + attrLink_(lTailieu) + '>' +
         '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
           '<div class="hub-ic tim">' + ICONS.doc + '</div>' +
-          '<span class="chip tim">' + (r.soTaiLieu != null ? r.soTaiLieu + ' tài liệu' : 'Slide · Phiếu · Đề') + '</span>' +
+          '<span class="chip tim" id="chip-so-tl">' + (curHomeData.soTaiLieu != null ? curHomeData.soTaiLieu + ' tài liệu' : 'Slide · Phiếu · Đề') + '</span>' +
         '</div>' +
         '<b style="font-size:17px">Kho tài liệu Hóa 10</b>' +
         '<span class="phu" style="font-size:13px">Slide bài giảng, phiếu bài tập, đề ôn tập và đáp án chi tiết theo từng buổi.</span>' +
         '<span class="hub-go" style="color:var(--tim)">Mở kho tài liệu →</span>' +
       '</a>' +
 
-      '<a class="hub-card" href="' + esc(lGame.href) + '" target="' + lGame.target + '">' +
+      '<a class="hub-card" id="hub-game" ' + attrLink_(lGame) + '>' +
         '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
           '<div class="hub-ic xanh">' + ICONS.game + '</div>' +
           '<span class="chip ok">3 Game Hóa 10</span>' +
@@ -190,7 +270,7 @@
         '<span class="hub-go" style="color:var(--ok)">Vào trò chơi →</span>' +
       '</a>' +
 
-      '<a class="hub-card" href="' + esc(lLab.href) + '" target="' + lLab.target + '">' +
+      '<a class="hub-card" id="hub-lab" ' + attrLink_(lLab) + '>' +
         '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
           '<div class="hub-ic sky">' + ICONS.lab + '</div>' +
           '<span class="chip sky">Theo bài SGK</span>' +
@@ -201,55 +281,16 @@
       '</a>' +
     '</div>';
 
-    // Bảng tin: đề đang mở + tài liệu mới nhất (deep-link thẳng vào đề / file cụ thể)
-    const deMo = Array.isArray(r.deMo) ? r.deMo : [];
-    const tlMoi = Array.isArray(r.taiLieuMoi) ? r.taiLieuMoi : [];
-    if (r._tam) {
-      // Lần đầu (chưa có cache): giữ chỗ bảng tin trong lúc chờ API, phần còn lại của trang đã hiện ngay
-      h += '<div class="home-news">' + skelCards(2) + '</div>';
-    } else if (deMo.length || tlMoi.length) {
-      h += '<div class="home-news">';
-      h += '<section class="the" style="margin:0"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
-          '<h2 class="tieu-khoi" style="margin:0">📝 Đề đang mở</h2>' +
-          '<a class="hub-go" style="color:var(--do);margin:0" href="' + esc(lBtvn.href) + '" target="' + lBtvn.target + '">Tất cả →</a></div>';
-      if (deMo.length) {
-        h += '<div class="news-list">' + deMo.map(function (d) {
-          const cl = conLai(d.han);
-          const lDe = d.id ? linkTrang('btvn', { cfg: cfg, webUrl: r.webUrl, laFull: laFull, query: '?de=' + encodeURIComponent(d.id) }) : lBtvn;
-          return '<a class="news-item" href="' + esc(lDe.href) + '" target="' + lDe.target + '">' +
-            '<div class="hub-ic do" style="width:34px;height:34px;border-radius:10px">' + ICONS.binh + '</div>' +
-            '<div style="min-width:0;flex:1"><b>' + esc(d.ten) + '</b><span class="phu">' + (d.soCau ? d.soCau + ' câu · ' : '') + 'Hạn ' + hanNgan(d.han) + '</span></div>' +
-            '<span class="news-han' + (cl.gap ? ' gap' : '') + '">' + cl.txt + '</span></a>';
-        }).join('') + '</div>';
-      } else {
-        h += '<p class="phu" style="margin:10px 0 0;font-size:13px">Hiện chưa có đề nào đang mở. Em vào luyện lại đề cũ nhé!</p>';
-      }
-      h += '</section>';
-      h += '<section class="the" style="margin:0"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
-          '<h2 class="tieu-khoi" style="margin:0">📚 Tài liệu mới</h2>' +
-          '<a class="hub-go" style="color:var(--tim);margin:0" href="' + esc(lTailieu.href) + '" target="' + lTailieu.target + '">Kho tài liệu →</a></div>';
-      if (tlMoi.length) {
-        h += '<div class="news-list">' + tlMoi.map(function (x) {
-          const dd = x.dinhDang === 'pdf' ? 'PDF' : (x.dinhDang === 'ppt' ? 'SLIDE' : (x.dinhDang === 'doc' ? 'WORD' : 'FILE'));
-          const lFile = x.fileId ? linkTrang('tailieu', { cfg: cfg, webUrl: r.webUrl, laFull: laFull, query: '?xem=' + encodeURIComponent(x.fileId) }) : lTailieu;
-          return '<a class="news-item" href="' + esc(lFile.href) + '" target="' + lFile.target + '" title="' + esc(x.ten) + '">' +
-            '<div class="tl-ic ' + esc(x.dinhDang) + '" aria-hidden="true">' + dd + '</div>' +
-            '<div style="min-width:0;flex:1"><b>' + esc(tenDep(x.ten)) + '</b><span class="phu">' + esc([x.loai, x.thuMuc].filter(Boolean).join(' · ')) + '</span></div></a>';
-        }).join('') + '</div>';
-      } else {
-        h += '<p class="phu" style="margin:10px 0 0;font-size:13px">Chưa có tài liệu nào.</p>';
-      }
-      h += '</section></div>';
-    }
+    h += '<div id="home-news-slot">' + renderBangTinHtml_(curHomeData) + '</div>';
 
-    // Dải Poster 7 Chương SGK Hóa 10 + Flashcard Lật 3D
+    // Dải Poster 7 Chương SGK Hóa 10 (cuộn ngang mượt có snap trên điện thoại)
     h += '<div class="sec-head">' +
       '<h2>🗺️ Khám phá 7 Chương Hóa học 10</h2>' +
       '<span class="phu">Bấm vào chương để mở thẳng học liệu của chương đó</span>' +
-    '</div><div class="ch-strip">';
+    '</div><div class="ch-strip h-carousel">';
     CHUONG_POSTERS.forEach(function (c) {
-      const lCh = linkTrang('tailieu', { cfg: cfg, webUrl: r.webUrl, laFull: laFull, query: '?bai=' + c.id });
-      h += '<a class="ch-card ' + c.cls + '" href="' + esc(lCh.href) + '" target="' + lCh.target + '">' +
+      const lCh = linkTrang('tailieu', { cfg: cfg, webUrl: curHomeData.webUrl, laFull: laFull, query: '?bai=' + c.id });
+      h += '<a class="ch-card ' + c.cls + '" data-ch-id="' + esc(c.id) + '" ' + attrLink_(lCh) + '>' +
         '<div style="display:flex;justify-content:space-between;align-items:center"><span class="ch-num">' + esc(c.so) + '</span><span class="ch-ic" aria-hidden="true">' + c.ic + '</span></div>' +
         '<b>' + esc(c.ten) + '</b>' +
         '<span class="ch-sub">' + esc(c.sub) + ' →</span>' +
@@ -257,30 +298,29 @@
     });
     h += '</div>';
 
-    // Flashcard lật 3D
     h += '<div id="fc-slot" style="margin-top:16px"></div>';
-    // Gallery Sắc màu Hóa học 10
     h += '<div id="gallery-slot"></div>';
-
     h += '<div id="slogan-slot"></div>';
     h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px">' +
       '<span class="phu" style="font-size:12px">💡 Mẹo: Bấm <b>🧮 Casio</b> (hoặc Alt+P trên máy tính) để mở nhanh Casio Hóa học, Danh pháp IUPAC &amp; Công thức.</span>' +
-      '<a class="top-pill" href="' + esc(lAdmin.href) + '" target="' + lAdmin.target + '" rel="noopener">Khu vực giáo viên →</a>' +
+      '<a class="top-pill" id="btn-admin-link" ' + attrLink_(lAdmin) + '>Khu vực giáo viên →</a>' +
     '</div>';
 
     app.innerHTML = h;
+    daVeKhung = true;
+    capNhatLinksHome();
     ganBungCoVu(document.getElementById('hero-mascot'));
     kichHoatMascot(app);
     renderGalleryHoa10(document.getElementById('gallery-slot'));
     renderSlogan(document.getElementById('slogan-slot'));
 
-    // Khởi tạo Flashcard 3D
+    // Khởi tạo Flashcard 3D (hỗ trợ cả click/chạm và phím Enter/Space)
     (function () {
       const slot = document.getElementById('fc-slot');
       if (!slot) return;
       let fIdx = Math.floor(Math.random() * FLASHCARDS.length);
       let daLat = false;
-      function veFC() {
+      function veFC(giuFocus) {
         const f = FLASHCARDS[fIdx];
         slot.innerHTML = '<div class="fc-wrap"><div class="fc-box' + (daLat ? ' lat' : '') + '" id="fc-card" role="button" tabindex="0" aria-expanded="' + daLat + '">' +
           '<div class="fc-top">' +
@@ -296,34 +336,79 @@
         '</div></div>';
         const card = document.getElementById('fc-card');
         const next = document.getElementById('fc-next');
-        if (card) card.onclick = function (e) {
-          if (e.target && e.target.id === 'fc-next') return;
-          daLat = !daLat;
-          veFC();
-        };
+        if (card) {
+          card.onclick = function (e) {
+            if (e.target && e.target.id === 'fc-next') return;
+            daLat = !daLat;
+            veFC(false);
+          };
+          card.onkeydown = function (e) {
+            if (e.target && e.target.id === 'fc-next') return;
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              daLat = !daLat;
+              veFC(true);
+            }
+          };
+          if (giuFocus) card.focus();
+        }
         if (next) next.onclick = function (e) {
           e.stopPropagation();
           fIdx = (fIdx + 1) % FLASHCARDS.length;
           daLat = false;
-          veFC();
+          veFC(false);
         };
       }
-      veFC();
+      veFC(false);
     })();
   }
 
+  // Cập nhật êm dữ liệu mới từ API mà không ghi đè lại toàn bộ app.innerHTML (không nháy animation, giữ nguyên Flashcard đang xem)
+  function capNhatDongHome(r) {
+    if (!daVeKhung) { veKhungHome(r); return; }
+    curHomeData = r || {};
+    const cfg = curHomeData.caiDatTrang || {};
+    const tEl = document.getElementById('hm-title');
+    const sEl = document.getElementById('hm-sub');
+    const tieuDeMoi = cfg.tieuDeTrang || 'Học tốt – Thi tốt – Hóa thật giỏi!';
+    const phuDeMoi = cfg.phuDeTrang || 'Cố lên nào! Cùng Thầy Hoàng chinh phục Hóa 10';
+    if (tEl && tEl.textContent !== tieuDeMoi) tEl.textContent = tieuDeMoi;
+    if (sEl && sEl.textContent !== phuDeMoi) sEl.textContent = phuDeMoi;
+
+    const tbSlot = document.getElementById('home-tb-slot');
+    if (tbSlot) {
+      tbSlot.innerHTML = cfg.thongBao
+        ? '<div class="thongbao info" style="margin:0 0 14px">' + ICONS.tt + '<div><b>📢 Thông báo từ Thầy Hoàng:</b><div style="margin-top:2px">' + md(cfg.thongBao) + '</div></div></div>'
+        : '';
+    }
+    const chipDe = document.getElementById('chip-so-de');
+    if (chipDe) chipDe.textContent = curHomeData.soDeDangMo ? (curHomeData.soDeDangMo + ' đề đang mở') : 'Luyện tập';
+    const chipTl = document.getElementById('chip-so-tl');
+    if (chipTl) chipTl.textContent = curHomeData.soTaiLieu != null ? (curHomeData.soTaiLieu + ' tài liệu') : 'Slide · Phiếu · Đề';
+
+    const newsSlot = document.getElementById('home-news-slot');
+    if (newsSlot) newsSlot.innerHTML = renderBangTinHtml_(curHomeData);
+
+    capNhatLinksHome();
+  }
+
   // Hiển thị tức thì 0ms từ cache nếu đã có, hoặc vẽ khung mặc định ngay lập tức
-  ganThanhDieuHuongHS('home', {});
-  const cachedHome = docCacheUI('home');
-  // Có cache → vẽ bản cũ ngay; chưa có → vẽ ngay phần cố định (hero, 4 thẻ, 7 chương, flashcard), chỉ bảng tin chờ API
-  veHome(cachedHome || { _tam: true, webUrl: window.H10.GAS_EXEC_URL });
+  veKhungHome(curHomeData);
+
+  getLocation(function (l) {
+    const moi = !!(l && l.parameter && l.parameter.full);
+    if (moi !== laFull) {
+      laFull = moi;
+      capNhatLinksHome();
+    }
+  });
 
   api('homeKhoiDong').then(function (r) {
     ghiCacheUI('home', r);
-    veHome(r);
+    capNhatDongHome(r);
   }).catch(function (e) {
     if (cachedHome) return;
-    const tin = app.querySelector('.home-news');
+    const tin = document.getElementById('home-news-slot');
     const loi = '<div class="thongbao loi" style="grid-column:1/-1">Chưa tải được đề &amp; tài liệu mới: ' + esc(e.message) + '</div>';
     if (tin) tin.innerHTML = loi; else app.insertAdjacentHTML('afterbegin', loi);
   });
