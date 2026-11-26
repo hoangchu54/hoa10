@@ -1,0 +1,1198 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thí nghiệm bắn tia α của Rutherford 3D — Hóa 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#060911;
+    --the:#0e1523;
+    --vien:rgba(148,163,184,.16);
+    --chu:#e8eef7;
+    --phu:#94a3b8;
+    --tim:#7aa2f7;
+    --gold:#eab308;
+    --zns:#34d399;
+    --reb:#fb7185;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--nen);color:var(--chu);font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;overflow:hidden;user-select:none}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 378px;height:100dvh}
+  .stage{position:relative;min-height:0;touch-action:none;background:radial-gradient(120% 90% at 50% 10%,#111c30 0%,#080d18 58%,#04070d 100%);overflow:hidden}
+  #cv{display:block;width:100%;height:100%;cursor:grab}
+  #cv:active{cursor:grabbing}
+
+  .hud{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;z-index:3}
+  .hud-left,.hud-right{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:rgba(9,13,24,.84);border:1px solid var(--vien);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.42)}
+  .chip i{display:inline-block;width:10px;height:10px;border-radius:50%}
+  .chip b{color:#fde68a;font-weight:800}
+  .hud-btn{pointer-events:auto;cursor:pointer;min-height:34px;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(15,21,36,.88);border:1px solid var(--vien);color:var(--chu);transition:.15s}
+  .hud-btn:hover{border-color:rgba(255,255,255,.35);transform:translateY(-1px)}
+  .hud-btn.on{background:linear-gradient(90deg,#0f766e,#059669);border-color:#6ee7b7;color:#fff}
+
+  .cam-bar{position:absolute;left:14px;bottom:46px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+  .hint-bar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(9,13,24,.80);border:1px solid var(--vien);border-radius:99px;padding:6px 14px;font-size:11.5px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
+  .hint-bar b{color:#f8fafc}
+
+  .side{background:var(--the);border-left:1px solid var(--vien);padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:11px}
+  h1{font-size:16.2px;margin:0;line-height:1.32}
+  .tag{display:inline-block;background:rgba(234,179,8,.18);color:#fde047;border-radius:99px;padding:2px 10px;font-size:11px;font-weight:800;margin-bottom:4px}
+
+  .mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:rgba(0,0,0,.32);padding:4px;border-radius:11px;border:1px solid var(--vien)}
+  .mode-tabs button{min-height:40px;padding:6px 6px;border:0;border-radius:8px;font-size:11.8px;background:transparent;color:var(--phu);line-height:1.25}
+  .mode-tabs button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);color:#fff;box-shadow:0 4px 12px rgba(109,40,217,.36)}
+
+  .box{background:rgba(255,255,255,.036);border:1px solid var(--vien);border-radius:13px;padding:10px 12px}
+  .box h3{margin:0 0 8px;font-size:11.2px;letter-spacing:.06em;text-transform:uppercase;color:var(--tim);display:flex;justify-content:space-between;align-items:center}
+
+  .seg{display:flex;gap:5px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:72px}
+  button{font:inherit;font-weight:700;font-size:12.1px;border:1px solid var(--vien);background:rgba(255,255,255,.055);color:var(--chu);border-radius:10px;padding:7px 8px;min-height:38px;cursor:pointer;transition:.15s}
+  button:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.28)}
+  button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);border-color:rgba(255,255,255,.32);color:#fff}
+  button .sub{display:block;font-size:10px;font-weight:600;color:#cbd5e1;opacity:.85;margin-top:1px}
+
+  .chinh{width:100%;background:linear-gradient(90deg,#d97706,#dc2626);border:0;color:#fff;font-size:12.8px;margin-top:7px;box-shadow:0 6px 16px rgba(217,119,6,.28)}
+  .chinh:hover{filter:brightness(1.08)}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+  .stat-card{background:rgba(0,0,0,.28);border:1px solid var(--vien);border-radius:10px;padding:7px 9px}
+  .stat-card span{display:block;font-size:10.4px;color:var(--phu)}
+  .stat-card strong{font-size:16px;font-weight:800;display:inline-block;margin-top:2px}
+  .stat-card em{font-style:normal;font-size:11px;color:var(--phu);margin-left:4px}
+  .c-total strong{color:#f8fafc}
+  .c-straight strong{color:#34d399}
+  .c-deflect strong{color:#fbbf24}
+  .c-rebound strong{color:#fb7185}
+
+  .slider-row{margin-top:8px}
+  .slider-head{display:flex;justify-content:space-between;font-size:11.8px;margin-bottom:2px}
+  .slider-head b{color:#7dd3fc}
+  input[type=range]{width:100%;accent-color:var(--tim);cursor:pointer}
+
+  .kq{font-size:12.3px;line-height:1.56;color:#cbd5e1}
+  .kq b{color:#bae6fd}
+  .kq .g{color:#fde047;font-weight:800}
+  .kq .r{color:#fda4af;font-weight:800}
+  .q{background:rgba(34,197,94,.09);border-color:rgba(34,197,94,.32)}
+  .q h3{color:#86efac}
+
+  .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--phu);background:var(--nen);z-index:10}
+
+  @media (max-width:860px){
+    html,body{overflow:auto}
+    .wrap{grid-template-columns:1fr;grid-template-rows:58dvh auto;height:auto}
+    .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
+    .cam-bar{bottom:10px}
+    .hint-bar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="hud">
+      <div class="hud-left">
+        <span class="chip"><i style="background:var(--gold);box-shadow:0 0 7px var(--gold)"></i>Hạt α (He²⁺)</span>
+        <span class="chip"><i style="background:var(--zns);box-shadow:0 0 7px var(--zns)"></i>Chớp sáng ZnS</span>
+        <span class="chip"><i style="background:var(--reb);box-shadow:0 0 7px var(--reb)"></i>Bật ngược (&gt;135°)</span>
+        <span class="chip">⚛️ Mô hình: <b id="hudModel">Rutherford (1911)</b></span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn on" id="btnEmit" title="Bật/tắt nguồn tia α">▶ Chùm tia α</button>
+        <button class="hud-btn on" id="btnSound" title="Bật/tắt âm thanh Geiger">🔊</button>
+      </div>
+    </div>
+
+    <div class="cam-bar">
+      <button class="hud-btn" data-cam="iso">🎥 Toàn cảnh</button>
+      <button class="hud-btn" data-cam="top">🔭 Nhìn từ trên xuống</button>
+      <button class="hud-btn" data-cam="foil">🔎 Cận cảnh lá vàng / hạt nhân</button>
+    </div>
+
+    <div class="hint-bar" id="hint">🖱️ Kéo xoay 360° · Cuộn để zoom · Chuyển sang <b>🔬 Phóng đại nguyên tử</b> để thấy lực đẩy Coulomb làm hạt α bẻ cong &amp; bật ngược!</div>
+    <div class="fallback" id="fb">Thiết bị chưa bật WebGL hoặc không nạp được Three.js nên không hiển thị được mô hình 3D.</div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <span class="tag">Bài 1 · Thành phần của nguyên tử · SGK Hóa 10</span>
+      <h1>Thí nghiệm bắn tia α của Rutherford 3D (1911)</h1>
+    </div>
+
+    <div class="mode-tabs" id="scaleTabs">
+      <button class="on" data-scale="macro">🔭 Góc vĩ mô<br><span style="font-size:10px;opacity:.85">Màn ZnS &amp; Lá vàng</span></button>
+      <button data-scale="micro">🔬 Phóng đại nguyên tử<br><span style="font-size:10px;opacity:.85">Hạt nhân Au vs Đám mây e⁻</span></button>
+    </div>
+
+    <div class="box">
+      <h3>Mô hình cấu tạo nguyên tử</h3>
+      <div class="seg" id="modelSeg">
+        <button data-model="rutherford" class="on">Hạt nhân Rutherford<span class="sub">Hạt nhân nhỏ đặc (+)</span></button>
+        <button data-model="thomson">Bánh mận Thomson<span class="sub">Giả thuyết cũ</span></button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3><span>Bộ đếm hạt α thời gian thực</span> <button id="btnResetStat" style="min-height:24px;padding:2px 8px;font-size:10.5px;border-radius:7px">↺ Đặt lại</button></h3>
+      <div class="stat-grid">
+        <div class="stat-card c-total"><span>Tổng hạt đã bắn</span><strong id="stTotal">0</strong></div>
+        <div class="stat-card c-straight"><span>Xuyên thẳng (&lt;15°)</span><strong id="stStraight">0</strong><em id="pStraight">0%</em></div>
+        <div class="stat-card c-deflect"><span>Lệch góc (15°–135°)</span><strong id="stDeflect">0</strong><em id="pDeflect">0%</em></div>
+        <div class="stat-card c-rebound"><span>Bật ngược (&gt;135°)</span><strong id="stRebound">0</strong><em id="pRebound">0%</em></div>
+      </div>
+      <button class="chinh" id="btnHeadOn">🎯 Bắn thử 1 hạt α trực diện hạt nhân!</button>
+    </div>
+
+    <div class="box">
+      <h3>Thông số thí nghiệm</h3>
+      <div style="font-size:11.6px;color:var(--phu);margin-bottom:5px">Kim loại làm lá mỏng (Điện tích hạt nhân Z):</div>
+      <div class="seg" id="metalSeg">
+        <button data-metal="Al">Al<span class="sub">Z = 13</span></button>
+        <button data-metal="Cu">Cu<span class="sub">Z = 29</span></button>
+        <button data-metal="Au" class="on">Au (Vàng)<span class="sub">Z = 79</span></button>
+      </div>
+      <div class="slider-row">
+        <div class="slider-head"><span>Cường độ chùm tia α</span><b id="rateTxt">Trung bình</b></div>
+        <input type="range" id="rateRange" min="1" max="10" step="1" value="6">
+      </div>
+      <div class="slider-row">
+        <div class="slider-head"><span>Tốc độ thời gian</span><b id="speedTxt">1.0×</b></div>
+        <input type="range" id="speedRange" min="0.25" max="1.8" step="0.05" value="1.0">
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>Giải thích hiện tượng</h3>
+      <div class="kq" id="explainBox"></div>
+    </div>
+
+    <div class="box q">
+      <h3>Câu hỏi tự kiểm tra chuẩn SGK</h3>
+      <div class="kq">1. Vì sao phần lớn hạt α (~96%) đi xuyên thẳng qua lá vàng mỏng mà không đổi hướng?<br>2. So sánh kết quả khi chọn <b>Bánh mận Thomson</b> với <b>Hạt nhân Rutherford</b>: hiện tượng nào bác bỏ hoàn toàn mô hình Thomson?</div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function loadThreeAndBoot() {
+  var MIRRORS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+    'https://unpkg.com/three@0.128.0/build/three.min.js'
+  ];
+  var idx = 0;
+  function fail() { document.getElementById('fb').style.display = 'flex'; }
+  function next() {
+    if (window.THREE && window.THREE.WebGLRenderer) { bootRutherfordApp(window.THREE); return; }
+    if (idx >= MIRRORS.length) { fail(); return; }
+    var s = document.createElement('script');
+    s.src = MIRRORS[idx++];
+    s.async = true;
+    s.onload = function () {
+      if (window.THREE && window.THREE.WebGLRenderer) bootRutherfordApp(window.THREE);
+      else next();
+    };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+
+function bootRutherfordApp(THREE) {
+  'use strict';
+  const $ = function (id) { return document.getElementById(id); };
+  function srgbCol(hex) { return new THREE.Color(hex).convertSRGBToLinear(); }
+
+  /* ==================== WEB AUDIO: GEIGER / SCINTILLATION SOFT CLICKS ==================== */
+  let soundOn = true, audioCtx = null, lastClickMs = 0;
+  function playGeiger(kind) {
+    if (!soundOn) return;
+    const nowMs = performance.now();
+    if (kind === 'normal' && nowMs - lastClickMs < 65) return;
+    lastClickMs = nowMs;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const t0 = audioCtx.currentTime;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      if (kind === 'rebound') {
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(980, t0);
+        o.frequency.exponentialRampToValueAtTime(340, t0 + 0.12);
+        g.gain.setValueAtTime(0.06, t0);
+        g.gain.exponentialRampToValueAtTime(0.0008, t0 + 0.13);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(t0); o.stop(t0 + 0.14);
+      } else if (kind === 'deflect') {
+        o.type = 'sine';
+        o.frequency.setValueAtTime(760 + Math.random() * 120, t0);
+        o.frequency.exponentialRampToValueAtTime(480, t0 + 0.05);
+        g.gain.setValueAtTime(0.036, t0);
+        g.gain.exponentialRampToValueAtTime(0.0008, t0 + 0.055);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(t0); o.stop(t0 + 0.06);
+      } else {
+        // Subtle crisp Geiger tick
+        o.type = 'sine';
+        o.frequency.setValueAtTime(1450 + Math.random() * 300, t0);
+        o.frequency.exponentialRampToValueAtTime(420, t0 + 0.018);
+        g.gain.setValueAtTime(0.018, t0);
+        g.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.02);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(t0); o.stop(t0 + 0.024);
+      }
+    } catch (e) {}
+  }
+
+  /* ==================== RENDERER, SCENE, STUDIO IBL ==================== */
+  const stage = $('stage'), cv = $('cv');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' });
+  } catch (e) {
+    $('fb').style.display = 'flex';
+    return;
+  }
+  const isLow = (window.innerWidth < 720) || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+  renderer.setPixelRatio(Math.min(isLow ? 1.5 : 2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
+
+  const BG_HEX = 0x050810;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(BG_HEX);
+
+  (function buildEnvMap() {
+    if (!THREE.PMREMGenerator) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const es = new THREE.Scene();
+    es.background = new THREE.Color(0x0a0f1c);
+    const sTop = new THREE.Mesh(new THREE.PlaneGeometry(16, 7), new THREE.MeshBasicMaterial({ color: 0xb0bdd0, side: THREE.DoubleSide }));
+    sTop.position.set(0, 9, 2); sTop.lookAt(0, 0, 0); es.add(sTop);
+    const sL = new THREE.Mesh(new THREE.PlaneGeometry(7, 12), new THREE.MeshBasicMaterial({ color: 0x7b93b8, side: THREE.DoubleSide }));
+    sL.position.set(-10, 3, 2); sL.lookAt(0, 0, 0); es.add(sL);
+    const sR = new THREE.Mesh(new THREE.PlaneGeometry(7, 12), new THREE.MeshBasicMaterial({ color: 0x99876d, side: THREE.DoubleSide }));
+    sR.position.set(10, 3, 2); sR.lookAt(0, 0, 0); es.add(sR);
+    scene.environment = pmrem.fromScene(es, 0.06).texture;
+    pmrem.dispose();
+  })();
+
+  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 140);
+  scene.add(new THREE.HemisphereLight(0xdbeafe, 0x0b1120, 0.65));
+  const keyLight = new THREE.DirectionalLight(0xf8fafc, 1.02);
+  keyLight.position.set(6, 11, 8);
+  scene.add(keyLight);
+  const rimLight = new THREE.DirectionalLight(0x94a3b8, 0.42);
+  rimLight.position.set(-8, 4, -7);
+  scene.add(rimLight);
+  const foilGlowLight = new THREE.PointLight(0xeab308, 0.45, 7);
+  foilGlowLight.position.set(0, 1.8, 0);
+  scene.add(foilGlowLight);
+
+  /* ==================== TEXTURES ==================== */
+  function makeTex(w, h, fn) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    fn(c.getContext('2d'), w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  const flashTex = makeTex(128, 128, function (g, w, h) {
+    const gr = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+    gr.addColorStop(0.0, 'rgba(220,255,235,1.0)');
+    gr.addColorStop(0.24, 'rgba(52,211,153,0.85)');
+    gr.addColorStop(0.60, 'rgba(16,185,129,0.22)');
+    gr.addColorStop(1.0, 'rgba(16,185,129,0.0)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  });
+
+  const alphaGlowTex = makeTex(64, 64, function (g, w, h) {
+    const gr = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+    gr.addColorStop(0.0, 'rgba(255,250,210,1.0)');
+    gr.addColorStop(0.32, 'rgba(250,204,21,0.75)');
+    gr.addColorStop(0.70, 'rgba(234,88,12,0.18)');
+    gr.addColorStop(1.0, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  });
+
+  const radBadgeTex = makeTex(256, 256, function (g, w, h) {
+    g.fillStyle = '#1e293b'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#eab308'; g.lineWidth = 10; g.strokeRect(14, 14, w - 28, h - 28);
+    // Radioactive trefoil
+    const cx = w / 2, cy = h / 2 - 14;
+    g.fillStyle = '#eab308';
+    for (let i = 0; i < 3; i++) {
+      const a0 = i * (Math.PI * 2 / 3) - Math.PI / 6;
+      g.beginPath();
+      g.moveTo(cx, cy);
+      g.arc(cx, cy, 62, a0, a0 + Math.PI / 3);
+      g.closePath(); g.fill();
+    }
+    g.beginPath(); g.arc(cx, cy, 22, 0, Math.PI * 2); g.fillStyle = '#1e293b'; g.fill();
+    g.beginPath(); g.arc(cx, cy, 13, 0, Math.PI * 2); g.fillStyle = '#eab308'; g.fill();
+    g.font = '800 30px "Be Vietnam Pro", sans-serif';
+    g.fillStyle = '#fde68a'; g.textAlign = 'center';
+    g.fillText('NGUỒN α (Po)', cx, h - 30);
+  });
+
+  /* ==================== INFINITE DARK-ROOM OPTICAL BENCH FLOOR ==================== */
+  const floorMat = new THREE.ShaderMaterial({
+    uniforms: { uBg: { value: new THREE.Color(BG_HEX) } },
+    vertexShader: `
+      varying vec3 vWorld;
+      void main() {
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorld = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uBg;
+      varying vec3 vWorld;
+      void main() {
+        float d = length(vWorld.xz * vec2(0.145, 0.175));
+        float fade = 1.0 - smoothstep(0.30, 1.06, d);
+        vec2 gr = abs(fract(vWorld.xz * 0.7) - 0.5);
+        float line = (1.0 - smoothstep(0.0, 0.018, min(gr.x, gr.y))) * 0.025;
+        vec3 base = vec3(0.048, 0.060, 0.092) + line;
+        gl_FragColor = vec4(mix(uBg, base, fade), 1.0);
+      }
+    `
+  });
+  const benchFloor = new THREE.Mesh(new THREE.PlaneGeometry(36, 36), floorMat);
+  benchFloor.rotation.x = -Math.PI / 2;
+  benchFloor.position.y = 0;
+  scene.add(benchFloor);
+
+  /* ==================== STATE & METALS ==================== */
+  const METALS = {
+    Al: { name: 'Nhôm (Al)', Z: 13, hex: 0x9ca3af, rough: 0.28, metal: 0.85, scaleForce: 0.34, deflProb: 0.014, rebProb: 0.002 },
+    Cu: { name: 'Đồng (Cu)', Z: 29, hex: 0xc26d3a, rough: 0.25, metal: 0.88, scaleForce: 0.58, deflProb: 0.024, rebProb: 0.005 },
+    Au: { name: 'Vàng (Au)', Z: 79, hex: 0xd4a017, rough: 0.22, metal: 0.92, scaleForce: 1.00, deflProb: 0.042, rebProb: 0.012 }
+  };
+
+  let curScale = 'macro';     // 'macro' | 'micro'
+  let curModel = 'rutherford';// 'rutherford' | 'thomson'
+  let curMetal = 'Au';
+  let emitting = true;
+  let beamRate = 6;
+  let simSpeed = 1.0;
+
+  let cntTotal = 0, cntStraight = 0, cntDeflect = 0, cntRebound = 0;
+  function updateCountersUI() {
+    $('stTotal').textContent = cntTotal;
+    $('stStraight').textContent = cntStraight;
+    $('stDeflect').textContent = cntDeflect;
+    $('stRebound').textContent = cntRebound;
+    const t = Math.max(1, cntTotal);
+    $('pStraight').textContent = ((cntStraight / t) * 100).toFixed(1) + '%';
+    $('pDeflect').textContent  = ((cntDeflect / t) * 100).toFixed(1) + '%';
+    $('pRebound').textContent  = ((cntRebound / t) * 100).toFixed(1) + '%';
+  }
+
+  /* ==================== MODE 1: MACRO APPARATUS GROUP ==================== */
+  const macroGroup = new THREE.Group();
+  scene.add(macroGroup);
+
+  const BEAM_Y = 1.48;
+  const SCREEN_R = 3.55;
+  const SCREEN_H = 1.72;
+
+  // 1) Lead Collimator Box (ExtrudeGeometry beveled) at X = -5.45
+  const leadMat = new THREE.MeshStandardMaterial({ color: srgbCol(0x364152), roughness: 0.44, metalness: 0.65 });
+  const brassMat = new THREE.MeshStandardMaterial({ color: srgbCol(0xb58932), roughness: 0.28, metalness: 0.86 });
+  const darkMetalMat = new THREE.MeshStandardMaterial({ color: srgbCol(0x1e2533), roughness: 0.42, metalness: 0.72 });
+
+  const boxShape = new THREE.Shape();
+  const bw = 0.72, bh = 0.62, br = 0.1;
+  boxShape.moveTo(-bw + br, -bh);
+  boxShape.lineTo(bw - br, -bh);
+  boxShape.quadraticCurveTo(bw, -bh, bw, -bh + br);
+  boxShape.lineTo(bw, bh - br);
+  boxShape.quadraticCurveTo(bw, bh, bw - br, bh);
+  boxShape.lineTo(-bw + br, bh);
+  boxShape.quadraticCurveTo(-bw, bh, -bw, bh - br);
+  boxShape.lineTo(-bw, -bh + br);
+  boxShape.quadraticCurveTo(-bw, -bh, -bw + br, -bh);
+
+  const leadBoxGeo = new THREE.ExtrudeGeometry(boxShape, {
+    depth: 1.12, bevelEnabled: true, bevelThickness: 0.08, bevelSize: 0.07, bevelSegments: 5
+  });
+  leadBoxGeo.center();
+  const leadAssembly = new THREE.Group();
+  leadAssembly.position.set(-5.35, BEAM_Y, 0);
+  macroGroup.add(leadAssembly);
+
+  const leadMesh = new THREE.Mesh(leadBoxGeo, leadMat);
+  leadAssembly.add(leadMesh);
+
+  // Stand pedestal under lead box
+  const leadPed = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.34, BEAM_Y - 0.56, 24), darkMetalMat);
+  leadPed.position.y = -(BEAM_Y * 0.5 + 0.28);
+  leadAssembly.add(leadPed);
+  const leadFoot = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.68, 0.12, 32), darkMetalMat);
+  leadFoot.position.y = -BEAM_Y + 0.06;
+  leadAssembly.add(leadFoot);
+
+  // Brass collimator nozzle pointing +X toward gold foil
+  const barrelPts = [
+    new THREE.Vector2(0.12, 0.0),
+    new THREE.Vector2(0.24, 0.0),
+    new THREE.Vector2(0.24, 0.16),
+    new THREE.Vector2(0.15, 0.22),
+    new THREE.Vector2(0.15, 0.62),
+    new THREE.Vector2(0.19, 0.66),
+    new THREE.Vector2(0.19, 0.74),
+    new THREE.Vector2(0.08, 0.74),
+    new THREE.Vector2(0.08, 0.0)
+  ];
+  const barrel = new THREE.Mesh(new THREE.LatheGeometry(barrelPts, 32), brassMat);
+  barrel.rotation.z = -Math.PI / 2;
+  barrel.position.set(0.68, 0, 0);
+  leadAssembly.add(barrel);
+
+  // Glowing α source core visible inside nozzle
+  const srcGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.075, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xfde047 })
+  );
+  srcGlow.position.set(1.38, 0, 0);
+  leadAssembly.add(srcGlow);
+
+  // Radioactive badge on side of lead box
+  const badgeMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.86, 0.86),
+    new THREE.MeshBasicMaterial({ map: radBadgeTex })
+  );
+  badgeMesh.position.set(0, 0, 0.645);
+  leadAssembly.add(badgeMesh);
+
+  // 2) Circular 360° ZnS Fluorescent Detector Screen with narrow entrance slit at angle = PI (-X side)
+  // Three.js CylinderGeometry angle theta=0 is +Z, theta=PI/2 is +X, theta=3PI/2 is -X!
+  const slitRad = 0.24; // ~13.7 deg opening on -X side
+  const arcStart = -Math.PI / 2 + slitRad * 0.5;
+  const arcLen = Math.PI * 2 - slitRad;
+
+  const znsOuterMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x1a2232), roughness: 0.52, metalness: 0.45, side: THREE.FrontSide
+  });
+  const znsInnerMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x19382e), emissive: srgbCol(0x064e3b), emissiveIntensity: 0.22,
+    roughness: 0.68, metalness: 0.08, side: THREE.BackSide
+  });
+
+  const screenGeo = new THREE.CylinderGeometry(SCREEN_R, SCREEN_R, SCREEN_H, 84, 1, true, arcStart, arcLen);
+  const screenOuter = new THREE.Mesh(screenGeo, znsOuterMat);
+  screenOuter.position.y = BEAM_Y;
+  const screenInner = new THREE.Mesh(
+    new THREE.CylinderGeometry(SCREEN_R - 0.03, SCREEN_R - 0.03, SCREEN_H - 0.04, 84, 1, true, arcStart, arcLen),
+    znsInnerMat
+  );
+  screenInner.position.y = BEAM_Y;
+  macroGroup.add(screenOuter, screenInner);
+
+  // Sleek brass rim rings top & bottom of ZnS screen + base support ring
+  const screenRimGeo = new THREE.TorusGeometry(SCREEN_R, 0.042, 14, 96, arcLen);
+  screenRimGeo.rotateX(Math.PI / 2);
+  const rimTop = new THREE.Mesh(screenRimGeo, brassMat);
+  rimTop.rotation.y = Math.PI - slitRad * 0.5;
+  rimTop.position.y = BEAM_Y + SCREEN_H * 0.5;
+  const rimBot = rimTop.clone();
+  rimBot.position.y = BEAM_Y - SCREEN_H * 0.5;
+  macroGroup.add(rimTop, rimBot);
+
+  // Support legs for ZnS ring
+  [0.7, 2.4, 4.0, 5.5].forEach(function (ang) {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.075, BEAM_Y - SCREEN_H * 0.5, 16), darkMetalMat);
+    leg.position.set(Math.cos(ang) * SCREEN_R, (BEAM_Y - SCREEN_H * 0.5) * 0.5, Math.sin(ang) * SCREEN_R);
+    macroGroup.add(leg);
+  });
+
+  // Base circular scale markings on bench floor beneath screen
+  const degreeTex = makeTex(512, 512, function (g, w, h) {
+    const cx = w / 2, cy = h / 2;
+    g.clearRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(148,163,184,0.28)';
+    g.lineWidth = 3;
+    g.beginPath(); g.arc(cx, cy, 232, 0, Math.PI * 2); g.stroke();
+    g.beginPath(); g.arc(cx, cy, 198, 0, Math.PI * 2); g.stroke();
+    g.font = '700 18px "Be Vietnam Pro", sans-serif';
+    g.fillStyle = 'rgba(148,163,184,0.68)';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    for (let deg = 0; deg < 360; deg += 30) {
+      const a = (deg * Math.PI) / 180;
+      g.beginPath();
+      g.moveTo(cx + Math.cos(a) * 198, cy + Math.sin(a) * 198);
+      g.lineTo(cx + Math.cos(a) * 232, cy + Math.sin(a) * 232);
+      g.stroke();
+      const disp = deg <= 180 ? deg : 360 - deg;
+      g.fillText(disp + '°', cx + Math.cos(a) * 172, cy + Math.sin(a) * 172);
+    }
+  });
+  const degDisc = new THREE.Mesh(
+    new THREE.PlaneGeometry(SCREEN_R * 2.1, SCREEN_R * 2.1),
+    new THREE.MeshBasicMaterial({ map: degreeTex, transparent: true, opacity: 0.72, depthWrite: false })
+  );
+  degDisc.rotation.x = -Math.PI / 2;
+  degDisc.position.y = 0.015;
+  macroGroup.add(degDisc);
+
+  // 3) Center Ultra-Thin Gold Foil Mount
+  const foilMount = new THREE.Group();
+  macroGroup.add(foilMount);
+  const foilStand = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.14, BEAM_Y - 0.66, 20), darkMetalMat);
+  foilStand.position.y = (BEAM_Y - 0.66) * 0.5;
+  const foilBase = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.52, 0.1, 28), darkMetalMat);
+  foilBase.position.y = 0.05;
+  const foilRing = new THREE.Mesh(new THREE.TorusGeometry(0.66, 0.045, 16, 48), brassMat);
+  foilRing.rotation.y = Math.PI / 2;
+  foilRing.position.y = BEAM_Y;
+
+  const foilMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(METALS.Au.hex),
+    roughness: 0.22,
+    metalness: 0.92,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.90
+  });
+  const foilDisc = new THREE.Mesh(new THREE.CircleGeometry(0.63, 44), foilMat);
+  foilDisc.rotation.y = Math.PI / 2;
+  foilDisc.position.y = BEAM_Y;
+  foilMount.add(foilStand, foilBase, foilRing, foilDisc);
+
+  // Subtle incoming beam guide glow
+  const beamGuide = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.032, 0.055, 4.0, 14, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0xfacc15, transparent: true, opacity: 0.14, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
+  );
+  beamGuide.rotation.z = Math.PI / 2;
+  beamGuide.position.set(-2.0, BEAM_Y, 0);
+  macroGroup.add(beamGuide);
+
+  // 4) ZnS Scintillation Flash Pool + Persistent Hit Markers on curved inner wall
+  const MAX_FLASHES = 56;
+  const flashes = [];
+  const flashGroup = new THREE.Group();
+  macroGroup.add(flashGroup);
+  for (let i = 0; i < MAX_FLASHES; i++) {
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: flashTex, color: 0x34d399, transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false
+    }));
+    sp.visible = false;
+    sp.renderOrder = 12;
+    flashGroup.add(sp);
+    flashes.push({ sp, age: 99, maxAge: 1.35, baseScale: 0.42 });
+  }
+  let flashCursor = 0;
+
+  // Persistent faint phosphor impact dots showing angular distribution
+  const MAX_PERSIST = 220;
+  const persistPos = new Float32Array(MAX_PERSIST * 3);
+  const persistGeo = new THREE.BufferGeometry();
+  persistGeo.setAttribute('position', new THREE.BufferAttribute(persistPos, 3));
+  persistGeo.setDrawRange(0, 0);
+  const persistPts = new THREE.Points(persistGeo, new THREE.PointsMaterial({
+    size: 0.16, map: flashTex, color: 0x34d399, transparent: true, opacity: 0.42,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  }));
+  persistPts.renderOrder = 10;
+  macroGroup.add(persistPts);
+  let persistCount = 0;
+
+  function spawnZnSFlash(pos, isRebound, isDeflect) {
+    const f = flashes[flashCursor++ % MAX_FLASHES];
+    f.sp.position.copy(pos);
+    f.sp.material.color.setHex(isRebound ? 0xfb7185 : (isDeflect ? 0x6ee7b7 : 0x34d399));
+    f.sp.material.opacity = 0.96;
+    f.baseScale = isRebound ? 0.72 : (isDeflect ? 0.56 : 0.42);
+    f.sp.scale.set(f.baseScale, f.baseScale, 1);
+    f.sp.visible = true;
+    f.age = 0;
+
+    const idx = persistCount % MAX_PERSIST;
+    persistPos[idx * 3] = pos.x;
+    persistPos[idx * 3 + 1] = pos.y;
+    persistPos[idx * 3 + 2] = pos.z;
+    persistCount++;
+    persistGeo.getAttribute('position').needsUpdate = true;
+    persistGeo.setDrawRange(0, Math.min(persistCount, MAX_PERSIST));
+  }
+
+  // Macro α particles with luminous trails
+  const macroParticles = [];
+  const alphaHeadGeo = new THREE.SphereGeometry(0.055, 10, 10);
+
+  function spawnMacroAlpha(forceRebound) {
+    const m = METALS[curMetal];
+    let scatterDeg = 0;
+    let cat = 'straight';
+
+    if (forceRebound && curModel === 'rutherford') {
+      scatterDeg = 152 + Math.random() * 20;
+      cat = 'rebound';
+    } else if (curModel === 'thomson') {
+      // Plum pudding: diffuse positive charge -> almost zero deflection!
+      scatterDeg = (Math.random() - 0.5) * 3.2;
+      cat = 'straight';
+    } else {
+      const r = Math.random();
+      if (r < m.rebProb) {
+        scatterDeg = 138 + Math.random() * 34;
+        cat = 'rebound';
+      } else if (r < m.rebProb + m.deflProb) {
+        scatterDeg = 16 + Math.pow(Math.random(), 1.5) * 116;
+        cat = 'deflect';
+      } else {
+        scatterDeg = Math.pow(Math.random(), 2.2) * 11.5;
+        cat = 'straight';
+      }
+    }
+
+    const sign = Math.random() < 0.5 ? 1 : -1;
+    const yaw = (scatterDeg * Math.PI / 180) * sign;
+    const pitch = (Math.random() - 0.5) * (cat === 'straight' ? 0.08 : 0.24);
+    const outDir = new THREE.Vector3(
+      Math.cos(yaw) * Math.cos(pitch),
+      Math.sin(pitch),
+      Math.sin(yaw) * Math.cos(pitch)
+    ).normalize();
+
+    const colHex = cat === 'rebound' ? 0xfb7185 : (cat === 'deflect' ? 0xfbbf24 : 0xfde047);
+    const head = new THREE.Mesh(alphaHeadGeo, new THREE.MeshBasicMaterial({ color: colHex }));
+    const yOff = (Math.random() - 0.5) * 0.14;
+    const zOff = (Math.random() - 0.5) * 0.14;
+    head.position.set(-4.05, BEAM_Y + yOff, zOff);
+    macroGroup.add(head);
+
+    const trailPts = new Float32Array(12 * 3);
+    for (let i = 0; i < 12; i++) {
+      trailPts[i * 3] = head.position.x;
+      trailPts[i * 3 + 1] = head.position.y;
+      trailPts[i * 3 + 2] = head.position.z;
+    }
+    const trailGeo = new THREE.BufferGeometry();
+    trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPts, 3));
+    const trail = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({
+      color: colHex, transparent: true, opacity: 0.78
+    }));
+    macroGroup.add(trail);
+
+    macroParticles.push({
+      head, trail, trailPts,
+      phase: 0, // 0: approaching foil, 1: scattered to screen
+      vel: new THREE.Vector3(9.4, 0, 0),
+      outDir,
+      cat,
+      yOff, zOff
+    });
+  }
+
+  /* ==================== MODE 2: ATOMIC MICRO-ZOOM (TRUE COULOMB SCATTERING) ==================== */
+  const microGroup = new THREE.Group();
+  microGroup.visible = false;
+  scene.add(microGroup);
+
+  // Subtle dark lattice guide grid
+  const microLattice = []; // Array of { pos: THREE.Vector3, nucleusMesh, cloudMesh, thomsonMesh }
+  const nucMatR = new THREE.MeshStandardMaterial({
+    color: srgbCol(0xf59e0b), emissive: srgbCol(0xd97706), emissiveIntensity: 0.85, roughness: 0.22, metalness: 0.45
+  });
+  const eCloudBackMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0x38bdf8), roughness: 0.4, metalness: 0.0,
+    transparent: true, opacity: 0.055, side: THREE.BackSide, depthWrite: false
+  });
+  const eCloudFrontMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0x60a5fa), roughness: 0.25, metalness: 0.05,
+    transparent: true, opacity: 0.12, side: THREE.FrontSide, depthWrite: false, clearcoat: 0.25
+  });
+  const thomsonPuddingMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xd97757), roughness: 0.48, metalness: 0.0,
+    transparent: true, opacity: 0.26, depthWrite: false
+  });
+  const elecDotMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa });
+
+  // 2 staggered layers of Gold atoms (5 atoms in X-Z plane at Y = BEAM_Y so orbits are crystal clear from above & iso!)
+  const ATOM_COORDS = [
+    new THREE.Vector3(-0.95, BEAM_Y, -1.85),
+    new THREE.Vector3(-0.95, BEAM_Y,  0.00),
+    new THREE.Vector3(-0.95, BEAM_Y,  1.85),
+    new THREE.Vector3( 1.25, BEAM_Y, -0.95),
+    new THREE.Vector3( 1.25, BEAM_Y,  0.95)
+  ];
+
+  const atomVisualsGroup = new THREE.Group();
+  microGroup.add(atomVisualsGroup);
+
+  const nucGeo = new THREE.SphereGeometry(0.145, 24, 24);
+  const cloudGeoMicro = new THREE.SphereGeometry(0.86, 32, 24);
+  const elecGeo = new THREE.SphereGeometry(0.032, 10, 10);
+
+  ATOM_COORDS.forEach(function (pos) {
+    const holder = new THREE.Group();
+    holder.position.copy(pos);
+    atomVisualsGroup.add(holder);
+
+    // Rutherford core: tiny dense + nucleus + faint huge electron cloud
+    const ruthNode = new THREE.Group();
+    const nuc = new THREE.Mesh(nucGeo, nucMatR);
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: alphaGlowTex, color: 0xf59e0b, transparent: true, opacity: 0.55,
+      blending: THREE.AdditiveBlending, depthWrite: false
+    }));
+    halo.scale.set(0.68, 0.68, 1);
+    const cBack = new THREE.Mesh(cloudGeoMicro, eCloudBackMat); cBack.renderOrder = 1;
+    const cFront = new THREE.Mesh(cloudGeoMicro, eCloudFrontMat); cFront.renderOrder = 9;
+    ruthNode.add(nuc, halo, cBack, cFront);
+
+    // Tiny faint orbiting electrons inside cloud
+    const eSwarm = new THREE.Group();
+    for (let k = 0; k < 10; k++) {
+      const th = Math.random() * Math.PI * 2;
+      const ph = Math.acos(2 * Math.random() - 1);
+      const rr = 0.34 + Math.random() * 0.46;
+      const dot = new THREE.Mesh(elecGeo, elecDotMat);
+      dot.position.set(rr * Math.sin(ph) * Math.cos(th), rr * Math.cos(ph), rr * Math.sin(ph) * Math.sin(th));
+      eSwarm.add(dot);
+    }
+    ruthNode.add(eSwarm);
+    holder.add(ruthNode);
+
+    // Thomson Plum Pudding model: diffuse positive sphere + embedded electrons, NO core!
+    const thomNode = new THREE.Group();
+    const pud = new THREE.Mesh(cloudGeoMicro, thomsonPuddingMat); pud.renderOrder = 2;
+    thomNode.add(pud);
+    for (let k = 0; k < 12; k++) {
+      const th = Math.random() * Math.PI * 2;
+      const ph = Math.acos(2 * Math.random() - 1);
+      const rr = 0.25 + Math.random() * 0.50;
+      const dot = new THREE.Mesh(elecGeo, elecDotMat);
+      dot.position.set(rr * Math.sin(ph) * Math.cos(th), rr * Math.cos(ph), rr * Math.sin(ph) * Math.sin(th));
+      thomNode.add(dot);
+    }
+    thomNode.visible = false;
+    holder.add(thomNode);
+
+    microLattice.push({ pos, ruthNode, thomNode, eSwarm });
+  });
+
+  // Micro α-particles integrating real-time Coulomb acceleration a = k * Z / r^2
+  const microParticles = [];
+  const TRAIL_LEN = 38;
+
+  function spawnMicroAlpha(forceHeadOn) {
+    let z0;
+    if (forceHeadOn) {
+      // Aim directly at center Au nucleus (-0.95, BEAM_Y, 0.0) with microscopic offset for dramatic 172° rebound!
+      z0 = (Math.random() < 0.5 ? 1 : -1) * 0.032;
+    } else {
+      // Uniform beam across foil height [-2.75, +2.75] so true ~96% straight, ~3% deflect, ~1% rebound emerge naturally!
+      z0 = (Math.random() * 2 - 1) * 2.75;
+    }
+    const y0 = BEAM_Y + (forceHeadOn ? 0 : (Math.random() - 0.5) * 0.16);
+    const startPos = new THREE.Vector3(-5.2, y0, z0);
+
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.068, 12, 12), new THREE.MeshBasicMaterial({ color: 0xfde047 }));
+    head.position.copy(startPos);
+    microGroup.add(head);
+
+    const trailPts = new Float32Array(TRAIL_LEN * 3);
+    for (let i = 0; i < TRAIL_LEN; i++) {
+      trailPts[i * 3] = startPos.x;
+      trailPts[i * 3 + 1] = startPos.y;
+      trailPts[i * 3 + 2] = startPos.z;
+    }
+    const trailGeo = new THREE.BufferGeometry();
+    trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPts, 3));
+    const trailMat = new THREE.LineBasicMaterial({ color: 0xfde047, transparent: true, opacity: 0.85 });
+    const trail = new THREE.Line(trailGeo, trailMat);
+    microGroup.add(trail);
+
+    microParticles.push({
+      head, trail, trailPts, trailMat,
+      pos: startPos.clone(),
+      vel: new THREE.Vector3(4.6, 0, 0),
+      counted: false,
+      minDist: 99,
+      flashTriggered: false,
+      age: 0
+    });
+  }
+
+  /* ==================== UI STATE SYNC ==================== */
+  function updateExplanation() {
+    const m = METALS[curMetal];
+    $('hudModel').textContent = curModel === 'rutherford' ? 'Rutherford (1911)' : 'Bánh mận Thomson';
+    if (curModel === 'thomson') {
+      $('explainBox').innerHTML =
+        '<b>Mô hình Bánh mận Thomson (giả thuyết cũ):</b> Điện tích dương phân bố loãng đều khắp quả cầu nguyên tử → lực đẩy rất yếu → <b>100% hạt α đi xuyên thẳng</b>, hoàn toàn <b>không có</b> hạt lệch góc lớn hay bật ngược.<br>→ Kết quả thực nghiệm của Rutherford đã <b>bác bỏ</b> mô hình này!';
+    } else if (curScale === 'macro') {
+      $('explainBox').innerHTML =
+        'Lá <b>' + m.name + ' (Z = ' + m.Z + ')</b> siêu mỏng được bắn phá bởi chùm hạt <span class="g">α (He²⁺)</span>:<br>' +
+        '• <b>Đa số hạt α xuyên thẳng</b> → nguyên tử có cấu tạo rỗng.<br>' +
+        '• <b>Một số ít bị lệch hướng</b> và <span class="r">rất ít hạt bật ngược</span> (tỉ lệ ~1/20.000) → chứng tỏ toàn bộ điện tích dương và hầu hết khối lượng tập trung tại <b>hạt nhân rất nhỏ ở tâm</b>.';
+    } else {
+      $('explainBox').innerHTML =
+        '<b>Chế độ Phóng đại nguyên tử (' + m.name + ', Z = ' + m.Z + '):</b> Lực đẩy tĩnh điện Coulomb <b>F ∝ Z / r²</b> đang tác dụng trực tiếp lên từng hạt α!<br>' +
+        '• Hạt đi qua đám mây e⁻ rỗng → bay thẳng.<br>' +
+        '• Hạt sượt gần hạt nhân → quỹ đạo uốn cong hình <b>hyperbol</b>.<br>' +
+        '• Hạt lao trực diện hạt nhân → <span class="r">dừng lại khoảnh khắc rồi bật ngược!</span>';
+    }
+  }
+
+  function applyModelAndMetal() {
+    const m = METALS[curMetal];
+    foilMat.color.copy(srgbCol(m.hex));
+    foilMat.roughness = m.rough;
+    foilMat.metalness = m.metal;
+    nucMatR.color.copy(srgbCol(m.hex));
+    microLattice.forEach(function (item) {
+      item.ruthNode.visible = (curModel === 'rutherford');
+      item.thomNode.visible = (curModel === 'thomson');
+    });
+    updateExplanation();
+  }
+
+  function clearAllParticles() {
+    macroParticles.forEach(function (p) { macroGroup.remove(p.head); macroGroup.remove(p.trail); p.trail.geometry.dispose(); });
+    macroParticles.length = 0;
+    microParticles.forEach(function (p) { microGroup.remove(p.head); microGroup.remove(p.trail); p.trail.geometry.dispose(); });
+    microParticles.length = 0;
+    flashes.forEach(function (f) { f.sp.visible = false; f.age = 99; });
+    persistCount = 0;
+    persistGeo.setDrawRange(0, 0);
+  }
+
+  /* ==================== SMOOTH INERTIAL CAMERA ==================== */
+  let camTheta = 0.56, camPhi = 1.05, camRadius = 11.4;
+  let tgtTheta = 0.56, tgtPhi = 1.05, tgtRadius = 11.4;
+  let camTarget = new THREE.Vector3(-0.6, BEAM_Y - 0.1, 0);
+  let tgtLook = new THREE.Vector3(-0.6, BEAM_Y - 0.1, 0);
+  let dragging = false, lastX = 0, lastY = 0;
+
+  function setCamPreset(mode) {
+    if (curScale === 'macro') {
+      if (mode === 'iso') { tgtTheta = 0.56; tgtPhi = 1.05; tgtRadius = 11.4; tgtLook.set(-0.6, BEAM_Y - 0.1, 0); }
+      else if (mode === 'top') { tgtTheta = 0.0; tgtPhi = 0.18; tgtRadius = 11.8; tgtLook.set(-0.6, BEAM_Y, 0); }
+      else if (mode === 'foil') { tgtTheta = 0.65; tgtPhi = 1.24; tgtRadius = 5.4; tgtLook.set(0.0, BEAM_Y, 0); }
+    } else {
+      if (mode === 'iso') { tgtTheta = 0.25; tgtPhi = 0.85; tgtRadius = 9.4; tgtLook.set(-0.1, BEAM_Y, 0); }
+      else if (mode === 'top') { tgtTheta = 0.0; tgtPhi = 0.10; tgtRadius = 9.6; tgtLook.set(-0.1, BEAM_Y, 0); }
+      else if (mode === 'foil') { tgtTheta = 0.18; tgtPhi = 0.92; tgtRadius = 5.1; tgtLook.set(-0.95, BEAM_Y, 0); }
+    }
+    playGeiger('deflect');
+  }
+
+  cv.addEventListener('pointerdown', function (e) {
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+    cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    const dx = e.clientX - lastX, dy = e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    tgtTheta -= dx * 0.0072;
+    tgtPhi = Math.max(0.08, Math.min(1.48, tgtPhi - dy * 0.0072));
+  });
+  cv.addEventListener('pointerup', function () { dragging = false; });
+  cv.addEventListener('pointercancel', function () { dragging = false; });
+  cv.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    tgtRadius = Math.max(4.0, Math.min(20.0, tgtRadius + e.deltaY * 0.008));
+  }, { passive: false });
+
+  /* ==================== UI EVENTS ==================== */
+  $('scaleTabs').addEventListener('click', function (e) {
+    const btn = e.target.closest('button[data-scale]');
+    if (!btn) return;
+    curScale = btn.dataset.scale;
+    $('scaleTabs').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    macroGroup.visible = (curScale === 'macro');
+    microGroup.visible = (curScale === 'micro');
+    clearAllParticles();
+    setCamPreset(curScale === 'micro' ? 'top' : 'iso');
+    updateExplanation();
+  });
+
+  $('modelSeg').addEventListener('click', function (e) {
+    const btn = e.target.closest('button[data-model]');
+    if (!btn) return;
+    curModel = btn.dataset.model;
+    $('modelSeg').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    clearAllParticles();
+    cntTotal = cntStraight = cntDeflect = cntRebound = 0;
+    updateCountersUI();
+    applyModelAndMetal();
+    playGeiger('deflect');
+  });
+
+  $('metalSeg').addEventListener('click', function (e) {
+    const btn = e.target.closest('button[data-metal]');
+    if (!btn) return;
+    curMetal = btn.dataset.metal;
+    $('metalSeg').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    applyModelAndMetal();
+    playGeiger('deflect');
+  });
+
+  $('rateRange').addEventListener('input', function (e) {
+    beamRate = parseInt(e.target.value, 10);
+    $('rateTxt').textContent = beamRate <= 3 ? 'Thưa' : (beamRate <= 7 ? 'Trung bình' : 'Dày đặc');
+  });
+
+  $('speedRange').addEventListener('input', function (e) {
+    simSpeed = parseFloat(e.target.value);
+    $('speedTxt').textContent = simSpeed.toFixed(2).replace(/0$/, '') + '×';
+  });
+
+  $('btnHeadOn').addEventListener('click', function () {
+    if (curScale === 'macro') spawnMacroAlpha(true);
+    else spawnMicroAlpha(true);
+    playGeiger('rebound');
+  });
+
+  $('btnResetStat').addEventListener('click', function () {
+    cntTotal = cntStraight = cntDeflect = cntRebound = 0;
+    updateCountersUI();
+    clearAllParticles();
+  });
+
+  $('btnEmit').addEventListener('click', function () {
+    emitting = !emitting;
+    $('btnEmit').classList.toggle('on', emitting);
+    $('btnEmit').textContent = emitting ? '▶ Chùm tia α' : '⏸ Tạm dừng tia';
+  });
+
+  $('btnSound').addEventListener('click', function () {
+    soundOn = !soundOn;
+    $('btnSound').classList.toggle('on', soundOn);
+    $('btnSound').textContent = soundOn ? '🔊' : '🔇';
+    if (soundOn) playGeiger('deflect');
+  });
+
+  document.querySelectorAll('.cam-bar button[data-cam]').forEach(function (btn) {
+    btn.addEventListener('click', function () { setCamPreset(btn.dataset.cam); });
+  });
+
+  /* ==================== RESIZE & PHYSICS LOOP ==================== */
+  function resize() {
+    const w = stage.clientWidth || 640;
+    const h = stage.clientHeight || 480;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  applyModelAndMetal();
+  updateCountersUI();
+
+  let paused = false;
+  document.addEventListener('visibilitychange', function () { paused = document.hidden; });
+
+  let lastT = performance.now();
+  let emitAcc = 0;
+
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (paused) { lastT = now; return; }
+    const rawDt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+    const dt = rawDt * simSpeed;
+
+    // Gentle shimmer on foil & source glow
+    srcGlow.scale.setScalar(0.92 + Math.sin(now * 0.012) * 0.12);
+
+    // Emit particles
+    if (emitting) {
+      const ratePerSec = curScale === 'macro' ? (beamRate * 2.2) : (beamRate * 1.45);
+      emitAcc += dt * ratePerSec;
+      while (emitAcc >= 1) {
+        emitAcc -= 1;
+        if (curScale === 'macro' && macroParticles.length < 75) spawnMacroAlpha(false);
+        else if (curScale === 'micro' && microParticles.length < 48) spawnMicroAlpha(false);
+      }
+    }
+
+    // ---- UPDATE MACRO PARTICLES & ZnS FLASHES ----
+    if (curScale === 'macro') {
+      for (let i = macroParticles.length - 1; i >= 0; i--) {
+        const p = macroParticles[i];
+        p.head.position.addScaledVector(p.vel, dt);
+
+        // Hit gold foil at x = 0
+        if (p.phase === 0 && p.head.position.x >= 0) {
+          p.phase = 1;
+          p.head.position.x = 0;
+          p.vel.copy(p.outDir).multiplyScalar(9.6);
+        }
+
+        // Shift trail
+        const tp = p.trailPts;
+        for (let k = 11; k > 0; k--) {
+          tp[k * 3]     = tp[(k - 1) * 3];
+          tp[k * 3 + 1] = tp[(k - 1) * 3 + 1];
+          tp[k * 3 + 2] = tp[(k - 1) * 3 + 2];
+        }
+        tp[0] = p.head.position.x;
+        tp[1] = p.head.position.y;
+        tp[2] = p.head.position.z;
+        p.trail.geometry.getAttribute('position').needsUpdate = true;
+
+        // Check impact on curved ZnS screen wall (radius = SCREEN_R)
+        if (p.phase === 1) {
+          const rXZ = Math.hypot(p.head.position.x, p.head.position.z);
+          if (rXZ >= SCREEN_R - 0.08) {
+            const hitPos = p.head.position.clone();
+            const scaleWall = (SCREEN_R - 0.06) / Math.max(0.001, rXZ);
+            hitPos.x *= scaleWall;
+            hitPos.z *= scaleWall;
+            hitPos.y = Math.max(BEAM_Y - SCREEN_H * 0.45, Math.min(BEAM_Y + SCREEN_H * 0.45, hitPos.y));
+
+            // Exclude exact entrance slit on -X side
+            const ang = Math.atan2(hitPos.z, hitPos.x);
+            const inSlit = Math.abs(Math.abs(ang) - Math.PI) < slitRad * 0.45;
+            if (!inSlit) {
+              spawnZnSFlash(hitPos, p.cat === 'rebound', p.cat === 'deflect');
+            }
+            cntTotal++;
+            if (p.cat === 'rebound') { cntRebound++; playGeiger('rebound'); }
+            else if (p.cat === 'deflect') { cntDeflect++; playGeiger('deflect'); }
+            else { cntStraight++; playGeiger('normal'); }
+            updateCountersUI();
+
+            macroGroup.remove(p.head);
+            macroGroup.remove(p.trail);
+            p.trail.geometry.dispose();
+            macroParticles.splice(i, 1);
+          }
+        }
+      }
+
+      // Update ZnS flashes smooth bloom & fade
+      for (let i = 0; i < MAX_FLASHES; i++) {
+        const f = flashes[i];
+        if (!f.sp.visible) continue;
+        f.age += rawDt;
+        const u = f.age / f.maxAge;
+        if (u >= 1) { f.sp.visible = false; continue; }
+        const sc = f.baseScale * (1 + u * 0.65);
+        f.sp.scale.set(sc, sc, 1);
+        f.sp.material.opacity = Math.pow(1 - u, 1.8) * 0.95;
+      }
+    }
+
+    // ---- UPDATE MICRO COULOMB SCATTERING ----
+    if (curScale === 'micro') {
+      microLattice.forEach(function (item, idx) {
+        item.eSwarm.rotation.y += rawDt * (0.45 + idx * 0.05);
+        item.eSwarm.rotation.x += rawDt * 0.22;
+      });
+
+      const metalCfg = METALS[curMetal];
+      const coulombK = curModel === 'rutherford' ? (2.35 * metalCfg.scaleForce) : 0.0;
+      const subSteps = 4;
+      const subDt = dt / subSteps;
+
+      for (let i = microParticles.length - 1; i >= 0; i--) {
+        const p = microParticles[i];
+        p.age += dt;
+
+        for (let s = 0; s < subSteps; s++) {
+          if (coulombK > 0) {
+            let ax = 0, ay = 0, az = 0;
+            for (let j = 0; j < ATOM_COORDS.length; j++) {
+              const nPos = ATOM_COORDS[j];
+              const dx = p.pos.x - nPos.x;
+              const dy = p.pos.y - nPos.y;
+              const dz = p.pos.z - nPos.z;
+              const r2 = dx * dx + dy * dy + dz * dz + 0.018; // soft core prevents infinity
+              const r = Math.sqrt(r2);
+              if (r < p.minDist) p.minDist = r;
+              if (r < 2.2) {
+                const invR3 = coulombK / (r2 * r);
+                ax += dx * invR3;
+                ay += dy * invR3 * 0.25;
+                az += dz * invR3;
+              }
+            }
+            p.vel.x += ax * subDt;
+            p.vel.y += ay * subDt;
+            p.vel.z += az * subDt;
+          }
+          p.pos.addScaledVector(p.vel, subDt);
+        }
+
+        p.head.position.copy(p.pos);
+
+        // Color-code trajectory live as particle bends or rebounds!
+        const angleDeg = Math.acos(Math.max(-1, Math.min(1, p.vel.x / Math.max(0.01, p.vel.length())))) * (180 / Math.PI);
+        if (angleDeg > 135) {
+          p.trailMat.color.setHex(0xfb7185);
+          p.head.material.color.setHex(0xfb7185);
+          if (!p.flashTriggered) { p.flashTriggered = true; playGeiger('rebound'); }
+        } else if (angleDeg > 15) {
+          p.trailMat.color.setHex(0xfbbf24);
+          p.head.material.color.setHex(0xfbbf24);
+        }
+
+        // Shift trail
+        const tp = p.trailPts;
+        for (let k = TRAIL_LEN - 1; k > 0; k--) {
+          tp[k * 3]     = tp[(k - 1) * 3];
+          tp[k * 3 + 1] = tp[(k - 1) * 3 + 1];
+          tp[k * 3 + 2] = tp[(k - 1) * 3 + 2];
+        }
+        tp[0] = p.pos.x; tp[1] = p.pos.y; tp[2] = p.pos.z;
+        p.trail.geometry.getAttribute('position').needsUpdate = true;
+
+        // Classify and remove when leaving boundary box
+        const outOfBounds = (p.pos.x > 5.4 || p.pos.x < -5.8 || Math.abs(p.pos.z) > 4.6 || p.age > 5.2);
+        if (outOfBounds) {
+          if (!p.counted) {
+            p.counted = true;
+            cntTotal++;
+            if (angleDeg > 135) { cntRebound++; }
+            else if (angleDeg > 15) { cntDeflect++; playGeiger('deflect'); }
+            else { cntStraight++; playGeiger('normal'); }
+            updateCountersUI();
+          }
+          microGroup.remove(p.head);
+          microGroup.remove(p.trail);
+          p.trail.geometry.dispose();
+          microParticles.splice(i, 1);
+        }
+      }
+    }
+
+    // Smooth camera damping
+    const damp = Math.min(1, rawDt * 8.2);
+    camTheta  += (tgtTheta - camTheta) * damp;
+    camPhi    += (tgtPhi - camPhi) * damp;
+    camRadius += (tgtRadius - camRadius) * damp;
+    camTarget.lerp(tgtLook, damp);
+
+    camera.position.set(
+      camTarget.x + camRadius * Math.sin(camPhi) * Math.sin(camTheta),
+      camTarget.y + camRadius * Math.cos(camPhi),
+      camTarget.z + camRadius * Math.sin(camPhi) * Math.cos(camTheta)
+    );
+    camera.lookAt(camTarget);
+
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>

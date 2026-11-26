@@ -4,13 +4,13 @@
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Thí nghiệm ảo Hóa 10</title>
-<meta name="description" content="Phòng thí nghiệm ảo Hóa 10 theo bài SGK, có hướng dẫn và từ điển nút bấm tiếng Việt.">
+<title>Thí nghiệm ảo 3D Hóa 10</title>
+<meta name="description" content="14 phòng thí nghiệm 3D Hóa 10 tương tác real-time theo bài SGK Kết nối tri thức kèm mô phỏng PhET có hướng dẫn Tiếng Việt.">
 <meta name="theme-color" content="#5B1126">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hóa 10 – Thầy Hoàng">
-<meta property="og:title" content="Thí nghiệm ảo Hóa 10">
-<meta property="og:description" content="Phòng thí nghiệm ảo Hóa 10 theo bài SGK, có hướng dẫn và từ điển nút bấm tiếng Việt.">
+<meta property="og:title" content="Thí nghiệm ảo 3D Hóa 10">
+<meta property="og:description" content="14 phòng thí nghiệm 3D Hóa 10 tương tác real-time theo bài SGK Kết nối tri thức kèm mô phỏng PhET có hướng dẫn Tiếng Việt.">
 <meta property="og:url" content="https://hoangchu54.github.io/hoa10/thinghiem.html">
 <meta property="og:image" content="https://hoangchu54.github.io/hoa10/assets/icons/og-cover.jpg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
@@ -57,65 +57,80 @@
   ganNutTheme(document.getElementById('btn-theme'));
   ganNutLenDau();
 
+  const GH_LABS3D_BASE = 'https://hoangchu54.github.io/hoa10/labs3d/';
+  const LAB3D_FILES = {
+    'rutherford': 'rutherford3d.html',
+    'orbital': 'orbital3d.html',
+    'ngon-lua': 'ngonlua3d.html',
+    'kiem': 'kiem3d.html',
+    'luong-tinh': 'luongtinh3d.html',
+    'nacl': 'nacl3d.html',
+    'dan-dien': 'dandien3d.html',
+    'hydrogen': 'hydrogen3d.html',
+    'oxh': 'oxh3d.html',
+    'nhiet-luong-ke': 'enthalpy3d.html',
+    'toc-do': 'tocdo3d.html',
+    'cl2-tay': 'cl2tay3d.html',
+    'iodine': 'iodine3d.html',
+    'halide': 'halide3d.html'
+  };
+
   function urlLabTuLam(labPath, laEmbed) {
     const raw = String(labPath || '');
-    const qi = raw.indexOf('?');
-    const idOnly = qi >= 0 ? raw.slice(0, qi) : raw;
-    const subOnly = qi >= 0 ? raw.slice(qi + 1) : '';
-    if (!laGAS) {
-      return 'lab.html' + (laEmbed ? '?embed=1' : '') + (raw ? ('#' + raw) : '');
+    const idOnly = raw.split('?')[0].trim().toLowerCase();
+    if (!idOnly) {
+      if (!laGAS) return 'lab.html';
+      const base = (data && data.webUrl) || window.H10.GAS_EXEC_URL;
+      return base + '?page=lab';
     }
+    const f = LAB3D_FILES[idOnly];
+    if (f) {
+      return laGAS ? (GH_LABS3D_BASE + f) : ('labs3d/' + f);
+    }
+    if (!laGAS) return 'lab.html#' + idOnly;
     const base = (data && data.webUrl) || window.H10.GAS_EXEC_URL;
-    return base + '?page=lab&id=' + encodeURIComponent(idOnly) +
-      (subOnly ? ('&' + subOnly) : '') + (laEmbed ? '&embed=1' : '') + (raw ? ('#' + raw) : '');
+    return base + '?page=lab&id=' + encodeURIComponent(idOnly) + (laEmbed ? '&embed=1' : '') + '#' + idOnly;
   }
 
-  const LAB_SAN_7 = [
-    { bai: '21, 22, 23', ten: 'Nhận biết Halide & Thế Halogen', labId: 'halide',
-      mucTieu: 'Thực hành nhỏ AgNO3 phân biệt F⁻, Cl⁻, Br⁻, I⁻ · Thí nghiệm Cl2/Br2 đẩy halogen · Thử thách giải mã 4 lọ mất nhãn.',
-      buoc: ['Chọn lọ thuốc thử (AgNO3, HNO3, Nước Cl2, Br2, Hồ tinh bột) rồi chạm hoặc kéo thả lên từng ống nghiệm.', 'Bật <b>🔍 Soi vi mô</b> để xem ion Ag⁺ hút Cl⁻/Br⁻/I⁻ tạo tinh thể kết tủa.', 'Chuyển sang tab <b>Giải mã 4 lọ mất nhãn</b> để kiểm tra khả năng nhận biết!'],
-      cauHoi: 'Vì sao cùng là muối halide nhưng NaF không tạo kết tủa với AgNO3 còn NaCl, NaBr, NaI lần lượt tạo kết tủa trắng, vàng nhạt và vàng đậm?' },
-    { bai: '19, 20', ten: 'Tốc độ phản ứng & Xi-lanh thu khí', labId: 'toc-do',
-      mucTieu: 'Điều chỉnh nồng độ, nhiệt độ (Van’t Hoff γ = 2), kích thước hạt hoặc xúc tác MnO2; quan sát xi-lanh đkc 24,79 L/mol và đồ thị V(t).',
-      buoc: ['Chạy Lần 1 ở điều kiện chuẩn (1,0 M, 25 °C) rồi bấm <b>📌 Ghim làm Lần 1</b>.', 'Tăng nhiệt độ lên 45 °C hoặc nghiền nhỏ hạt CaCO3 rồi bấm chạy Lần 2 để so sánh độ dốc đường cong.', 'Chuyển sang tab <b>Dấu × biến mất</b> để đo tốc độ kết tủa lưu huỳnh S↓ trong Na2S2O3 + H2SO4.'],
-      cauHoi: 'Khi dùng cùng số mol chất thiếu nhưng tăng nhiệt độ từ 25 °C lên 45 °C (γ = 2), tốc độ ban đầu và tổng thể tích khí cuối cùng thay đổi ra sao?' },
-    { bai: '17, 18', ten: 'Nhiệt lượng kế Cốc xốp & Enthalpy', labId: 'nhiet-luong-ke',
-      mucTieu: 'Đo nhiệt lượng phản ứng tỏa nhiệt (HCl + NaOH, CaO + H2O, Mg + HCl) và thu nhiệt (NH4NO3, NaHCO3 + giấm); phân tích giản đồ ΔrH°298.',
-      buoc: ['Chọn thí nghiệm cần đo, bấm <b>▶ Trộn chất & Khuấy đều</b> và quan sát nhiệt kế số cùng đồ thị T(t).', 'Chú ý hiện tượng <b>sương lạnh đọng ngoài thành cốc</b> khi hòa tan NH4NO3 (thu nhiệt ΔrH > 0).', 'Mở tab <b>Giản đồ ΔrH°298</b> để đối chiếu công thức theo ΔfH° và năng lượng liên kết Eb.'],
-      cauHoi: 'Phân biệt dấu của công thức tính ΔrH°298 theo enthalpy tạo thành chuẩn ΔfH° với công thức theo năng lượng liên kết Eb?' },
-    { bai: '6, 7, 9', ten: 'Kim loại IA/IIA & Lưỡng tính Al(OH)₃', labId: 'kiem-luong-tinh',
-      mucTieu: 'Quan sát độ hoạt động Li < Na < K (cháy lửa tím!) và Mg < Ca với nước có phenolphthalein; chứng minh tính lưỡng tính của Al(OH)3.',
-      buoc: ['Thả lần lượt Li, Na, K, Mg, Ca vào chậu nước (bật <b>🔥 Đun nóng 80 °C</b> khi thử Mg).', 'Chuyển sang tab <b>Lưỡng tính Al(OH)3 & pH</b> để nhỏ 3 đl rồi 4,5 đl NaOH dư vào AlCl3 và MgCl2.'],
-      cauHoi: 'Vì sao khi nhỏ dư dung dịch NaOH thì kết tủa Al(OH)3 tan hết thành dung dịch trong suốt còn Mg(OH)2 không tan?' },
-    { bai: '3, 4', ten: 'Thử màu Ngọn lửa & Quang phổ', labId: 'ngon-lua',
-      mucTieu: 'Quan sát màu ngọn lửa đặc trưng và vạch quang phổ phát xạ của 6 muối Li⁺, Na⁺, K⁺, Ca²⁺, Ba²⁺, Cu²⁺ trên đèn khí Bunsen.',
-      buoc: ['Đảm bảo <b>Lỗ gió đang MỞ (lửa xanh chuẩn)</b> trước khi thử muối.', 'Chạm chọn từng muối xem màu ngọn lửa và vạch quang phổ λ (nm); bấm <b>🧼 Rửa dây Pt</b> giữa các lần thử.', 'Sang tab <b>Đoán muối bí ẩn</b> để tự kiểm tra khả năng nhận diện!'],
-      cauHoi: 'Vì sao trước khi thử muối kim loại mới cần nhúng rửa sạch dây Platinum bằng dung dịch HCl rồi nung đỏ?' },
-    { bai: '11, 14', ten: 'Thử Đèn LED Dẫn điện (Ion vs. CHT)', labId: 'dan-dien',
-      mucTieu: 'So sánh khả năng dẫn điện của NaCl rắn khan, NaCl nóng chảy (> 801 °C), dung dịch NaCl với nước cất, dung dịch đường và HCl.',
-      buoc: ['Chọn mẫu <b>NaCl rắn khan</b> (đèn tắt), sau đó bấm <b>🔥 Đun nóng chảy (> 801 °C)</b> để thấy đèn sáng rực.', 'So sánh cửa sổ vi mô <b>Ion khóa cứng 6:6</b> với <b>Ion dịch chuyển có hướng</b> và <b>Phân tử đường trung hòa</b>.'],
-      cauHoi: 'Vì sao tinh thể NaCl rắn không dẫn điện, nhưng NaCl nóng chảy và dung dịch NaCl đều dẫn điện tốt?' },
-    { bai: '2, 3, 4', ten: 'Điền Ô Orbital (↑↓) & Phổ MS', labId: 'orbital-ms',
-      mucTieu: 'Thực hành điền electron vào ô orbital Z = 1–30 (kiểm tra Vững bền, Pauli, Hund, ngoại lệ Cr/Cu) và đọc phổ khối lượng MS tính Ā.',
-      buoc: ['Chọn nguyên tố Z (mặc định chuẩn TT32: Z ≤ 20) rồi chạm từng ô để điền electron ↑ trước, ↓ sau.', 'Thử bấm sai quy tắc Hund/Pauli để xem giải thích trực tiếp, hoặc chọn tab <b>Máy Phổ khối lượng MS</b> tính Ā cho Cl, Cu, Br, Mg.'],
-      cauHoi: 'Vì sao ở trạng thái cơ bản, nguyên tử Chromium (Z = 24) và Copper (Z = 29) có phân lớp ngoài cùng là 4s¹ thay vì 4s²?' }
+  const LAB_3D_14 = [
+    { bai: '1', ten: 'Bắn tia α của Rutherford 3D', labId: 'rutherford',
+      mucTieu: 'Bắn chùm hạt α qua lá vàng mỏng, quan sát chớp huỳnh quang ZnS 360° và lực đẩy Coulomb ở góc phóng đại nguyên tử; đối chứng mô hình Thomson.' },
+    { bai: '3, 12', ten: 'Orbital s, p, d & Xen phủ σ, π 3D', labId: 'orbital',
+      mucTieu: 'Đám mây xác suất lượng tử 5.200 hạt + mặt biên 90% cho 1s, 2s, 2p, 3d (cắt lát thấy nút 2s) và kéo 2 hạt nhân xem xen phủ trục σ / xen phủ bên π.' },
+    { bai: '3, 4', ten: 'Thử màu Ngọn lửa & Quang phổ 3D', labId: 'ngon-lua',
+      mucTieu: 'Đèn Bunsen 3D lửa GLSL, đốt 6 muối Li⁺, Na⁺, K⁺, Ca²⁺, Ba²⁺, Cu²⁺ + kính xanh Cobalt lọc ánh vàng Na⁺ + quang phổ vạch & đoán mẫu X.' },
+    { bai: '6, 9', ten: 'Kim loại Kiềm & Kiềm thổ + Nước 3D', labId: 'kiem',
+      mucTieu: 'Gắp Li, Na, K từ lọ dầu hỏa, Mg, Ca thả chậu nước có sóng 3D, vệt hồng phenolphthalein đuổi đuôi, lửa tím hoa cà của K, bếp 80 °C & giải mã 3 mẫu ẩn.' },
+    { bai: '7', ten: 'Tính lưỡng tính Al(OH)₃ & Mg(OH)₂ 3D', labId: 'luong-tinh',
+      mucTieu: 'Pipet nhỏ giọt NaOH/HCl vào 2 ống AlCl₃ & MgCl₂ theo tỉ lệ mol thực: keo trắng Al(OH)₃ tan hết trong kiềm dư tạo Na[Al(OH)₄], còn Mg(OH)₂ không tan.' },
+    { bai: '11', ten: 'Mạng tinh thể NaCl 3D (Rắn · Nóng chảy · Tan)', labId: 'nacl',
+      mucTieu: 'Khám phá số phối trí 6:6 hình bát diện, đun nóng chảy vượt 801 °C phá vỡ mạng và thả vào nước xem phân tử H₂O phân cực bóc tách tan hết tinh thể.' },
+    { bai: '11, 12', ten: 'Thử tính dẫn điện (Ion vs Cộng hóa trị) 3D', labId: 'dan-dien',
+      mucTieu: 'Mạch điện 3D có công tắc, ampe kế kim quay, bóng đèn dây tóc sáng theo mẫu (nước cất, đường, NaCl rắn/dd, HCl, CH₃COOH) + soi dòng ion vi mô.' },
+    { bai: '13', ten: 'Liên kết Hydrogen & Nước đá nổi 3D', labId: 'hydrogen',
+      mucTieu: '54 phân tử H₂O định hướng mạng lục giác rỗng Ice Iₕ (D = 0,92 g/cm³) khi hạ về 0 °C, sụp đặc khi tan lỏng và bay tự do lúc sôi + cốc băng nổi.' },
+    { bai: '15', ten: 'Phản ứng Oxi hóa – Khử 3D (Cây bạc & Zn)', labId: 'oxh',
+      mucTieu: 'Nhúng dây Cu xoắn vào AgNO₃ mọc tinh thể bạc óng ánh & dd hóa xanh lam; nhúng lá Zn vào CuSO₄ lá kẽm mòn phủ đồng đỏ & dd mất màu xanh.' },
+    { bai: '17, 18', ten: 'Nhiệt lượng kế Tỏa nhiệt & Thu nhiệt 3D', labId: 'nhiet-luong-ke',
+      mucTieu: 'Nhiệt kế điện tử 3D + đồ thị T(t): CaO + H₂O sôi 76 °C, HCl + NaOH tỏa nhiệt và Ba(OH)₂·8H₂O + NH₄Cl tụt −18 °C đóng băng dính chặt khối gỗ.' },
+    { bai: '19, 20', ten: 'Tốc độ phản ứng 3D (Bóng bay · Dấu X · MnO₂)', labId: 'toc-do',
+      mucTieu: '3 phòng thực hành: CaCO₃ cục/bột & nồng độ HCl làm phồng 2 bóng bay, thí nghiệm dấu X biến mất ở 20 °C vs 60 °C, xúc tác MnO₂ phân hủy H₂O₂.' },
+    { bai: '21', ten: 'Tính tẩy màu của khí Cl₂ ẩm (Tủ hút) 3D', labId: 'cl2-tay',
+      mucTieu: 'Tủ hút khí độc có quạt quay thật, tự xịt nước làm ẩm giấy đỏ / quỳ tím / cánh hoa hồng / lá xanh đối chứng mẫu khô, xả sạch khí Cl₂ vàng lục vào ống hút.' },
+    { bai: '21', ten: 'Thăng hoa & Ngưng kết tinh thể Iodine (I₂) 3D', labId: 'iodine',
+      mucTieu: 'Đun tinh thể I₂ tím đen thăng hoa trực tiếp thành khói tím sang trọng, gặp bát đá lạnh kết tinh ngược thành chùm mũi kim ánh kim; nhấc bát soi cận.' },
+    { bai: '21, 22, 23', ten: 'Ống nghiệm Halide, Chiết 2 lớp & Giải mã 3D', labId: 'halide',
+      mucTieu: '4 chế độ: AgNO₃ nhận biết F⁻/Cl⁻/Br⁻/I⁻ (tan AgCl trong NH₃, chiếu sáng UV), thế halogen & chiết tách 2 lớp Hexane, muối rắn + H₂SO₄ đặc, giải mã 4 lọ.' }
   ];
 
   const BAI_THI_NGHIEM = [
-    { bai: 'MD', ten: 'Mở đầu: Nhập môn Hóa học', links: [
-      {
-        ten: 'Bàn thí nghiệm Ống nghiệm Hóa 10 (Lab tự làm)',
-        labId: 'ong-nghiem',
-        embed: true,
-        mucTieu: 'Làm quen thao tác nhỏ giọt pipet, quan sát hiện tượng vật lí và hóa học đặc trưng (sủi bọt khí CO2/H2, kết tủa xanh lam/nâu đỏ, chỉ thị màu phenolphthalein).',
-        buoc: [
-          'Chọn một lọ thuốc thử (<b>HCl 1M</b>, <b>NaOH 1M</b> hoặc <b>Phenolphthalein</b>) rồi chạm hoặc kéo thả lên ống nghiệm.',
-          'Quan sát hiện tượng, đọc phương trình hóa học và bật kính lúp <b>🔍 Soi vi mô</b>.'
-        ],
-        cauHoi: 'Dấu hiệu nào giúp nhận biết đã có phản ứng hóa học xảy ra (biến đổi hóa học) khi nhỏ HCl vào đá vôi CaCO3?'
-      }
-    ]},
     { bai: '1', ten: 'Thành phần của nguyên tử', links: [
+      {
+        ten: 'Thí nghiệm bắn tia α của Rutherford (Lab 3D)',
+        labId: 'rutherford',
+        embed: true,
+        mucTieu: 'Bắn chùm hạt α qua lá vàng mỏng 3D, quan sát màn huỳnh quang ZnS 360° và góc phóng đại nguyên tử lực đẩy Coulomb (đối chứng mô hình Thomson).'
+      },
       {
         ten: 'Build an Atom (PhET)',
         url: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_all.html?locale=vi',
@@ -187,17 +202,6 @@
     ]},
     { bai: '2', ten: 'Nguyên tố hóa học', links: [
       {
-        ten: 'Máy đo Phổ khối lượng MS & Tính Ā (Lab tự làm)',
-        labId: 'orbital-ms?sub=ms',
-        embed: true,
-        mucTieu: 'Quan sát buồng tách đồng vị trong từ trường và đọc biểu đồ cột phổ khối lượng MS của Cl, Cu, Br, B, Mg, Ne để tính nguyên tử khối trung bình Ā.',
-        buoc: [
-          'Chọn nguyên tố mẫu (Cl, Cu, Br, B, Mg, Ne) hoặc bật <b>Tự chỉnh số khối & % đồng vị</b>.',
-          'Quan sát cách tia ion nhẹ lệch nhiều hơn tia nặng và đối chiếu từng số hạng trong công thức tính Ā.'
-        ],
-        cauHoi: 'Dựa trên phổ khối lượng MS của Chlorine (³⁵Cl: 75,77%; ³⁷Cl: 24,23%), hãy giải thích vì sao nguyên tử khối trung bình của Cl xấp xỉ 35,5?'
-      },
-      {
         ten: 'Isotopes and Atomic Mass (PhET)',
         url: 'https://phet.colorado.edu/sims/html/isotopes-and-atomic-mass/latest/isotopes-and-atomic-mass_all.html?locale=vi',
         embed: true,
@@ -247,26 +251,16 @@
     ]},
     { bai: '3', ten: 'Cấu trúc lớp vỏ electron nguyên tử', links: [
       {
-        ten: 'Xưởng Điền Electron vào Ô Orbital ↑↓ (Lab tự làm)',
-        labId: 'orbital-ms?sub=orbital',
+        ten: 'Orbital nguyên tử s, p, d & Đám mây lượng tử (Lab 3D)',
+        labId: 'orbital',
         embed: true,
-        mucTieu: 'Tự chạm điền electron vào các ô lượng tử 1s, 2s, 2p, 3s, 3p, 4s, 3d theo nguyên lí Vững bền, Pauli, Hund (Z = 1–30) và quan sát hình dạng AO s, p.',
-        buoc: [
-          'Chọn nguyên tố trong khoảng Z = 1–20 (chuẩn Thông tư 32) hoặc mở rộng Cr (Z = 24), Cu (Z = 29).',
-          'Chạm vào từng ô orbital để điền ↑ trước, ↓ sau — hệ thống sẽ bắt lỗi ngay nếu vi phạm quy tắc Hund hay Pauli.'
-        ],
-        cauHoi: 'Nguyên tử Nitrogen (Z = 7) có mấy electron độc thân ở phân lớp 2p?'
+        mucTieu: 'Xoay 360° đám mây xác suất lượng tử 5.200 hạt và mặt biên 90% của 1s, 2s, 2pₓ, 2pᵧ, 2p_z, 3d (cắt lát thấy mặt nút xuyên tâm của 2s).'
       },
       {
-        ten: 'Thử màu Ngọn lửa Ion Kim loại (Lab tự làm)',
-        labId: 'ngon-lua?sub=thu',
+        ten: 'Thử màu Ngọn lửa Ion Kim loại & Quang phổ (Lab 3D)',
+        labId: 'ngon-lua',
         embed: true,
-        mucTieu: 'Minh họa hiện tượng kích thích và phát xạ ánh sáng màu đặc trưng của electron lớp vỏ khi đốt muối Li⁺, Na⁺, K⁺, Ca²⁺, Ba²⁺, Cu²⁺ trên đèn Bunsen.',
-        buoc: [
-          'Đảm bảo lỗ gió đèn Bunsen đang mở (ngọn lửa xanh chuẩn) rồi lần lượt thử 6 muối.',
-          'Quan sát dải vạch quang phổ phát xạ (nm) và bật kính lúp xem electron chuyển mức năng lượng.'
-        ],
-        cauHoi: 'Khi đốt hợp chất của Potassium (K⁺) trên đèn khí, ngọn lửa có màu đặc trưng gì?'
+        mucTieu: 'Đốt 6 muối Li⁺, Na⁺, K⁺, Ca²⁺, Ba²⁺, Cu²⁺ trên đèn Bunsen 3D lửa GLSL, soi kính xanh Cobalt lọc tia vàng Na⁺ và đo quang phổ vạch.'
       },
       {
         ten: 'Models of the Hydrogen Atom (PhET)',
@@ -289,22 +283,16 @@
     ]},
     { bai: '4', ten: 'Ôn tập chương 1', links: [
       {
-        ten: 'Tổng ôn Điền Ô Orbital & Máy Phổ MS (Lab tự làm)',
-        labId: 'orbital-ms?sub=orbital',
+        ten: 'Thử thách Đoán muối bí ẩn từ Màu ngọn lửa (Lab 3D)',
+        labId: 'ngon-lua',
         embed: true,
-        mucTieu: 'Ôn tập đồng thời cấu hình electron theo ô orbital (Z ≤ 20 và ngoại lệ Cr, Cu) và bài toán đồng vị – phổ khối lượng MS.',
-        buoc: [
-          'Hoàn thành cấu hình e của Na, Cl, K, Ca và bấm sang tab <b>Máy Phổ khối lượng MS</b> để luyện đọc phổ m/z.'
-        ],
-        cauHoi: 'Trong ion ²⁷₁₃Al³⁺ có bao nhiêu proton, neutron và electron?'
+        mucTieu: 'Vận dụng sắc màu quang phổ phát xạ và kính xanh Cobalt để nhận diện mẫu muối bí ẩn X trên đèn Bunsen 3D.'
       },
       {
-        ten: 'Thử thách Đoán muối bí ẩn từ Màu ngọn lửa (Lab tự làm)',
-        labId: 'ngon-lua?sub=bi-an',
+        ten: 'Tổng ôn Hình dạng Orbital s, p, d (Lab 3D)',
+        labId: 'orbital',
         embed: true,
-        mucTieu: 'Vận dụng sắc màu quang phổ phát xạ để nhận diện mẫu muối bí ẩn X.',
-        buoc: ['Quan sát ngọn lửa phát ra khi đốt mẫu X và vạch quang phổ λ (nm), sau đó chọn ion tương ứng.'],
-        cauHoi: 'Ngọn lửa màu vàng tươi rực rỡ (589 nm) và màu xanh lục (510 nm) lần lượt đặc trưng cho ion kim loại nào?'
+        mucTieu: 'Ôn tập định hướng không gian của các orbital s, p, d và mặt nút xuyên tâm của orbital 2s.'
       }
     ]},
     { bai: '5', ten: 'Cấu tạo của bảng tuần hoàn các nguyên tố hóa học', links: [
@@ -344,15 +332,10 @@
     ]},
     { bai: '6', ten: 'Xu hướng biến đổi một số tính chất của nguyên tử các nguyên tố trong một chu kì và trong một nhóm', links: [
       {
-        ten: 'Kim loại Kiềm & Kiềm thổ tác dụng với Nước (Lab tự làm)',
-        labId: 'kiem-luong-tinh?sub=kiem',
+        ten: 'Kim loại Kiềm & Kiềm thổ tác dụng với Nước (Lab 3D)',
+        labId: 'kiem',
         embed: true,
-        mucTieu: 'Chứng minh quy luật tính kim loại tăng dần trong nhóm IA (Li < Na < K), nhóm IIA (Mg < Ca) và giảm dần từ Na → Mg qua mức độ phản ứng với H2O.',
-        buoc: [
-          'Thả lần lượt Li, Na, K, Mg, Ca vào chậu nước có nhỏ sẵn phenolphthalein.',
-          'Với Mg, bấm nút <b>🔥 Đun nóng 80 °C</b> để thấy bọt khí H2 xuất hiện rõ rệt hơn.'
-        ],
-        cauHoi: 'Vì sao khi thả K vào nước thì phản ứng bùng cháy ngọn lửa màu tím mạnh hơn hẳn Na và Li?'
+        mucTieu: 'Gắp Li, Na, K từ lọ dầu hỏa, Mg, Ca thả chậu nước có sóng 3D, vệt hồng phenolphthalein, lửa tím K, bếp 80 °C và giải mã 3 mẫu ẩn X, Y, Z.'
       },
       {
         ten: 'Atomic Radius Simulator (InteractiveChem)',
@@ -402,15 +385,10 @@
     ]},
     { bai: '7', ten: 'Xu hướng biến đổi thành phần và một số tính chất của hợp chất trong một chu kì', links: [
       {
-        ten: 'Tính Lưỡng tính Al(OH)₃ & Dãy Hydroxide Chu kì 3 (Lab tự làm)',
-        labId: 'kiem-luong-tinh?sub=luong-tinh',
+        ten: 'Tính Lưỡng tính của Al(OH)₃ & So sánh Mg(OH)₂ (Lab 3D)',
+        labId: 'luong-tinh',
         embed: true,
-        mucTieu: 'Quan sát Al(OH)3 vừa tan trong HCl vừa tan trong NaOH dư (khác với Mg(OH)2 chỉ tan trong acid) và dãy pH từ NaOH → HClO4.',
-        buoc: [
-          'Bấm <b>3 đl NaOH</b> để tạo kết tủa trắng ở cả hai ống AlCl3 và MgCl2.',
-          'Bấm tiếp <b>4,5 đl NaOH (Kiềm dư!)</b> để thấy Al(OH)3 tan hoàn toàn tạo Na[Al(OH)4] còn Mg(OH)2 giữ nguyên kết tủa.'
-        ],
-        cauHoi: 'Viết phương trình hóa học chứng minh Al(OH)3 là hydroxide lưỡng tính.'
+        mucTieu: 'Pipet nhỏ giọt NaOH và HCl vào 2 ống AlCl₃ & MgCl₂ theo tỉ lệ mol thực: keo trắng Al(OH)₃ tan hoàn toàn trong NaOH dư còn Mg(OH)₂ không tan.'
       },
       {
         ten: 'Bảng tuần hoàn Ptable (Oxide & Hydroxide)',
@@ -460,12 +438,16 @@
     ]},
     { bai: '9', ten: 'Ôn tập chương 2', links: [
       {
-        ten: 'Tổng ôn Kim loại IA/IIA + Nước & Lưỡng tính Al(OH)₃ (Lab tự làm)',
-        labId: 'kiem-luong-tinh?sub=kiem',
+        ten: 'Tổng ôn Kim loại IA/IIA + Nước & Giải mã mẫu ẩn (Lab 3D)',
+        labId: 'kiem',
         embed: true,
-        mucTieu: 'Hệ thống hóa quy luật biến đổi tính kim loại, tính base/lưỡng tính/acid của hợp chất chu kì 3 và nhóm A.',
-        buoc: ['Thực hành cả 2 tab: <b>Li, Na, K, Mg, Ca + H2O</b> và <b>Lưỡng tính Al(OH)3 & pH</b>.'],
-        cauHoi: 'So sánh tốc độ phản ứng với nước ở nhiệt độ thường của dãy Li, Na, K, Mg, Ca?'
+        mucTieu: 'So sánh mức độ phản ứng với nước của Li, Na, K, Mg, Ca ở 25 °C & 80 °C và giải mã 3 mẫu mất nhãn X, Y, Z.'
+      },
+      {
+        ten: 'Tổng ôn Tính lưỡng tính Al(OH)₃ vs Mg(OH)₂ (Lab 3D)',
+        labId: 'luong-tinh',
+        embed: true,
+        mucTieu: 'Thực hành nhỏ giọt NaOH/HCl chứng minh tính lưỡng tính của Al(OH)₃ và so sánh với Mg(OH)₂.'
       }
     ]},
     { bai: '10', ten: 'Quy tắc octet', links: [
@@ -519,15 +501,16 @@
     ]},
     { bai: '11', ten: 'Liên kết ion', links: [
       {
-        ten: 'Thử Đèn LED Dẫn điện Hợp chất Ion vs. Cộng hóa trị (Lab tự làm)',
+        ten: 'Mạng tinh thể NaCl 3D (Rắn · Nóng chảy 801 °C · Hòa tan)',
+        labId: 'nacl',
+        embed: true,
+        mucTieu: 'Quan sát khối bát diện số phối trí 6:6 của Na⁺ (tím) và Cl⁻ (xanh lá), đun nóng chảy > 801 °C phá vỡ mạng và thả vào nước xem phân tử H₂O bóc tách tan hết tinh thể.'
+      },
+      {
+        ten: 'Thử tính dẫn điện (Ion vs Cộng hóa trị) (Lab 3D)',
         labId: 'dan-dien',
         embed: true,
-        mucTieu: 'Kiểm chứng NaCl rắn không dẫn điện, NaCl nóng chảy (> 801 °C) và dung dịch NaCl dẫn điện tốt nhờ ion tự do dịch chuyển (so sánh với nước cất, đường, ethanol).',
-        buoc: [
-          'Chọn <b>NaCl rắn khan</b> (đèn tắt, ampe kế 0 mA), sau đó bấm <b>🔥 Đun nóng chảy (> 801 °C)</b> để thấy đèn sáng rực.',
-          'Thử tiếp <b>Dung dịch Đường</b> và quan sát kính lúp vi mô thấy các phân tử trung hòa không dẫn điện.'
-        ],
-        cauHoi: 'Vì sao tinh thể muối ăn NaCl dẫn điện khi tan trong nước hoặc nóng chảy nhưng không dẫn điện ở trạng thái rắn khan?'
+        mucTieu: 'Đóng công tắc mạch điện 3D so sánh NaCl rắn, dd NaCl, nước cất, dd đường, HCl và CH₃COOH với bóng đèn dây tóc, ampe kế kim quay và soi dòng ion vi mô.'
       },
       {
         ten: 'Ionic Bond – NaCl (JavaLab)',
@@ -589,6 +572,12 @@
       }
     ]},
     { bai: '12', ten: 'Liên kết cộng hóa trị', links: [
+      {
+        ten: 'Xen phủ Orbital tạo liên kết σ và π (Lab 3D)',
+        labId: 'orbital',
+        embed: true,
+        mucTieu: 'Kéo hai hạt nhân lại gần để quan sát trực tiếp xen phủ trục s–s (H₂), s–p (HCl), p–p (Cl₂) tạo liên kết σ và xen phủ bên p–p tạo liên kết π kèm đường cong thế năng.'
+      },
       {
         ten: 'Molecule Shapes – Hình học phân tử 3D (PhET)',
         url: 'https://phet.colorado.edu/sims/html/molecule-shapes/latest/molecule-shapes_all.html?locale=vi',
@@ -692,6 +681,12 @@
     ]},
     { bai: '13', ten: 'Liên kết hydrogen và tương tác van der Waals', links: [
       {
+        ten: 'Liên kết Hydrogen & Cấu trúc Nước đá nổi 3D (Lab 3D)',
+        labId: 'hydrogen',
+        embed: true,
+        mucTieu: 'Kéo nhiệt độ −10 °C ↔ 25 °C ↔ 100 °C xem 54 phân tử H₂O tự xếp mạng lục giác rỗng Ice Iₕ (D = 0,92 g/cm³) giải thích vì sao băng nổi trên nước lỏng.'
+      },
+      {
         ten: 'States of Matter: Basics – Trạng thái chất & Liên kết (PhET)',
         url: 'https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_all.html?locale=vi',
         embed: true,
@@ -764,15 +759,25 @@
     ]},
     { bai: '14', ten: 'Ôn tập chương 3', links: [
       {
-        ten: 'Thử Đèn LED Dẫn điện: Ion vs. Cộng hóa trị (Lab tự làm)',
+        ten: 'Thử tính dẫn điện: Ion vs Cộng hóa trị (Lab 3D)',
         labId: 'dan-dien',
         embed: true,
-        mucTieu: 'Phân biệt hợp chất ion (NaCl rắn / nóng chảy / dung dịch) và hợp chất cộng hóa trị (đường, ethanol, HCl) bằng tính dẫn điện.',
-        buoc: ['Đối chiếu cường độ dòng điện mA và chuyển động hạt vi mô của dung dịch NaCl, đường và HCl.'],
-        cauHoi: 'Vì sao dung dịch HCl dẫn điện mạnh dù phân tử HCl có liên kết cộng hóa trị?'
+        mucTieu: 'Phân biệt hợp chất ion (NaCl rắn / dung dịch) và hợp chất cộng hóa trị (đường, HCl, CH₃COOH) qua độ sáng bóng đèn, ampe kế và chuyển động ion vi mô.'
+      },
+      {
+        ten: 'Mạng tinh thể NaCl 3D & Liên kết Hydrogen (Lab 3D)',
+        labId: 'nacl',
+        embed: true,
+        mucTieu: 'Tổng ôn tinh thể ion NaCl rắn, nóng chảy > 801 °C và hòa tan trong nước.'
       }
     ]},
     { bai: '15', ten: 'Phản ứng oxi hóa – khử', links: [
+      {
+        ten: 'Phản ứng Oxi hóa – Khử 3D: Cây bạc (Cu + AgNO₃) & Zn + CuSO₄ (Lab 3D)',
+        labId: 'oxh',
+        embed: true,
+        mucTieu: 'Nhúng dây đồng xoắn vào AgNO₃ mọc tinh thể bạc ánh kim & dd chuyển xanh lam; nhúng lá kẽm vào CuSO₄ lá kẽm mòn phủ đồng đỏ & dd mất màu xanh.'
+      },
       {
         ten: 'Electron Transfer – Nhường nhận e (InteractiveChem)',
         url: 'https://interactivechemistry.org/ElectronTransfer2020/',
@@ -862,15 +867,10 @@
     ]},
     { bai: '17', ten: 'Biến thiên enthalpy trong các phản ứng hóa học', links: [
       {
-        ten: 'Nhiệt lượng kế Cốc xốp & Giản đồ ΔrH°₂₉₈ (Lab tự làm)',
-        labId: 'nhiet-luong-ke?sub=calorimeter',
+        ten: 'Nhiệt lượng kế: Phản ứng Tỏa nhiệt & Thu nhiệt (Lab 3D)',
+        labId: 'nhiet-luong-ke',
         embed: true,
-        mucTieu: 'Đo trực tiếp phản ứng tỏa nhiệt (HCl + NaOH, tôi vôi CaO + H2O, Mg + HCl) và thu nhiệt đọng sương (NH4NO3, NaHCO3 + giấm) cùng giản đồ ΔrH°298.',
-        buoc: [
-          'Chọn một phản ứng trong danh sách và bấm <b>▶ Trộn chất & Khuấy đều</b>.',
-          'Quan sát nhiệt kế điện tử, đồ thị T(t) và công thức tính Q = m·c·|ΔT|; chuyển tab <b>Giản đồ ΔrH°298</b> để so sánh công thức ΔfH° và Eb.'
-        ],
-        cauHoi: 'Phân biệt dấu của phản ứng tỏa nhiệt (ΔrH < 0) và phản ứng thu nhiệt (ΔrH > 0) trên nhiệt kế và trên giản đồ enthalpy?'
+        mucTieu: 'Đo trực tiếp trên nhiệt kế điện tử 3D & đồ thị T(t): CaO + H₂O sôi 76 °C, HCl + NaOH tỏa nhiệt và Ba(OH)₂·8H₂O + NH₄Cl thu nhiệt tụt −18 °C đóng băng dính chặt khối gỗ.'
       },
       {
         ten: 'Combustion Simulator – Phản ứng đốt cháy & Nhiệt lượng (InteractiveChem)',
@@ -907,33 +907,18 @@
     ]},
     { bai: '18', ten: 'Ôn tập chương 5', links: [
       {
-        ten: 'Giản đồ Enthalpy & Nhiệt lượng kế Cốc xốp (Lab tự làm)',
-        labId: 'nhiet-luong-ke?sub=enthalpy',
+        ten: 'Tổng ôn Nhiệt lượng kế Tỏa nhiệt & Thu nhiệt (Lab 3D)',
+        labId: 'nhiet-luong-ke',
         embed: true,
-        mucTieu: 'Tổng ôn cách tính biến thiên enthalpy chuẩn ΔrH°298 theo nhiệt tạo thành chuẩn ΔfH°298 và theo năng lượng liên kết Eb.',
-        buoc: ['Chọn các phản ứng đốt cháy CH4, nhiệt phân CaCO3, tổng hợp HCl/NH3 để đối chiếu mức năng lượng chất đầu và sản phẩm.'],
-        cauHoi: 'Vì sao khi tính ΔrH°298 theo ΔfH° lấy sản phẩm trừ chất đầu, còn theo Eb lại lấy chất đầu trừ sản phẩm?'
+        mucTieu: 'Ôn tập dấu biến thiên enthalpy ΔrH°₂₉₈ và tính nhiệt lượng Q = m·c·ΔT qua 3 phản ứng chuẩn SGK.'
       }
     ]},
     { bai: '19', ten: 'Tốc độ phản ứng', links: [
       {
-        ten: 'Xi-lanh thu khí & Đồ thị chồng V(t) đkc 24,79 L/mol (Lab tự làm)',
-        labId: 'toc-do?sub=xilanh',
+        ten: 'Tốc độ phản ứng 3D: Bóng bay · Dấu X · Xúc tác MnO₂ (Lab 3D)',
+        labId: 'toc-do',
         embed: true,
-        mucTieu: 'Khảo sát 4 yếu tố ảnh hưởng tốc độ phản ứng (nồng độ, nhiệt độ Van’t Hoff γ = 2, diện tích bề mặt, xúc tác MnO2) kèm xi-lanh thu khí và kính lúp va chạm.',
-        buoc: [
-          'Chạy Lần 1 ở 25 °C rồi bấm <b>📌 Ghim làm Lần 1</b>.',
-          'Đổi nhiệt độ lên 45 °C hoặc chọn bột mịn rồi chạy Lần 2 để thấy hai đường cong hội tụ tại đúng 99,2 mL (đkc).'
-        ],
-        cauHoi: 'Nếu hệ số nhiệt độ Van’t Hoff γ = 2, tăng nhiệt độ từ 25 °C lên 45 °C thì tốc độ phản ứng tăng lên bao nhiêu lần?'
-      },
-      {
-        ten: 'Thí nghiệm Dấu × biến mất: Na₂S₂O₃ + H₂SO₄ (Lab tự làm)',
-        labId: 'toc-do?sub=chu-thap',
-        embed: true,
-        mucTieu: 'Đo thời gian kết tủa keo lưu huỳnh S↓ che khuất dấu chữ thập (×) dưới đáy bình khi thay đổi nồng độ Na2S2O3 và nhiệt độ.',
-        buoc: ['Chọn nồng độ 0,05 M rồi 0,20 M, bấm <b>▶ Rót H2SO4 & Bấm giờ</b> và đối chiếu cột 1/t trong bảng kết quả.'],
-        cauHoi: 'Khi nồng độ dung dịch Na2S2O3 tăng gấp đôi, thời gian để dấu × biến mất thay đổi thế nào?'
+        mucTieu: '3 phòng thực hành: CaCO₃ cục/bột & nồng độ HCl làm phồng 2 bóng bay real-time, thí nghiệm dấu X biến mất ở 20 °C vs 60 °C và xúc tác MnO₂ phân hủy H₂O₂ thử que đóm tàn đỏ.'
       },
       {
         ten: 'Rate of reaction – Các yếu tố ảnh hưởng tốc độ (MrChemCoach)',
@@ -988,25 +973,30 @@
     ]},
     { bai: '20', ten: 'Ôn tập chương 6', links: [
       {
-        ten: 'Tổng ôn Tốc độ phản ứng: Xi-lanh & Dấu × (Lab tự làm)',
-        labId: 'toc-do?sub=xilanh',
+        ten: 'Tổng ôn 5 yếu tố Tốc độ phản ứng (Lab 3D)',
+        labId: 'toc-do',
         embed: true,
-        mucTieu: 'Thực hành so sánh chồng đồ thị V(t) nhiều điều kiện và bảng thời gian khuất dấu × trong phản ứng Na2S2O3 + H2SO4.',
-        buoc: ['Ghim đường cong chuẩn và kiểm chứng quy tắc Van’t Hoff với γ = 2.'],
-        cauHoi: 'Vì sao khi tăng nhiệt độ thì tần số va chạm hiệu quả giữa các hạt tăng mạnh?'
+        mucTieu: 'Tổng ôn diện tích bề mặt, nồng độ, nhiệt độ (dấu X) và chất xúc tác MnO₂ trên phòng thí nghiệm 3D.'
       }
     ]},
     { bai: '21', ten: 'Nhóm halogen', links: [
       {
-        ten: 'Phản ứng thế Halogen (Cl₂ > Br₂ > I₂) & Hồ tinh bột (Lab tự làm)',
-        labId: 'halide?sub=the',
+        ten: 'Tính tẩy màu của khí Cl₂ ẩm trong tủ hút khí độc (Lab 3D)',
+        labId: 'cl2-tay',
         embed: true,
-        mucTieu: 'Chứng minh tính oxi hóa giảm dần từ Cl2 → Br2 → I2 qua phản ứng đẩy Br⁻, I⁻ khỏi dung dịch muối và thử phức xanh tím I2 + hồ tinh bột.',
-        buoc: [
-          'Nhỏ nước Cl2 vào ống NaBr (chuyển nâu đỏ Br2) và ống KI (chuyển vàng nâu I2).',
-          'Nhỏ tiếp <b>Hồ tinh bột</b> vào ống KI có I2 để thấy màu xanh tím đậm và thử đun nóng / để nguội!'
-        ],
-        cauHoi: 'Vì sao nước Chlorine đẩy được Bromine ra khỏi dung dịch NaBr nhưng nước Bromine lại không đẩy được Chlorine ra khỏi dung dịch NaCl?'
+        mucTieu: 'Tự tay xịt ẩm mẫu giấy đỏ / quỳ tím / hoa hồng / lá xanh đối chứng mẫu khô trong bình khí Cl₂ vàng lục, bật quạt tủ hút xả sạch khí độc.'
+      },
+      {
+        ten: 'Thăng hoa & Ngưng kết tinh thể Iodine I₂ (Lab 3D)',
+        labId: 'iodine',
+        embed: true,
+        mucTieu: 'Đun tinh thể I₂ tím đen thăng hoa trực tiếp thành khói tím và kết tinh ngược thành chùm mũi kim ánh kim dưới đáy bát đá lạnh.'
+      },
+      {
+        ten: 'Phản ứng thế Halogen & Chiết tách 2 lớp Hexane (Lab 3D)',
+        labId: 'halide',
+        embed: true,
+        mucTieu: 'Chứng minh tính oxi hóa Cl₂ > Br₂ > I₂, chiết tách 2 lớp Hexane cam / tím hồng và thử hồ tinh bột.'
       },
       {
         ten: 'Chlor-alkali process – Điện phân dung dịch NaCl có màng ngăn (MrChemCoach)',
@@ -1047,15 +1037,10 @@
     ]},
     { bai: '22', ten: 'Hydrogen halide. Muối halide', links: [
       {
-        ten: 'Nhận biết F⁻, Cl⁻, Br⁻, I⁻ bằng AgNO₃ & Muối rắn + H₂SO₄đ (Lab tự làm)',
-        labId: 'halide?sub=ag',
+        ten: 'Nhận biết F⁻, Cl⁻, Br⁻, I⁻ bằng AgNO₃ & Muối rắn + H₂SO₄ đặc (Lab 3D)',
+        labId: 'halide',
         embed: true,
-        mucTieu: 'Nhỏ AgNO3 phân biệt NaF (tan), NaCl (AgCl trắng), NaBr (AgBr vàng nhạt), NaI (AgI vàng đậm) kèm kính lúp ion và thử muối rắn với H2SO4 đặc.',
-        buoc: [
-          'Bấm <b>💧 Nhỏ AgNO3 cả 4 ống</b> hoặc kéo lọ thuốc thử vào từng ống nghiệm để quan sát kết tủa lắng xuống đáy.',
-          'Thử nhỏ tiếp <b>HNO3 loãng</b> và bấm chiếu sáng lên ống AgCl, hoặc sang tab <b>Thế Halogen & H2SO4đ</b> xem muối rắn + H2SO4 đặc.'
-        ],
-        cauHoi: 'Vì sao không điều chế được HBr và HI bằng phản ứng giữa NaBr, NaI rắn với dung dịch H2SO4 đặc như điều chế HCl?'
+        mucTieu: 'Nhỏ AgNO₃ phân biệt NaF (tan), NaCl (AgCl trắng tan trong NH₃), NaBr (vàng nhạt), NaI (vàng đậm), chiếu ánh sáng UV và thử tính khử muối rắn với H₂SO₄ đặc.'
       },
       {
         ten: 'Cation and anion tests – Nhận biết ion Halide Cl⁻, Br⁻, I⁻ (MrChemCoach)',
@@ -1103,15 +1088,10 @@
     ]},
     { bai: '23', ten: 'Ôn tập chương 7', links: [
       {
-        ten: 'Thử thách Giải mã 4 lọ Halide mất nhãn X, Y, Z, T (Lab tự làm)',
-        labId: 'halide?sub=game',
+        ten: 'Thử thách Giải mã 4 lọ Halide mất nhãn X, Y, Z, T (Lab 3D)',
+        labId: 'halide',
         embed: true,
-        mucTieu: 'Vận dụng phản ứng với AgNO3 và nước Cl2 để tự thí nghiệm, suy luận và gọi đúng tên 4 dung dịch mất nhãn NaF, NaCl, NaBr, NaI.',
-        buoc: [
-          'Nhỏ dung dịch AgNO3 vào 4 ống X, Y, Z, T.',
-          'Quan sát màu kết tủa lắng xuống, điền tên hóa chất vào phiếu giải mã và bấm <b>✓ Chấm điểm</b>.'
-        ],
-        cauHoi: 'Trình bày các bước nhận biết 4 dung dịch riêng biệt: NaF, NaCl, NaBr, NaI chỉ bằng một thuốc thử duy nhất.'
+        mucTieu: 'Chuyển sang tab 4 (Giải mã 4 lọ) để tự nhỏ AgNO₃ & NH₃, suy luận và gọi đúng tên 4 dung dịch mất nhãn NaF, NaCl, NaBr, NaI.'
       }
     ]}
   ];
@@ -1130,7 +1110,6 @@
   ];
 
   const CHUONG_TN = [
-    { id: 'C0', ten: 'Mở đầu · Nhập môn Hóa học', bais: ['MD'] },
     { id: 'C1', ten: 'Chương 1 · Cấu tạo nguyên tử', bais: ['1', '2', '3', '4'] },
     { id: 'C2', ten: 'Chương 2 · Bảng tuần hoàn', bais: ['5', '6', '7', '8', '9'] },
     { id: 'C3', ten: 'Chương 3 · Liên kết hóa học', bais: ['10', '11', '12', '13', '14'] },
@@ -1183,7 +1162,8 @@
     const actualUrl = laTuLam ? urlLabTuLam(linkObj.labId, true) : linkObj.url;
     const extUrl = laTuLam ? urlLabTuLam(linkObj.labId, false) : linkObj.url;
     const coNhung = linkObj.embed !== false;
-    let anHD = false;
+    // Lab 3D tự làm đã tích hợp sẵn cột hướng dẫn + phương trình Tiếng Việt bên trong -> mở rộng 100% khung 3D!
+    let anHD = laTuLam;
 
     const vocabHtml = (linkObj.tuDien && linkObj.tuDien.length)
       ? ('<div class="lab-sec"><h3>🔤 Từ điển nút bấm (Anh – Việt)</h3><div class="lab-vocab">' +
@@ -1218,16 +1198,16 @@
           '<b>' + esc(linkObj.ten) + '</b>' +
         '</div>' +
         '<div class="hang-nut">' +
-          (coNhung ? '<button type="button" class="nut nho tim top-extra" data-x="tog-hd">📖 Ẩn/Hiện hướng dẫn Tiếng Việt</button>' : '') +
-          '<a class="nut nho vien" href="' + esc(extUrl) + '" target="h10_ngoai" rel="noopener">↗ Mở cửa sổ riêng</a>' +
+          (coNhung && !laTuLam ? '<button type="button" class="nut nho tim top-extra" data-x="tog-hd">📖 Ẩn/Hiện hướng dẫn Tiếng Việt</button>' : '') +
+          '<a class="nut nho vien" href="' + esc(extUrl) + '" target="h10_ngoai" rel="noopener">↗ Toàn màn hình</a>' +
           '<button type="button" class="nut nho chinh" data-x="dong">✕ Đóng</button>' +
         '</div>' +
       '</div>' +
-      (coNhung ? '<div class="lab-mob-tabs">' +
+      (coNhung && !laTuLam ? '<div class="lab-mob-tabs">' +
         '<button type="button" class="nut nho chinh" data-x="m-sim">🔬 Màn hình Thí nghiệm</button>' +
         '<button type="button" class="nut nho" data-x="m-hd">' + (vocabHtml ? '📖 Hướng dẫn &amp; Từ điển Tiếng Việt' : '📖 Hướng dẫn thực hành') + '</button>' +
       '</div>' : '') +
-      '<div class="lab-body' + (coNhung ? '' : ' ngoai-only') + '" data-x="body">' +
+      '<div class="lab-body' + (coNhung ? (anHD ? ' an-hd' : '') : ' ngoai-only') + '" data-x="body">' +
         (coNhung
           ? ('<div class="lab-stage"><iframe src="' + esc(actualUrl) + '" allowfullscreen allow="fullscreen; autoplay"></iframe></div>' +
              '<aside class="lab-guide" aria-label="Hướng dẫn Tiếng Việt">' + guideContent + '</aside>')
@@ -1288,9 +1268,9 @@
     });
 
     let h = '<div class="hero-box art-flask has-right" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">' +
-      '<div style="flex:1 1 260px;min-width:0"><span class="chip sky" style="white-space:normal;max-width:100%">PHÒNG LAB ẢO TRỰC TIẾP · CÓ HƯỚNG DẪN TIẾNG VIỆT</span>' +
-      '<h1>Thí nghiệm ảo &amp; Sổ tay thực hành Hóa 10</h1>' +
-      '<p class="phu" style="margin:0">Bấm <b>▶ Làm ngay trên web</b> để mở trực tiếp mô phỏng PhET / JavaLab / Ptable kèm <b>Hướng dẫn từng bước &amp; Từ điển nút bấm Tiếng Việt</b> bên cạnh.</p></div>';
+      '<div style="flex:1 1 260px;min-width:0"><span class="chip sky" style="white-space:normal;max-width:100%">14 PHÒNG LAB 3D TIẾNG VIỆT · KÈM MÔ PHỎNG PHET &amp; HƯỚNG DẪN</span>' +
+      '<h1>Phòng Thí Nghiệm 3D &amp; Mô Phỏng Hóa 10</h1>' +
+      '<p class="phu" style="margin:0">Trải nghiệm <b>14 phòng Lab 3D real-time</b> tương tác trực tiếp đủ 7 chương SGK Kết nối tri thức, cùng các bài mô phỏng PhET / JavaLab / Ptable kèm <b>Hướng dẫn &amp; Từ điển Tiếng Việt</b>.</p></div>';
     if (cfg.linkThuMucThiNghiem) {
       h += '<a class="nut chinh" href="' + esc(cfg.linkThuMucThiNghiem) + '" target="h10_ngoai" rel="noopener">Thư mục thí nghiệm (Drive)</a>';
     }
@@ -1312,16 +1292,16 @@
       '</div></section>';
 
     if (!loc.bai && !tk) {
-      h += '<div class="sec-head" style="margin-top:8px"><h2>🇻🇳 7 Phòng Lab Tự Làm — Chuẩn SGK Kết Nối Tri Thức</h2>' +
-        '<a class="nut nho tim" href="' + esc(urlLabTuLam('', false)) + '" target="h10_ngoai" rel="noopener">🏛️ Mở sảnh 7 Lab ↗</a></div>' +
+      h += '<div class="sec-head" style="margin-top:8px"><h2>🧊 14 Phòng Lab 3D Hóa 10 — Tương tác Real-time</h2>' +
+        '<a class="nut nho tim" href="' + esc(urlLabTuLam('', false)) + '" target="h10_ngoai" rel="noopener">🏛️ Mở sảnh 14 Lab 3D ↗</a></div>' +
         '<div class="tn-grid" style="margin-bottom:14px">' +
-        LAB_SAN_7.map(function (lb, idx) {
+        LAB_3D_14.map(function (lb, idx) {
           return '<div class="tn-row" style="border-left-color:var(--do)">' +
             '<div class="tn-head" style="flex-wrap:wrap">' +
-              '<span class="tn-badge" style="background:linear-gradient(135deg,var(--do-n),var(--tim-n));color:var(--do)"><small>Lab</small>' + (idx + 1) + '</span>' +
-              '<div class="tn-ten" style="flex:1;min-width:170px"><b>' + esc(lb.ten) + '</b><span class="phu">🇻🇳 Lab tự làm · ' + esc(lb.bai) + '</span></div>' +
+              '<span class="tn-badge" style="background:linear-gradient(135deg,var(--do-n),var(--tim-n));color:var(--do)"><small>3D</small>' + (idx + 1) + '</span>' +
+              '<div class="tn-ten" style="flex:1;min-width:170px"><b>' + esc(lb.ten) + '</b><span class="phu">🧊 Phòng Lab 3D · Bài ' + esc(lb.bai) + '</span></div>' +
               '<div class="hang-nut">' +
-                '<button type="button" class="nut nho chinh" data-san-idx="' + idx + '">▶ Mở Lab ngay</button>' +
+                '<button type="button" class="nut nho chinh" data-san-idx="' + idx + '">▶ Mở Lab 3D</button>' +
                 '<a class="nut nho" href="' + esc(urlLabTuLam(lb.labId, false)) + '" target="h10_ngoai" rel="noopener" title="Mở toàn màn hình">↗</a>' +
               '</div>' +
             '</div>' +
@@ -1353,9 +1333,9 @@
             const extHref = laTuLam ? urlLabTuLam(l.labId, false) : l.url;
             return '<div class="tn-sim-card">' +
               '<div class="tn-sim-info">' +
-                '<b><span>' + (laTuLam ? '🇻🇳 ' : '⚗️ ') + esc(l.ten) + '</span>' +
-                  (laTuLam ? '<span class="chip chinh" style="font-size:10.5px;padding:1px 7px">🇻🇳 Lab tự làm</span>' : '') +
-                  '<span class="chip ' + (coNhung ? 'ok' : 'tim') + '" style="font-size:10.5px;padding:1px 7px">' + (coNhung ? 'Chạy trên web + Tiếng Việt' : 'Kèm HD Tiếng Việt') + '</span></b>' +
+                '<b><span>' + (laTuLam ? '🧊 ' : '⚗️ ') + esc(l.ten) + '</span>' +
+                  (laTuLam ? '<span class="chip chinh" style="font-size:10.5px;padding:1px 7px">🧊 Lab 3D</span>' : '') +
+                  '<span class="chip ' + (coNhung ? 'ok' : 'tim') + '" style="font-size:10.5px;padding:1px 7px">' + (laTuLam ? 'Tương tác 3D · Tiếng Việt' : (coNhung ? 'Chạy trên web + Tiếng Việt' : 'Kèm HD Tiếng Việt')) + '</span></b>' +
                 (l.mucTieu ? '<span class="phu">' + md(l.mucTieu) + '</span>' : '') +
               '</div>' +
               '<div class="hang-nut">' +
@@ -1384,7 +1364,7 @@
     const txl = $('#tn-xoa-loc'); if (txl) txl.onclick = function () { loc = { bai: '', tk: '' }; veTrang(); };
     app.querySelectorAll('[data-b]').forEach(btn => btn.onclick = () => { loc.bai = btn.getAttribute('data-b'); veTrang(); });
     app.querySelectorAll('[data-san-idx]').forEach(btn => btn.onclick = () => {
-      const lb = LAB_SAN_7[Number(btn.getAttribute('data-san-idx'))];
+      const lb = LAB_3D_14[Number(btn.getAttribute('data-san-idx'))];
       if (lb) moPhongLab({ bai: lb.bai, ten: lb.ten }, lb);
     });
     app.querySelectorAll('[data-open-bai]').forEach(btn => btn.onclick = () => {

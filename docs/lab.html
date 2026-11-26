@@ -4,13 +4,13 @@
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Phòng Lab Hóa 10 – Thầy Hoàng</title>
-<meta name="description" content="Phòng thí nghiệm ảo Hóa 10 tiếng Việt chuẩn SGK Kết nối tri thức: nhận biết Halide, tốc độ phản ứng, nhiệt lượng kế, kim loại kiềm, màu ngọn lửa, dẫn điện ion, điền orbital &amp; phổ MS.">
+<title>14 Phòng Lab 3D Hóa 10 – Thầy Hoàng</title>
+<meta name="description" content="Sảnh 14 phòng thí nghiệm 3D Hóa học 10 tương tác real-time chuẩn SGK Kết nối tri thức: Rutherford, Orbital, Ngọn lửa, Kim loại kiềm, Al(OH)3, NaCl, Dẫn điện, Hydrogen, Oxi hóa – khử, Enthalpy, Tốc độ, Cl2, I2, Halide.">
 <meta name="theme-color" content="#5B1126">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hóa 10 – Thầy Hoàng">
-<meta property="og:title" content="Phòng Lab Hóa 10 – Thầy Hoàng">
-<meta property="og:description" content="Phòng thí nghiệm ảo Hóa 10 tiếng Việt chuẩn SGK Kết nối tri thức: nhận biết Halide, tốc độ phản ứng, nhiệt lượng kế, kim loại kiềm, màu ngọn lửa, dẫn điện ion, điền orbital &amp; phổ MS.">
+<meta property="og:title" content="14 Phòng Lab 3D Hóa 10 – Thầy Hoàng">
+<meta property="og:description" content="Sảnh 14 phòng thí nghiệm 3D Hóa học 10 tương tác real-time chuẩn SGK Kết nối tri thức: Rutherford, Orbital, Ngọn lửa, Kim loại kiềm, Al(OH)3, NaCl, Dẫn điện, Hydrogen, Oxi hóa – khử, Enthalpy, Tốc độ, Cl2, I2, Halide.">
 <meta property="og:url" content="https://hoangchu54.github.io/hoa10/lab.html">
 <meta property="og:image" content="https://hoangchu54.github.io/hoa10/assets/icons/og-cover.jpg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
@@ -23,3102 +23,372 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/h10.css?v=5ecf67950d">
 <style>
-  body.lh-body{min-height:100vh;min-height:100dvh;background-color:var(--nen);color:var(--chu)}
-  body.lh-embed .lh-topbar,body.lh-embed .lh-nav-bar,body.lh-embed .lh-foot{display:none!important}
-  body.lh-embed .lh-main{padding:8px 10px 14px;max-width:100%}
-  body.lh-embed .lh-bar-l > .chip,body.lh-embed .lh-bar-title{display:none}
-  .lh-topbar{position:sticky;top:0;z-index:35;background:var(--the);border-bottom:1px solid var(--vien);box-shadow:0 3px 14px rgba(24,18,40,.06)}
-  .lh-topbar::before{content:"";display:block;height:3.5px;background:var(--grad)}
-  .lh-nav-bar{background:var(--nen2);border-bottom:1px solid var(--vien);padding:7px 14px}
-  .lh-nav-in{max-width:1320px;margin:0 auto;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:center}
-  .lh-nav-in::-webkit-scrollbar{display:none}
-  .lh-nav-pill{flex:none;display:inline-flex;align-items:center;gap:5px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--vien);background:var(--the);color:var(--chu);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap;transition:border-color .14s,background-color .14s,transform .12s}
-  .lh-nav-pill:hover{border-color:var(--tim-v);background:var(--tim-n);color:var(--tim);text-decoration:none}
-  .lh-nav-pill.on{background:linear-gradient(135deg,var(--do),var(--tim));border-color:transparent;color:#fff;box-shadow:0 3px 10px rgba(109,40,217,.24)}
-  .lh-main{max-width:1320px;margin:0 auto;padding:14px 16px 32px}
-  .lh-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:var(--the);border:1px solid var(--vien);border-radius:15px;box-shadow:var(--shadow);margin-bottom:12px}
-  .lh-bar-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
-  .lh-bar-title{font-size:15.5px;font-weight:800;line-height:1.25}
-  .lh-bar-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-  .lh-stage-grid{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(300px,1fr);gap:12px;align-items:start}
-  @media (max-width:920px){.lh-stage-grid{grid-template-columns:minmax(0,1fr)}}
-  .lh-viewport{position:relative;border-radius:16px;overflow:hidden;border:1.5px solid #2A3656;background:linear-gradient(180deg,#0D1426 0%,#16213B 77%,#2F241E 77%,#1A1310 100%);box-shadow:var(--shadow-lg);min-height:360px;user-select:none;-webkit-user-select:none}
-  .lh-viewport.light-bench{background:linear-gradient(180deg,#121B31 0%,#1E2B48 77%,#332721 77%,#1E1613 100%)}
-  .lh-viewport svg.lh-svg{display:block;width:100%;height:100%}
-  .lh-cv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-  .lh-hud-top{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;z-index:3}
-  .lh-hud-badge{background:rgba(12,17,32,.78);border:1px solid rgba(255,255,255,.16);color:#F8FAFC;border-radius:10px;padding:5px 10px;font-size:12px;font-weight:700;backdrop-filter:blur(4px);pointer-events:auto}
-  .lh-micro-lens{position:absolute;right:12px;bottom:14px;width:144px;height:144px;border-radius:50%;border:3px solid #38BDF8;background:radial-gradient(circle at 35% 30%,#1B294A 0%,#0B1120 100%);box-shadow:0 8px 26px rgba(0,0,0,.55),inset 0 0 18px rgba(56,189,248,.22);overflow:hidden;z-index:4;display:none}
-  .lh-micro-lens.on{display:block}
-  .lh-micro-lens canvas{width:100%;height:100%;display:block}
-  .lh-micro-cap{position:absolute;left:0;right:0;bottom:4px;text-align:center;font-size:10px;font-weight:800;color:#BAE6FD;text-shadow:0 1px 3px #000;pointer-events:none}
-  .lh-panel{display:flex;flex-direction:column;gap:10px}
-  .lh-card{background:var(--the);border:1px solid var(--vien);border-radius:15px;padding:13px 15px;box-shadow:var(--shadow)}
-  .lh-card h3{margin:0 0 8px;font-size:13.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--do);display:flex;align-items:center;gap:6px}
-  .lh-rack{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
-  .lh-reagent{min-height:46px;flex:1 1 110px;padding:7px 10px;border-radius:12px;border:1.5px solid var(--vien);background:var(--nen2);color:var(--chu);cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;text-align:left;transition:transform .12s,border-color .14s,box-shadow .14s,background-color .14s;touch-action:none}
-  .lh-reagent:hover{border-color:var(--tim-v);background:var(--the);transform:translateY(-1px)}
-  .lh-reagent.on{border-color:var(--do);background:linear-gradient(135deg,var(--do-n),var(--tim-n));color:var(--do);box-shadow:0 3px 10px rgba(122,34,48,.16)}
-  .lh-reagent i{width:14px;height:20px;border-radius:4px 4px 6px 6px;border:1.5px solid rgba(0,0,0,.22);display:inline-block;flex-shrink:0}
-  .lh-eq{background:var(--nen2);border:1px solid var(--vien);border-left:4px solid var(--tim);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.55}
-  .lh-eq b{color:var(--do)}
-  .lh-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:8px}
-  .lh-stat{background:var(--nen2);border:1px solid var(--vien2);border-radius:11px;padding:8px 10px}
-  .lh-stat span{display:block;font-size:11px;font-weight:700;color:var(--mo);text-transform:uppercase}
-  .lh-stat b{font-size:17px;font-weight:800;color:var(--chu);line-height:1.25}
-  .lh-pills{display:flex;flex-wrap:wrap;gap:6px}
-  .lh-pill-btn{min-height:40px;padding:5px 12px;border-radius:10px;border:1.5px solid var(--vien);background:var(--nen2);color:var(--chu);font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all .12s}
-  .lh-pill-btn:hover{border-color:var(--tim-v);background:var(--the)}
-  .lh-pill-btn.on{background:linear-gradient(135deg,var(--do),var(--tim));border-color:transparent;color:#fff;box-shadow:0 2px 8px rgba(109,40,217,.22)}
-  .lh-chart-box{background:var(--nen2);border:1px solid var(--vien);border-radius:12px;padding:8px;position:relative}
-  .lh-chart-box canvas{display:block;width:100%;height:190px}
-  .lh-lobby-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:12px}
-  .lh-lobby-card{background:var(--the);border:1px solid var(--vien);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s,border-color .15s;cursor:pointer;text-align:left;padding:0;color:inherit}
-  .lh-lobby-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--tim-v)}
-  .lh-lobby-art{height:118px;padding:10px;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(135deg,#121A2F 0%,#26183D 100%)}
-  .lh-lobby-art svg{width:100%;height:100%;max-height:98px}
-  .lh-lobby-body{padding:13px 15px;display:flex;flex-direction:column;gap:6px;flex:1}
-  .lh-lobby-body b{font-size:15.5px;font-weight:800;line-height:1.3}
-  .lh-lobby-body .phu{font-size:12.5px;line-height:1.45}
-  /* Orbital Workshop */
-  .lh-orb-shells{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
-  .lh-subshell{background:var(--nen2);border:1px solid var(--vien);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;align-items:center}
-  .lh-subshell-lbl{font-size:12px;font-weight:800;color:var(--tim)}
-  .lh-orb-row{display:flex;gap:4px}
-  .lh-obox{width:46px;height:46px;border-radius:10px;border:2px solid var(--vien);background:var(--the);color:var(--chu);font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:1px;cursor:pointer;transition:border-color .12s,transform .1s,background-color .12s}
-  .lh-obox:hover{border-color:var(--tim);transform:translateY(-1px)}
-  .lh-obox.full{border-color:var(--ok);background:var(--ok-n)}
-  .lh-obox.half{border-color:var(--tim);background:var(--tim-n)}
-  .lh-obox .up{color:var(--do)}
-  .lh-obox .dn{color:var(--tim)}
-  .lh-el-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:5px}
-  .lh-el-btn{min-height:44px;padding:3px 4px;border-radius:9px;border:1px solid var(--vien);background:var(--nen2);color:var(--chu);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;transition:all .1s}
-  .lh-el-btn small{font-size:9.5px;color:var(--mo);font-weight:700}
-  .lh-el-btn b{font-size:14px;font-weight:800}
-  .lh-el-btn.on{background:linear-gradient(135deg,var(--do),var(--tim));border-color:transparent;color:#fff}
-  .lh-el-btn.on small{color:rgba(255,255,255,.85)}
-  .lh-el-btn.exc{border-color:var(--canh)}
-  .lh-drag-ghost{position:fixed;z-index:99;pointer-events:none;transform:translate(-50%,-80%);padding:6px 11px;border-radius:999px;background:rgba(15,23,42,.92);color:#fff;border:1.5px solid #38BDF8;font-size:12.5px;font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.35)}
-  .lh-tube-hit{cursor:pointer}
-  .lh-tube-hit:hover .lh-tube-ring{opacity:.85}
-  .lh-tube-ring{opacity:0;transition:opacity .15s}
-  .lh-tube-hit.hover .lh-tube-ring{opacity:1;stroke:#38BDF8}
-  .lh-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
-  .lh-tbl th,.lh-tbl td{padding:6px 8px;border-bottom:1px solid var(--vien);text-align:left}
-  .lh-tbl th{font-size:11px;color:var(--mo);text-transform:uppercase}
-  @media (max-width:640px){
-    .lh-main{padding:10px 10px 24px}
-    .lh-viewport{min-height:300px}
-    .lh-micro-lens{width:112px;height:112px;right:8px;bottom:8px}
-    .lh-pill-btn,.lh-reagent,.lh-obox{min-height:44px}
-    .lh-main .nut,.lh-main .seg button{min-height:44px}
-    .lh-bar{padding:9px 10px}
+  .lab3d-frame-wrap{
+    display:flex;
+    flex-direction:column;
+    height:calc(100dvh - 62px);
+    background:#080610;
   }
-  @media (prefers-reduced-motion:reduce){
-    *{transition-duration:0.01ms!important;animation-duration:0.01ms!important}
+  .lab3d-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:8px 14px;
+    background:var(--the);
+    border-bottom:1px solid var(--vien);
+    flex-wrap:wrap;
+  }
+  .lab3d-bar-l{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:1 1 260px;
+    min-width:0;
+  }
+  .lab3d-bar select{
+    flex:1 1 200px;
+    max-width:440px;
+    min-width:0;
+    padding:7px 11px;
+    border-radius:10px;
+    border:1px solid var(--vien);
+    background:var(--nen-phu, var(--nen));
+    color:var(--chu);
+    font:inherit;
+    font-size:13px;
+    font-weight:700;
+  }
+  .lab3d-iframe{
+    flex:1 1 auto;
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+    background:#080610;
+  }
+  body.lab-embed .topbar,
+  body.lab-embed .lab3d-bar,
+  body.lab-embed #h10-mob-dock,
+  body.lab-embed #h10-casio-fab{
+    display:none !important;
+  }
+  body.lab-embed .lab3d-frame-wrap{
+    height:100dvh;
+  }
+  .hub3d-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(310px, 1fr));
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .hub3d-card{
+    background:var(--the);
+    border:1px solid var(--vien);
+    border-left:4px solid var(--do);
+    border-radius:16px;
+    padding:14px 15px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    box-shadow:var(--bong);
+    transition:transform .16s ease, border-color .16s ease;
+  }
+  .hub3d-card:hover{
+    transform:translateY(-2px);
+    border-color:var(--tim);
+  }
+  .hub3d-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .hub3d-ic{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:linear-gradient(135deg, var(--do-n), var(--tim-n));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    flex-shrink:0;
+  }
+  .hub3d-meta{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    min-width:0;
+    flex:1;
+  }
+  .hub3d-meta b{
+    font-size:14.5px;
+    line-height:1.3;
+  }
+  .hub3d-desc{
+    font-size:12.8px;
+    line-height:1.52;
+    color:var(--phu);
+    flex:1;
+  }
+  .hub3d-actions{
+    display:flex;
+    gap:6px;
+    margin-top:2px;
+  }
+  @media (max-width:640px){
+    .lab3d-frame-wrap{ height:calc(100dvh - 56px); }
+    .lab3d-bar{ padding:6px 10px; }
+    .hub3d-grid{ grid-template-columns:1fr; }
   }
 </style>
 </head>
-<body class="lh-body">
-<header class="lh-topbar" id="lh-topbar">
-  <div class="topbar-in">
-    <a class="brand" id="lh-brand-home" href="thinghiem.html" target="_self">
-      <div class="brand-mark" id="lh-brand-ic"></div>
-      <div class="brand-txt">
-        <div class="nho">HÓA HỌC 10 · KẾT NỐI TRI THỨC</div>
-        <div class="ten">Phòng Lab Ảo Tiếng Việt</div>
+<body class="embed-ok">
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-in">
+      <div class="brand">
+        <div class="brand-mark" id="brand-ic"></div>
+        <div class="brand-txt">
+          <div class="nho">HÓA HỌC 10 · KNTT</div>
+          <div class="ten">14 Phòng Lab 3D Tương tác</div>
+        </div>
       </div>
-    </a>
-    <div class="top-right">
-      <button type="button" class="top-pill" id="lh-btn-sfx" title="Bật/tắt âm hiệu ứng">🔊 Âm thanh</button>
-      <a class="top-pill" id="lh-btn-back" href="thinghiem.html" target="_self">← Thí nghiệm SGK</a>
-      <button type="button" class="top-pill" id="lh-btn-theme"></button>
+      <div class="top-right">
+        <a class="top-pill an" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
+        <a class="top-pill an" id="btn-btvn" href="#" target="_top">📝 Làm BTVN</a>
+        <a class="top-pill an" id="btn-tailieu" href="#" target="_self">📚 Tài liệu</a>
+        <a class="top-pill an" id="btn-tn" href="#" target="_self">🔬 Thí nghiệm</a>
+        <span class="top-pill on">🧊 Lab 3D</span>
+        <a class="top-pill an" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
+        <button type="button" class="top-pill" id="btn-theme"></button>
+      </div>
     </div>
-  </div>
-</header>
-<nav class="lh-nav-bar" id="lh-nav-bar" aria-label="Chọn phòng thí nghiệm">
-  <div class="lh-nav-in" id="lh-nav-in"></div>
-</nav>
+  </header>
 
-<main class="lh-main" id="lh-main" aria-live="polite"></main>
-
-<footer class="lh-foot" style="max-width:1320px;margin:0 auto;padding:0 16px 26px">
-  <div id="lh-slogan"></div>
-</footer>
+  <main id="app" aria-live="polite"></main>
+</div>
 
 <script src="assets/h10.js?v=f65a9f6233"></script>
 <script>
 (function () {
-  'use strict';
-  const H10 = window.H10;
-  const { esc, md, phaoGiay, laGAS, getLocation, linkTrang, ganNutTheme, renderSlogan, ICONS } = H10;
+  const { esc, md, laGAS, getLocation, linkTrang, ICONS, ganNutTheme, renderSlogan, ganThanhDieuHuongHS, ganNutLenDau } = window.H10;
+  const GH_LABS3D_BASE = 'https://hoangchu54.github.io/hoa10/labs3d/';
+  document.getElementById('brand-ic').innerHTML = ICONS.lab;
+  ganNutTheme(document.getElementById('btn-theme'));
+  ganNutLenDau();
 
-  /* ============================================================================
-   * NGUỒN SỐ LIỆU CHUẨN SGK HÓA HỌC 10 – KẾT NỐI TRI THỨC (BGDĐT / TT32-2018)
-   * - Điều kiện chuẩn (đkc): 25 °C (298 K), 1 bar => V_m = 24,79 L/mol.
-   * - Danh pháp chuẩn IUPAC tiếng Anh theo SGK mới (Sodium, Potassium, Chlorine...).
-   * - Bài 3: Cấu hình e 20 nguyên tố đầu + ngoại lệ Cr (Z=24), Cu (Z=29).
-   * - Bài 2: Đồng vị Cl (35: 75,77%; 37: 24,23%), Cu (63: 69,15%; 65: 30,85%),
-   *   Br (79: 50,69%; 81: 49,31%), B (10: 19,9%; 11: 80,1%), Mg (24: 78,99%; 25: 10%; 26: 11,01%).
-   * - Bài 17: ΔfH°298 & ΔrH°298 chuẩn (CH4 -74,87; CO2 -393,50; H2O(l) -285,84; H2O(g) -241,8;
-   *   CaCO3(s) -1207,6; CaO(s) -634,9; HCl(g) -92,3; NH3(g) -45,9 kJ/mol).
-   * - Bài 19: Van't Hoff v2/v1 = γ^((T2 - T1)/10); phản ứng Na2S2O3 + H2SO4 tạo kết tủa S↓.
-   * - Bài 21-22: Nhận biết halide bằng AgNO3 (AgF tan; AgCl trắng; AgBr vàng nhạt; AgI vàng),
-   *   tính oxi hóa Cl2 > Br2 > I2, tính khử muối halide với H2SO4 đặc.
-   * ============================================================================ */
-
-  const REDUCED_MOTION = (function () {
-    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
-    catch (e) { return false; }
-  })();
-
-  // Chỉ coi là "nhúng" khi có tham số embed=1 (do ThiNghiem.html gắn vào khung).
-  // Không dùng self !== top: trong GAS trang luôn nằm trong iframe, và GitHub Pages có thể nằm trong Google Sites.
-  let LA_EMBED = false;
-  function apEmbed(on) {
-    LA_EMBED = !!on;
-    document.body.classList.toggle('lh-embed', LA_EMBED);
-  }
-  if (!laGAS) {
-    try { apEmbed(new URLSearchParams(window.location.search).get('embed') === '1'); } catch (e) {}
-  }
-
-  const brandIc = document.getElementById('lh-brand-ic');
-  if (brandIc) brandIc.innerHTML = ICONS.lab;
-  ganNutTheme(document.getElementById('lh-btn-theme'));
-  renderSlogan(document.getElementById('lh-slogan'));
-
-  // Đồng bộ theme khi tab cha thay đổi localStorage
-  window.addEventListener('storage', function (e) {
-    if (e.key === 'hoa10_theme' && e.newValue) H10.apTheme(e.newValue);
-  });
-
-  // Cập nhật link quay về trang Thí nghiệm
-  (function setupBackLink() {
-    const opt = { cfg: {}, webUrl: '', laFull: false };
-    const setLinks = function (wUrl, full) {
-      const l = linkTrang('thinghiem', { cfg: {}, webUrl: wUrl || '', laFull: !!full });
-      ['lh-brand-home', 'lh-btn-back'].forEach(function (id) {
-        const a = document.getElementById(id);
-        if (a) { a.href = l.href; a.target = l.target; }
-      });
-    };
-    setLinks('', false);
-    if (laGAS) {
-      getLocation(function (loc) {
-        const full = !!(loc && loc.parameter && loc.parameter.full);
-        H10.api('tnKhoiDong').then(function (r) {
-          setLinks((r && r.webUrl) || '', full);
-        }).catch(function () {});
-      });
-    }
-  })();
-
-  // ---- Âm thanh WebAudio nhẹ (tắt mở tùy chọn, không tự phát trước chạm) ----
-  const SoundFX = (function () {
-    let ctx = null;
-    let on = true;
-    try { on = localStorage.getItem('h10_lab_sfx') !== '0'; } catch (e) {}
-    function ensure() {
-      if (!on) return null;
-      try {
-        if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-        if (ctx.state === 'suspended') ctx.resume();
-        return ctx;
-      } catch (e) { return null; }
-    }
-    function playTone(freq0, freq1, dur, type, vol) {
-      const ac = ensure(); if (!ac) return;
-      const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
-      o.type = type || 'sine';
-      o.frequency.setValueAtTime(freq0, t);
-      if (freq1) o.frequency.exponentialRampToValueAtTime(freq1, t + dur);
-      g.gain.setValueAtTime(vol || 0.08, t);
-      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      o.connect(g); g.connect(ac.destination);
-      o.start(t); o.stop(t + dur + 0.02);
-    }
-    return {
-      isOn: function () { return on; },
-      toggle: function () {
-        on = !on;
-        try { localStorage.setItem('h10_lab_sfx', on ? '1' : '0'); } catch (e) {}
-        return on;
-      },
-      drop: function () { playTone(680, 320, 0.09, 'sine', 0.08); },
-      bubble: function () { playTone(440 + Math.random() * 220, 920, 0.06, 'sine', 0.04); },
-      ignite: function () { playTone(160, 420, 0.16, 'triangle', 0.10); },
-      click: function () { playTone(520, 620, 0.04, 'sine', 0.05); },
-      error: function () { playTone(230, 150, 0.14, 'sawtooth', 0.06); },
-      win: function () {
-        playTone(523, 523, 0.12, 'triangle', 0.09);
-        setTimeout(function () { playTone(659, 659, 0.12, 'triangle', 0.09); }, 95);
-        setTimeout(function () { playTone(784, 784, 0.22, 'triangle', 0.11); }, 190);
-      }
-    };
-  })();
-
-  function syncSfxBtn(btn) {
-    if (!btn) return;
-    btn.textContent = SoundFX.isOn() ? '🔊 Âm thanh' : '🔇 Tắt âm';
-  }
-  const topSfx = document.getElementById('lh-btn-sfx');
-  syncSfxBtn(topSfx);
-  if (topSfx) topSfx.onclick = function () { SoundFX.toggle(); syncSfxBtn(topSfx); };
-
-  // ---- Vòng đời Module sạch (Clean Destroy, 0 memory leak) ----
-  let activeScope = null;
-  function createScope() {
-    const rafs = [];
-    const timers = [];
-    const intervals = [];
-    const cleanups = [];
-    let dead = false;
-    return {
-      dead: function () { return dead; },
-      raf: function (fn) {
-        if (dead) return 0;
-        const id = requestAnimationFrame(function loop(ts) {
-          if (dead) return;
-          fn(ts);
-        });
-        rafs.push(id);
-        return id;
-      },
-      loop: function (stepFn) {
-        let last = 0, id = 0;
-        function tick(ts) {
-          if (dead) return;
-          if (!document.hidden) {
-            if (!last) last = ts;
-            const dt = Math.min(0.05, Math.max(0.001, (ts - last) / 1000));
-            last = ts;
-            stepFn(dt, ts);
-          } else {
-            last = 0;
-          }
-          id = requestAnimationFrame(tick);
-        }
-        id = requestAnimationFrame(tick);
-        cleanups.push(function () { cancelAnimationFrame(id); });
-      },
-      timeout: function (fn, ms) {
-        if (dead) return 0;
-        const id = setTimeout(function () { if (!dead) fn(); }, ms);
-        timers.push(id);
-        return id;
-      },
-      interval: function (fn, ms) {
-        if (dead) return 0;
-        const id = setInterval(function () { if (!dead && !document.hidden) fn(); }, ms);
-        intervals.push(id);
-        return id;
-      },
-      onCleanup: function (fn) { cleanups.push(fn); },
-      destroy: function () {
-        dead = true;
-        rafs.forEach(cancelAnimationFrame);
-        timers.forEach(clearTimeout);
-        intervals.forEach(clearInterval);
-        cleanups.forEach(function (fn) { try { fn(); } catch (e) {} });
-      }
-    };
-  }
-
-  function fitCanvas(cv, minH) {
-    if (!cv) return { w: 300, h: 200, ctx: null };
-    const rect = cv.getBoundingClientRect();
-    const w = Math.max(160, Math.round(rect.width || cv.clientWidth || 400));
-    const h = Math.max(minH || 120, Math.round(rect.height || cv.clientHeight || 240));
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
-      cv.width = Math.round(w * dpr);
-      cv.height = Math.round(h * dpr);
-    }
-    const ctx = cv.getContext('2d');
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    return { w: w, h: h, ctx: ctx };
-  }
-
-  function hexToRgba(hex, a) {
-    const h = String(hex || '#FFFFFF').replace('#', '');
-    const n = h.length === 3 ? h.split('').map(function (c) { return c + c; }).join('') : h;
-    const v = parseInt(n, 16);
-    if (isNaN(v)) return 'rgba(255,255,255,' + a + ')';
-    return 'rgba(' + ((v >> 16) & 255) + ',' + ((v >> 8) & 255) + ',' + (v & 255) + ',' + a + ')';
-  }
-
-  function fmtNum(v, dec) {
-    return Number(v).toFixed(dec === undefined ? 1 : dec).replace('.', ',');
-  }
-
-  function cssVar(name, fallback) {
-    try {
-      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-      return v || fallback;
-    } catch (e) { return fallback; }
-  }
-
-  function watchTheme(scope, fn) {
-    try {
-      const mo = new MutationObserver(function () { if (!scope.dead()) fn(); });
-      mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-      scope.onCleanup(function () { mo.disconnect(); });
-    } catch (e) {}
-  }
-
-  // ---- Danh mục 7 Phòng Lab sáng giá + Ong-nghiem ----
-  const LAB_LIST = [
-    {
-      id: 'halide', bai: 'Bài 21, 22, 23', ten: 'Nhận biết Halide & Thế Halogen',
-      ngan: 'Halide & AgNO₃',
-      moTa: 'Nhỏ AgNO3 phân biệt F⁻, Cl⁻, Br⁻, I⁻ · Thí nghiệm Cl₂/Br₂ đẩy halogen · Giải mã 4 lọ mất nhãn.',
-      subs: [['ag', 'Nhận biết AgNO₃'], ['the', 'Thế Halogen & H₂SO₄ đặc'], ['game', 'Giải mã 4 lọ mất nhãn']],
-      art: '<svg viewBox="0 0 220 92">' +
-        '<g transform="translate(22,8)"><rect x="4" y="8" width="22" height="62" rx="11" fill="rgba(56,189,248,.16)" stroke="#CBD5E1" stroke-width="2"/><text x="15" y="82" fill="#BAE6FD" font-size="10" font-weight="800" text-anchor="middle">NaF</text></g>' +
-        '<g transform="translate(68,8)"><rect x="4" y="8" width="22" height="62" rx="11" fill="rgba(255,255,255,.12)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 48 H25 V59 A10 10 0 0 1 5 59 Z" fill="#F8FAFC"/><text x="15" y="82" fill="#F8FAFC" font-size="10" font-weight="800" text-anchor="middle">AgCl↓</text></g>' +
-        '<g transform="translate(114,8)"><rect x="4" y="8" width="22" height="62" rx="11" fill="rgba(255,255,255,.12)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 48 H25 V59 A10 10 0 0 1 5 59 Z" fill="#FDE68A"/><text x="15" y="82" fill="#FDE68A" font-size="10" font-weight="800" text-anchor="middle">AgBr↓</text></g>' +
-        '<g transform="translate(160,8)"><rect x="4" y="8" width="22" height="62" rx="11" fill="rgba(255,255,255,.12)" stroke="#CBD5E1" stroke-width="2"/><path d="M5 48 H25 V59 A10 10 0 0 1 5 59 Z" fill="#FACC15"/><text x="15" y="82" fill="#FACC15" font-size="10" font-weight="800" text-anchor="middle">AgI↓</text></g>' +
-      '</svg>'
-    },
-    {
-      id: 'toc-do', bai: 'Bài 19, 20', ten: 'Tốc độ phản ứng & Xi-lanh thu khí',
-      ngan: 'Tốc độ phản ứng',
-      moTa: 'Chỉnh nồng độ, nhiệt độ, kích thước hạt, xúc tác MnO2 · Chồng đồ thị V(t) đkc 24,79 L/mol · Dấu × Na2S2O3.',
-      subs: [['xilanh', 'Xi-lanh thu khí & Đồ thị V(t)'], ['chu-thap', 'Dấu × biến mất (Na₂S₂O₃)']],
-      art: '<svg viewBox="0 0 220 92">' +
-        '<path d="M40 16 H52 V32 L68 72 A6 6 0 0 1 62 80 H30 A6 6 0 0 1 24 72 L40 32 Z" fill="rgba(56,189,248,.16)" stroke="#CBD5E1" stroke-width="2"/>' +
-        '<path d="M27 62 H65 L68 72 A6 6 0 0 1 62 79 H30 A6 6 0 0 1 24 72 Z" fill="rgba(56,189,248,.48)"/>' +
-        '<path d="M46 16 V8 H108 V36" fill="none" stroke="#94A3B8" stroke-width="3" stroke-linecap="round"/>' +
-        '<rect x="108" y="24" width="84" height="24" rx="4" fill="rgba(255,255,255,.12)" stroke="#E2E8F0" stroke-width="2"/>' +
-        '<rect x="148" y="27" width="12" height="18" fill="#F59E0B"/><rect x="160" y="34" width="38" height="4" fill="#CBD5E1"/>' +
-        '<circle cx="42" cy="54" r="3" fill="#fff"/><circle cx="49" cy="44" r="2.5" fill="#fff"/>' +
-      '</svg>'
-    },
-    {
-      id: 'nhiet-luong-ke', bai: 'Bài 17, 18', ten: 'Nhiệt lượng kế Cốc xốp & Enthalpy',
-      ngan: 'Nhiệt lượng kế',
-      moTa: 'Đo tỏa nhiệt (CaO + H2O, NaOH + HCl) vs thu nhiệt đọng sương (NH4NO3) · Giản đồ ΔrH°298 theo ΔfH° và Eb.',
-      subs: [['calorimeter', 'Cốc xốp & Nhiệt kế'], ['enthalpy', 'Giản đồ ΔrH°₂₉₈']],
-      art: '<svg viewBox="0 0 220 92">' +
-        '<path d="M62 20 H118 L112 80 H68 Z" fill="rgba(226,232,240,.22)" stroke="#E2E8F0" stroke-width="2"/>' +
-        '<rect x="60" y="15" width="60" height="7" rx="3" fill="#CBD5E1"/>' +
-        '<rect x="86" y="4" width="8" height="58" rx="4" fill="#E2E8F0"/><rect x="88" y="20" width="4" height="40" rx="2" fill="#EF4444"/>' +
-        '<circle cx="90" cy="60" r="6" fill="#EF4444"/>' +
-        '<text x="155" y="48" fill="#FCA5A5" font-size="16" font-weight="800">40,6 °C</text>' +
-        '<text x="155" y="64" fill="#FDE68A" font-size="10" font-weight="700">ΔrH &lt; 0</text>' +
-      '</svg>'
-    },
-    {
-      id: 'kiem-luong-tinh', bai: 'Bài 6, 7, 9', ten: 'Kim loại IA/IIA & Lưỡng tính Al(OH)₃',
-      ngan: 'Kiềm & Lưỡng tính',
-      moTa: 'Thả Li, Na chạy vèo, K cháy lửa tím trên nước + Phenolphthalein · Hòa tan kết tủa Al(OH)3 trong NaOH dư.',
-      subs: [['kiem', 'Li, Na, K, Mg, Ca + H₂O'], ['luong-tinh', 'Lưỡng tính Al(OH)₃ & pH']],
-      art: '<svg viewBox="0 0 220 92">' +
-        '<rect x="28" y="26" width="164" height="54" rx="10" fill="rgba(236,72,153,.14)" stroke="#CBD5E1" stroke-width="2"/>' +
-        '<path d="M30 46 Q75 40 110 46 T190 46 V74 A6 6 0 0 1 184 78 H36 A6 6 0 0 1 30 74 Z" fill="rgba(236,72,153,.42)"/>' +
-        '<circle cx="110" cy="45" r="7" fill="#E2E8F0"/>' +
-        '<path d="M110 40 C102 28 105 16 110 8 C115 16 118 28 110 40 Z" fill="#C084FC"/>' +
-        '<text x="110" y="67" fill="#FCE7F3" font-size="11" font-weight="800" text-anchor="middle">K + H₂O → KOH + ½H₂↑</text>' +
-      '</svg>'
-    },
-    {
-      id: 'ngon-lua', bai: 'Bài 3, 4', ten: 'Thử màu Ngọn lửa & Quang phổ',
-      ngan: 'Ngọn lửa ion',
-      moTa: 'Chỉnh lỗ gió đèn Bunsen, rửa dây Pt, đốt 6 muối Li+, Na+, K+, Ca2+, Ba2+, Cu2+ & thử thách đoán muối bí ẩn.',
-      subs: [['thu', 'Thử màu 6 muối'], ['bi-an', 'Đoán muối bí ẩn']],
-      art: '<svg viewBox="0 0 220 92">' +
-        '<g transform="translate(32,6)"><path d="M18 58 C6 42 10 20 18 4 C26 20 30 42 18 58Z" fill="#FF2A5F"/><rect x="13" y="58" width="10" height="22" fill="#94A3B8"/></g>' +
-        '<g transform="translate(74,4)"><path d="M18 60 C6 42 10 18 18 2 C26 18 30 42 18 60Z" fill="#FACC15"/><rect x="13" y="60" width="10" height="22" fill="#94A3B8"/></g>' +
-        '<g transform="translate(116,6)"><path d="M18 58 C6 42 10 20 18 4 C26 20 30 42 18 58Z" fill="#C084FC"/><rect x="13" y="58" width="10" height="22" fill="#94A3B8"/></g>' +
-        '<g transform="translate(158,6)"><path d="M18 58 C6 42 10 20 18 4 C26 20 30 42 18 58Z" fill="#10B981"/><rect x="13" y="58" width="10" height="22" fill="#94A3B8"/></g>' +
-      '</svg>'
-    },
-    {
-      id: 'dan-dien', bai: 'Bài 11, 14', ten: 'Thử Dẫn điện: Ion vs. Cộng hóa trị',
-      ngan: 'Dẫn điện LED',
-      moTa: 'Cắm điện cực đèn LED vào NaCl rắn (tắt), NaCl nóng chảy (>801 °C, sáng!), dd NaCl, nước cất, đường & HCl.',
-      subs: [],
-      art: '<svg viewBox="0 0 220 92">' +
-        '<circle cx="110" cy="24" r="14" fill="#FACC15" opacity=".92"/><circle cx="110" cy="24" r="22" fill="#FDE047" opacity=".28"/>' +
-        '<path d="M74 44 V24 H96 M124 24 H146 V44" fill="none" stroke="#F59E0B" stroke-width="2.5"/>' +
-        '<rect x="66" y="42" width="88" height="40" rx="8" fill="rgba(56,189,248,.16)" stroke="#CBD5E1" stroke-width="2"/>' +
-        '<rect x="82" y="38" width="7" height="36" fill="#475569"/><rect x="131" y="38" width="7" height="36" fill="#475569"/>' +
-        '<text x="110" y="70" fill="#BAE6FD" font-size="10" font-weight="800" text-anchor="middle">Na⁺ ⇄ Cl⁻</text>' +
-      '</svg>'
-    },
-    {
-      id: 'orbital-ms', bai: 'Bài 2, 3, 4', ten: 'Điền Ô Orbital (↑↓) & Phổ khối lượng MS',
-      ngan: 'Orbital & Phổ MS',
-      moTa: 'Điền e vào ô orbital Z=1..30 (Pauli, Hund, ngoại lệ Cr/Cu) kèm hình đám mây s, p · Máy phổ khối MS tính Ā.',
-      subs: [['orbital', 'Điền ô Orbital (↑↓)'], ['ms', 'Máy Phổ khối lượng MS']],
-      art: '<svg viewBox="0 0 220 92">' +
-        '<rect x="20" y="28" width="32" height="32" rx="6" fill="rgba(255,255,255,.12)" stroke="#A78BFA" stroke-width="2"/><text x="36" y="49" fill="#fff" font-size="15" font-weight="800" text-anchor="middle">↑↓</text>' +
-        '<rect x="60" y="28" width="32" height="32" rx="6" fill="rgba(255,255,255,.12)" stroke="#A78BFA" stroke-width="2"/><text x="76" y="49" fill="#FDE047" font-size="15" font-weight="800" text-anchor="middle">↑</text>' +
-        '<rect x="94" y="28" width="32" height="32" rx="6" fill="rgba(255,255,255,.12)" stroke="#A78BFA" stroke-width="2"/><text x="110" y="49" fill="#FDE047" font-size="15" font-weight="800" text-anchor="middle">↑</text>' +
-        '<rect x="144" y="18" width="16" height="56" rx="3" fill="#38BDF8"/><rect x="172" y="50" width="16" height="24" rx="3" fill="#F472B6"/>' +
-        '<text x="152" y="86" fill="#BAE6FD" font-size="9.5" font-weight="800" text-anchor="middle">³⁵Cl</text><text x="180" y="86" fill="#FBCFE8" font-size="9.5" font-weight="800" text-anchor="middle">³⁷Cl</text>' +
-      '</svg>'
-    }
+  const CHUONGS = [
+    { id: '', ten: 'Tất cả (14 bài 3D)' },
+    { id: 'C1', ten: 'C1 · Nguyên tử' },
+    { id: 'C2', ten: 'C2 · Bảng tuần hoàn' },
+    { id: 'C3', ten: 'C3 · Liên kết hóa học' },
+    { id: 'C4', ten: 'C4 · Oxi hóa – Khử' },
+    { id: 'C5', ten: 'C5 · Năng lượng' },
+    { id: 'C6', ten: 'C6 · Tốc độ PƯ' },
+    { id: 'C7', ten: 'C7 · Nhóm Halogen' }
   ];
 
-  const EXTRA_LABS = {
-    'ong-nghiem': {
-      id: 'ong-nghiem', bai: 'Bài Mở đầu', ten: 'Bàn thí nghiệm Ống nghiệm Hóa 10',
-      ngan: 'Ống nghiệm cơ bản',
-      subs: [['co-ban', 'Phản ứng đặc trưng Hóa 10']]
-    }
+  const LABS_3D = [
+    { id: 'rutherford', file: 'rutherford3d.html', ch: 'C1', bai: 'Bài 1', ic: '🎯',
+      ten: 'Bắn tia α của Rutherford 3D',
+      moTa: 'Bắn chùm hạt α qua lá vàng mỏng, quan sát chớp huỳnh quang ZnS 360° và lực đẩy Coulomb ở góc phóng đại nguyên tử; đối chứng mô hình Thomson.' },
+    { id: 'orbital', file: 'orbital3d.html', ch: 'C1', bai: 'Bài 3, 12', ic: '⚛️',
+      ten: 'Orbital s, p, d & Xen phủ σ, π 3D',
+      moTa: 'Đám mây xác suất lượng tử 5.200 hạt + mặt biên 90% cho 1s, 2s, 2p, 3d (cắt lát thấy nút 2s) và kéo 2 hạt nhân xem xen phủ trục σ / xen phủ bên π.' },
+    { id: 'ngon-lua', file: 'ngonlua3d.html', ch: 'C1', bai: 'Bài 3, 4', ic: '🔥',
+      ten: 'Thử màu Ngọn lửa & Quang phổ 3D',
+      moTa: 'Đèn Bunsen 3D lửa GLSL, đốt 6 muối Li⁺, Na⁺, K⁺, Ca²⁺, Ba²⁺, Cu²⁺ + kính xanh Cobalt lọc ánh vàng Na⁺ + quang phổ vạch & chế độ đoán mẫu X.' },
+    { id: 'kiem', file: 'kiem3d.html', ch: 'C2', bai: 'Bài 6, 9', ic: '💧',
+      ten: 'Kim loại kiềm & kiềm thổ + Nước 3D',
+      moTa: 'Gắp Li, Na, K từ lọ dầu hỏa, Mg, Ca thả chậu nước có sóng 3D, vệt hồng phenolphthalein đuổi đuôi, lửa tím hoa cà của K, bếp 80 °C & giải mã 3 mẫu ẩn.' },
+    { id: 'luong-tinh', file: 'luongtinh3d.html', ch: 'C2', bai: 'Bài 7', ic: '🧪',
+      ten: 'Tính lưỡng tính Al(OH)₃ & Mg(OH)₂ 3D',
+      moTa: 'Pipet nhỏ giọt NaOH/HCl vào 2 ống AlCl₃ & MgCl₂ theo tỉ lệ mol thực: keo trắng Al(OH)₃ tan hết trong kiềm dư tạo Na[Al(OH)₄], còn Mg(OH)₂ không tan.' },
+    { id: 'nacl', file: 'nacl3d.html', ch: 'C3', bai: 'Bài 11', ic: '💎',
+      ten: 'Mạng tinh thể NaCl 3D (Rắn · Nóng chảy · Tan)',
+      moTa: 'Khám phá số phối trí 6:6 hình bát diện, đun nóng chảy vượt 801 °C phá vỡ mạng và thả vào nước xem phân tử H₂O phân cực bóc tách tan hết tinh thể.' },
+    { id: 'dan-dien', file: 'dandien3d.html', ch: 'C3', bai: 'Bài 11, 12', ic: '💡',
+      ten: 'Thử tính dẫn điện (Ion vs Cộng hóa trị) 3D',
+      moTa: 'Mạch điện 3D có công tắc, ampe kế kim quay, bóng đèn dây tóc sáng theo mẫu (nước cất, đường, NaCl rắn/dd, HCl, CH₃COOH) + chế độ soi dòng ion vi mô.' },
+    { id: 'hydrogen', file: 'hydrogen3d.html', ch: 'C3', bai: 'Bài 13', ic: '❄️',
+      ten: 'Liên kết Hydrogen & Nước đá nổi 3D',
+      moTa: '54 phân tử H₂O định hướng mạng lục giác rỗng Ice Iₕ (D = 0,92 g/cm³) khi hạ về 0 °C, sụp đặc khi tan lỏng và bay tự do lúc sôi + cốc băng nổi.' },
+    { id: 'oxh', file: 'oxh3d.html', ch: 'C4', bai: 'Bài 15', ic: '✨',
+      ten: 'Phản ứng Oxi hóa – Khử 3D (Cây bạc & Zn)',
+      moTa: 'Nhúng dây Cu xoắn vào AgNO₃ mọc tinh thể bạc óng ánh & dd hóa xanh lam; nhúng lá Zn vào CuSO₄ lá kẽm mòn phủ đồng đỏ & dd mất màu xanh.' },
+    { id: 'nhiet-luong-ke', file: 'enthalpy3d.html', ch: 'C5', bai: 'Bài 17, 18', ic: '🌡️',
+      ten: 'Nhiệt lượng kế Tỏa nhiệt & Thu nhiệt 3D',
+      moTa: 'Nhiệt kế điện tử 3D + đồ thị T(t): CaO + H₂O sôi 76 °C, HCl + NaOH tỏa nhiệt và Ba(OH)₂·8H₂O + NH₄Cl tụt −18 °C đóng băng dính chặt khối gỗ.' },
+    { id: 'toc-do', file: 'tocdo3d.html', ch: 'C6', bai: 'Bài 19, 20', ic: '🎈',
+      ten: 'Tốc độ phản ứng 3D (Bóng bay · Dấu X · MnO₂)',
+      moTa: '3 phòng thực hành: CaCO₃ cục/bột & nồng độ HCl làm phồng 2 bóng bay, thí nghiệm dấu X biến mất ở 20 °C vs 60 °C, xúc tác MnO₂ phân hủy H₂O₂.' },
+    { id: 'cl2-tay', file: 'cl2tay3d.html', ch: 'C7', bai: 'Bài 21', ic: '☁️',
+      ten: 'Tính tẩy màu của khí Cl₂ ẩm (Tủ hút) 3D',
+      moTa: 'Tủ hút khí độc có quạt quay thật, tự xịt nước làm ẩm giấy đỏ / quỳ tím / cánh hoa hồng / lá xanh đối chứng mẫu khô, xả sạch khí Cl₂ vàng lục vào ống hút.' },
+    { id: 'iodine', file: 'iodine3d.html', ch: 'C7', bai: 'Bài 21', ic: '🔮',
+      ten: 'Thăng hoa & Ngưng kết tinh thể Iodine (I₂) 3D',
+      moTa: 'Đun tinh thể I₂ tím đen thăng hoa trực tiếp thành khói tím sang trọng, gặp bát đá lạnh kết tinh ngược thành chùm mũi kim ánh kim; nhấc bát soi cận.' },
+    { id: 'halide', file: 'halide3d.html', ch: 'C7', bai: 'Bài 21, 22, 23', ic: '🧬',
+      ten: 'Ống nghiệm Halide, Chiết 2 lớp & Giải mã 3D',
+      moTa: '4 chế độ: AgNO₃ nhận biết F⁻/Cl⁻/Br⁻/I⁻ (hòa tan AgCl bằng NH₃, chiếu sáng UV), thế halogen & chiết tách 2 lớp Hexane, muối rắn + H₂SO₄ đặc, giải mã 4 lọ.' }
+  ];
+
+  const ALIAS = {
+    'kiem-luong-tinh': 'kiem',
+    'orbital-ms': 'orbital',
+    'ong-nghiem': 'halide'
   };
 
-  function resolveAlias(rawId, rawSub) {
-    let id = String(rawId || '').trim().toLowerCase();
-    let sub = String(rawSub || '').trim().toLowerCase();
-    if (id === 'orbital') { id = 'orbital-ms'; if (!sub) sub = 'orbital'; }
-    else if (id === 'ms') { id = 'orbital-ms'; if (!sub) sub = 'ms'; }
-    return { id: id, sub: sub };
+  function urlFile3D(file) {
+    return laGAS ? (GH_LABS3D_BASE + file) : ('labs3d/' + file);
   }
 
-  function parseRoute() {
-    let id = '', sub = '';
-    const h = String(window.location.hash || '').replace(/^#/, '');
-    if (h) {
-      const qi = h.indexOf('?');
-      id = qi >= 0 ? h.slice(0, qi) : h;
-      if (qi >= 0) {
-        try { sub = new URLSearchParams(h.slice(qi + 1)).get('sub') || ''; } catch (e) {}
-      }
+  function timLab(rawId, sub) {
+    const clean = String(rawId || '').split('?')[0].trim().toLowerCase();
+    if (!clean) return null;
+    if (clean === 'kiem-luong-tinh' && sub === 'luong-tinh') {
+      return LABS_3D.find(function (x) { return x.id === 'luong-tinh'; }) || null;
     }
-    if (!id) {
-      try {
-        const sp = new URLSearchParams(window.location.search);
-        id = sp.get('id') || '';
-        sub = sp.get('sub') || sub;
-      } catch (e) {}
-    }
-    return resolveAlias(id, sub);
+    const mapped = ALIAS[clean] || clean;
+    return LABS_3D.find(function (x) { return x.id === mapped; }) || null;
   }
 
-  function renderNavBar(curId) {
-    const nav = document.getElementById('lh-nav-in');
-    if (!nav) return;
-    let h = '<button type="button" class="lh-nav-pill' + (!curId ? ' on' : '') + '" data-go="">🏠 Sảnh 7 Lab</button>';
-    LAB_LIST.forEach(function (l, i) {
-      h += '<button type="button" class="lh-nav-pill' + (curId === l.id ? ' on' : '') + '" data-go="' + esc(l.id) + '">' +
-        (i + 1) + '. ' + esc(l.ngan) + '</button>';
-    });
-    nav.innerHTML = h;
-    nav.querySelectorAll('[data-go]').forEach(function (b) {
-      b.onclick = function () {
-        const target = b.getAttribute('data-go');
-        window.location.hash = target ? ('#' + target) : '';
-        if (!target) mountLab('', '');
-      };
+  let curCh = '';
+  let curLab = null;
+  let isEmbed = false;
+
+  function parseRoute(locObj) {
+    const p = (locObj && locObj.parameter) || {};
+    const rawHash = (locObj && locObj.hash ? String(locObj.hash) : (location.hash || '')).replace(/^#/, '');
+    const qi = rawHash.indexOf('?');
+    const hashId = qi >= 0 ? rawHash.slice(0, qi) : rawHash;
+    const hashSub = qi >= 0 ? (new URLSearchParams(rawHash.slice(qi + 1)).get('sub') || '') : '';
+    isEmbed = p.embed === '1' || new URLSearchParams(location.search).get('embed') === '1';
+    document.body.classList.toggle('lab-embed', isEmbed);
+    const id = hashId || p.id || new URLSearchParams(location.search).get('id') || '';
+    const sub = hashSub || p.sub || new URLSearchParams(location.search).get('sub') || '';
+    curLab = timLab(id, sub);
+  }
+
+  function veTopLinks() {
+    const opt = { cfg: {}, webUrl: '', laFull: true };
+    ganThanhDieuHuongHS('thinghiem', opt);
+    const map = [
+      ['btn-home', linkTrang('home', opt)],
+      ['btn-btvn', linkTrang('btvn', opt)],
+      ['btn-tailieu', linkTrang('tailieu', opt)],
+      ['btn-tn', linkTrang('thinghiem', opt)],
+      ['btn-game', linkTrang('trochoi', opt)]
+    ];
+    map.forEach(function (pair) {
+      const el = document.getElementById(pair[0]);
+      if (!el) return;
+      el.href = pair[1].href;
+      el.target = pair[1].target;
+      el.classList.remove('an');
     });
   }
 
-  function buildToolbar(container, meta, curSub, opts) {
-    opts = opts || {};
-    const subs = meta.subs || [];
-    const bar = document.createElement('div');
-    bar.className = 'lh-bar';
-    bar.innerHTML =
-      '<div class="lh-bar-l">' +
-        '<span class="chip chinh">' + esc(meta.bai) + '</span>' +
-        '<span class="lh-bar-title">' + esc(meta.ten) + '</span>' +
-        (subs.length > 1
-          ? '<div class="seg" role="tablist">' + subs.map(function (kv) {
-              return '<button type="button" class="' + (kv[0] === curSub ? 'on' : '') + '" data-sub="' + esc(kv[0]) + '">' + esc(kv[1]) + '</button>';
-            }).join('') + '</div>'
-          : '') +
-      '</div>' +
-      '<div class="lh-bar-r">' +
-        (opts.hasMicro ? '<button type="button" class="nut nho' + (opts.microOn ? ' tim' : '') + '" data-act="micro">🔍 Soi vi mô</button>' : '') +
-        (LA_EMBED ? '<button type="button" class="nut nho" data-act="sfx">' + (SoundFX.isOn() ? '🔊' : '🔇') + '</button>' : '') +
-        '<button type="button" class="nut nho vien" data-act="reset">↺ Làm lại</button>' +
-      '</div>';
-    container.appendChild(bar);
-    bar.querySelectorAll('[data-sub]').forEach(function (b) {
-      b.onclick = function () {
-        SoundFX.click();
-        const nextSub = b.getAttribute('data-sub');
-        if (opts.onSub) opts.onSub(nextSub);
-      };
-    });
-    const mBtn = bar.querySelector('[data-act="micro"]');
-    if (mBtn && opts.onMicro) mBtn.onclick = function () { SoundFX.click(); opts.onMicro(mBtn); };
-    const sBtn = bar.querySelector('[data-act="sfx"]');
-    if (sBtn) sBtn.onclick = function () { SoundFX.toggle(); sBtn.textContent = SoundFX.isOn() ? '🔊' : '🔇'; };
-    const rBtn = bar.querySelector('[data-act="reset"]');
-    if (rBtn && opts.onReset) rBtn.onclick = function () { SoundFX.click(); opts.onReset(); };
-    return bar;
+  function moLab(id) {
+    const lab = timLab(id, '');
+    if (!lab) return;
+    curLab = lab;
+    try { history.replaceState(null, '', '#' + lab.id); } catch (_) { location.hash = lab.id; }
+    ve();
   }
 
-  /* ============================================================================
-   * LAB 1 ENGINE DÙNG CHUNG: ỐNG NGHIỆM ẢO & HALIDE (halide + ong-nghiem)
-   * Phản ứng khai báo bằng dữ liệu { A, B, hienTuong, mau, pt, ptIon, loai }
-   * ============================================================================ */
-  const REACTIONS = {
-    // --- Nhận biết ion halide bằng AgNO3 (SGK Hóa 10 KNTT Bài 22) ---
-    'NaF|AgNO3': {
-      A: 'NaF (aq)', B: 'AgNO3 (aq)', loai: 'khong', mau: 'rgba(186,230,253,0.34)',
-      hienTuong: 'Dung dịch vẫn trong suốt, không có kết tủa (vì AgF tan tốt trong nước).',
-      pt: 'NaF(aq) + AgNO3(aq) → Không tạo kết tủa (AgF tan)',
-      ptIon: 'Ag+ và F- vẫn tồn tại tự do trong dung dịch.',
-      micro: { mode: 'clear', cations: ['Ag⁺', '#CBD5E1'], anions: ['F⁻', '#38BDF8'], label: 'AgF tan: ion bơi tự do' }
-    },
-    'NaCl|AgNO3': {
-      A: 'NaCl (aq)', B: 'AgNO3 (aq)', loai: 'ketTua', mau: 'rgba(226,232,240,0.44)', ketTuaMau: '#F8FAFC',
-      hienTuong: 'Xuất hiện **kết tủa trắng** AgCl↓ lắng xuống đáy ống nghiệm.',
-      pt: 'NaCl(aq) + AgNO3(aq) → AgCl↓ (trắng) + NaNO3(aq)',
-      ptIon: 'Ag⁺ + Cl⁻ → AgCl↓',
-      micro: { mode: 'precip', cations: ['Ag⁺', '#CBD5E1'], anions: ['Cl⁻', '#4ADE80'], pptColor: '#F8FAFC', label: 'Ag⁺ + Cl⁻ → AgCl↓ trắng' }
-    },
-    'NaBr|AgNO3': {
-      A: 'NaBr (aq)', B: 'AgNO3 (aq)', loai: 'ketTua', mau: 'rgba(254,240,138,0.38)', ketTuaMau: '#FDE68A',
-      hienTuong: 'Xuất hiện **kết tủa màu vàng nhạt** AgBr↓ lắng xuống đáy.',
-      pt: 'NaBr(aq) + AgNO3(aq) → AgBr↓ (vàng nhạt) + NaNO3(aq)',
-      ptIon: 'Ag⁺ + Br⁻ → AgBr↓',
-      micro: { mode: 'precip', cations: ['Ag⁺', '#CBD5E1'], anions: ['Br⁻', '#FB923C'], pptColor: '#FDE68A', label: 'Ag⁺ + Br⁻ → AgBr↓ vàng nhạt' }
-    },
-    'NaI|AgNO3': {
-      A: 'NaI (aq)', B: 'AgNO3 (aq)', loai: 'ketTua', mau: 'rgba(250,204,21,0.38)', ketTuaMau: '#FACC15',
-      hienTuong: 'Xuất hiện **kết tủa màu vàng** AgI↓ lắng xuống đáy (đậm hơn AgBr).',
-      pt: 'NaI(aq) + AgNO3(aq) → AgI↓ (vàng) + NaNO3(aq)',
-      ptIon: 'Ag⁺ + I⁻ → AgI↓',
-      micro: { mode: 'precip', cations: ['Ag⁺', '#CBD5E1'], anions: ['I⁻', '#C084FC'], pptColor: '#FACC15', label: 'Ag⁺ + I⁻ → AgI↓ vàng' }
-    },
-    'NaF|HNO3': {
-      A: 'NaF (aq)', B: 'HNO3 (aq)', loai: 'khong',
-      hienTuong: 'Dung dịch vẫn trong suốt (không có phản ứng tạo kết tủa hay khí).',
-      pt: 'Dung dịch chứa ion F⁻ không tạo kết tủa với AgNO3 hoặc HNO3.'
-    },
-    'NaCl|HNO3': { A: 'AgCl↓', B: 'HNO3 loãng', loai: 'ben', hienTuong: 'Kết tủa trắng AgCl **không tan** trong dung dịch HNO3 loãng.', pt: 'AgCl↓ + HNO3 → Không tan' },
-    'NaBr|HNO3': { A: 'AgBr↓', B: 'HNO3 loãng', loai: 'ben', hienTuong: 'Kết tủa vàng nhạt AgBr **không tan** trong dung dịch HNO3 loãng.', pt: 'AgBr↓ + HNO3 → Không tan' },
-    'NaI|HNO3': { A: 'AgI↓', B: 'HNO3 loãng', loai: 'ben', hienTuong: 'Kết tủa vàng AgI **không tan** trong dung dịch HNO3 loãng.', pt: 'AgI↓ + HNO3 → Không tan' },
+  function veSanh() {
+    curLab = null;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (_) { location.hash = ''; }
+    ve();
+  }
 
-    // --- Phản ứng thế halogen (SGK Hóa 10 KNTT Bài 21) ---
-    'NaCl|Cl2': { A: 'NaCl (aq)', B: 'Nước Cl2', loai: 'doiMau', mau: 'rgba(217,249,157,0.34)', hienTuong: 'Dung dịch nhuốm màu vàng lục rất nhạt của nước Cl2, không có phản ứng thế.', pt: 'Cl2 + NaCl → Không phản ứng' },
-    'NaBr|Cl2': {
-      A: 'NaBr (aq)', B: 'Nước Cl2', loai: 'doiMau', mau: 'rgba(234,88,12,0.68)',
-      hienTuong: 'Dung dịch chuyển sang **màu vàng cam / nâu đỏ** do Cl2 oxi hóa Br⁻ thành Br2.',
-      pt: 'Cl2(aq) + 2NaBr(aq) → 2NaCl(aq) + Br2(aq)',
-      ptIon: 'Cl2 + 2Br⁻ → 2Cl⁻ + Br2 (Cl2 oxi hóa mạnh hơn Br2)',
-      micro: { mode: 'clear', cations: ['Br₂', '#EA580C'], anions: ['Cl⁻', '#4ADE80'], label: 'Cl₂ đẩy Br⁻ tạo Br₂ nâu đỏ' }
-    },
-    'KI|Cl2': {
-      A: 'KI (aq)', B: 'Nước Cl2', loai: 'doiMau', mau: 'rgba(146,64,14,0.74)', coI2: true,
-      hienTuong: 'Dung dịch chuyển **màu vàng nâu** do tạo thành I2 (nhỏ thêm hồ tinh bột sẽ hóa xanh tím!).',
-      pt: 'Cl2(aq) + 2KI(aq) → 2KCl(aq) + I2(aq)',
-      ptIon: 'Cl2 + 2I⁻ → 2Cl⁻ + I2'
-    },
-    'NaCl|Br2': { A: 'NaCl (aq)', B: 'Nước Br2', loai: 'doiMau', mau: 'rgba(249,115,22,0.35)', hienTuong: 'Chỉ có màu vàng nhạt của nước Br2 pha loãng; Br2 yếu hơn Cl2 nên **không đẩy được Cl⁻**.', pt: 'Br2 + NaCl → Không phản ứng' },
-    'NaBr|Br2': { A: 'NaBr (aq)', B: 'Nước Br2', loai: 'doiMau', mau: 'rgba(249,115,22,0.38)', hienTuong: 'Không phản ứng (cùng chứa Br2 / Br⁻).', pt: 'Br2 + NaBr → Không phản ứng' },
-    'KI|Br2': {
-      A: 'KI (aq)', B: 'Nước Br2', loai: 'doiMau', mau: 'rgba(133,77,14,0.76)', coI2: true,
-      hienTuong: 'Dung dịch chuyển **màu nâu sẫm** do Br2 đẩy I⁻ ra khỏi muối tạo I2.',
-      pt: 'Br2(aq) + 2KI(aq) → 2KBr(aq) + I2(aq)',
-      ptIon: 'Br2 + 2I⁻ → 2Br⁻ + I2 (Br2 oxi hóa mạnh hơn I2)'
-    },
-    'KI|Starch': {
-      A: 'Dung dịch chứa I2', B: 'Hồ tinh bột', loai: 'doiMau', mau: 'rgba(49,46,129,0.92)', laHoTinhBot: true,
-      hienTuong: 'Nếu trong ống đã có I2 tự do, dung dịch chuyển ngay sang **màu xanh tím đậm** đặc trưng! (Còn KI thuần chưa có I2 thì không đổi màu).',
-      pt: 'I2 + Hồ tinh bột ⇌ Phức xanh tím (đun nóng nhạt/mất màu, để nguội hiện lại)'
-    },
-
-    // --- Muối halide rắn + H2SO4 đặc (SGK Hóa 10 KNTT Bài 22) ---
-    'NaCl_s|H2SO4': {
-      A: 'NaCl (rắn)', B: 'H2SO4 đặc', loai: 'khi', mau: 'rgba(226,232,240,0.28)', khiMau: 'rgba(248,250,252,0.75)',
-      hienTuong: 'Sủi bọt và thoát **khí không màu HCl↑** tạo làn khói trắng nhẹ trong không khí ẩm (phản ứng trao đổi, Cl⁻ không khử được H2SO4 đặc).',
-      pt: 'NaCl(s) + H2SO4(đặc) --(t°)--> NaHSO4 + HCl↑'
-    },
-    'NaBr_s|H2SO4': {
-      A: 'NaBr (rắn)', B: 'H2SO4 đặc', loai: 'khi', mau: 'rgba(217,119,6,0.52)', khiMau: 'rgba(234,88,12,0.78)',
-      hienTuong: 'Dung dịch nhuốm nâu đỏ và thoát **hơi Bromine màu nâu đỏ (Br2↑)** kèm khí mùi hắc SO2↑.',
-      pt: '2NaBr(s) + 2H2SO4(đặc) → Na2SO4 + Br2↑ (nâu đỏ) + SO2↑ + 2H2O'
-    },
-    'NaI_s|H2SO4': {
-      A: 'NaI (rắn)', B: 'H2SO4 đặc', loai: 'khi', mau: 'rgba(88,28,135,0.68)', khiMau: 'rgba(168,85,247,0.82)',
-      hienTuong: 'Phản ứng mãnh liệt tạo **hơi Iodine màu tím (I2↑)**, chất rắn tím đen và khí mùi trứng thối H2S↑.',
-      pt: '8NaI(s) + 5H2SO4(đặc) → 4Na2SO4 + 4I2↑ (hơi tím) + H2S↑ + 4H2O'
-    },
-
-    // --- Bàn ống nghiệm Hóa 10 cơ bản (ong-nghiem, Bài Mở đầu) ---
-    'CaCO3|HCl': {
-      A: 'Đá vôi CaCO3 (s)', B: 'HCl 1M', loai: 'khi', mau: 'rgba(186,230,253,0.34)', khiMau: 'rgba(255,255,255,0.75)',
-      hienTuong: 'Đá vôi tan dần, **sủi bọt khí CO2↑ mạnh** không màu.',
-      pt: 'CaCO3(s) + 2HCl(aq) → CaCl2(aq) + CO2↑ + H2O(l)',
-      micro: { mode: 'gas', label: 'Khí CO₂↑ thoát ra mạnh' }
-    },
-    'Zn|HCl': {
-      A: 'Kẽm Zn (s)', B: 'HCl 1M', loai: 'khi', mau: 'rgba(186,230,253,0.34)', khiMau: 'rgba(255,255,255,0.75)',
-      hienTuong: 'Kẽm tan dần và **sủi bọt khí H2↑** liên tục trên bề mặt kim loại.',
-      pt: 'Zn(s) + 2HCl(aq) → ZnCl2(aq) + H2↑',
-      micro: { mode: 'gas', label: 'Zn nhường 2e cho 2H⁺ tạo H₂↑' }
-    },
-    'CuSO4|NaOH': {
-      A: 'CuSO4 (xanh lam)', B: 'NaOH 1M', loai: 'ketTua', mau: 'rgba(14,165,233,0.42)', ketTuaMau: '#0284C7',
-      hienTuong: 'Tạo **kết tủa xanh lam Cu(OH)2↓** không tan.',
-      pt: 'CuSO4(aq) + 2NaOH(aq) → Cu(OH)2↓ (xanh lam) + Na2SO4(aq)',
-      micro: { mode: 'precip', cations: ['Cu²⁺', '#38BDF8'], anions: ['OH⁻', '#F472B6'], pptColor: '#0284C7', label: 'Cu²⁺ + 2OH⁻ → Cu(OH)₂↓' }
-    },
-    'FeCl3|NaOH': {
-      A: 'FeCl3 (vàng nâu)', B: 'NaOH 1M', loai: 'ketTua', mau: 'rgba(217,119,6,0.38)', ketTuaMau: '#B45309',
-      hienTuong: 'Xuất hiện **kết tủa nâu đỏ Fe(OH)3↓** lắng xuống đáy ống nghiệm.',
-      pt: 'FeCl3(aq) + 3NaOH(aq) → Fe(OH)3↓ (nâu đỏ) + 3NaCl(aq)',
-      micro: { mode: 'precip', cations: ['Fe³⁺', '#F59E0B'], anions: ['OH⁻', '#F472B6'], pptColor: '#B45309', label: 'Fe³⁺ + 3OH⁻ → Fe(OH)₃↓' }
-    },
-    'NaOH|Phenol': {
-      A: 'NaOH (aq)', B: 'Phenolphthalein', loai: 'doiMau', mau: 'rgba(236,72,153,0.72)',
-      hienTuong: 'Dung dịch chuyển ngay sang **màu hồng cánh sen** (môi trường base). Nhỏ dư HCl sẽ mất màu trở lại!',
-      pt: 'Dung dịch kiềm (OH⁻) làm phenolphthalein hóa hồng'
-    }
-  };
-
-  function createTestTubeBench(mountEl, scope, cfg) {
-    const tubes = cfg.tubes.map(function (t, i) {
-      return {
-        idx: i, key: t.key, label: t.label, sub: t.sub || '',
-        liqColor: t.liqColor || 'rgba(186,230,253,0.28)',
-        solidColor: t.solidColor || null,
-        solidType: t.solidType || null,
-        pptColor: null, pptLevel: 0, pptTarget: 0,
-        gasRate: 0, vaporColor: null,
-        hasI2: false, hasStarchI2: false, heated: false,
-        ripple: 0, doneReagents: {}, lastRxn: null
-      };
-    });
-    const reagents = cfg.reagents;
-    let selReagent = reagents[0].key;
-    let selectedTube = 0;
-    let microOn = false;
-    let drops = [];
-    let particles = [];
-    let bubbles = [];
-    let vapors = [];
-    let pipette = { x: 120, y: 38, tx: 120, ty: 38, squeeze: 0, color: reagents[0].color };
-    let microParticles = [];
-    for (let i = 0; i < 24; i++) {
-      microParticles.push({
-        x: Math.random(), y: Math.random(),
-        vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-        kind: i % 2
-      });
-    }
-
-    mountEl.innerHTML =
-      '<div class="lh-stage-grid">' +
-        '<div>' +
-          '<div class="lh-viewport" id="lh-tt-vp" style="height:375px">' +
-            '<div class="lh-hud-top">' +
-              '<div class="lh-hud-badge" id="lh-tt-hud">Chọn thuốc thử rồi chạm vào ống nghiệm</div>' +
-              (cfg.quickBtn ? '<button type="button" class="nut nho tim" style="pointer-events:auto" id="lh-tt-quick">' + esc(cfg.quickBtn) + '</button>' : '') +
+  function ve() {
+    const app = document.getElementById('app');
+    if (curLab) {
+      const src = urlFile3D(curLab.file);
+      app.className = '';
+      app.innerHTML =
+        '<div class="lab3d-frame-wrap">' +
+          '<div class="lab3d-bar">' +
+            '<div class="lab3d-bar-l">' +
+              '<button type="button" class="nut nho" id="btn-back-hub">← Sảnh 14 Lab 3D</button>' +
+              '<select id="sel-lab3d" aria-label="Chuyển nhanh phòng lab 3D">' +
+                LABS_3D.map(function (lb, idx) {
+                  return '<option value="' + esc(lb.id) + '"' + (lb.id === curLab.id ? ' selected' : '') + '>' +
+                    (idx + 1) + '. ' + esc(lb.bai) + ' · ' + esc(lb.ten) + '</option>';
+                }).join('') +
+              '</select>' +
             '</div>' +
-            '<svg class="lh-svg" id="lh-tt-svg" viewBox="0 0 560 360" preserveAspectRatio="xMidYMid meet"></svg>' +
-            '<canvas class="lh-cv" id="lh-tt-cv"></canvas>' +
-            '<div class="lh-micro-lens" id="lh-tt-micro"><canvas id="lh-tt-mcv"></canvas><div class="lh-micro-cap" id="lh-tt-mcap">Vi mô</div></div>' +
+            '<div class="hang-nut">' +
+              '<a class="nut nho chinh" href="' + esc(src) + '" target="h10_ngoai" rel="noopener">↗ Toàn màn hình</a>' +
+            '</div>' +
           '</div>' +
-          '<div class="lh-card" style="margin-top:10px">' +
-            '<h3>🧴 Kệ thuốc thử (Chạm để chọn hoặc kéo thả lên ống nghiệm)</h3>' +
-            '<div class="lh-rack" id="lh-tt-rack"></div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="lh-panel">' +
-          '<div class="lh-card" id="lh-tt-obs-card">' +
-            '<h3>🔬 Hiện tượng &amp; Phương trình hóa học</h3>' +
-            '<div id="lh-tt-obs"><div class="phu">Chạm 1 lọ thuốc thử bên cạnh rồi chạm vào bất kỳ ống nghiệm nào (hoặc kéo thả thẳng từ lọ thuốc thử lên miệng ống) để quan sát kết tủa, đổi màu, sủi khí.</div></div>' +
-          '</div>' +
-          '<div id="lh-tt-extra"></div>' +
-        '</div>' +
-      '</div>';
-
-    const vp = mountEl.querySelector('#lh-tt-vp');
-    const svg = mountEl.querySelector('#lh-tt-svg');
-    const cv = mountEl.querySelector('#lh-tt-cv');
-    const microBox = mountEl.querySelector('#lh-tt-micro');
-    const mcv = mountEl.querySelector('#lh-tt-mcv');
-    const mcap = mountEl.querySelector('#lh-tt-mcap');
-    const rack = mountEl.querySelector('#lh-tt-rack');
-    const obsEl = mountEl.querySelector('#lh-tt-obs');
-    const hudEl = mountEl.querySelector('#lh-tt-hud');
-
-    const count = tubes.length;
-    const spacing = count <= 3 ? 136 : 112;
-    const startX = 280 - ((count - 1) * spacing) / 2;
-    const tubePos = tubes.map(function (t, i) {
-      return { cx: startX + i * spacing, topY: 96, w: 50, h: 176 };
-    });
-
-    function buildSvg() {
-      let defs =
-        '<defs>' +
-          '<linearGradient id="lhGlassG" x1="0" y1="0" x2="1" y2="0">' +
-            '<stop offset="0%" stop-color="rgba(255,255,255,0.30)"/>' +
-            '<stop offset="18%" stop-color="rgba(255,255,255,0.06)"/>' +
-            '<stop offset="82%" stop-color="rgba(255,255,255,0.04)"/>' +
-            '<stop offset="100%" stop-color="rgba(255,255,255,0.24)"/>' +
-          '</linearGradient>' +
-          '<linearGradient id="lhRackWood" x1="0" y1="0" x2="0" y2="1">' +
-            '<stop offset="0%" stop-color="#8B5E3C"/><stop offset="100%" stop-color="#5C3A21"/>' +
-          '</linearGradient>';
-      tubePos.forEach(function (p, i) {
-        const x = p.cx - p.w / 2, y = p.topY, w = p.w, h = p.h, r = w / 2;
-        defs += '<clipPath id="lhTubeClip' + i + '"><path d="M' + (x + 2) + ' ' + y + ' V' + (y + h - r) + ' A' + (r - 2) + ' ' + (r - 2) + ' 0 0 0 ' + (x + w - 2) + ' ' + (y + h - r) + ' V' + y + ' Z"/></clipPath>';
-      });
-      defs += '</defs>';
-
-      // Giá ống nghiệm 2 thanh gỗ
-      let rackHtml =
-        '<rect x="' + (startX - 66) + '" y="266" width="' + ((count - 1) * spacing + 132) + '" height="14" rx="4" fill="url(#lhRackWood)" stroke="#3E2716" stroke-width="1.5"/>' +
-        '<rect x="' + (startX - 58) + '" y="148" width="' + ((count - 1) * spacing + 116) + '" height="10" rx="3" fill="url(#lhRackWood)" opacity="0.88"/>' +
-        '<rect x="' + (startX - 52) + '" y="158" width="10" height="108" fill="#6F472A"/>' +
-        '<rect x="' + (startX + (count - 1) * spacing + 42) + '" y="158" width="10" height="108" fill="#6F472A"/>';
-
-      let tubesHtml = '';
-      tubePos.forEach(function (p, i) {
-        const t = tubes[i];
-        const x = p.cx - p.w / 2, y = p.topY, w = p.w, h = p.h, r = w / 2;
-        const liqY = y + 82;
-        tubesHtml +=
-          '<g class="lh-tube-hit" data-tube="' + i + '">' +
-            '<rect class="lh-tube-ring" x="' + (x - 8) + '" y="' + (y - 10) + '" width="' + (w + 16) + '" height="' + (h + 52) + '" rx="14" fill="rgba(56,189,248,0.08)" stroke="#38BDF8" stroke-width="2" stroke-dasharray="5 3"/>' +
-            '<g clip-path="url(#lhTubeClip' + i + ')">' +
-              '<rect id="lh-liq-' + i + '" x="' + x + '" y="' + liqY + '" width="' + w + '" height="' + (h - 70) + '" fill="' + t.liqColor + '"/>' +
-              '<ellipse id="lh-men-' + i + '" cx="' + p.cx + '" cy="' + liqY + '" rx="' + (w / 2 - 2) + '" ry="4" fill="rgba(255,255,255,0.22)"/>' +
-              (t.solidType === 'powder' ? '<path d="M' + (x + 6) + ' ' + (y + h - 8) + ' Q' + p.cx + ' ' + (y + h - 22) + ' ' + (x + w - 6) + ' ' + (y + h - 8) + ' V' + (y + h + 4) + ' H' + x + ' Z" fill="' + (t.solidColor || '#E2E8F0') + '"/>' : '') +
-              (t.solidType === 'chips' ? '<rect x="' + (x + 10) + '" y="' + (y + h - 18) + '" width="12" height="9" rx="2" fill="#E2E8F0"/><rect x="' + (x + 24) + '" y="' + (y + h - 16) + '" width="13" height="10" rx="3" fill="#CBD5E1"/>' : '') +
-              (t.solidType === 'metal' ? '<polygon points="' + (x + 12) + ',' + (y + h - 10) + ' ' + (x + 22) + ',' + (y + h - 22) + ' ' + (x + 36) + ',' + (y + h - 18) + ' ' + (x + 38) + ',' + (y + h - 8) + '" fill="#94A3B8"/>' : '') +
-              '<path id="lh-ppt-' + i + '" d="M' + x + ' ' + (y + h) + ' H' + (x + w) + ' Z" fill="transparent"/>' +
-            '</g>' +
-            '<path d="M' + x + ' ' + y + ' V' + (y + h - r) + ' A' + r + ' ' + r + ' 0 0 0 ' + (x + w) + ' ' + (y + h - r) + ' V' + y + '" fill="url(#lhGlassG)" stroke="#CBD5E1" stroke-width="2.2"/>' +
-            '<ellipse cx="' + p.cx + '" cy="' + y + '" rx="' + (w / 2 + 3) + '" ry="4.5" fill="rgba(255,255,255,0.14)" stroke="#E2E8F0" stroke-width="1.8"/>' +
-            '<line x1="' + (x + 7) + '" y1="' + (y + 18) + '" x2="' + (x + 7) + '" y2="' + (y + h - r - 6) + '" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"/>' +
-            '<line x1="' + (x + w - 11) + '" y1="' + (y + 108) + '" x2="' + (x + w - 4) + '" y2="' + (y + 108) + '" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>' +
-            '<line x1="' + (x + w - 14) + '" y1="' + (y + 132) + '" x2="' + (x + w - 4) + '" y2="' + (y + 132) + '" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>' +
-            '<rect x="' + (p.cx - 32) + '" y="287" width="64" height="25" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1.2"/>' +
-            '<text x="' + p.cx + '" y="303" fill="#F8FAFC" font-size="12.5" font-weight="800" text-anchor="middle">' + esc(t.label) + '</text>' +
-            (t.sub ? '<text x="' + p.cx + '" y="326" fill="#94A3B8" font-size="10.5" font-weight="600" text-anchor="middle">' + esc(t.sub) + '</text>' : '') +
-          '</g>';
-      });
-
-      // Pipet thủy tinh nhỏ giọt
-      const pipHtml =
-        '<g id="lh-pipette" transform="translate(' + pipette.x + ',' + pipette.y + ')">' +
-          '<path d="M-9 -24 C-11 -36 11 -36 9 -24 L7 -14 H-7 Z" fill="#EF4444" stroke="#991B1B" stroke-width="1.5"/>' +
-          '<path d="M-5 -14 H5 L4 18 L1.5 34 H-1.5 L-4 18 Z" fill="rgba(255,255,255,0.28)" stroke="#E2E8F0" stroke-width="1.5"/>' +
-          '<path id="lh-pip-liq" d="M-3.4 4 H3.4 L1.2 32 H-1.2 Z" fill="' + pipette.color + '"/>' +
-        '</g>';
-
-      svg.innerHTML = defs + rackHtml + tubesHtml + pipHtml;
-
-      svg.querySelectorAll('[data-tube]').forEach(function (g) {
-        g.onclick = function () {
-          const idx = Number(g.getAttribute('data-tube'));
-          dropIntoTube(idx, selReagent);
-        };
-      });
-    }
-
-    function renderReagents() {
-      rack.innerHTML = reagents.map(function (rg) {
-        return '<button type="button" class="lh-reagent' + (rg.key === selReagent ? ' on' : '') + '" data-rg="' + esc(rg.key) + '">' +
-          '<i style="background:' + esc(rg.color) + '"></i>' +
-          '<div><div>' + md(rg.label) + '</div><div class="phu" style="font-size:11px">' + esc(rg.note || '') + '</div></div>' +
-        '</button>';
-      }).join('');
-
-      rack.querySelectorAll('[data-rg]').forEach(function (btn) {
-        btn.onclick = function () {
-          SoundFX.click();
-          selReagent = btn.getAttribute('data-rg');
-          const rObj = reagents.find(function (x) { return x.key === selReagent; });
-          if (rObj) pipette.color = rObj.color;
-          const pl = document.getElementById('lh-pip-liq');
-          if (pl) pl.setAttribute('fill', pipette.color);
-          renderReagents();
-        };
-
-        // Hỗ trợ kéo thả trực tiếp từ lọ thuốc thử lên ống nghiệm
-        btn.addEventListener('pointerdown', function (ev) {
-          if (ev.button && ev.button !== 0) return;
-          const rgKey = btn.getAttribute('data-rg');
-          const sx = ev.clientX, sy = ev.clientY;
-          let dragging = false, ghost = null, hitIdx = -1;
-          const rObj = reagents.find(function (x) { return x.key === rgKey; });
-          function onMove(e) {
-            if (!dragging && Math.hypot(e.clientX - sx, e.clientY - sy) > 10) {
-              dragging = true;
-              selReagent = rgKey;
-              if (rObj) pipette.color = rObj.color;
-              renderReagents();
-              ghost = document.createElement('div');
-              ghost.className = 'lh-drag-ghost';
-              ghost.textContent = '💧 ' + (rObj ? rObj.label : rgKey);
-              document.body.appendChild(ghost);
-            }
-            if (!dragging) return;
-            ghost.style.left = e.clientX + 'px';
-            ghost.style.top = e.clientY + 'px';
-            const vr = vp.getBoundingClientRect();
-            const svgX = ((e.clientX - vr.left) / vr.width) * 560;
-            const svgY = ((e.clientY - vr.top) / vr.height) * 360;
-            hitIdx = -1;
-            if (svgY >= 50 && svgY <= 330) {
-              tubePos.forEach(function (p, i) {
-                if (Math.abs(svgX - p.cx) < 42) hitIdx = i;
-              });
-            }
-            svg.querySelectorAll('[data-tube]').forEach(function (g, i) {
-              g.classList.toggle('hover', i === hitIdx);
-            });
-          }
-          function onUp() {
-            window.removeEventListener('pointermove', onMove);
-            window.removeEventListener('pointerup', onUp);
-            if (ghost) ghost.remove();
-            svg.querySelectorAll('[data-tube]').forEach(function (g) { g.classList.remove('hover'); });
-            if (dragging && hitIdx >= 0) dropIntoTube(hitIdx, rgKey);
-          }
-          window.addEventListener('pointermove', onMove);
-          window.addEventListener('pointerup', onUp);
-        });
-      });
-    }
-
-    function applyReaction(idx, rgKey) {
-      const t = tubes[idx];
-      const rKey = t.key + '|' + rgKey;
-      let rxn = REACTIONS[rKey] || null;
-      // Xử lý riêng Hồ tinh bột trên ống KI khi đã/chưa có I2
-      if (t.key === 'KI' && rgKey === 'Starch') {
-        if (!t.hasI2) {
-          rxn = {
-            A: 'KI (aq)', B: 'Hồ tinh bột', loai: 'khong',
-            hienTuong: 'Dung dịch KI chỉ chứa ion I⁻ nên **chưa đổi màu**. Hãy nhỏ nước Cl2 hoặc Br2 để giải phóng I2 trước!',
-            pt: 'I⁻ + Hồ tinh bột → Không đổi màu'
-          };
-        } else {
-          t.hasStarchI2 = true;
-          t.heated = false;
-        }
-      }
-      // Nhỏ HCl vào ống NaOH đã có phenolphthalein làm mất màu hồng
-      if (t.key === 'NaOH' && rgKey === 'HCl' && t.doneReagents['Phenol']) {
-        rxn = {
-          A: 'NaOH (hồng)', B: 'HCl 1M', loai: 'doiMau', mau: 'rgba(186,230,253,0.30)',
-          hienTuong: 'Dung dịch **mất màu hồng** trở về trong suốt do phản ứng trung hòa H⁺ + OH⁻ → H2O.',
-          pt: 'NaOH(aq) + HCl(aq) → NaCl(aq) + H2O(l)'
-        };
-      }
-
-      if (!rxn) {
-        obsEl.innerHTML = '<div class="lh-eq"><b>Ống ' + esc(t.label) + ' + ' + md(rgKey) + ':</b> Không xảy ra phản ứng hóa học rõ rệt.</div>';
-        return;
-      }
-
-      t.doneReagents[rgKey] = true;
-      t.lastRxn = rxn;
-      selectedTube = idx;
-      if (rxn.coI2) t.hasI2 = true;
-      if (rxn.mau && !t.hasStarchI2) t.liqColor = rxn.mau;
-      else if (rxn.laHoTinhBot) t.liqColor = rxn.mau;
-
-      const liqEl = document.getElementById('lh-liq-' + idx);
-      if (liqEl) liqEl.setAttribute('fill', t.liqColor);
-
-      if (rxn.loai === 'ketTua') {
-        t.pptColor = rxn.ketTuaMau;
-        t.pptTarget = 1;
-        const p = tubePos[idx];
-        const countP = REDUCED_MOTION ? 14 : 38;
-        for (let k = 0; k < countP; k++) {
-          particles.push({
-            x: p.cx + (Math.random() - 0.5) * 34,
-            y: p.topY + 86 + Math.random() * 24,
-            vx: (Math.random() - 0.5) * 18,
-            vy: 18 + Math.random() * 28,
-            r: 1.8 + Math.random() * 2.2,
-            color: rxn.ketTuaMau,
-            tube: idx,
-            life: 1.8 + Math.random() * 0.7
-          });
-        }
-      } else if (rxn.loai === 'khi') {
-        t.gasRate = 1;
-        t.vaporColor = rxn.khiMau || null;
-      }
-
-      const heatHtml = t.hasStarchI2
-        ? '<div class="hang-nut" style="margin-top:8px"><button type="button" class="nut nho tim" id="lh-heat-i2">' + (t.heated ? '❄️ Để nguội ống KI' : '🔥 Đun nóng nhẹ ống KI') + '</button></div>'
-        : '';
-      const uvHtml = (t.key === 'NaCl' && rxn.loai === 'ketTua')
-        ? '<div class="hang-nut" style="margin-top:8px"><button type="button" class="nut nho" id="lh-uv-agcl">☀️ Chiếu ánh sáng (2AgCl → 2Ag↓ + Cl₂)</button></div>'
-        : '';
-
-      obsEl.innerHTML =
-        '<div class="lh-eq">' +
-          '<div style="display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-bottom:4px">' +
-            '<b>Ống ' + esc(t.label) + ' + ' + md(rxn.B) + '</b>' +
-            '<span class="chip ok">Đã phản ứng</span>' +
-          '</div>' +
-          '<div>' + md(rxn.hienTuong) + '</div>' +
-          '<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--vien);font-weight:700;color:var(--tim)">' + md(rxn.pt) + '</div>' +
-          (rxn.ptIon ? '<div class="phu" style="font-size:12px;margin-top:2px">' + md('Ion rút gọn: ' + rxn.ptIon) + '</div>' : '') +
-          heatHtml + uvHtml +
+          '<iframe class="lab3d-iframe" src="' + esc(src) + '" title="' + esc(curLab.ten) + '" allowfullscreen allow="fullscreen; autoplay"></iframe>' +
         '</div>';
-
-      const hBtn = obsEl.querySelector('#lh-heat-i2');
-      if (hBtn) {
-        hBtn.onclick = function () {
-          t.heated = !t.heated;
-          t.liqColor = t.heated ? 'rgba(186,230,253,0.34)' : 'rgba(49,46,129,0.92)';
-          if (liqEl) liqEl.setAttribute('fill', t.liqColor);
-          hBtn.textContent = t.heated ? '❄️ Để nguội ống KI' : '🔥 Đun nóng nhẹ ống KI';
-        };
-      }
-      const uvBtn = obsEl.querySelector('#lh-uv-agcl');
-      if (uvBtn) {
-        uvBtn.onclick = function () {
-          t.pptColor = '#64748B';
-          const pptEl = document.getElementById('lh-ppt-' + idx);
-          if (pptEl) pptEl.setAttribute('fill', t.pptColor);
-          uvBtn.textContent = '🌑 AgCl hóa xám đen ngoài ánh sáng!';
-        };
-      }
-
-      if (rxn.micro) {
-        mcap.textContent = rxn.micro.label;
-      } else {
-        mcap.textContent = 'Ống ' + t.label;
-      }
-      hudEl.textContent = 'Đã nhỏ ' + reagents.find(function (r) { return r.key === rgKey; }).label + ' vào ' + t.label;
-      if (cfg.onReact) cfg.onReact(t, rgKey, rxn);
-    }
-
-    function dropIntoTube(idx, rgKey) {
-      const p = tubePos[idx];
-      if (!p) return;
-      const rObj = reagents.find(function (x) { return x.key === rgKey; }) || reagents[0];
-      pipette.tx = p.cx;
-      pipette.ty = p.topY - 36;
-      pipette.color = rObj.color;
-      const pl = document.getElementById('lh-pip-liq');
-      if (pl) pl.setAttribute('fill', pipette.color);
-
-      SoundFX.drop();
-      const delay = REDUCED_MOTION ? 40 : 180;
-      for (let d = 0; d < 2; d++) {
-        scope.timeout(function () {
-          pipette.squeeze = 1;
-          drops.push({
-            x: p.cx, y: p.topY - 4, vy: 80, color: rObj.color === 'rgba(226,232,240,0.95)' ? '#BAE6FD' : rObj.color,
-            targetY: p.topY + 82, idx: idx, trigger: d === 1, rgKey: rgKey
-          });
-        }, delay + d * 110);
-      }
-    }
-
-    const qBtn = mountEl.querySelector('#lh-tt-quick');
-    if (qBtn) {
-      qBtn.onclick = function () {
-        tubes.forEach(function (_, i) {
-          scope.timeout(function () { dropIntoTube(i, selReagent); }, i * 260);
-        });
-      };
-    }
-
-    buildSvg();
-    renderReagents();
-
-    // Vòng lặp vẽ Canvas 60fps: giọt rơi, kết tủa lắng, bọt khí, hơi khí & kính lúp vi mô
-    scope.loop(function (dt) {
-      // Pipet lướt mượt tới vị trí mục tiêu
-      pipette.x += (pipette.tx - pipette.x) * Math.min(1, dt * 12);
-      pipette.y += (pipette.ty - pipette.y) * Math.min(1, dt * 12);
-      pipette.squeeze = Math.max(0, pipette.squeeze - dt * 5);
-      const pipG = document.getElementById('lh-pipette');
-      if (pipG) pipG.setAttribute('transform', 'translate(' + pipette.x.toFixed(1) + ',' + pipette.y.toFixed(1) + ') scale(' + (1 - pipette.squeeze * 0.06).toFixed(3) + ',1)');
-
-      // Chuyển đổi tọa độ viewBox 560x360 sang pixel canvas
-      const box = fitCanvas(cv);
-      const ctx = box.ctx; if (!ctx) return;
-      ctx.clearRect(0, 0, box.w, box.h);
-      const sc = Math.min(box.w / 560, box.h / 360);
-      const ox = (box.w - 560 * sc) / 2;
-      const oy = (box.h - 360 * sc) / 2;
-      ctx.save();
-      ctx.translate(ox, oy);
-      ctx.scale(sc, sc);
-
-      // Giọt rơi
-      for (let i = drops.length - 1; i >= 0; i--) {
-        const d = drops[i];
-        d.vy += 680 * dt;
-        d.y += d.vy * dt;
-        ctx.fillStyle = d.color;
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, 4, 0, Math.PI * 2);
-        ctx.moveTo(d.x - 3.5, d.y);
-        ctx.lineTo(d.x, d.y - 9);
-        ctx.lineTo(d.x + 3.5, d.y);
-        ctx.fill();
-        if (d.y >= d.targetY) {
-          tubes[d.idx].ripple = 1;
-          if (d.trigger) applyReaction(d.idx, d.rgKey);
-          drops.splice(i, 1);
-        }
-      }
-
-      // Gợn sóng mặt thoáng + tăng dần lớp kết tủa đáy ống + sủi khí
-      tubes.forEach(function (t, i) {
-        const p = tubePos[i];
-        if (t.ripple > 0) {
-          t.ripple = Math.max(0, t.ripple - dt * 2.2);
-          ctx.strokeStyle = 'rgba(255,255,255,' + (t.ripple * 0.7) + ')';
-          ctx.lineWidth = 1.6;
-          ctx.beginPath();
-          ctx.ellipse(p.cx, p.topY + 82, (1 - t.ripple) * 20 + 4, 3, 0, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-        if (t.pptLevel < t.pptTarget) {
-          t.pptLevel = Math.min(t.pptTarget, t.pptLevel + dt * 0.55);
-          const pptEl = document.getElementById('lh-ppt-' + i);
-          if (pptEl && t.pptColor) {
-            const x = p.cx - p.w / 2, bot = p.topY + p.h, topP = bot - 12 - t.pptLevel * 22;
-            pptEl.setAttribute('d', 'M' + x + ' ' + topP.toFixed(1) + ' Q' + p.cx + ' ' + (topP - 5).toFixed(1) + ' ' + (x + p.w) + ' ' + topP.toFixed(1) + ' V' + (bot + 4) + ' H' + x + ' Z');
-            pptEl.setAttribute('fill', t.pptColor);
-          }
-        }
-        if (t.gasRate > 0 && Math.random() < (REDUCED_MOTION ? 0.15 : 0.45)) {
-          bubbles.push({
-            x: p.cx + (Math.random() - 0.5) * 24,
-            y: p.topY + p.h - 14,
-            vy: 45 + Math.random() * 55,
-            r: 1.6 + Math.random() * 2.2,
-            top: p.topY + 84
-          });
-          if (t.vaporColor && Math.random() < 0.35) {
-            vapors.push({
-              x: p.cx + (Math.random() - 0.5) * 18,
-              y: p.topY - 2,
-              vx: (Math.random() - 0.5) * 12,
-              vy: -22 - Math.random() * 18,
-              r: 6 + Math.random() * 8,
-              life: 1,
-              color: t.vaporColor
-            });
-          }
-        }
-      });
-
-      // Hạt kết tủa lơ lửng rơi xuống đáy
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const pt = particles[i];
-        pt.x += pt.vx * dt;
-        pt.y += pt.vy * dt;
-        pt.vx *= 0.96;
-        pt.life -= dt;
-        const p = tubePos[pt.tube];
-        if (pt.x < p.cx - 21) pt.x = p.cx - 21;
-        if (pt.x > p.cx + 21) pt.x = p.cx + 21;
-        ctx.globalAlpha = Math.max(0, Math.min(1, pt.life));
-        ctx.fillStyle = pt.color;
-        ctx.beginPath();
-        ctx.arc(pt.x, Math.min(p.topY + p.h - 12, pt.y), pt.r, 0, Math.PI * 2);
-        ctx.fill();
-        if (pt.life <= 0) particles.splice(i, 1);
-      }
-      ctx.globalAlpha = 1;
-
-      // Bọt khí
-      for (let i = bubbles.length - 1; i >= 0; i--) {
-        const b = bubbles[i];
-        b.y -= b.vy * dt;
-        ctx.strokeStyle = 'rgba(255,255,255,0.75)';
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-        ctx.stroke();
-        if (b.y <= b.top) bubbles.splice(i, 1);
-      }
-
-      // Khói / hơi màu bay lên từ miệng ống
-      for (let i = vapors.length - 1; i >= 0; i--) {
-        const v = vapors[i];
-        v.x += v.vx * dt;
-        v.y += v.vy * dt;
-        v.r += 7 * dt;
-        v.life -= dt * 0.55;
-        ctx.globalAlpha = Math.max(0, v.life * 0.55);
-        ctx.fillStyle = v.color;
-        ctx.beginPath();
-        ctx.arc(v.x, v.y, v.r, 0, Math.PI * 2);
-        ctx.fill();
-        if (v.life <= 0) vapors.splice(i, 1);
-      }
-      ctx.globalAlpha = 1;
-      ctx.restore();
-
-      // Kính lúp vi mô
-      if (microOn) {
-        const mb = fitCanvas(mcv);
-        const mx = mb.ctx; if (!mx) return;
-        mx.clearRect(0, 0, mb.w, mb.h);
-        const cur = tubes[selectedTube] && tubes[selectedTube].lastRxn && tubes[selectedTube].lastRxn.micro;
-        const c1 = cur ? cur.cations : ['Ion⁺', '#BAE6FD'];
-        const c2 = cur ? cur.anions : ['X⁻', '#A7F3D0'];
-        const isPrecip = cur && cur.mode === 'precip';
-        microParticles.forEach(function (mp, idx) {
-          if (isPrecip && idx > 5) {
-            // Hút tụ xuống đáy kính lúp thành tinh thể kết tủa
-            const row = Math.floor((idx - 6) / 6), col = (idx - 6) % 6;
-            const tx = 0.25 + col * 0.1, ty = 0.72 + (row % 3) * 0.08;
-            mp.x += (tx - mp.x) * Math.min(1, dt * 2.4);
-            mp.y += (ty - mp.y) * Math.min(1, dt * 2.4);
-          } else {
-            mp.x += mp.vx * dt; mp.y += mp.vy * dt;
-            if (mp.x < 0.12 || mp.x > 0.88) mp.vx *= -1;
-            if (mp.y < 0.14 || mp.y > 0.78) mp.vy *= -1;
-          }
-          const px = mp.x * mb.w, py = mp.y * mb.h;
-          const lbl = mp.kind ? c1[0] : c2[0];
-          const col = mp.kind ? c1[1] : c2[1];
-          mx.fillStyle = col;
-          mx.beginPath(); mx.arc(px, py, 9, 0, Math.PI * 2); mx.fill();
-          mx.fillStyle = '#0F172A';
-          mx.font = '800 8.5px "Be Vietnam Pro",sans-serif';
-          mx.textAlign = 'center'; mx.textBaseline = 'middle';
-          mx.fillText(lbl, px, py);
-        });
-      }
-    });
-
-    return {
-      toggleMicro: function (btn) {
-        microOn = !microOn;
-        microBox.classList.toggle('on', microOn);
-        if (btn) btn.classList.toggle('tim', microOn);
-      },
-      extraSlot: mountEl.querySelector('#lh-tt-extra'),
-      tubes: tubes,
-      dropIntoTube: dropIntoTube
-    };
-  }
-
-  function mountHalideLab(mainEl, scope, sub, isOngNghiem) {
-    if (isOngNghiem) {
-      const meta = EXTRA_LABS['ong-nghiem'];
-      buildToolbar(mainEl, meta, 'co-ban', {
-        hasMicro: true,
-        onMicro: function (b) { bench.toggleMicro(b); },
-        onReset: function () { mountLab('ong-nghiem', 'co-ban'); }
-      });
-      const host = document.createElement('div');
-      mainEl.appendChild(host);
-      const bench = createTestTubeBench(host, scope, {
-        tubes: [
-          { key: 'CaCO3', label: 'CaCO₃', sub: 'Đá vôi + H₂O', solidType: 'chips' },
-          { key: 'Zn', label: 'Kẽm Zn', sub: 'Viên kẽm', solidType: 'metal' },
-          { key: 'CuSO4', label: 'CuSO₄', sub: 'Xanh lam', liqColor: 'rgba(14,165,233,0.45)' },
-          { key: 'NaOH', label: 'NaOH', sub: 'Kiềm không màu' }
-        ],
-        reagents: [
-          { key: 'HCl', label: 'HCl 1M', note: 'Acid mạnh', color: '#E2E8F0' },
-          { key: 'NaOH', label: 'NaOH 1M', note: 'Kiềm tạo tủa', color: '#BAE6FD' },
-          { key: 'Phenol', label: 'Phenolphthalein', note: 'Chỉ thị pH', color: '#EC4899' }
-        ],
-        quickBtn: null
-      });
-      bench.extraSlot.innerHTML =
-        '<div class="lh-card"><h3>📋 Bảng phản ứng mẫu (dạng dữ liệu)</h3>' +
-        '<table class="lh-tbl"><tr><th>Ống + Thuốc thử</th><th>Hiện tượng</th></tr>' +
-        '<tr><td>CaCO₃ + HCl</td><td>Sủi bọt khí CO₂↑</td></tr>' +
-        '<tr><td>Zn + HCl</td><td>Sủi bọt khí H₂↑</td></tr>' +
-        '<tr><td>CuSO₄ + NaOH</td><td>Kết tủa xanh lam Cu(OH)₂↓</td></tr>' +
-        '<tr><td>NaOH + Phenolphthalein</td><td>Hồng cánh sen (thêm HCl mất màu)</td></tr></table></div>';
+      document.title = curLab.ten + ' – Hóa 10';
+      const backBtn = document.getElementById('btn-back-hub');
+      if (backBtn) backBtn.onclick = veSanh;
+      const sel = document.getElementById('sel-lab3d');
+      if (sel) sel.onchange = function () { moLab(this.value); };
       return;
     }
 
-    const meta = LAB_LIST[0];
-    let curSub = sub || 'ag';
-    if (['ag', 'the', 'game'].indexOf(curSub) < 0) curSub = 'ag';
-    let bench = null;
-
-    buildToolbar(mainEl, meta, curSub, {
-      hasMicro: true,
-      onSub: function (ns) { window.location.hash = '#halide?sub=' + ns; },
-      onMicro: function (b) { if (bench) bench.toggleMicro(b); },
-      onReset: function () { mountLab('halide', curSub); }
-    });
-    const host = document.createElement('div');
-    mainEl.appendChild(host);
-
-    if (curSub === 'ag') {
-      bench = createTestTubeBench(host, scope, {
-        tubes: [
-          { key: 'NaF', label: 'NaF', sub: 'Ion F⁻' },
-          { key: 'NaCl', label: 'NaCl', sub: 'Ion Cl⁻' },
-          { key: 'NaBr', label: 'NaBr', sub: 'Ion Br⁻' },
-          { key: 'NaI', label: 'NaI', sub: 'Ion I⁻' }
-        ],
-        reagents: [
-          { key: 'AgNO3', label: 'AgNO₃ 0,1M', note: 'Thuốc thử halide', color: '#E2E8F0' },
-          { key: 'HNO3', label: 'HNO₃ loãng', note: 'Thử độ tan tủa', color: '#BAE6FD' }
-        ],
-        quickBtn: '💧 Nhỏ AgNO₃ cả 4 ống'
-      });
-      bench.extraSlot.innerHTML =
-        '<div class="lh-card"><h3>🎯 Ghi nhớ nhanh (SGK Bài 22)</h3>' +
-        '<div class="lh-pills">' +
-          '<span class="chip sky">AgF: Tan (trong suốt)</span>' +
-          '<span class="chip">AgCl↓: Trắng</span>' +
-          '<span class="chip canh">AgBr↓: Vàng nhạt</span>' +
-          '<span class="chip" style="background:#FEF08A;color:#854D0E;border-color:#FACC15">AgI↓: Vàng đậm</span>' +
-        '</div></div>';
-    } else if (curSub === 'the') {
-      let cheDo = 'dd';
-      let subScope = null;
-      scope.onCleanup(function () { if (subScope) { subScope.destroy(); subScope = null; } });
-      const subBar = document.createElement('div');
-      subBar.className = 'lh-pills';
-      subBar.style.marginBottom = '10px';
-      subBar.innerHTML =
-        '<button type="button" class="lh-pill-btn on" data-m="dd">1. Phản ứng thế Halogen (Cl₂ > Br₂ > I₂)</button>' +
-        '<button type="button" class="lh-pill-btn" data-m="ran">2. Muối rắn + H₂SO₄ đặc (tính khử tăng dần)</button>';
-      host.appendChild(subBar);
-      const wrap = document.createElement('div');
-      host.appendChild(wrap);
-
-      function renderThe() {
-        if (subScope) { subScope.destroy(); subScope = null; }
-        subScope = createScope();
-        subBar.querySelectorAll('[data-m]').forEach(function (b) {
-          b.classList.toggle('on', b.getAttribute('data-m') === cheDo);
-        });
-        if (cheDo === 'dd') {
-          bench = createTestTubeBench(wrap, subScope, {
-            tubes: [
-              { key: 'NaCl', label: 'dd NaCl', sub: 'Cl⁻' },
-              { key: 'NaBr', label: 'dd NaBr', sub: 'Br⁻' },
-              { key: 'KI', label: 'dd KI', sub: 'I⁻' }
-            ],
-            reagents: [
-              { key: 'Cl2', label: 'Nước Cl₂', note: 'Vàng lục nhạt', color: '#BEF264' },
-              { key: 'Br2', label: 'Nước Br₂', note: 'Vàng cam', color: '#F97316' },
-              { key: 'Starch', label: 'Hồ tinh bột', note: 'Nhận biết I₂', color: '#F8FAFC' }
-            ]
-          });
-          bench.extraSlot.innerHTML =
-            '<div class="lh-card"><h3>⚡ Mẹo thực hành</h3><div class="phu">Nhỏ <b>Nước Cl₂</b> vào <b>KI</b> cho màu nâu I₂, sau đó nhỏ tiếp <b>Hồ tinh bột</b> để thấy phức xanh tím! Thử đun nóng để xem hiện tượng mất màu rồi hiện lại khi nguội.</div></div>';
-        } else {
-          bench = createTestTubeBench(wrap, subScope, {
-            tubes: [
-              { key: 'NaCl_s', label: 'NaCl (rắn)', sub: 'Tinh thể trắng', solidType: 'powder', solidColor: '#F8FAFC', liqColor: 'transparent' },
-              { key: 'NaBr_s', label: 'NaBr (rắn)', sub: 'Tinh thể trắng', solidType: 'powder', solidColor: '#F1F5F9', liqColor: 'transparent' },
-              { key: 'NaI_s', label: 'NaI (rắn)', sub: 'Tinh thể trắng', solidType: 'powder', solidColor: '#E2E8F0', liqColor: 'transparent' }
-            ],
-            reagents: [
-              { key: 'H2SO4', label: 'H₂SO₄ đặc', note: 'Acid đặc nóng', color: '#FDE68A' }
-            ],
-            quickBtn: '💧 Nhỏ H₂SO₄ đặc cả 3 ống'
-          });
-          bench.extraSlot.innerHTML =
-            '<div class="lh-card"><h3>📉 Tính khử: Cl⁻ &lt; Br⁻ &lt; I⁻</h3><div class="phu">Vì Br⁻ và I⁻ khử được H₂SO₄ đặc thành Br₂ / I₂ + SO₂ / H₂S nên <b>không thể điều chế HBr, HI</b> bằng phương pháp sunfat như HCl!</div></div>';
-        }
-      }
-      subBar.querySelectorAll('[data-m]').forEach(function (b) {
-        b.onclick = function () { SoundFX.click(); cheDo = b.getAttribute('data-m'); renderThe(); };
-      });
-      renderThe();
-    } else {
-      // Chế độ Giải mã 4 lọ mất nhãn (X, Y, Z, T)
-      const ds = ['NaF', 'NaCl', 'NaBr', 'NaI'].sort(function () { return Math.random() - 0.5; });
-      const tenLo = ['Lọ X', 'Lọ Y', 'Lọ Z', 'Lọ T'];
-      bench = createTestTubeBench(host, scope, {
-        tubes: ds.map(function (k, i) { return { key: k, label: tenLo[i], sub: 'Mất nhãn' }; }),
-        reagents: [
-          { key: 'AgNO3', label: 'AgNO₃ 0,1M', note: 'Nhỏ nhận biết', color: '#E2E8F0' },
-          { key: 'Cl2', label: 'Nước Cl₂', note: 'Thử đối chiếu', color: '#BEF264' }
-        ],
-        quickBtn: '💧 Nhỏ AgNO₃ cả 4 lọ'
-      });
-      bench.extraSlot.innerHTML =
-        '<div class="lh-card">' +
-          '<h3>🕵️ Phiếu giải mã 4 lọ mất nhãn</h3>' +
-          '<p class="phu" style="margin:0 0 8px">Nhỏ thuốc thử vào X, Y, Z, T rồi chọn đúng chất trong mỗi lọ:</p>' +
-          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
-            tenLo.map(function (nm, i) {
-              return '<div class="truong"><label>' + nm + '</label><select data-guess="' + i + '">' +
-                '<option value="">-- Chọn chất --</option>' +
-                '<option value="NaF">NaF</option><option value="NaCl">NaCl</option><option value="NaBr">NaBr</option><option value="NaI">NaI</option>' +
-              '</select></div>';
-            }).join('') +
-          '</div>' +
-          '<div class="hang-nut" style="margin-top:10px">' +
-            '<button type="button" class="nut chinh" id="lh-hl-check">✓ Chấm điểm</button>' +
-            '<button type="button" class="nut" id="lh-hl-new">🔀 Đảo 4 lọ mới</button>' +
-          '</div>' +
-          '<div id="lh-hl-res" style="margin-top:8px"></div>' +
-        '</div>';
-
-      bench.extraSlot.querySelector('#lh-hl-new').onclick = function () { SoundFX.click(); mountLab('halide', 'game'); };
-      bench.extraSlot.querySelector('#lh-hl-check').onclick = function () {
-        let dung = 0;
-        const selects = bench.extraSlot.querySelectorAll('[data-guess]');
-        selects.forEach(function (sel, i) {
-          if (sel.value === ds[i]) dung++;
-        });
-        const resEl = bench.extraSlot.querySelector('#lh-hl-res');
-        if (dung === 4) {
-          SoundFX.win();
-          phaoGiay(65);
-          resEl.innerHTML = '<div class="thongbao ok" style="margin:0"><b>Xuất sắc 4/4!</b> Em đã nhận diện chuẩn xác cả 4 muối halide!</div>';
-        } else {
-          SoundFX.error();
-          resEl.innerHTML = '<div class="thongbao canh" style="margin:0">Đúng <b>' + dung + '/4</b> lọ. Hãy nhỏ <b>AgNO₃</b> quan sát kỹ màu trắng / vàng nhạt / vàng / tan nhé!</div>';
-        }
-      };
-    }
-  }
-
-  /* ============================================================================
-   * LAB 2: TỐC ĐỘ PHẢN ỨNG (toc-do: Xi-lanh thu khí & Dấu × biến mất)
-   * Chuẩn SGK Bài 19-20: 0,004 mol khí => V_max = 0,004 * 24,79 * 1000 = 99,2 mL (đkc)
-   * ============================================================================ */
-  function mountTocDoLab(mainEl, scope, sub) {
-    const meta = LAB_LIST[1];
-    let curSub = sub === 'chu-thap' ? 'chu-thap' : 'xilanh';
-    let microOn = false;
-
-    buildToolbar(mainEl, meta, curSub, {
-      hasMicro: curSub === 'xilanh',
-      onSub: function (ns) { window.location.hash = '#toc-do?sub=' + ns; },
-      onMicro: function (b) {
-        microOn = !microOn;
-        b.classList.toggle('tim', microOn);
-        const ml = document.getElementById('lh-td-micro');
-        if (ml) ml.classList.toggle('on', microOn);
-      },
-      onReset: function () { mountLab('toc-do', curSub); }
-    });
-
-    const host = document.createElement('div');
-    mainEl.appendChild(host);
-
-    if (curSub === 'xilanh') {
-      const V_MAX = 99.2; // 0.004 mol * 24.79 L/mol * 1000 mL/L (đkc 25°C, 1 bar)
-      const RXNS = {
-        caco3: { ten: 'CaCO₃ + HCl', pt: 'CaCO₃(s) + 2HCl(aq) → CaCl₂(aq) + CO₂↑ + H₂O(l)', solid: true, cat: false, baseK: 0.09, liq: 'rgba(186,230,253,0.34)' },
-        zn: { ten: 'Zn + HCl', pt: 'Zn(s) + 2HCl(aq) → ZnCl₂(aq) + H₂↑', solid: true, cat: false, baseK: 0.075, liq: 'rgba(186,230,253,0.34)' },
-        h2o2: { ten: 'H₂O₂ (xúc tác MnO₂)', pt: '2H₂O₂(aq) --(MnO₂)--> 2H₂O(l) + O₂↑', solid: false, cat: true, baseK: 0.012, liq: 'rgba(224,242,254,0.36)' }
-      };
-
-      const st = {
-        rxn: 'caco3', conc: 1.0, temp: 25, surf: 1.0, cat: false,
-        running: false, t: 0, V: 0, curve: [], pinned: null,
-        bubbles: [], microPts: []
-      };
-      for (let i = 0; i < 28; i++) {
-        st.microPts.push({ x: Math.random(), y: Math.random(), a: Math.random() * Math.PI * 2, flash: 0 });
-      }
-
-      function rateConst() {
-        const r = RXNS[st.rxn];
-        const fConc = Math.pow(st.conc, 1.05);
-        const fTemp = Math.pow(2, (st.temp - 25) / 10); // Hệ số Van't Hoff γ = 2
-        const fSurf = r.solid ? st.surf : 1;
-        const fCat = r.cat ? (st.cat ? 10.5 : 1) : 1;
-        return r.baseK * fConc * fTemp * fSurf * fCat;
-      }
-
-      host.innerHTML =
-        '<div class="lh-stage-grid">' +
-          '<div>' +
-            '<div class="lh-viewport" style="height:335px">' +
-              '<div class="lh-hud-top">' +
-                '<div class="lh-hud-badge" id="lh-td-clock">⏱️ 0,0 s · V = 0,0 mL (đkc)</div>' +
-                '<div class="lh-hud-badge" id="lh-td-rate">Hệ số tốc độ: ×1,0</div>' +
-              '</div>' +
-              '<svg class="lh-svg" id="lh-td-svg" viewBox="0 0 560 320">' +
-                '<defs><linearGradient id="tdGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(255,255,255,0.28)"/><stop offset="50%" stop-color="rgba(255,255,255,0.05)"/><stop offset="100%" stop-color="rgba(255,255,255,0.24)"/></linearGradient></defs>' +
-                // Bếp gia nhiệt ổn nhiệt dưới bình
-                '<rect x="52" y="250" width="136" height="24" rx="6" fill="#334155" stroke="#64748B" stroke-width="1.5"/>' +
-                '<rect id="lh-td-coil" x="66" y="246" width="108" height="5" rx="2" fill="#475569"/>' +
-                '<text id="lh-td-tdisp" x="120" y="266" fill="#FDE047" font-size="11" font-weight="800" text-anchor="middle">25 °C</text>' +
-                // Bình tam giác
-                '<path d="M104 92 H136 V130 L172 232 A10 10 0 0 1 162 246 H78 A10 10 0 0 1 68 232 L104 130 Z" fill="url(#tdGlass)" stroke="#CBD5E1" stroke-width="2.4"/>' +
-                '<path id="lh-td-liq" d="M84 188 H156 L171 232 A9 9 0 0 1 162 245 H78 A9 9 0 0 1 69 232 Z" fill="rgba(186,230,253,0.34)"/>' +
-                '<g id="lh-td-solids"></g>' +
-                // Nút cao su & ống dẫn khí
-                '<path d="M105 78 H135 L132 98 H108 Z" fill="#B45309" stroke="#78350F" stroke-width="1.5"/>' +
-                '<path d="M120 82 V50 H252 V132 H276" fill="none" stroke="#94A3B8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>' +
-                // Giá đỡ & Xi-lanh thu khí 0-100 mL
-                '<rect x="330" y="156" width="14" height="114" fill="#475569"/><rect x="304" y="264" width="66" height="10" rx="3" fill="#64748B"/>' +
-                '<rect x="276" y="106" width="186" height="52" rx="6" fill="rgba(255,255,255,0.12)" stroke="#E2E8F0" stroke-width="2.4"/>' +
-                '<rect id="lh-td-gasfill" x="278" y="108" width="4" height="48" fill="rgba(56,189,248,0.20)"/>' +
-                // Vạch chia 0..100 mL
-                '<g id="lh-td-ticks"></g>' +
-                // Pít-tông trượt theo V
-                '<g id="lh-td-piston" transform="translate(282,0)">' +
-                  '<rect x="0" y="109" width="16" height="46" rx="3" fill="#F59E0B" stroke="#B45309" stroke-width="1.5"/>' +
-                  '<rect x="16" y="128" width="96" height="8" rx="3" fill="#CBD5E1"/>' +
-                  '<rect x="110" y="116" width="9" height="32" rx="3" fill="#94A3B8"/>' +
-                '</g>' +
-                '<text x="369" y="182" fill="#BAE6FD" font-size="11.5" font-weight="800" text-anchor="middle">Xi-lanh thu khí (0 – 100 mL)</text>' +
-              '</svg>' +
-              '<canvas class="lh-cv" id="lh-td-cv"></canvas>' +
-              '<div class="lh-micro-lens" id="lh-td-micro"><canvas id="lh-td-mcv"></canvas><div class="lh-micro-cap">Va chạm hiệu quả</div></div>' +
-            '</div>' +
-            '<div class="lh-card" style="margin-top:10px">' +
-              '<h3>🎛️ Điều chỉnh 4 yếu tố tốc độ phản ứng</h3>' +
-              '<div class="lh-pills" id="lh-td-rxns" style="margin-bottom:8px"></div>' +
-              '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:10px">' +
-                '<div><div class="nhan-o" style="margin-bottom:5px" id="lh-td-clbl">Nồng độ dung dịch</div><div class="lh-pills" id="lh-td-conc"></div></div>' +
-                '<div><div class="nhan-o" style="margin-bottom:5px">Nhiệt độ (Van’t Hoff γ = 2)</div><div class="lh-pills" id="lh-td-temp"></div></div>' +
-                '<div id="lh-td-surfbox"><div class="nhan-o" style="margin-bottom:5px" id="lh-td-slbl">Diện tích bề mặt</div><div class="lh-pills" id="lh-td-surf"></div></div>' +
-              '</div>' +
-              '<div class="hang-nut" style="margin-top:10px">' +
-                '<button type="button" class="nut chinh" id="lh-td-go">▶ Chạy phản ứng</button>' +
-                '<button type="button" class="nut tim" id="lh-td-pin">📌 Ghim làm Lần 1</button>' +
-                '<button type="button" class="nut" id="lh-td-rst">↺ Xóa &amp; Thử lại</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="lh-panel">' +
-            '<div class="lh-card">' +
-              '<h3>📈 Đồ thị Thể tích khí theo thời gian V(t)</h3>' +
-              '<div class="lh-chart-box"><canvas id="lh-td-chart"></canvas></div>' +
-              '<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin-top:7px">' +
-                '<span style="color:#0284C7;font-weight:700">━━ Lần hiện tại</span>' +
-                '<span id="lh-td-pin-lbl" style="color:#D97706;font-weight:700">┈┈ Chưa ghim Lần 1</span>' +
-                '<span class="phu" style="margin-left:auto">V_max = 99,2 mL (đkc 24,79 L/mol)</span>' +
-              '</div>' +
-            '</div>' +
-            '<div class="lh-card">' +
-              '<h3>⚗️ Phương trình &amp; Công thức Van’t Hoff</h3>' +
-              '<div class="lh-eq" id="lh-td-eq"></div>' +
-              '<div class="lh-metrics" style="margin-top:8px">' +
-                '<div class="lh-stat"><span>Thể tích khí V</span><b id="lh-td-vstat">0,0 mL</b></div>' +
-                '<div class="lh-stat"><span>Hệ số Van’t Hoff</span><b id="lh-td-vh">×1</b></div>' +
-                '<div class="lh-stat"><span>Tốc độ đầu tương đối</span><b id="lh-td-v0">×1,0</b></div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      // Vẽ vạch chia ml trên xi-lanh
-      const tickG = host.querySelector('#lh-td-ticks');
-      let th = '';
-      for (let ml = 0; ml <= 100; ml += 20) {
-        const tx = 282 + (ml / 100) * 140;
-        th += '<line x1="' + tx + '" y1="106" x2="' + tx + '" y2="117" stroke="#E2E8F0" stroke-width="1.4"/>' +
-          '<text x="' + tx + '" y="100" fill="#CBD5E1" font-size="9.5" font-weight="700" text-anchor="middle">' + ml + '</text>';
-      }
-      tickG.innerHTML = th;
-
-      function updateControlsUI() {
-        const rxnBox = host.querySelector('#lh-td-rxns');
-        rxnBox.innerHTML = Object.keys(RXNS).map(function (k) {
-          return '<button type="button" class="lh-pill-btn' + (st.rxn === k ? ' on' : '') + '" data-r="' + k + '">' + esc(RXNS[k].ten) + '</button>';
-        }).join('');
-        rxnBox.querySelectorAll('[data-r]').forEach(function (b) {
-          b.onclick = function () { SoundFX.click(); st.rxn = b.getAttribute('data-r'); resetRun(); updateControlsUI(); };
-        });
-
-        const concs = st.rxn === 'h2o2' ? [[0.5, '3%'], [1.0, '6%'], [2.0, '12%']] : [[0.5, '0,5 M'], [1.0, '1,0 M'], [2.0, '2,0 M']];
-        host.querySelector('#lh-td-conc').innerHTML = concs.map(function (c) {
-          return '<button type="button" class="lh-pill-btn' + (st.conc === c[0] ? ' on' : '') + '" data-c="' + c[0] + '">' + c[1] + '</button>';
-        }).join('');
-        host.querySelectorAll('#lh-td-conc [data-c]').forEach(function (b) {
-          b.onclick = function () { SoundFX.click(); st.conc = Number(b.getAttribute('data-c')); updateReadouts(); updateControlsUI(); };
-        });
-
-        host.querySelector('#lh-td-temp').innerHTML = [25, 35, 45].map(function (tp) {
-          return '<button type="button" class="lh-pill-btn' + (st.temp === tp ? ' on' : '') + '" data-t="' + tp + '">' + tp + ' °C</button>';
-        }).join('');
-        host.querySelectorAll('#lh-td-temp [data-t]').forEach(function (b) {
-          b.onclick = function () { SoundFX.click(); st.temp = Number(b.getAttribute('data-t')); updateReadouts(); updateControlsUI(); };
-        });
-
-        const sBox = host.querySelector('#lh-td-surf');
-        if (RXNS[st.rxn].solid) {
-          host.querySelector('#lh-td-slbl').textContent = 'Kích thước hạt (Diện tích bề mặt)';
-          sBox.innerHTML = [[1.0, 'Viên to'], [1.8, 'Hạt nhỏ'], [3.0, 'Bột mịn']].map(function (s) {
-            return '<button type="button" class="lh-pill-btn' + (st.surf === s[0] ? ' on' : '') + '" data-s="' + s[0] + '">' + s[1] + '</button>';
-          }).join('');
-          sBox.querySelectorAll('[data-s]').forEach(function (b) {
-            b.onclick = function () { SoundFX.click(); st.surf = Number(b.getAttribute('data-s')); updateReadouts(); updateControlsUI(); };
-          });
-        } else {
-          host.querySelector('#lh-td-slbl').textContent = 'Chất xúc tác MnO₂';
-          sBox.innerHTML = [[false, 'Không MnO₂'], [true, 'Có MnO₂']].map(function (s) {
-            return '<button type="button" class="lh-pill-btn' + (st.cat === s[0] ? ' on' : '') + '" data-cat="' + (s[0] ? '1' : '0') + '">' + s[1] + '</button>';
-          }).join('');
-          sBox.querySelectorAll('[data-cat]').forEach(function (b) {
-            b.onclick = function () { SoundFX.click(); st.cat = b.getAttribute('data-cat') === '1'; updateReadouts(); updateControlsUI(); };
-          });
-        }
-        updateReadouts();
-      }
-
-      function updateReadouts() {
-        const r = RXNS[st.rxn];
-        host.querySelector('#lh-td-eq').innerHTML = '<div><b>' + md(r.pt) + '</b></div>' +
-          '<div class="phu" style="font-size:12px;margin-top:4px">Cùng lượng chất thiếu 0,004 mol → đường đồ thị khác độ dốc nhưng hội tụ tại đúng <b>99,2 mL</b>!</div>';
-        host.querySelector('#lh-td-tdisp').textContent = st.temp + ' °C';
-        host.querySelector('#lh-td-coil').setAttribute('fill', st.temp === 45 ? '#EF4444' : st.temp === 35 ? '#F59E0B' : '#475569');
-        host.querySelector('#lh-td-liq').setAttribute('fill', r.liq);
-        const solG = host.querySelector('#lh-td-solids');
-        if (r.solid) {
-          if (st.surf >= 2.8) solG.innerHTML = '<path d="M88 242 Q120 232 152 242 Z" fill="#E2E8F0"/>';
-          else if (st.surf >= 1.5) solG.innerHTML = '<circle cx="102" cy="239" r="4.5" fill="#CBD5E1"/><circle cx="118" cy="240" r="4" fill="#E2E8F0"/><circle cx="134" cy="238" r="4.5" fill="#CBD5E1"/>';
-          else solG.innerHTML = '<rect x="108" y="231" width="24" height="12" rx="4" fill="#CBD5E1"/>';
-        } else {
-          solG.innerHTML = st.cat ? '<path d="M100 243 Q120 235 140 243 Z" fill="#1E293B"/>' : '';
-        }
-
-        const vhFactor = Math.pow(2, (st.temp - 25) / 10);
-        const rel = rateConst() / (r.baseK * 1.0);
-        host.querySelector('#lh-td-vh').textContent = '×' + vhFactor + ' (so 25°C)';
-        host.querySelector('#lh-td-v0').textContent = '×' + fmtNum(rel, 1);
-        host.querySelector('#lh-td-rate').textContent = 'Tốc độ đầu: ×' + fmtNum(rel, 1);
-      }
-
-      function resetRun() {
-        st.running = false; st.t = 0; st.V = 0; st.curve = [{ t: 0, V: 0 }]; st.bubbles = [];
-        host.querySelector('#lh-td-go').textContent = '▶ Chạy phản ứng';
-        syncSyringe(); drawChart();
-      }
-
-      function syncSyringe() {
-        const px = 282 + (st.V / 100) * 140;
-        host.querySelector('#lh-td-piston').setAttribute('transform', 'translate(' + px.toFixed(1) + ',0)');
-        host.querySelector('#lh-td-gasfill').setAttribute('width', Math.max(2, px - 280).toFixed(1));
-        host.querySelector('#lh-td-clock').textContent = '⏱️ ' + fmtNum(st.t, 1) + ' s · V = ' + fmtNum(st.V, 1) + ' mL';
-        host.querySelector('#lh-td-vstat').textContent = fmtNum(st.V, 1) + ' mL';
-      }
-
-      function drawChart() {
-        const cvC = host.querySelector('#lh-td-chart');
-        const b = fitCanvas(cvC);
-        const ctx = b.ctx; if (!ctx) return;
-        ctx.clearRect(0, 0, b.w, b.h);
-        const pad = { l: 40, r: 12, t: 12, b: 26 };
-        const pw = b.w - pad.l - pad.r, ph = b.h - pad.t - pad.b;
-        const maxT = Math.max(30, st.t + 2, st.pinned ? st.pinned[st.pinned.length - 1].t : 30);
-
-        ctx.strokeStyle = 'rgba(148,163,184,0.28)';
-        ctx.lineWidth = 1;
-        for (let v = 0; v <= 100; v += 25) {
-          const y = pad.t + ph - (v / 105) * ph;
-          ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + pw, y); ctx.stroke();
-          ctx.fillStyle = '#64748B'; ctx.font = '600 10px "Be Vietnam Pro",sans-serif'; ctx.textAlign = 'right';
-          ctx.fillText(v + ' mL', pad.l - 5, y + 3);
-        }
-        // Đường giới hạn 99,2 mL
-        const yMax = pad.t + ph - (V_MAX / 105) * ph;
-        ctx.setLineDash([4, 4]); ctx.strokeStyle = '#94A3B8';
-        ctx.beginPath(); ctx.moveTo(pad.l, yMax); ctx.lineTo(pad.l + pw, yMax); ctx.stroke();
-        ctx.setLineDash([]);
-
-        function plot(arr, color, dashed) {
-          if (!arr || arr.length < 2) return;
-          ctx.strokeStyle = color; ctx.lineWidth = 2.6;
-          if (dashed) ctx.setLineDash([6, 4]);
-          ctx.beginPath();
-          arr.forEach(function (pt, idx) {
-            const x = pad.l + (pt.t / maxT) * pw;
-            const y = pad.t + ph - (pt.V / 105) * ph;
-            if (idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-          });
-          ctx.stroke();
-          ctx.setLineDash([]);
-        }
-        if (st.pinned) plot(st.pinned, '#D97706', true);
-        plot(st.curve, '#0284C7', false);
-        ctx.fillStyle = '#64748B'; ctx.font = '700 10.5px "Be Vietnam Pro",sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText('Thời gian t (s)', pad.l + pw / 2, b.h - 6);
-      }
-
-      host.querySelector('#lh-td-go').onclick = function () {
-        if (st.V >= V_MAX - 0.15) resetRun();
-        st.running = !st.running;
-        SoundFX.click();
-        this.textContent = st.running ? '⏸ Tạm dừng' : '▶ Tiếp tục';
-      };
-      host.querySelector('#lh-td-pin').onclick = function () {
-        if (st.curve.length < 2) { H10.toast('Hãy chạy Lần 1 vài giây rồi bấm ghim nhé!'); return; }
-        st.pinned = st.curve.slice();
-        host.querySelector('#lh-td-pin-lbl').textContent = '┈┈ Lần 1 đã ghim';
-        SoundFX.click();
-        resetRun();
-      };
-      host.querySelector('#lh-td-rst').onclick = function () {
-        SoundFX.click();
-        st.pinned = null;
-        host.querySelector('#lh-td-pin-lbl').textContent = '┈┈ Chưa ghim Lần 1';
-        resetRun();
-      };
-
-      resetRun();
-      updateControlsUI();
-
-      scope.loop(function (dt) {
-        if (st.running && st.V < V_MAX - 0.1) {
-          st.t += dt;
-          const k = rateConst();
-          const newV = V_MAX * (1 - Math.exp(-k * st.t));
-          const instRate = (newV - st.V) / dt;
-          st.V = Math.min(V_MAX, newV);
-          const lastPt = st.curve[st.curve.length - 1];
-          if (!lastPt || st.t - lastPt.t >= 0.2) st.curve.push({ t: st.t, V: st.V });
-          if (Math.random() < Math.min(0.85, instRate / 22)) {
-            st.bubbles.push({ x: 100 + Math.random() * 40, y: 240, vy: 45 + Math.random() * 65, r: 1.5 + Math.random() * 2.2 });
-            if (Math.random() < 0.12) SoundFX.bubble();
-          }
-          if (st.V >= V_MAX - 0.1) {
-            st.V = V_MAX; st.running = false;
-            host.querySelector('#lh-td-go').textContent = '✓ Hoàn thành (Chạy lại)';
-            SoundFX.win();
-          }
-          syncSyringe(); drawChart();
-        }
-        const cvEl = host.querySelector('#lh-td-cv');
-        const bx = fitCanvas(cvEl);
-        const ctx = bx.ctx;
-        if (ctx) {
-          ctx.clearRect(0, 0, bx.w, bx.h);
-          const sc = Math.min(bx.w / 560, bx.h / 320);
-          ctx.save(); ctx.translate((bx.w - 560 * sc) / 2, (bx.h - 320 * sc) / 2); ctx.scale(sc, sc);
-          for (let i = st.bubbles.length - 1; i >= 0; i--) {
-            const b = st.bubbles[i];
-            b.y -= b.vy * dt;
-            ctx.strokeStyle = 'rgba(255,255,255,0.78)'; ctx.lineWidth = 1.2;
-            ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.stroke();
-            if (b.y < 188) st.bubbles.splice(i, 1);
-          }
-          ctx.restore();
-        }
-        if (microOn) {
-          const mb = fitCanvas(host.querySelector('#lh-td-mcv'));
-          const mx = mb.ctx; if (!mx) return;
-          mx.clearRect(0, 0, mb.w, mb.h);
-          const spd = (0.35 + (st.temp - 25) * 0.022) * (st.conc >= 2 ? 1.2 : 1);
-          const activeN = Math.round(10 + st.conc * 8);
-          mx.fillStyle = '#64748B'; mx.fillRect(0, mb.h * 0.78, mb.w, mb.h * 0.22);
-          st.microPts.slice(0, activeN).forEach(function (pt) {
-            pt.x += Math.cos(pt.a) * spd * dt; pt.y += Math.sin(pt.a) * spd * dt;
-            if (pt.x < 0.08 || pt.x > 0.92) pt.a = Math.PI - pt.a;
-            if (pt.y < 0.08) pt.a = -pt.a;
-            if (pt.y > 0.75) { pt.y = 0.74; pt.a = -Math.abs(pt.a); pt.flash = st.running ? 0.5 : 0; }
-            pt.flash = Math.max(0, pt.flash - dt * 2.5);
-            if (pt.flash > 0) {
-              mx.fillStyle = 'rgba(250,204,21,' + pt.flash + ')';
-              mx.beginPath(); mx.arc(pt.x * mb.w, pt.y * mb.h, 11, 0, Math.PI * 2); mx.fill();
-            }
-            mx.fillStyle = '#38BDF8';
-            mx.beginPath(); mx.arc(pt.x * mb.w, pt.y * mb.h, 4.5, 0, Math.PI * 2); mx.fill();
-          });
-        }
-      });
-    } else {
-      // Sub-mode 2: Thí nghiệm dấu × biến mất (Na2S2O3 + H2SO4)
-      let conc = 0.10, temp = 25, running = false, t = 0, opacity = 0;
-      const logs = [];
-      function targetTime() {
-        return (10.0 / (conc / 0.10)) / Math.pow(2, (temp - 25) / 10);
-      }
-      host.innerHTML =
-        '<div class="lh-stage-grid">' +
-          '<div class="lh-viewport" style="height:350px;display:flex;align-items:center;justify-content:center">' +
-            '<div class="lh-hud-top">' +
-              '<div class="lh-hud-badge" id="lh-cx-clock">⏱️ 0,0 s</div>' +
-              '<div class="lh-hud-badge">Nhìn từ miệng bình xuống đáy chữ ×</div>' +
-            '</div>' +
-            '<canvas id="lh-cx-cv" style="width:100%;height:100%"></canvas>' +
-          '</div>' +
-          '<div class="lh-panel">' +
-            '<div class="lh-card">' +
-              '<h3>🧪 Thí nghiệm Na₂S₂O₃ + H₂SO₄ (Bài 19)</h3>' +
-              '<div class="lh-eq" style="margin-bottom:10px">' + md('Na2S2O3(aq) + H2SO4(aq) → Na2SO4(aq) + **S↓ (vàng đục)** + SO2↑ + H2O') + '</div>' +
-              '<div class="nhan-o" style="margin-bottom:5px">Nồng độ Na₂S₂O₃</div>' +
-              '<div class="lh-pills" id="lh-cx-c" style="margin-bottom:8px"></div>' +
-              '<div class="nhan-o" style="margin-bottom:5px">Nhiệt độ phản ứng</div>' +
-              '<div class="lh-pills" id="lh-cx-t" style="margin-bottom:10px"></div>' +
-              '<div class="hang-nut">' +
-                '<button type="button" class="nut chinh" id="lh-cx-go">▶ Rót H₂SO₄ &amp; Bấm giờ</button>' +
-                '<button type="button" class="nut" id="lh-cx-rst">↺ Bình mới</button>' +
-              '</div>' +
-            '</div>' +
-            '<div class="lh-card">' +
-              '<h3>📊 Bảng kết quả thực nghiệm</h3>' +
-              '<div id="lh-cx-log"><div class="phu">Chạy thử ở 2–3 nồng độ khác nhau để thấy nồng độ tăng thì thời gian khuất × giảm tỉ lệ nghịch!</div></div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      function syncCtrl() {
-        host.querySelector('#lh-cx-c').innerHTML = [0.05, 0.10, 0.20].map(function (c) {
-          return '<button type="button" class="lh-pill-btn' + (conc === c ? ' on' : '') + '" data-c="' + c + '">' + fmtNum(c, 2) + ' M</button>';
-        }).join('');
-        host.querySelectorAll('#lh-cx-c [data-c]').forEach(function (b) {
-          b.onclick = function () { SoundFX.click(); conc = Number(b.getAttribute('data-c')); resetCx(); syncCtrl(); };
-        });
-        host.querySelector('#lh-cx-t').innerHTML = [25, 45].map(function (tp) {
-          return '<button type="button" class="lh-pill-btn' + (temp === tp ? ' on' : '') + '" data-t="' + tp + '">' + tp + ' °C</button>';
-        }).join('');
-        host.querySelectorAll('#lh-cx-t [data-t]').forEach(function (b) {
-          b.onclick = function () { SoundFX.click(); temp = Number(b.getAttribute('data-t')); resetCx(); syncCtrl(); };
-        });
-      }
-      function resetCx() { running = false; t = 0; opacity = 0; host.querySelector('#lh-cx-clock').textContent = '⏱️ 0,0 s'; host.querySelector('#lh-cx-go').textContent = '▶ Rót H₂SO₄ & Bấm giờ'; }
-      host.querySelector('#lh-cx-go').onclick = function () {
-        if (opacity >= 0.98) resetCx();
-        running = !running;
-        SoundFX.drop();
-        this.textContent = running ? '⏸ Tạm dừng' : '▶ Tiếp tục';
-      };
-      host.querySelector('#lh-cx-rst').onclick = function () { SoundFX.click(); resetCx(); };
-      syncCtrl();
-
-      scope.loop(function (dt) {
-        if (running) {
-          t += dt;
-          const tEnd = targetTime();
-          opacity = Math.min(0.99, Math.pow(t / tEnd, 1.35));
-          host.querySelector('#lh-cx-clock').textContent = '⏱️ ' + fmtNum(t, 1) + ' s';
-          if (t >= tEnd) {
-            running = false; opacity = 0.99;
-            SoundFX.win();
-            host.querySelector('#lh-cx-go').textContent = '✓ Đã khuất dấu ×';
-            logs.push({ c: conc, temp: temp, t: t });
-            host.querySelector('#lh-cx-log').innerHTML = '<table class="lh-tbl"><tr><th>Nồng độ</th><th>Nhiệt độ</th><th>Thời gian khuất ×</th><th>1/t (s⁻¹)</th></tr>' +
-              logs.map(function (r) {
-                return '<tr><td><b>' + fmtNum(r.c, 2) + ' M</b></td><td>' + r.temp + ' °C</td><td>' + fmtNum(r.t, 1) + ' s</td><td>' + fmtNum(1 / r.t, 3) + '</td></tr>';
-              }).join('') + '</table>';
-          }
-        }
-        const b = fitCanvas(host.querySelector('#lh-cx-cv'));
-        const ctx = b.ctx; if (!ctx) return;
-        ctx.clearRect(0, 0, b.w, b.h);
-        const cx = b.w / 2, cy = b.h / 2 + 12, R = Math.min(b.w, b.h) * 0.34;
-        // Tờ giấy trắng có dấu ×
-        ctx.fillStyle = '#F8FAFC';
-        ctx.beginPath(); ctx.arc(cx, cy, R + 16, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#0F172A'; ctx.lineWidth = 10; ctx.lineCap = 'round';
-        ctx.beginPath(); ctx.moveTo(cx - R * 0.42, cy - R * 0.42); ctx.lineTo(cx + R * 0.42, cy + R * 0.42);
-        ctx.moveTo(cx + R * 0.42, cy - R * 0.42); ctx.lineTo(cx - R * 0.42, cy + R * 0.42); ctx.stroke();
-        // Lớp lưu huỳnh S↓ đục dần
-        ctx.fillStyle = 'rgba(234,216,140,' + opacity.toFixed(3) + ')';
-        ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
-        // Viền miệng bình thủy tinh
-        ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 6;
-        ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
-        ctx.strokeStyle = 'rgba(255,255,255,0.65)'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(cx, cy, R * 0.56, 0, Math.PI * 2); ctx.stroke();
-      });
-    }
-  }
-
-  /* ============================================================================
-   * LAB 3: NHIỆT LƯỢNG KẾ CỐC XỐP & GIẢN ĐỒ ENTHALPY (Bài 17, 18)
-   * ============================================================================ */
-  function mountNhietLuongKeLab(mainEl, scope, sub) {
-    const meta = LAB_LIST[2];
-    let curSub = sub === 'enthalpy' ? 'enthalpy' : 'calorimeter';
-    buildToolbar(mainEl, meta, curSub, {
-      onSub: function (ns) { window.location.hash = '#nhiet-luong-ke?sub=' + ns; },
-      onReset: function () { mountLab('nhiet-luong-ke', curSub); }
-    });
-    const host = document.createElement('div');
-    mainEl.appendChild(host);
-
-    if (curSub === 'calorimeter') {
-      const TESTS = [
-        { id: 'hcl_naoh', ten: 'HCl + NaOH', loai: 'Tỏa nhiệt', sign: -1, dH: -57.3, t0: 25.0, tEnd: 31.8, mol: 0.05, m: 100, pt: 'HCl(aq) + NaOH(aq) → NaCl(aq) + H2O(l)', col: 'rgba(186,230,253,0.45)', gas: false },
-        { id: 'cao_h2o', ten: 'Tôi vôi CaO + H₂O', loai: 'Tỏa nhiệt mạnh', sign: -1, dH: -65.2, t0: 25.0, tEnd: 40.6, mol: 0.10, m: 100, pt: 'CaO(s) + H2O(l) → Ca(OH)2(aq)', col: 'rgba(226,232,240,0.58)', gas: false },
-        { id: 'mg_hcl', ten: 'Mg + HCl', loai: 'Tỏa nhiệt rất mạnh', sign: -1, dH: -466.8, t0: 25.0, tEnd: 47.3, mol: 0.02, m: 100, pt: 'Mg(s) + 2HCl(aq) → MgCl2(aq) + H2↑', col: 'rgba(186,230,253,0.42)', gas: true },
-        { id: 'nh4no3', ten: 'Hòa tan NH₄NO₃', loai: 'Thu nhiệt (đọng sương)', sign: 1, dH: 25.7, t0: 25.0, tEnd: 18.8, mol: 0.10, m: 100, pt: 'NH4NO3(s) + H2O(l) → NH4⁺(aq) + NO3⁻(aq)', col: 'rgba(186,230,253,0.52)', gas: false },
-        { id: 'nahco3', ten: 'Viên sủi NaHCO₃ + giấm', loai: 'Thu nhiệt', sign: 1, dH: 18.9, t0: 25.0, tEnd: 20.5, mol: 0.10, m: 100, pt: 'NaHCO3(s) + CH3COOH(aq) → CH3COONa(aq) + CO2↑ + H2O(l)', col: 'rgba(254,243,199,0.45)', gas: true }
-      ];
-      let sel = TESTS[0], running = false, t = 0, curT = 25.0, pts = [{ t: 0, T: 25.0 }], fx = [];
-
-      host.innerHTML =
-        '<div class="lh-stage-grid">' +
-          '<div class="lh-viewport" style="height:370px">' +
-            '<div class="lh-hud-top">' +
-              '<div class="lh-hud-badge" id="lh-nk-lcd">🌡️ 25,0 °C</div>' +
-              '<div class="lh-hud-badge" id="lh-nk-type">Chưa trộn hóa chất</div>' +
-            '</div>' +
-            '<svg class="lh-svg" viewBox="0 0 560 350">' +
-              // Cốc thủy tinh ngoài & cốc xốp cách nhiệt bên trong
-              '<path d="M180 124 H336 V278 A12 12 0 0 1 324 290 H192 A12 12 0 0 1 180 278 Z" fill="rgba(255,255,255,0.08)" stroke="#94A3B8" stroke-width="2.2"/>' +
-              '<path d="M192 132 H324 L316 280 H200 Z" fill="rgba(241,245,249,0.22)" stroke="#E2E8F0" stroke-width="2"/>' +
-              '<path id="lh-nk-liq" d="M196 184 H320 L315 278 H201 Z" fill="rgba(186,230,253,0.42)"/>' +
-              '<rect x="184" y="122" width="148" height="12" rx="4" fill="#CBD5E1" stroke="#64748B" stroke-width="1.4"/>' +
-              // Que khuấy
-              '<g id="lh-nk-stir"><line x1="228" y1="78" x2="228" y2="255" stroke="#E2E8F0" stroke-width="4" stroke-linecap="round"/><ellipse cx="228" cy="255" rx="14" ry="4" fill="#94A3B8"/></g>' +
-              // Nhiệt kế lớn + màn hình điện tử
-              '<rect x="276" y="42" width="14" height="218" rx="7" fill="rgba(255,255,255,0.88)" stroke="#475569" stroke-width="2"/>' +
-              '<rect id="lh-nk-merc" x="280" y="130" width="6" height="126" rx="3" fill="#EF4444"/>' +
-              '<circle cx="283" cy="258" r="9" fill="#EF4444"/>' +
-              '<rect x="366" y="88" width="144" height="68" rx="12" fill="#0F172A" stroke="#38BDF8" stroke-width="2"/>' +
-              '<text x="438" y="109" fill="#94A3B8" font-size="10.5" font-weight="800" text-anchor="middle">NHIỆT KẾ SỐ</text>' +
-              '<text id="lh-nk-dig" x="438" y="140" fill="#38BDF8" font-size="24" font-weight="800" text-anchor="middle">25,0 °C</text>' +
-            '</svg>' +
-            '<canvas class="lh-cv" id="lh-nk-cv"></canvas>' +
-          '</div>' +
-          '<div class="lh-panel">' +
-            '<div class="lh-card">' +
-              '<h3>🧪 Chọn thí nghiệm Nhiệt hóa học</h3>' +
-              '<div class="lh-pills" id="lh-nk-list" style="margin-bottom:10px"></div>' +
-              '<div class="hang-nut">' +
-                '<button type="button" class="nut chinh" id="lh-nk-go">▶ Trộn chất &amp; Khuấy đều</button>' +
-                '<button type="button" class="nut" id="lh-nk-rst">↺ Đo lại</button>' +
-              '</div>' +
-            '</div>' +
-            '<div class="lh-card">' +
-              '<h3>📈 Đường cong nhiệt độ T(t) &amp; Tính ΔrH</h3>' +
-              '<div class="lh-chart-box"><canvas id="lh-nk-chart" style="height:145px"></canvas></div>' +
-              '<div class="lh-metrics" style="margin-top:8px">' +
-                '<div class="lh-stat"><span>ΔT = T − T₀</span><b id="lh-nk-dt">0,0 °C</b></div>' +
-                '<div class="lh-stat"><span>Nhiệt Q = m·c·|ΔT|</span><b id="lh-nk-q">0,00 kJ</b></div>' +
-                '<div class="lh-stat"><span>ΔrH°₂₉₈ chuẩn</span><b id="lh-nk-dh">-57,3 kJ/mol</b></div>' +
-              '</div>' +
-              '<div class="lh-eq" id="lh-nk-eq" style="margin-top:8px"></div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      function syncSel() {
-        host.querySelector('#lh-nk-list').innerHTML = TESTS.map(function (x) {
-          return '<button type="button" class="lh-pill-btn' + (x.id === sel.id ? ' on' : '') + '" data-x="' + x.id + '">' + esc(x.ten) + '</button>';
-        }).join('');
-        host.querySelectorAll('#lh-nk-list [data-x]').forEach(function (b) {
-          b.onclick = function () {
-            SoundFX.click();
-            sel = TESTS.find(function (x) { return x.id === b.getAttribute('data-x'); });
-            resetCal(); syncSel();
-          };
-        });
-        host.querySelector('#lh-nk-liq').setAttribute('fill', sel.col);
-        host.querySelector('#lh-nk-dh').textContent = (sel.dH > 0 ? '+' : '') + fmtNum(sel.dH, 1) + ' kJ/mol';
-        host.querySelector('#lh-nk-eq').innerHTML = '<b>' + md(sel.pt) + '</b><div class="phu" style="font-size:12px;margin-top:4px">' +
-          (sel.sign < 0 ? 'Phản ứng <b>tỏa nhiệt</b> (ΔrH &lt; 0): nhiệt lượng truyền từ hệ ra dung dịch làm T tăng!' : 'Phản ứng <b>thu nhiệt</b> (ΔrH &gt; 0): hệ hấp thụ nhiệt từ dung dịch làm T giảm, cốc đọng sương lạnh!') + '</div>';
-      }
-      function resetCal() {
-        running = false; t = 0; curT = sel.t0; pts = [{ t: 0, T: sel.t0 }]; fx = [];
-        syncTherm(); drawTChart();
-      }
-      function syncTherm() {
-        const str = fmtNum(curT, 1) + ' °C';
-        host.querySelector('#lh-nk-lcd').textContent = '🌡️ ' + str;
-        host.querySelector('#lh-nk-dig').textContent = str;
-        const dtVal = curT - sel.t0;
-        const qKj = Math.abs(sel.m * 4.18 * dtVal) / 1000;
-        host.querySelector('#lh-nk-dt').textContent = (dtVal > 0 ? '+' : '') + fmtNum(dtVal, 1) + ' °C';
-        host.querySelector('#lh-nk-q').textContent = fmtNum(qKj, 2) + ' kJ';
-        const frac = Math.max(0, Math.min(1, (curT - 10) / 45));
-        const yTop = 220 - frac * 150;
-        const merc = host.querySelector('#lh-nk-merc');
-        merc.setAttribute('y', yTop.toFixed(1));
-        merc.setAttribute('height', (256 - yTop).toFixed(1));
-        merc.setAttribute('fill', sel.sign > 0 && running ? '#38BDF8' : '#EF4444');
-        host.querySelector('#lh-nk-dig').setAttribute('fill', sel.sign > 0 && curT < 24.5 ? '#38BDF8' : '#F87171');
-        host.querySelector('#lh-nk-type').textContent = running || t > 0 ? (sel.loai + ' (ΔrH ' + (sel.sign < 0 ? '< 0)' : '> 0)')) : 'Sẵn sàng trộn chất';
-      }
-      function drawTChart() {
-        const b = fitCanvas(host.querySelector('#lh-nk-chart'));
-        const ctx = b.ctx; if (!ctx) return;
-        ctx.clearRect(0, 0, b.w, b.h);
-        const pad = { l: 38, r: 10, t: 10, b: 20 };
-        const pw = b.w - pad.l - pad.r, ph = b.h - pad.t - pad.b;
-        const minT = 15, maxTemp = 50;
-        [20, 25, 35, 45].forEach(function (tv) {
-          const y = pad.t + ph - ((tv - minT) / (maxTemp - minT)) * ph;
-          ctx.strokeStyle = tv === 25 ? 'rgba(148,163,184,0.45)' : 'rgba(148,163,184,0.18)';
-          ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + pw, y); ctx.stroke();
-          ctx.fillStyle = '#64748B'; ctx.font = '600 10px "Be Vietnam Pro",sans-serif'; ctx.textAlign = 'right';
-          ctx.fillText(tv + '°', pad.l - 4, y + 3);
-        });
-        if (pts.length > 1) {
-          ctx.strokeStyle = sel.sign < 0 ? '#EF4444' : '#0284C7';
-          ctx.lineWidth = 2.6;
-          ctx.beginPath();
-          pts.forEach(function (p, i) {
-            const x = pad.l + (p.t / 12) * pw;
-            const y = pad.t + ph - ((p.T - minT) / (maxTemp - minT)) * ph;
-            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-          });
-          ctx.stroke();
-        }
-      }
-
-      host.querySelector('#lh-nk-go').onclick = function () {
-        if (t >= 11.8) resetCal();
-        running = true; SoundFX.drop();
-      };
-      host.querySelector('#lh-nk-rst').onclick = function () { SoundFX.click(); resetCal(); };
-      syncSel(); resetCal();
-
-      scope.loop(function (dt) {
-        if (running && t < 12) {
-          t = Math.min(12, t + dt);
-          const k = 1 - Math.exp(-t * 0.42);
-          curT = sel.t0 + (sel.tEnd - sel.t0) * k;
-          if (t - pts[pts.length - 1].t >= 0.2) pts.push({ t: t, T: curT });
-          const stir = host.querySelector('#lh-nk-stir');
-          if (stir && !REDUCED_MOTION) stir.setAttribute('transform', 'translate(' + (Math.sin(t * 14) * 5).toFixed(1) + ',0)');
-          if (sel.gas && Math.random() < 0.4) fx.push({ k: 'b', x: 220 + Math.random() * 80, y: 270, vy: 45 + Math.random() * 45, r: 2 + Math.random() * 2 });
-          if (sel.sign < 0 && Math.random() < 0.16) fx.push({ k: 'h', x: 185 + Math.random() * 145, y: 120, vy: 28, life: 1 });
-          if (sel.sign > 0 && fx.filter(function (q) { return q.k === 'f'; }).length < 22 && Math.random() < 0.25) {
-            fx.push({ k: 'f', x: 182 + Math.random() * 150, y: 155 + Math.random() * 120, r: 1.5 + Math.random() * 2.5, life: 1 });
-          }
-          if (t >= 12) { running = false; SoundFX.win(); }
-          syncTherm(); drawTChart();
-        }
-        const b = fitCanvas(host.querySelector('#lh-nk-cv'));
-        const ctx = b.ctx; if (!ctx) return;
-        ctx.clearRect(0, 0, b.w, b.h);
-        const sc = Math.min(b.w / 560, b.h / 350);
-        ctx.save(); ctx.translate((b.w - 560 * sc) / 2, (b.h - 350 * sc) / 2); ctx.scale(sc, sc);
-        for (let i = fx.length - 1; i >= 0; i--) {
-          const p = fx[i];
-          if (p.k === 'b') {
-            p.y -= p.vy * dt;
-            ctx.strokeStyle = 'rgba(255,255,255,0.75)'; ctx.lineWidth = 1.2;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.stroke();
-            if (p.y < 185) fx.splice(i, 1);
-          } else if (p.k === 'h') {
-            p.y -= p.vy * dt; p.life -= dt * 0.7;
-            ctx.strokeStyle = 'rgba(248,113,113,' + Math.max(0, p.life) + ')'; ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y - 16); ctx.stroke();
-            if (p.life <= 0) fx.splice(i, 1);
-          } else if (p.k === 'f') {
-            // Giọt sương lạnh ngưng tụ ngoài thành cốc
-            ctx.fillStyle = 'rgba(186,230,253,0.72)';
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
-          }
-        }
-        ctx.restore();
-      });
-    } else {
-      // Sub-mode 2: Giản đồ Enthalpy & Công thức tính ΔrH°298
-      const DIAG = [
-        {
-          id: 'ch4', ten: 'CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(l)',
-          dH: -890.3, mode: 'ΔfH°₂₉₈',
-          calc: 'ΣΔfH°(sp) − ΣΔfH°(cđ) = [(-393,50) + 2·(-285,84)] − [(-74,87) + 0] = **-890,31 kJ** (**Tỏa nhiệt**)'
-        },
-        {
-          id: 'caco3', ten: 'CaCO₃(s) → CaO(s) + CO₂(g)',
-          dH: +179.2, mode: 'ΔfH°₂₉₈',
-          calc: 'ΣΔfH°(sp) − ΣΔfH°(cđ) = [(-634,9) + (-393,5)] − (-1207,6) = **+179,2 kJ** (**Thu nhiệt**, cần nung liên tục)'
-        },
-        {
-          id: 'hcl', ten: 'H₂(g) + Cl₂(g) → 2HCl(g)',
-          dH: -185.0, mode: 'Năng lượng liên kết Eb',
-          calc: 'ΣEb(cđ) − ΣEb(sp) = [Eb(H–H) + Eb(Cl–Cl)] − 2·Eb(H–Cl) = (436 + 243) − 2·432 = **-185 kJ** (**Tỏa nhiệt**)'
-        },
-        {
-          id: 'nh3', ten: 'N₂(g) + 3H₂(g) → 2NH₃(g)',
-          dH: -91.8, mode: 'Năng lượng liên kết Eb',
-          calc: 'ΣEb(cđ) − ΣEb(sp) = [Eb(N≡N) + 3·Eb(H–H)] − 6·Eb(N–H) = (945 + 3·436) − 6·391 = **-93 kJ** (theo ΔfH°₂₉₈ = 2·(-45,9) = **-91,8 kJ**)'
-        }
-      ];
-      let sel = DIAG[0];
-      host.innerHTML =
-        '<div class="lh-stage-grid">' +
-          '<div class="lh-viewport" style="height:330px"><canvas id="lh-en-cv" style="width:100%;height:100%"></canvas></div>' +
-          '<div class="lh-panel">' +
-            '<div class="lh-card"><h3>⚡ Chọn phản ứng (Bài 17)</h3><div class="lh-pills" id="lh-en-list"></div></div>' +
-            '<div class="lh-card"><h3>📐 Cách tính chuẩn SGK KNTT</h3>' +
-              '<div class="lh-eq" id="lh-en-eq"></div>' +
-              '<div class="thongbao info" style="margin:8px 0 0">Nhớ quy tắc đảo dấu: theo <b>ΔfH°</b> lấy <b>Sản phẩm − Chất đầu</b>; theo <b>Eb</b> lấy <b>Chất đầu − Sản phẩm</b>.</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      function drawDiag() {
-        const exo = sel.dH < 0;
-        const b = fitCanvas(host.querySelector('#lh-en-cv'));
-        const ctx = b.ctx; if (!ctx) return;
-        ctx.clearRect(0, 0, b.w, b.h);
-        const sc = Math.min(b.w / 480, b.h / 310);
-        ctx.save();
-        ctx.translate((b.w - 480 * sc) / 2, (b.h - 310 * sc) / 2);
-        ctx.scale(sc, sc);
-        const yR = exo ? 105 : 225, yP = exo ? 230 : 115, yTop = 44;
-        // Trục tung H
-        ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(54, 278); ctx.lineTo(54, 30); ctx.moveTo(48, 38); ctx.lineTo(54, 28); ctx.lineTo(60, 38); ctx.stroke();
-        ctx.fillStyle = '#CBD5E1'; ctx.font = '800 12px "Be Vietnam Pro",sans-serif'; ctx.textAlign = 'left';
-        ctx.fillText('Enthalpy (H)', 66, 36);
-        // Mức chất đầu & sản phẩm
-        ctx.strokeStyle = '#38BDF8'; ctx.lineWidth = 4;
-        ctx.beginPath(); ctx.moveTo(85, yR); ctx.lineTo(185, yR); ctx.stroke();
-        ctx.strokeStyle = exo ? '#2DD4BF' : '#F472B6';
-        ctx.beginPath(); ctx.moveTo(320, yP); ctx.lineTo(435, yP); ctx.stroke();
-        // Đường cong năng lượng hoạt hóa
-        ctx.strokeStyle = '#FACC15'; ctx.lineWidth = 2.6;
-        ctx.beginPath(); ctx.moveTo(185, yR);
-        ctx.bezierCurveTo(225, yTop, 280, yTop, 320, yP); ctx.stroke();
-        // Mũi tên ΔrH
-        ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-        ctx.beginPath(); ctx.moveTo(185, yR); ctx.lineTo(310, yR); ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.strokeStyle = exo ? '#EF4444' : '#38BDF8'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.moveTo(270, yR); ctx.lineTo(270, yP); ctx.stroke();
-        ctx.fillStyle = exo ? '#FCA5A5' : '#BAE6FD';
-        ctx.font = '800 13.5px "Be Vietnam Pro",sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText('ΔrH° = ' + (sel.dH > 0 ? '+' : '') + fmtNum(sel.dH, 1) + ' kJ', 270, (yR + yP) / 2 - 4);
-        ctx.fillStyle = '#E2E8F0'; ctx.font = '700 12px "Be Vietnam Pro",sans-serif';
-        ctx.fillText('Chất đầu (cđ)', 135, yR - 10);
-        ctx.fillText('Sản phẩm (sp)', 378, yP - 10);
-        ctx.fillStyle = exo ? '#4ADE80' : '#FDE047';
-        ctx.fillText(exo ? 'TỎA NHIỆT (ΔrH < 0)' : 'THU NHIỆT (ΔrH > 0)', 270, 295);
-        ctx.restore();
-      }
-
-      function syncEn() {
-        host.querySelector('#lh-en-list').innerHTML = DIAG.map(function (d) {
-          return '<button type="button" class="lh-pill-btn' + (d.id === sel.id ? ' on' : '') + '" data-d="' + d.id + '">' + md(d.ten) + '</button>';
-        }).join('');
-        host.querySelectorAll('#lh-en-list [data-d]').forEach(function (b) {
-          b.onclick = function () { SoundFX.click(); sel = DIAG.find(function (x) { return x.id === b.getAttribute('data-d'); }); syncEn(); };
-        });
-        host.querySelector('#lh-en-eq').innerHTML = '<div><b>Phương pháp:</b> ' + esc(sel.mode) + '</div><div style="margin-top:4px">' + md(sel.calc) + '</div>';
-        drawDiag();
-      }
-      syncEn();
-      watchTheme(scope, drawDiag);
-      const onEnResize = function () { drawDiag(); };
-      window.addEventListener('resize', onEnResize);
-      scope.onCleanup(function () { window.removeEventListener('resize', onEnResize); });
-    }
-  }
-
-  /* ============================================================================
-   * LAB 4: KIM LOẠI IA/IIA VỚI NƯỚC & LƯỠNG TÍNH Al(OH)3 (Bài 6, 7, 9)
-   * ============================================================================ */
-  function mountKiemLuongTinhLab(mainEl, scope, sub) {
-    const meta = LAB_LIST[3];
-    let curSub = sub === 'luong-tinh' ? 'luong-tinh' : 'kiem';
-    buildToolbar(mainEl, meta, curSub, {
-      onSub: function (ns) { window.location.hash = '#kiem-luong-tinh?sub=' + ns; },
-      onReset: function () { mountLab('kiem-luong-tinh', curSub); }
-    });
-    const host = document.createElement('div');
-    mainEl.appendChild(host);
-
-    if (curSub === 'kiem') {
-      const METALS = {
-        Li: { ten: 'Lithium (Li)', d: 'Nhẹ nhất, nổi', floats: true, speed: 55, flame: false, pH: 12.2, pt: '2Li(s) + 2H2O(l) → 2LiOH(aq) + H2↑', desc: 'Nổi trên mặt nước, sủi bọt khí êm, dung dịch hóa hồng từ từ.' },
-        Na: { ten: 'Sodium (Na)', d: 'Chạy vèo trên mặt nước', floats: true, speed: 170, flame: false, pH: 13.0, pt: '2Na(s) + 2H2O(l) → 2NaOH(aq) + H2↑', desc: 'Nóng chảy thành giọt bạc tròn chạy vèo trên mặt nước, sủi bọt H2 mạnh, vệt hồng đậm.' },
-        K: { ten: 'Potassium (K)', d: 'Bùng ngọn lửa tím!', floats: true, speed: 230, flame: true, pH: 13.5, pt: '2K(s) + 2H2O(l) → 2KOH(aq) + H2↑', desc: 'Phản ứng mãnh liệt nhất: tự bốc cháy với **ngọn lửa màu tím** đặc trưng kèm tia sáng!' },
-        Mg: { ten: 'Magnesium (Mg)', d: 'Nhóm IIA · cần đun nóng', floats: false, speed: 0, flame: false, pH: 10.1, pt: 'Mg(s) + 2H2O(l) --(t°)--> Mg(OH)2↓ + H2↑', desc: 'Chìm đáy chậu: ở 25 °C hầu như không sủi bọt; bật **Đun nóng 80 °C** mới sủi bọt H2 đều.' },
-        Ca: { ten: 'Calcium (Ca)', d: 'Nhóm IIA · phản ứng mạnh', floats: false, speed: 12, flame: false, pH: 12.5, pt: 'Ca(s) + 2H2O(l) → Ca(OH)2 + H2↑', desc: 'Chìm đáy, sủi bọt H2 mạnh ngay ở nhiệt độ thường, nước hóa hồng và hơi đục trắng Ca(OH)2.' }
-      };
-      let hot = false, curM = null, obj = null, pinkAlpha = 0, bubbles = [], sparks = [];
-      host.innerHTML =
-        '<div class="lh-stage-grid">' +
-          '<div class="lh-viewport" style="height:355px">' +
-            '<div class="lh-hud-top">' +
-              '<div class="lh-hud-badge" id="lh-km-ph">H₂O + Phenolphthalein · pH = 7,0</div>' +
-              '<button type="button" class="nut nho" style="pointer-events:auto" id="lh-km-heat">🔥 Đun nóng: Tắt (25 °C)</button>' +
-            '</div>' +
-            '<canvas id="lh-km-cv" style="width:100%;height:100%"></canvas>' +
-          '</div>' +
-          '<div class="lh-panel">' +
-            '<div class="lh-card">' +
-              '<h3>⚗️ Thả kim loại vào chậu nước (Phenolphthalein)</h3>' +
-              '<div class="lh-pills" id="lh-km-btns"></div>' +
-            '</div>' +
-            '<div class="lh-card">' +
-              '<h3>📝 Quan sát &amp; Xu hướng (Bài 6, 9)</h3>' +
-              '<div class="lh-eq" id="lh-km-eq">Chọn một kim loại (Li, Na, K, Mg hoặc Ca) để thả vào chậu nước có nhỏ sẵn phenolphthalein!</div>' +
-              '<div class="lh-pills" style="margin-top:8px"><span class="chip chinh">Nhóm IA: Li &lt; Na &lt; K</span><span class="chip tim">Chu kì 3: Na &gt; Mg</span><span class="chip ok">Nhóm IIA: Mg &lt; Ca</span></div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      host.querySelector('#lh-km-btns').innerHTML = Object.keys(METALS).map(function (k) {
-        return '<button type="button" class="lh-pill-btn" data-m="' + k + '">⬇ Thả ' + esc(METALS[k].ten) + '</button>';
-      }).join('');
-      host.querySelectorAll('[data-m]').forEach(function (b) {
-        b.onclick = function () {
-          const k = b.getAttribute('data-m');
-          curM = METALS[k]; curM.k = k;
-          pinkAlpha = 0; bubbles = []; sparks = [];
-          const cvEl = host.querySelector('#lh-km-cv');
-          const cw = (cvEl && cvEl.clientWidth) || 420;
-          obj = { x: Math.max(68, Math.min(cw - 68, cw * 0.5)), y: 72, vx: curM.floats ? (Math.random() < 0.5 ? -curM.speed : curM.speed) : 0, life: 1, inWater: false };
-          SoundFX.drop();
-          if (curM.flame) scope.timeout(function () { SoundFX.ignite(); }, 250);
-          host.querySelector('#lh-km-eq').innerHTML = '<b>' + md(curM.pt) + '</b><div style="margin-top:4px">' + md(curM.desc) + '</div>';
-        };
-      });
-      host.querySelector('#lh-km-heat').onclick = function () {
-        hot = !hot; SoundFX.click();
-        this.textContent = hot ? '🔥 Đang đun 80 °C' : '🔥 Đun nóng: Tắt (25 °C)';
-        this.classList.toggle('chinh', hot);
-      };
-
-      scope.loop(function (dt) {
-        const b = fitCanvas(host.querySelector('#lh-km-cv'));
-        const ctx = b.ctx; if (!ctx) return;
-        ctx.clearRect(0, 0, b.w, b.h);
-        const wL = 44, wR = b.w - 44, wTop = b.h * 0.44, wBot = b.h - 32;
-        // Chậu nước
-        ctx.fillStyle = 'rgba(186,230,253,0.22)';
-        ctx.fillRect(wL, wTop, wR - wL, wBot - wTop);
-        if (pinkAlpha > 0) {
-          ctx.fillStyle = 'rgba(236,72,153,' + Math.min(0.68, pinkAlpha).toFixed(3) + ')';
-          ctx.fillRect(wL, wTop, wR - wL, wBot - wTop);
-        }
-        ctx.strokeStyle = '#CBD5E1'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.moveTo(wL, wTop - 28); ctx.lineTo(wL, wBot); ctx.lineTo(wR, wBot); ctx.lineTo(wR, wTop - 28); ctx.stroke();
-
-        if (obj && curM) {
-          if (!obj.inWater) {
-            obj.y += 280 * dt;
-            if (obj.y >= wTop) { obj.y = curM.floats ? wTop + 2 : wBot - 14; obj.inWater = true; }
-          } else {
-            const active = !(curM.k === 'Mg' && !hot);
-            if (active && obj.life > 0) {
-              obj.life = Math.max(0, obj.life - dt * (curM.k === 'K' ? 0.22 : curM.k === 'Na' ? 0.16 : 0.08));
-              pinkAlpha = Math.min(0.68, pinkAlpha + dt * (curM.k === 'K' ? 0.22 : curM.k === 'Mg' ? 0.04 : 0.12));
-              host.querySelector('#lh-km-ph').textContent = 'Phenolphthalein hóa hồng · pH ≈ ' + fmtNum(curM.pH, 1);
-              if (curM.floats) {
-                obj.x += obj.vx * dt;
-              }
-              if (obj.x < wL + 22) { obj.x = wL + 22; obj.vx = Math.abs(obj.vx); }
-              else if (obj.x > wR - 22) { obj.x = wR - 22; obj.vx = -Math.abs(obj.vx); }
-              if (Math.random() < (curM.k === 'K' || curM.k === 'Na' || curM.k === 'Ca' ? 0.75 : 0.35)) {
-                bubbles.push({ x: obj.x + (Math.random() - 0.5) * 14, y: obj.y, vy: 50 + Math.random() * 55, r: 2 + Math.random() * 2.5 });
-              }
-              if (curM.flame && Math.random() < 0.6) {
-                sparks.push({ x: obj.x, y: obj.y - 6, vx: (Math.random() - 0.5) * 60, vy: -50 - Math.random() * 50, life: 0.45 });
-              }
-            }
-          }
-          if (obj.life > 0) {
-            const rad = 6 + obj.life * 7;
-            ctx.fillStyle = curM.k === 'Na' ? '#F8FAFC' : '#CBD5E1';
-            ctx.beginPath(); ctx.arc(obj.x, obj.y, rad, 0, Math.PI * 2); ctx.fill();
-            if (curM.flame && obj.inWater) {
-              // Ngọn lửa tím của Potassium
-              ctx.fillStyle = 'rgba(192,132,252,0.88)';
-              ctx.beginPath(); ctx.moveTo(obj.x - 10, obj.y); ctx.quadraticCurveTo(obj.x, obj.y - 44, obj.x + 10, obj.y); ctx.fill();
-              ctx.fillStyle = '#FAF5FF';
-              ctx.beginPath(); ctx.moveTo(obj.x - 5, obj.y); ctx.quadraticCurveTo(obj.x, obj.y - 24, obj.x + 5, obj.y); ctx.fill();
-            }
-          }
-        }
-
-        for (let i = bubbles.length - 1; i >= 0; i--) {
-          const bb = bubbles[i]; bb.y -= bb.vy * dt;
-          ctx.strokeStyle = 'rgba(255,255,255,0.8)'; ctx.lineWidth = 1.3;
-          ctx.beginPath(); ctx.arc(bb.x, bb.y, bb.r, 0, Math.PI * 2); ctx.stroke();
-          if (bb.y < wTop - 8) bubbles.splice(i, 1);
-        }
-        for (let i = sparks.length - 1; i >= 0; i--) {
-          const sp = sparks[i]; sp.x += sp.vx * dt; sp.y += sp.vy * dt; sp.life -= dt;
-          ctx.fillStyle = 'rgba(232,121,249,' + Math.max(0, sp.life * 2) + ')';
-          ctx.fillRect(sp.x, sp.y, 3, 3);
-          if (sp.life <= 0) sparks.splice(i, 1);
-        }
-      });
-    } else {
-      // Sub-mode 2: Lưỡng tính Al(OH)3 vs Mg(OH)2 & dãy pH Hydroxide chu kì 3
-      let eqNaOH = 0, addedHCl = false;
-      host.innerHTML =
-        '<div class="lh-stage-grid">' +
-          '<div class="lh-viewport" style="height:355px">' +
-            '<div class="lh-hud-top"><div class="lh-hud-badge" id="lh-lt-hud">0,0 đương lượng NaOH</div></div>' +
-            '<svg class="lh-svg" viewBox="0 0 560 340">' +
-              '<rect x="148" y="88" width="60" height="175" rx="30" fill="rgba(186,230,253,0.16)" stroke="#CBD5E1" stroke-width="2.5"/>' +
-              '<rect x="348" y="88" width="60" height="175" rx="30" fill="rgba(186,230,253,0.16)" stroke="#CBD5E1" stroke-width="2.5"/>' +
-              '<path id="lh-lt-p1" d="M150 220 H206 V236 A28 28 0 0 1 150 236 Z" fill="transparent"/>' +
-              '<path id="lh-lt-p2" d="M350 220 H406 V236 A28 28 0 0 1 350 236 Z" fill="transparent"/>' +
-              '<text x="178" y="290" fill="#F8FAFC" font-size="14" font-weight="800" text-anchor="middle">Ống 1: AlCl₃</text>' +
-              '<text id="lh-lt-s1" x="178" y="310" fill="#BAE6FD" font-size="11.5" font-weight="700" text-anchor="middle">Trong suốt</text>' +
-              '<text x="378" y="290" fill="#F8FAFC" font-size="14" font-weight="800" text-anchor="middle">Ống 2: MgCl₂</text>' +
-              '<text id="lh-lt-s2" x="378" y="310" fill="#BAE6FD" font-size="11.5" font-weight="700" text-anchor="middle">Trong suốt</text>' +
-            '</svg>' +
-          '</div>' +
-          '<div class="lh-panel">' +
-            '<div class="lh-card">' +
-              '<h3>🧪 Nhỏ từ từ NaOH vào AlCl₃ &amp; MgCl₂ (Bài 7)</h3>' +
-              '<div class="lh-pills" style="margin-bottom:8px">' +
-                '<button type="button" class="lh-pill-btn" data-n="0">0 đl (Ban đầu)</button>' +
-                '<button type="button" class="lh-pill-btn" data-n="3">3 đl NaOH (Kết tủa tối đa)</button>' +
-                '<button type="button" class="lh-pill-btn" data-n="4.5">4,5 đl NaOH (Kiềm dư!)</button>' +
-                '<button type="button" class="lh-pill-btn" id="lh-lt-hcl">+ HCl vào Al(OH)₃</button>' +
-              '</div>' +
-              '<div class="lh-eq" id="lh-lt-eq"></div>' +
-            '</div>' +
-            '<div class="lh-card">' +
-              '<h3>🌈 Dãy Hydroxide Chu kì 3 (Base → Lưỡng tính → Acid)</h3>' +
-              '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(68px,1fr));gap:4px;text-align:center;font-size:11px;font-weight:800">' +
-                '<div style="background:#6D28D9;color:#fff;padding:7px 2px;border-radius:8px">NaOH<br>Base mạnh</div>' +
-                '<div style="background:#0284C7;color:#fff;padding:7px 2px;border-radius:8px">Mg(OH)₂<br>Base yếu</div>' +
-                '<div style="background:#10B981;color:#fff;padding:7px 2px;border-radius:8px">Al(OH)₃<br>Lưỡng tính</div>' +
-                '<div style="background:#EAB308;color:#111;padding:7px 2px;border-radius:8px">H₂SiO₃<br>Acid yếu</div>' +
-                '<div style="background:#F97316;color:#fff;padding:7px 2px;border-radius:8px">H₃PO₄<br>TB</div>' +
-                '<div style="background:#EF4444;color:#fff;padding:7px 2px;border-radius:8px">H₂SO₄<br>Mạnh</div>' +
-                '<div style="background:#991B1B;color:#fff;padding:7px 2px;border-radius:8px">HClO₄<br>Rất mạnh</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      function renderLt() {
-        const p1 = host.querySelector('#lh-lt-p1'), p2 = host.querySelector('#lh-lt-p2');
-        const s1 = host.querySelector('#lh-lt-s1'), s2 = host.querySelector('#lh-lt-s2');
-        if (addedHCl) {
-          p1.setAttribute('fill', 'transparent'); s1.textContent = 'Tan trong HCl!';
-          p2.setAttribute('fill', '#F8FAFC'); s2.textContent = 'Mg(OH)₂↓ trắng';
-          host.querySelector('#lh-lt-eq').innerHTML = '<b>' + md('Al(OH)3(s) + 3HCl(aq) → AlCl3(aq) + 3H2O(l)') + '</b><div class="phu" style="margin-top:4px">' + md('Al(OH)3 vừa tan được trong HCl vừa tan được trong NaOH dư → **hydroxide lưỡng tính**!') + '</div>';
-        } else if (eqNaOH === 0) {
-          p1.setAttribute('fill', 'transparent'); p2.setAttribute('fill', 'transparent');
-          s1.textContent = 'Trong suốt'; s2.textContent = 'Trong suốt';
-          host.querySelector('#lh-lt-eq').innerHTML = 'Bấm <b>3 đl NaOH</b> rồi <b>4,5 đl NaOH dư</b> để thấy sự khác biệt giữa <b>Al(OH)₃</b> và <b>Mg(OH)₂</b>!';
-        } else if (eqNaOH <= 3) {
-          p1.setAttribute('fill', 'rgba(248,250,252,0.88)'); p2.setAttribute('fill', '#F8FAFC');
-          s1.textContent = 'Keo trắng Al(OH)₃↓'; s2.textContent = 'Kết tủa Mg(OH)₂↓';
-          host.querySelector('#lh-lt-eq').innerHTML = '<b>Cả 2 ống đều tạo kết tủa trắng:</b><br>' + md('AlCl3 + 3NaOH → Al(OH)3↓ + 3NaCl · MgCl2 + 2NaOH → Mg(OH)2↓ + 2NaCl');
-        } else {
-          p1.setAttribute('fill', 'transparent'); p2.setAttribute('fill', '#F8FAFC');
-          s1.textContent = 'Tan hết tạo Na[Al(OH)₄]!'; s2.textContent = 'Mg(OH)₂↓ không tan';
-          host.querySelector('#lh-lt-eq').innerHTML = '<b>' + md('Al(OH)3 tan hết trong kiềm dư:') + '</b><br>' + md('Al(OH)3(s) + NaOH(aq) → Na[Al(OH)4](aq)') + '<br>' + md('Trong khi Mg(OH)2 không có tính lưỡng tính nên giữ nguyên kết tủa.');
-        }
-        host.querySelector('#lh-lt-hud').textContent = addedHCl ? 'Đã nhỏ HCl vào Al(OH)₃' : fmtNum(eqNaOH, 1) + ' đương lượng NaOH';
-        host.querySelectorAll('[data-n]').forEach(function (b) { b.classList.toggle('on', !addedHCl && Number(b.getAttribute('data-n')) === eqNaOH); });
-        host.querySelector('#lh-lt-hcl').classList.toggle('on', addedHCl);
-      }
-      host.querySelectorAll('[data-n]').forEach(function (b) {
-        b.onclick = function () { SoundFX.drop(); addedHCl = false; eqNaOH = Number(b.getAttribute('data-n')); renderLt(); };
-      });
-      host.querySelector('#lh-lt-hcl').onclick = function () { SoundFX.drop(); addedHCl = true; renderLt(); };
-      renderLt();
-    }
-  }
-
-  /* ============================================================================
-   * LAB 5: THỬ MÀU NGỌN LỬA ION KIM LOẠI (ngon-lua · Bài 3, 4)
-   * ============================================================================ */
-  function mountNgonLuaLab(mainEl, scope, sub) {
-    const meta = LAB_LIST[4];
-    let curSub = sub === 'bi-an' ? 'bi-an' : 'thu';
-    let microOn = false;
-    const SALTS = [
-      { key: 'LiCl', ion: 'Li⁺', ten: 'Lithium chloride', mauTen: 'Đỏ tía', col: '#FF1E56', core: '#FF9EBB', lam: '671 nm', lines: [671, 610] },
-      { key: 'NaCl', ion: 'Na⁺', ten: 'Sodium chloride', mauTen: 'Vàng tươi rực rỡ', col: '#FACC15', core: '#FEF9C3', lam: '589 nm', lines: [589] },
-      { key: 'KCl', ion: 'K⁺', ten: 'Potassium chloride', mauTen: 'Tím hoa cà', col: '#C084FC', core: '#F3E8FF', lam: '766 & 404 nm', lines: [404, 766] },
-      { key: 'CaCl2', ion: 'Ca²⁺', ten: 'Calcium chloride', mauTen: 'Đỏ cam', col: '#F97316', core: '#FED7AA', lam: '622 nm', lines: [423, 559, 622] },
-      { key: 'BaCl2', ion: 'Ba²⁺', ten: 'Barium chloride', mauTen: 'Lục vàng', col: '#84CC16', core: '#ECFCCB', lam: '524 nm', lines: [514, 524, 553] },
-      { key: 'CuCl2', ion: 'Cu²⁺', ten: 'Copper(II) chloride', mauTen: 'Xanh lục', col: '#10B981', core: '#A7F3D0', lam: '510 nm', lines: [510, 522, 578] }
-    ];
-    let airOpen = true, activeSalt = SALTS[0], burning = true, mystery = SALTS[Math.floor(Math.random() * SALTS.length)], tAnim = 0;
-
-    buildToolbar(mainEl, meta, curSub, {
-      hasMicro: true,
-      onSub: function (ns) { window.location.hash = '#ngon-lua?sub=' + ns; },
-      onMicro: function (b) {
-        microOn = !microOn; b.classList.toggle('tim', microOn);
-        const ml = document.getElementById('lh-nl-micro');
-        if (ml) ml.classList.toggle('on', microOn);
-      },
-      onReset: function () { mountLab('ngon-lua', curSub); }
-    });
-
-    const host = document.createElement('div');
-    mainEl.appendChild(host);
-    host.innerHTML =
-      '<div class="lh-stage-grid">' +
-        '<div>' +
-          '<div class="lh-viewport" style="height:350px">' +
-            '<div class="lh-hud-top">' +
-              '<div class="lh-hud-badge" id="lh-nl-hud">Màu ngọn lửa: Đỏ tía (Li⁺)</div>' +
-              '<div class="hang-nut" style="pointer-events:auto">' +
-                '<button type="button" class="nut nho tim" id="lh-nl-air">🌀 Lỗ gió: MỞ (lửa chuẩn)</button>' +
-                '<button type="button" class="nut nho" id="lh-nl-clean">🧼 Rửa dây Pt (HCl)</button>' +
-              '</div>' +
-            '</div>' +
-            '<canvas id="lh-nl-cv" style="width:100%;height:100%"></canvas>' +
-            '<div class="lh-micro-lens" id="lh-nl-micro"><canvas id="lh-nl-mcv"></canvas><div class="lh-micro-cap">Bước nhảy electron</div></div>' +
-          '</div>' +
-          '<div class="lh-card" style="margin-top:10px">' +
-            '<h3>🌈 Dải vạch Quang phổ phát xạ (380 – 780 nm)</h3>' +
-            '<canvas id="lh-nl-spec" style="width:100%;height:46px;border-radius:8px;background:#090D16;display:block"></canvas>' +
-          '</div>' +
-        '</div>' +
-        '<div class="lh-panel">' +
-          '<div class="lh-card">' +
-            (curSub === 'thu'
-              ? '<h3>🔥 Chọn muối kim loại đưa lên ngọn lửa Bunsen</h3><div class="lh-pills" id="lh-nl-salts"></div>'
-              : '<h3>🎯 Thử thách: Đoán muối bí ẩn từ màu ngọn lửa</h3>' +
-                '<div class="phu" style="margin-bottom:8px">Quan sát ngọn lửa đang đốt mẫu <b>X</b> ở bên trái rồi chọn đúng ion kim loại:</div>' +
-                '<div class="lh-pills" id="lh-nl-guess"></div>' +
-                '<div id="lh-nl-gres" style="margin-top:8px"></div>') +
-          '</div>' +
-          '<div class="lh-card">' +
-            '<h3>⚛️ Bản chất phát xạ (Bài 3 – Lớp vỏ electron)</h3>' +
-            '<div class="lh-eq" id="lh-nl-info"></div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-
-    function drawSpectrum() {
-      const sCv = host.querySelector('#lh-nl-spec');
-      const b = fitCanvas(sCv, 40);
-      const ctx = b.ctx; if (!ctx) return;
-      ctx.fillStyle = '#090D16'; ctx.fillRect(0, 0, b.w, b.h);
-      const s = curSub === 'bi-an' ? mystery : activeSalt;
-      if (burning && airOpen && s) {
-        s.lines.forEach(function (nm) {
-          const x = ((nm - 380) / 400) * (b.w - 30) + 15;
-          ctx.strokeStyle = s.col; ctx.lineWidth = 3.5;
-          ctx.beginPath(); ctx.moveTo(x, 6); ctx.lineTo(x, b.h - 14); ctx.stroke();
-          ctx.fillStyle = '#E2E8F0'; ctx.font = '700 10px "Be Vietnam Pro",sans-serif'; ctx.textAlign = 'center';
-          ctx.fillText(nm + 'nm', x, b.h - 3);
-        });
-      }
-    }
-
-    function updateFlameInfo() {
-      const s = curSub === 'bi-an' ? mystery : activeSalt;
-      const hud = host.querySelector('#lh-nl-hud');
-      const info = host.querySelector('#lh-nl-info');
-      if (!airOpen) {
-        hud.textContent = '⚠️ Lỗ gió ĐÓNG: ngọn lửa vàng cháy không hoàn toàn — hãy mở lỗ gió!';
-      } else if (!burning) {
-        hud.textContent = 'Đã rửa sạch dây Platinum trong HCl · Ngọn lửa nền xanh nhạt';
-      } else if (curSub === 'bi-an') {
-        hud.textContent = 'Đang đốt mẫu muối bí ẩn X — màu: ' + s.mauTen;
-      } else {
-        hud.textContent = s.key + ' (' + s.ion + ') → Ngọn lửa màu ' + s.mauTen + ' (λ ≈ ' + s.lam + ')';
-      }
-      info.innerHTML = curSub === 'bi-an'
-        ? 'Khi đốt nóng, electron nhảy lên mức năng lượng cao rồi trở về trạng thái cơ bản, phát ra photon có bước sóng đặc trưng (<b>' + esc(s.lam) + '</b>).'
-        : '<b>' + esc(s.key) + ' (' + esc(s.ten) + '):</b> Ion <b>' + esc(s.ion) + '</b> cho ngọn lửa màu <b>' + esc(s.mauTen) + '</b> (λ ≈ ' + esc(s.lam) + ').';
-      drawSpectrum();
-    }
-
-    if (curSub === 'thu') {
-      host.querySelector('#lh-nl-salts').innerHTML = SALTS.map(function (s) {
-        return '<button type="button" class="lh-pill-btn' + (s.key === activeSalt.key ? ' on' : '') + '" data-s="' + s.key + '">' + esc(s.key) + ' (' + esc(s.ion) + ')</button>';
-      }).join('');
-      host.querySelectorAll('[data-s]').forEach(function (b) {
-        b.onclick = function () {
-          SoundFX.ignite(); burning = true;
-          activeSalt = SALTS.find(function (x) { return x.key === b.getAttribute('data-s'); });
-          host.querySelectorAll('[data-s]').forEach(function (x) { x.classList.toggle('on', x === b); });
-          updateFlameInfo();
-        };
-      });
-    } else {
-      host.querySelector('#lh-nl-guess').innerHTML = SALTS.map(function (s) {
-        return '<button type="button" class="lh-pill-btn" data-g="' + s.key + '">' + esc(s.ion) + ' (' + esc(s.key) + ')</button>';
-      }).join('') + '<button type="button" class="nut nho" id="lh-nl-next">🔀 Mẫu khác</button>';
-      host.querySelectorAll('[data-g]').forEach(function (b) {
-        b.onclick = function () {
-          const g = b.getAttribute('data-g');
-          const res = host.querySelector('#lh-nl-gres');
-          if (g === mystery.key) {
-            SoundFX.win(); phaoGiay(50);
-            res.innerHTML = '<div class="thongbao ok" style="margin:0"><b>Chính xác!</b> Mẫu X là <b>' + esc(mystery.key) + '</b> (' + esc(mystery.mauTen) + ').</div>';
-          } else {
-            SoundFX.error();
-            res.innerHTML = '<div class="thongbao canh" style="margin:0">Chưa đúng! Ngọn lửa này có màu <b>' + esc(mystery.mauTen) + '</b> (λ ≈ ' + esc(mystery.lam) + ').</div>';
-          }
-        };
-      });
-      host.querySelector('#lh-nl-next').onclick = function () {
-        SoundFX.ignite(); burning = true;
-        mystery = SALTS[Math.floor(Math.random() * SALTS.length)];
-        host.querySelector('#lh-nl-gres').innerHTML = '';
-        updateFlameInfo();
-      };
-    }
-
-    host.querySelector('#lh-nl-air').onclick = function () {
-      airOpen = !airOpen; SoundFX.click();
-      this.textContent = airOpen ? '🌀 Lỗ gió: MỞ (lửa chuẩn)' : '⚠️ Lỗ gió: ĐÓNG (lửa vàng)';
-      this.classList.toggle('tim', airOpen);
-      updateFlameInfo();
-    };
-    host.querySelector('#lh-nl-clean').onclick = function () {
-      SoundFX.drop(); burning = false; updateFlameInfo();
-    };
-    updateFlameInfo();
-
-    scope.loop(function (dt) {
-      tAnim += dt * (REDUCED_MOTION ? 0.5 : 4);
-      const b = fitCanvas(host.querySelector('#lh-nl-cv'));
-      const ctx = b.ctx; if (!ctx) return;
-      ctx.clearRect(0, 0, b.w, b.h);
-      const bx = b.w * 0.5, baseY = b.h - 46;
-      // Đèn khí Bunsen
-      ctx.fillStyle = '#64748B'; ctx.fillRect(bx - 42, baseY + 12, 84, 14);
-      ctx.fillStyle = '#94A3B8'; ctx.fillRect(bx - 12, baseY - 96, 24, 108);
-      ctx.fillStyle = airOpen ? '#38BDF8' : '#475569';
-      ctx.fillRect(bx - 14, baseY - 24, 28, 12);
-
-      // Ngọn lửa bập bùng 3 lớp
-      const fTop = baseY - 96;
-      const sway = Math.sin(tAnim * 2.2) * 5;
-      const s = curSub === 'bi-an' ? mystery : activeSalt;
-      let outerCol = airOpen ? 'rgba(56,189,248,0.45)' : 'rgba(245,158,11,0.85)';
-      let innerCol = airOpen ? 'rgba(147,197,253,0.9)' : 'rgba(253,224,71,0.95)';
-      if (airOpen && burning && s) {
-        outerCol = hexToRgba(s.col, 0.85);
-        innerCol = s.core;
-      }
-      ctx.save();
-      ctx.shadowColor = outerCol; ctx.shadowBlur = 24;
-      ctx.fillStyle = outerCol;
-      ctx.beginPath();
-      ctx.moveTo(bx - 22, fTop);
-      ctx.bezierCurveTo(bx - 34, fTop - 65, bx + sway, fTop - 135, bx + sway, fTop - 155);
-      ctx.bezierCurveTo(bx + sway, fTop - 135, bx + 34, fTop - 65, bx + 22, fTop);
-      ctx.closePath(); ctx.fill();
-      ctx.fillStyle = innerCol;
-      ctx.beginPath();
-      ctx.moveTo(bx - 10, fTop);
-      ctx.bezierCurveTo(bx - 14, fTop - 42, bx + sway * 0.5, fTop - 85, bx + sway * 0.5, fTop - 98);
-      ctx.bezierCurveTo(bx + sway * 0.5, fTop - 85, bx + 14, fTop - 42, bx + 10, fTop);
-      ctx.closePath(); ctx.fill();
-      ctx.restore();
-
-      // Dây Platinum nhúng vào vùng nóng nhất
-      ctx.strokeStyle = '#E2E8F0'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(bx - 130, fTop - 10); ctx.lineTo(bx - 4, fTop - 65); ctx.stroke();
-      ctx.beginPath(); ctx.arc(bx, fTop - 67, 5, 0, Math.PI * 2); ctx.stroke();
-
-      if (microOn) {
-        const mb = fitCanvas(host.querySelector('#lh-nl-mcv'));
-        const mx = mb.ctx; if (!mx) return;
-        mx.clearRect(0, 0, mb.w, mb.h);
-        const cx = mb.w / 2, cy = mb.h / 2 - 4;
-        [18, 36, 52].forEach(function (r) {
-          mx.strokeStyle = 'rgba(148,163,184,0.35)'; mx.lineWidth = 1.4;
-          mx.beginPath(); mx.arc(cx, cy, r, 0, Math.PI * 2); mx.stroke();
-        });
-        mx.fillStyle = '#EF4444'; mx.beginPath(); mx.arc(cx, cy, 6, 0, Math.PI * 2); mx.fill();
-        const phase = (tAnim * 0.45) % 2;
-        const rE = phase < 1 ? 18 + phase * 34 : 52 - (phase - 1) * 34;
-        const ang = tAnim * 0.8;
-        mx.fillStyle = (phase > 1 && burning && s) ? s.col : '#38BDF8';
-        mx.beginPath(); mx.arc(cx + Math.cos(ang) * rE, cy + Math.sin(ang) * rE, 5, 0, Math.PI * 2); mx.fill();
-      }
-    });
-  }
-
-  /* ============================================================================
-   * LAB 6: THỬ ĐÈN LED DẪN ĐIỆN HỢP CHẤT ION VS CỘNG HÓA TRỊ (dan-dien · Bài 11, 14)
-   * ============================================================================ */
-  function mountDanDienLab(mainEl, scope) {
-    const meta = LAB_LIST[5];
-    let microOn = true;
-    const SAMPLES = [
-      { id: 'nacl_s', ten: 'NaCl rắn khan', state: 'solid', conduct: false, ma: 0, pt: 'NaCl(s): Ion Na⁺, Cl⁻ bị khóa chặt trong mạng tinh thể (6:6)', desc: 'Ở trạng thái rắn khan, các ion Na⁺ và Cl⁻ chỉ dao động tại chỗ nên **không dẫn điện (Đèn TẮT)**.', mode: 'lattice' },
-      { id: 'nacl_l', ten: 'NaCl nóng chảy (> 801 °C)', state: 'molten', conduct: true, ma: 480, pt: 'NaCl(l) → Na⁺ + Cl⁻ (tự do chuyển động)', desc: 'Khi đun nóng chảy (> 801 °C), mạng tinh thể bị phá vỡ, các ion **Na⁺ và Cl⁻ tự do di chuyển** → **Đèn SÁNG RỰC**!', mode: 'ions' },
-      { id: 'nacl_aq', ten: 'Dung dịch NaCl (aq)', state: 'aq', conduct: true, ma: 420, pt: 'NaCl(s) --(H2O)--> Na⁺(aq) + Cl⁻(aq) (sự điện li)', desc: 'Các phân tử nước tách ion Na⁺, Cl⁻ khỏi tinh thể giúp ion bơi tự do → **Đèn SÁNG RỰC**!', mode: 'ions' },
-      { id: 'h2o', ten: 'Nước cất nguyên chất H₂O', state: 'aq', conduct: false, ma: 0, pt: 'H2O(l) — phân tử trung hòa', desc: 'Nước cất hầu như không chứa ion tự do → **Đèn TẮT**.', mode: 'neutral' },
-      { id: 'sugar', ten: 'Dung dịch Đường C₁₂H₂₂O₁₁', state: 'aq', conduct: false, ma: 0, pt: 'C12H22O11(s) + H2O → C12H22O11(aq) (phân tử)', desc: 'Đường tan nhưng **không phân li thành ion**, chỉ tạo các phân tử trung hòa → **Đèn TẮT**!', mode: 'neutral' },
-      { id: 'eth', ten: 'Dung dịch Ethanol C₂H₅OH', state: 'aq', conduct: false, ma: 0, pt: 'C2H5OH(l) + H2O → C2H5OH(aq)', desc: 'Liên kết CHT bền, không điện li thành ion → **Đèn TẮT**.', mode: 'neutral' },
-      { id: 'hcl', ten: 'Dung dịch HCl (aq)', state: 'aq', conduct: true, ma: 450, pt: 'HCl(g) + H2O → H⁺(aq) + Cl⁻(aq)', desc: 'HCl là hợp chất CHT phân cực mạnh, khi tan vào nước phân li hoàn toàn thành ion H⁺ và Cl⁻ → **Đèn SÁNG RỰC**!', mode: 'ions' }
-    ];
-    let sel = SAMPLES[0], swOn = true, tPhase = 0;
-
-    buildToolbar(mainEl, meta, '', {
-      hasMicro: true, microOn: true,
-      onMicro: function (b) {
-        microOn = !microOn; b.classList.toggle('tim', microOn);
-        const ml = document.getElementById('lh-dd-micro');
-        if (ml) ml.classList.toggle('on', microOn);
-      },
-      onReset: function () { mountLab('dan-dien', ''); }
-    });
-
-    const host = document.createElement('div');
-    mainEl.appendChild(host);
-    host.innerHTML =
-      '<div class="lh-stage-grid">' +
-        '<div class="lh-viewport" style="height:375px">' +
-          '<div class="lh-hud-top">' +
-            '<div class="lh-hud-badge" id="lh-dd-hud">Ampe kế: 0 mA · Đèn TẮT</div>' +
-            '<div class="hang-nut" style="pointer-events:auto">' +
-              '<button type="button" class="nut nho chinh" id="lh-dd-sw">⚡ Công tắc: ĐÓNG</button>' +
-              '<button type="button" class="nut nho an" id="lh-dd-melt">🔥 Đun nóng chảy (&gt; 801 °C)</button>' +
-            '</div>' +
-          '</div>' +
-          '<canvas id="lh-dd-cv" style="width:100%;height:100%"></canvas>' +
-          '<div class="lh-micro-lens on" id="lh-dd-micro"><canvas id="lh-dd-mcv"></canvas><div class="lh-micro-cap" id="lh-dd-mcap">Cấp độ ion/phân tử</div></div>' +
-        '</div>' +
-        '<div class="lh-panel">' +
-          '<div class="lh-card">' +
-            '<h3>🔌 Chọn mẫu thử cắm vào điện cực</h3>' +
-            '<div class="lh-pills" id="lh-dd-list"></div>' +
-          '</div>' +
-          '<div class="lh-card">' +
-            '<h3>💡 Kết quả &amp; Giải thích bản chất (Bài 11)</h3>' +
-            '<div class="lh-metrics" style="margin-bottom:8px">' +
-              '<div class="lh-stat"><span>Đèn LED</span><b id="lh-dd-led">TẮT</b></div>' +
-              '<div class="lh-stat"><span>Cường độ I</span><b id="lh-dd-ma">0 mA</b></div>' +
-            '</div>' +
-            '<div class="lh-eq" id="lh-dd-eq"></div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-
-    const mPts = [];
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 4; c++) {
-        mPts.push({ r: r, c: c, x: 0.24 + c * 0.17, y: 0.24 + r * 0.16, vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2, kind: (r + c) % 2 });
-      }
-    }
-
-    function syncDd() {
-      host.querySelector('#lh-dd-list').innerHTML = SAMPLES.map(function (s) {
-        return '<button type="button" class="lh-pill-btn' + (s.id === sel.id ? ' on' : '') + '" data-s="' + s.id + '">' + esc(s.ten) + '</button>';
-      }).join('');
-      host.querySelectorAll('#lh-dd-list [data-s]').forEach(function (b) {
-        b.onclick = function () { SoundFX.click(); sel = SAMPLES.find(function (x) { return x.id === b.getAttribute('data-s'); }); syncDd(); };
-      });
-      const meltBtn = host.querySelector('#lh-dd-melt');
-      meltBtn.classList.toggle('an', sel.id !== 'nacl_s' && sel.id !== 'nacl_l');
-      meltBtn.textContent = sel.id === 'nacl_l' ? '❄️ Làm nguội về NaCl rắn' : '🔥 Đun nóng chảy (> 801 °C)';
-
-      const lit = swOn && sel.conduct;
-      host.querySelector('#lh-dd-hud').textContent = 'Ampe kế: ' + (lit ? sel.ma : 0) + ' mA · ' + (lit ? 'Đèn SÁNG RỰC' : 'Đèn TẮT');
-      host.querySelector('#lh-dd-led').textContent = lit ? '💡 SÁNG RỰC' : 'TẮT';
-      host.querySelector('#lh-dd-ma').textContent = (lit ? sel.ma : 0) + ' mA';
-      host.querySelector('#lh-dd-eq').innerHTML = '<b>' + md(sel.pt) + '</b><div style="margin-top:4px">' + md(sel.desc) + '</div>';
-      host.querySelector('#lh-dd-mcap').textContent = sel.mode === 'lattice' ? 'Ion khóa cứng 6:6' : sel.mode === 'ions' ? 'Ion dịch chuyển có hướng' : 'Phân tử trung hòa';
-    }
-
-    host.querySelector('#lh-dd-sw').onclick = function () {
-      swOn = !swOn; SoundFX.click();
-      this.textContent = swOn ? '⚡ Công tắc: ĐÓNG' : '⚡ Công tắc: MỞ';
-      this.classList.toggle('chinh', swOn);
-      syncDd();
-    };
-    host.querySelector('#lh-dd-melt').onclick = function () {
-      SoundFX.ignite();
-      sel = SAMPLES.find(function (x) { return x.id === (sel.id === 'nacl_l' ? 'nacl_s' : 'nacl_l'); });
-      syncDd();
-    };
-    syncDd();
-
-    scope.loop(function (dt) {
-      tPhase += dt;
-      const lit = swOn && sel.conduct;
-      const b = fitCanvas(host.querySelector('#lh-dd-cv'));
-      const ctx = b.ctx; if (!ctx) return;
-      ctx.clearRect(0, 0, b.w, b.h);
-      const sc = Math.min(b.w / 520, b.h / 350);
-      ctx.save();
-      ctx.translate((b.w - 520 * sc) / 2, (b.h - 350 * sc) / 2);
-      ctx.scale(sc, sc);
-      const cx = microOn ? 205 : 260;
-      const cy = 222;
-      // Nguồn 6V & bóng đèn LED
-      ctx.fillStyle = '#334155'; ctx.fillRect(cx - 135, 76, 62, 42);
-      ctx.fillStyle = '#F8FAFC'; ctx.font = '800 12px "Be Vietnam Pro",sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText('DC 6V', cx - 104, 101);
-      // Dây dẫn
-      ctx.strokeStyle = lit ? '#FACC15' : '#94A3B8'; ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(cx - 73, 94); ctx.lineTo(cx - 26, 94);
-      ctx.moveTo(cx + 26, 94); ctx.lineTo(cx + 42, 94); ctx.lineTo(cx + 42, cy - 34);
-      ctx.moveTo(cx - 104, 118); ctx.lineTo(cx - 104, 146); ctx.lineTo(cx - 42, 146); ctx.lineTo(cx - 42, cy - 34);
-      ctx.stroke();
-
-      // Bóng đèn LED
-      ctx.save();
-      if (lit) { ctx.shadowColor = '#FACC15'; ctx.shadowBlur = 32; }
-      ctx.fillStyle = lit ? '#FDE047' : 'rgba(226,232,240,0.22)';
-      ctx.beginPath(); ctx.arc(cx, 94, 24, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#E2E8F0'; ctx.lineWidth = 2; ctx.stroke();
-      ctx.restore();
-
-      // Cốc / Chén nung & chất lỏng
-      ctx.fillStyle = sel.state === 'solid' ? 'rgba(248,250,252,0.75)' : sel.state === 'molten' ? 'rgba(251,146,60,0.45)' : 'rgba(186,230,253,0.34)';
-      ctx.fillRect(cx - 78, cy - 10, 156, 78);
-      ctx.strokeStyle = '#CBD5E1'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(cx - 80, cy - 36); ctx.lineTo(cx - 80, cy + 70); ctx.lineTo(cx + 80, cy + 70); ctx.lineTo(cx + 80, cy - 36); ctx.stroke();
-
-      // 2 điện cực than chì
-      ctx.fillStyle = '#1E293B';
-      ctx.fillRect(cx - 48, cy - 36, 12, 84);
-      ctx.fillRect(cx + 36, cy - 36, 12, 84);
-      ctx.fillStyle = '#F8FAFC'; ctx.font = '800 12px "Be Vietnam Pro",sans-serif';
-      ctx.fillText('−', cx - 42, cy - 42); ctx.fillText('+', cx + 42, cy - 42);
-
-      // Đèn đun nóng chảy nếu ở trạng thái molten
-      if (sel.state === 'molten') {
-        ctx.fillStyle = 'rgba(249,115,22,0.88)';
-        ctx.beginPath(); ctx.moveTo(cx - 18, cy + 94); ctx.quadraticCurveTo(cx, cy + 62, cx + 18, cy + 94); ctx.fill();
-      }
-      ctx.restore();
-
-      if (microOn) {
-        const mb = fitCanvas(host.querySelector('#lh-dd-mcv'));
-        const mx = mb.ctx; if (!mx) return;
-        mx.clearRect(0, 0, mb.w, mb.h);
-        mPts.forEach(function (pt) {
-          let px, py;
-          if (sel.mode === 'lattice') {
-            px = (0.24 + pt.c * 0.17) * mb.w + (REDUCED_MOTION ? 0 : Math.sin(tPhase * 12 + pt.c) * 1.6);
-            py = (0.24 + pt.r * 0.16) * mb.h + (REDUCED_MOTION ? 0 : Math.cos(tPhase * 12 + pt.r) * 1.6);
-          } else {
-            const drift = (lit && sel.mode === 'ions') ? (pt.kind ? -0.18 : 0.18) : 0;
-            pt.x += (pt.vx + drift) * dt; pt.y += pt.vy * dt;
-            if (pt.x < 0.1) pt.x = 0.88; if (pt.x > 0.9) pt.x = 0.12;
-            if (pt.y < 0.14 || pt.y > 0.78) pt.vy *= -1;
-            px = pt.x * mb.w; py = pt.y * mb.h;
-          }
-          if (sel.mode === 'neutral') {
-            mx.fillStyle = '#94A3B8';
-            mx.beginPath(); mx.arc(px, py, 7, 0, Math.PI * 2); mx.fill();
-          } else {
-            mx.fillStyle = pt.kind ? '#A855F7' : '#22C55E';
-            mx.beginPath(); mx.arc(px, py, 8, 0, Math.PI * 2); mx.fill();
-            mx.fillStyle = '#fff'; mx.font = '800 9px sans-serif'; mx.textAlign = 'center'; mx.textBaseline = 'middle';
-            mx.fillText(pt.kind ? '+' : '−', px, py);
-          }
-        });
-      }
-    });
-  }
-
-  /* ============================================================================
-   * LAB 7: ĐIỀN Ô ORBITAL (↑↓) & MÁY PHỔ KHỐI LƯỢNG MS (orbital-ms · Bài 2, 3, 4)
-   * ============================================================================ */
-  function mountOrbitalMsLab(mainEl, scope, sub) {
-    const meta = LAB_LIST[6];
-    let curSub = sub === 'ms' ? 'ms' : 'orbital';
-    buildToolbar(mainEl, meta, curSub, {
-      onSub: function (ns) { window.location.hash = '#orbital-ms?sub=' + ns; },
-      onReset: function () { mountLab('orbital-ms', curSub); }
-    });
-    const host = document.createElement('div');
-    mainEl.appendChild(host);
-
-    if (curSub === 'orbital') {
-      const ELS = [
-        [1,'H','pk'],[2,'He','kh'],[3,'Li','kl'],[4,'Be','kl'],[5,'B','pk'],[6,'C','pk'],[7,'N','pk'],[8,'O','pk'],[9,'F','pk'],[10,'Ne','kh'],
-        [11,'Na','kl'],[12,'Mg','kl'],[13,'Al','kl'],[14,'Si','pk'],[15,'P','pk'],[16,'S','pk'],[17,'Cl','pk'],[18,'Ar','kh'],[19,'K','kl'],[20,'Ca','kl'],
-        [21,'Sc','kl'],[22,'Ti','kl'],[23,'V','kl'],[24,'Cr','kl'],[25,'Mn','kl'],[26,'Fe','kl'],[27,'Co','kl'],[28,'Ni','kl'],[29,'Cu','kl'],[30,'Zn','kl']
-      ];
-      const SHELLS = [
-        { ten: '1s', boxes: 1 }, { ten: '2s', boxes: 1 }, { ten: '2p', boxes: 3 },
-        { ten: '3s', boxes: 1 }, { ten: '3p', boxes: 3 }, { ten: '4s', boxes: 1 }, { ten: '3d', boxes: 5 }
-      ];
-      let Z = 7, aoKind = 's';
-      // state[shIdx][boxIdx] = '' | 'u' | 'ud'
-      let state = SHELLS.map(function (sh) { return new Array(sh.boxes).fill(''); });
-
-      function totalPlaced() {
-        let n = 0;
-        state.forEach(function (arr) { arr.forEach(function (v) { n += v.length; }); });
-        return n;
-      }
-
-      function expectedConfig(z) {
-        const order = [['1s',2],['2s',2],['2p',6],['3s',2],['3p',6],['4s',2],['3d',10]];
-        const map = {};
-        let rem = z;
-        order.forEach(function (kv) {
-          const take = Math.min(rem, kv[1]);
-          if (take > 0) map[kv[0]] = take;
-          rem -= take;
-        });
-        if (z === 24) { map['4s'] = 1; map['3d'] = 5; }
-        if (z === 29) { map['4s'] = 1; map['3d'] = 10; }
-        return map;
-      }
-
-      function formatConfig(z) {
-        const m = expectedConfig(z);
-        const sup = { '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '10': '¹⁰' };
-        const dispOrder = ['1s','2s','2p','3s','3p','3d','4s'];
-        return dispOrder.filter(function (k) { return m[k]; }).map(function (k) { return k + (sup[m[k]] || m[k]); }).join(' ');
-      }
-
-      host.innerHTML =
-        '<div class="lh-stage-grid">' +
-          '<div class="lh-panel">' +
-            '<div class="lh-card">' +
-              '<h3>⚛️ Chọn nguyên tố (Z = 1–20 chuẩn Thông tư 32 · mở rộng 21–30)</h3>' +
-              '<div class="lh-el-grid" id="lh-or-els"></div>' +
-            '</div>' +
-            '<div class="lh-card">' +
-              '<h3>🧩 Bấm vào ô orbital để điền electron (↑ trước, ↓ sau)</h3>' +
-              '<div class="lh-orb-shells" id="lh-or-boxes"></div>' +
-              '<div id="lh-or-msg" style="margin-top:10px"></div>' +
-              '<div class="hang-nut" style="margin-top:10px">' +
-                '<button type="button" class="nut chinh" id="lh-or-auto">⚡ Điền mẫu tự động</button>' +
-                '<button type="button" class="nut" id="lh-or-clr">↺ Làm rỗng</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="lh-panel">' +
-            '<div class="lh-card">' +
-              '<h3>📊 Kết quả cấu hình electron</h3>' +
-              '<div class="lh-metrics" id="lh-or-stats"></div>' +
-              '<div class="lh-eq" id="lh-or-cfg" style="margin-top:8px"></div>' +
-            '</div>' +
-            '<div class="lh-card">' +
-              '<h3>☁️ Hình dạng Đám mây Orbital (AO s &amp; p)</h3>' +
-              '<div class="lh-pills" style="margin-bottom:8px">' +
-                '<button type="button" class="lh-pill-btn on" data-ao="s">AO s (Hình cầu)</button>' +
-                '<button type="button" class="lh-pill-btn" data-ao="p">AO p (Số 8 nổi px, py, pz)</button>' +
-              '</div>' +
-              '<div class="lh-viewport" style="height:175px;min-height:175px"><svg class="lh-svg" id="lh-or-ao" viewBox="0 0 320 150"></svg></div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      function clearBoxes() {
-        state = SHELLS.map(function (sh) { return new Array(sh.boxes).fill(''); });
-        renderOrb();
-      }
-
-      function setMsg(txt, loai) {
-        const el = host.querySelector('#lh-or-msg');
-        if (!txt) { el.innerHTML = ''; return; }
-        el.innerHTML = '<div class="thongbao ' + (loai || 'info') + '" style="margin:0">' + txt + '</div>';
-      }
-
-      function tryClickBox(si, bi) {
-        const cur = state[si][bi];
-        if (cur === 'ud') {
-          SoundFX.error();
-          setMsg('<b>Vi phạm nguyên lí Pauli:</b> Mỗi ô orbital chỉ chứa tối đa 2 electron có chiều tự quay ngược nhau (↑↓)!', 'canh');
-          return;
-        }
-        const placed = totalPlaced();
-        if (placed >= Z) {
-          SoundFX.error();
-          setMsg('Đã điền đủ <b>' + Z + ' electron</b> cho nguyên tử này rồi!', 'info');
-          return;
-        }
-        // Kiểm tra nguyên lí vững bền (các phân lớp thấp hơn phải đầy, trừ ngoại lệ 4s của Cr/Cu)
-        const isExc = (Z === 24 || Z === 29) && si === 6;
-        for (let k = 0; k < si; k++) {
-          const cap = SHELLS[k].boxes * 2;
-          const has = state[k].reduce(function (s, v) { return s + v.length; }, 0);
-          if (has < cap && !(isExc && k === 5 && has === 1)) {
-            SoundFX.error();
-            setMsg('<b>Vi phạm nguyên lí Vững bền:</b> Hãy điền đầy phân lớp <b>' + SHELLS[k].ten + '</b> có mức năng lượng thấp hơn trước!', 'canh');
-            return;
-          }
-        }
-        // Kiểm tra quy tắc Hund: trong cùng phân lớp, nếu chưa có spin ↑ ở ô khác thì không được ghép đôi ↓
-        if (cur === 'u') {
-          if ((Z === 24 || Z === 29) && si === 5) {
-            SoundFX.error();
-            setMsg('<b>Ngoại lệ bền vững (' + (Z === 24 ? 'Cr: 3d⁵4s¹' : 'Cu: 3d¹⁰4s¹') + '):</b> Phân lớp 4s chỉ nhận <b>1 electron (↑)</b> để nhường 1e sang 3d đạt cấu hình bền!', 'canh');
-            return;
-          }
-          const hasEmpty = state[si].some(function (v) { return v === ''; });
-          if (hasEmpty) {
-            SoundFX.error();
-            setMsg('<b>Vi phạm quy tắc Hund:</b> Trong phân lớp <b>' + SHELLS[si].ten + '</b>, hãy điền mỗi ô 1 electron độc thân (↑) trước khi ghép đôi (↓)!', 'canh');
-            return;
-          }
-          state[si][bi] = 'ud';
-        } else {
-          state[si][bi] = 'u';
-        }
-        SoundFX.click();
-        if (totalPlaced() === Z) {
-          SoundFX.win();
-          setMsg('<b>Hoàn thành chuẩn xác!</b>' + (Z === 24 || Z === 29 ? ' (Ghi nhớ ngoại lệ bán bão hòa / bão hòa phân lớp d bền vững!)' : ''), 'ok');
-        } else {
-          setMsg('Đang điền: <b>' + totalPlaced() + '/' + Z + ' electron</b>.', 'info');
-        }
-        renderOrb();
-      }
-
-      function renderAoShape() {
-        const sv = host.querySelector('#lh-or-ao');
-        if (aoKind === 's') {
-          sv.innerHTML =
-            '<defs><radialGradient id="aoS" cx="40%" cy="35%"><stop offset="0%" stop-color="#93C5FD"/><stop offset="100%" stop-color="#2563EB" stop-opacity="0.3"/></radialGradient></defs>' +
-            '<line x1="80" y1="75" x2="240" y2="75" stroke="rgba(255,255,255,0.28)"/><line x1="160" y1="15" x2="160" y2="135" stroke="rgba(255,255,255,0.28)"/>' +
-            '<circle cx="160" cy="75" r="46" fill="url(#aoS)" stroke="#60A5FA" stroke-width="2"/>' +
-            '<text x="160" y="142" fill="#BAE6FD" font-size="11.5" font-weight="800" text-anchor="middle">Orbital s: đối xứng hình cầu quanh hạt nhân</text>';
-        } else {
-          sv.innerHTML =
-            '<g transform="translate(60,70)"><ellipse cx="0" cy="-24" rx="14" ry="24" fill="rgba(244,114,182,0.55)" stroke="#F472B6" stroke-width="1.6"/><ellipse cx="0" cy="24" rx="14" ry="24" fill="rgba(56,189,248,0.55)" stroke="#38BDF8" stroke-width="1.6"/><text y="64" fill="#E2E8F0" font-size="11" font-weight="800" text-anchor="middle">pz</text></g>' +
-            '<g transform="translate(160,70)"><ellipse cx="-24" cy="0" rx="24" ry="14" fill="rgba(244,114,182,0.55)" stroke="#F472B6" stroke-width="1.6"/><ellipse cx="24" cy="0" rx="24" ry="14" fill="rgba(56,189,248,0.55)" stroke="#38BDF8" stroke-width="1.6"/><text y="64" fill="#E2E8F0" font-size="11" font-weight="800" text-anchor="middle">px</text></g>' +
-            '<g transform="translate(260,70) rotate(35)"><ellipse cx="0" cy="-24" rx="14" ry="24" fill="rgba(167,139,250,0.55)" stroke="#A78BFA" stroke-width="1.6"/><ellipse cx="0" cy="24" rx="14" ry="24" fill="rgba(45,212,191,0.55)" stroke="#2DD4BF" stroke-width="1.6"/></g><text x="260" y="134" fill="#E2E8F0" font-size="11" font-weight="800" text-anchor="middle">py</text>';
-        }
-      }
-
-      function renderOrb() {
-        host.querySelector('#lh-or-els').innerHTML = ELS.map(function (e) {
-          const isExc = e[0] === 24 || e[0] === 29;
-          return '<button type="button" class="lh-el-btn' + (e[0] === Z ? ' on' : '') + (isExc ? ' exc' : '') + '" data-z="' + e[0] + '"><small>' + e[0] + '</small><b>' + e[1] + '</b></button>';
-        }).join('');
-        host.querySelectorAll('[data-z]').forEach(function (b) {
-          b.onclick = function () { SoundFX.click(); Z = Number(b.getAttribute('data-z')); clearBoxes(); setMsg('Đã chọn <b>' + ELS[Z - 1][1] + ' (Z = ' + Z + ')</b>. Hãy điền đủ ' + Z + ' electron vào các ô orbital!', 'info'); };
-        });
-
-        host.querySelector('#lh-or-boxes').innerHTML = SHELLS.map(function (sh, si) {
-          return '<div class="lh-subshell"><span class="lh-subshell-lbl">' + sh.ten + '</span><div class="lh-orb-row">' +
-            state[si].map(function (v, bi) {
-              const cls = v === 'ud' ? ' full' : v === 'u' ? ' half' : '';
-              const inner = v === 'ud' ? '<span class="up">↑</span><span class="dn">↓</span>' : v === 'u' ? '<span class="up">↑</span>' : '';
-              return '<button type="button" class="lh-obox' + cls + '" data-si="' + si + '" data-bi="' + bi + '" aria-label="Ô ' + sh.ten + '">' + inner + '</button>';
-            }).join('') +
-          '</div></div>';
-        }).join('');
-        host.querySelectorAll('.lh-obox').forEach(function (b) {
-          b.onclick = function () { tryClickBox(Number(b.getAttribute('data-si')), Number(b.getAttribute('data-bi'))); };
-        });
-
-        const placed = totalPlaced();
-        const unpaired = state.reduce(function (s, arr) { return s + arr.filter(function (v) { return v === 'u'; }).length; }, 0);
-        const elInfo = ELS[Z - 1];
-        const loaiTen = elInfo[2] === 'kl' ? 'Kim loại' : elInfo[2] === 'kh' ? 'Khí hiếm' : 'Phi kim';
-        host.querySelector('#lh-or-stats').innerHTML =
-          '<div class="lh-stat"><span>Electron đã điền</span><b>' + placed + ' / ' + Z + '</b></div>' +
-          '<div class="lh-stat"><span>Số e độc thân</span><b>' + unpaired + '</b></div>' +
-          '<div class="lh-stat"><span>Loại nguyên tố</span><b>' + loaiTen + '</b></div>';
-        host.querySelector('#lh-or-cfg').innerHTML = '<b>Cấu hình chuẩn (' + elInfo[1] + '):</b> ' + esc(formatConfig(Z)) +
-          (Z <= 20 ? ' <span class="chip ok">Trong chuẩn Z ≤ 20</span>' : ' <span class="chip canh">Mở rộng Z = 21–30</span>');
-      }
-
-      host.querySelector('#lh-or-clr').onclick = function () { SoundFX.click(); clearBoxes(); setMsg('Đã xóa hết electron để điền lại.', 'info'); };
-      host.querySelector('#lh-or-auto').onclick = function () {
-        clearBoxes();
-        const seq = [];
-        const cfgMap = expectedConfig(Z);
-        SHELLS.forEach(function (sh, si) {
-          const n = cfgMap[sh.ten] || 0;
-          for (let k = 0; k < Math.min(n, sh.boxes); k++) seq.push([si, k, 'u']);
-          for (let k = sh.boxes; k < n; k++) seq.push([si, k - sh.boxes, 'ud']);
-        });
-        seq.forEach(function (step, idx) {
-          scope.timeout(function () {
-            state[step[0]][step[1]] = step[2];
-            if (idx === seq.length - 1) { SoundFX.win(); setMsg('Đã hoàn thành cấu hình <b>' + formatConfig(Z) + '</b>.', 'ok'); }
-            renderOrb();
-          }, idx * (REDUCED_MOTION ? 15 : 85));
-        });
-      };
-      host.querySelectorAll('[data-ao]').forEach(function (b) {
-        b.onclick = function () {
-          SoundFX.click(); aoKind = b.getAttribute('data-ao');
-          host.querySelectorAll('[data-ao]').forEach(function (x) { x.classList.toggle('on', x === b); });
-          renderAoShape();
-        };
-      });
-      renderOrb(); renderAoShape();
-    } else {
-      // Sub-mode 2: Máy phổ khối lượng MS & Tính nguyên tử khối trung bình Ā
-      const SAMPLES = [
-        { id: 'Cl', ten: 'Chlorine (Cl)', peaks: [[35, 75.77], [37, 24.23]] },
-        { id: 'Cu', ten: 'Copper (Cu)', peaks: [[63, 69.15], [65, 30.85]], note: 'Tính theo số khối nguyên (63 và 65) cho Ā = 63,62; bảng tuần hoàn ghi 63,55 do khối lượng nuclide thực tế là 62,93 và 64,93 amu.' },
-        { id: 'Br', ten: 'Bromine (Br)', peaks: [[79, 50.69], [81, 49.31]] },
-        { id: 'B', ten: 'Boron (B)', peaks: [[10, 19.9], [11, 80.1]] },
-        { id: 'Mg', ten: 'Magnesium (Mg)', peaks: [[24, 78.99], [25, 10.00], [26, 11.01]] },
-        { id: 'Ne', ten: 'Neon (Ne)', peaks: [[20, 90.48], [21, 0.27], [22, 9.25]] }
-      ];
-      let sel = SAMPLES[0], customMode = false, a1 = 35, a2 = 37, p1 = 75.77;
-
-      host.innerHTML =
-        '<div class="lh-stage-grid">' +
-          '<div class="lh-panel">' +
-            '<div class="lh-viewport" style="height:210px;min-height:210px">' +
-              '<div class="lh-hud-top"><div class="lh-hud-badge">Sơ đồ buồng tách đồng vị trong từ trường</div></div>' +
-              '<svg class="lh-svg" viewBox="0 0 560 200">' +
-                '<rect x="28" y="82" width="76" height="36" rx="8" fill="#334155" stroke="#94A3B8" stroke-width="2"/>' +
-                '<text x="66" y="104" fill="#F8FAFC" font-size="11" font-weight="800" text-anchor="middle">Ion hóa</text>' +
-                '<path d="M104 100 H220" stroke="#FACC15" stroke-width="3"/>' +
-                '<path d="M220 40 Q320 40 340 160 H260 Q255 88 220 88 Z" fill="rgba(56,189,248,0.16)" stroke="#38BDF8" stroke-width="2"/>' +
-                '<text x="278" y="32" fill="#BAE6FD" font-size="11" font-weight="800" text-anchor="middle">Từ trường B</text>' +
-                '<path d="M220 100 Q300 100 326 168" fill="none" stroke="#F472B6" stroke-width="2.5" stroke-dasharray="6 4"/>' +
-                '<path d="M220 100 Q324 94 384 168" fill="none" stroke="#38BDF8" stroke-width="3" stroke-dasharray="6 4"/>' +
-                '<rect x="295" y="168" width="125" height="14" rx="4" fill="#0F172A" stroke="#CBD5E1" stroke-width="1.5"/>' +
-                '<text x="326" y="194" fill="#FBCFE8" font-size="10.5" font-weight="800" text-anchor="middle">Nhẹ (lệch nhiều)</text>' +
-                '<text x="394" y="194" fill="#BAE6FD" font-size="10.5" font-weight="800" text-anchor="middle">Nặng (lệch ít)</text>' +
-              '</svg>' +
-            '</div>' +
-            '<div class="lh-card">' +
-              '<h3>📊 Phổ khối lượng MS (m/z vs % số nguyên tử)</h3>' +
-              '<div class="lh-chart-box"><canvas id="lh-ms-chart" style="height:200px"></canvas></div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="lh-panel">' +
-            '<div class="lh-card">' +
-              '<h3>🔬 Chọn mẫu nguyên tố (Bài 2)</h3>' +
-              '<div class="lh-pills" id="lh-ms-els" style="margin-bottom:8px"></div>' +
-              '<button type="button" class="nut nho tim" id="lh-ms-cust">🎛️ Tự chỉnh số khối &amp; % đồng vị</button>' +
-              '<div id="lh-ms-sliders" class="an" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">' +
-                '<div class="truong"><label>Đồng vị 1: A₁ = <b id="lh-ms-a1v">35</b> · Chiếm <b id="lh-ms-p1v">75,8%</b></label>' +
-                  '<div style="display:flex;gap:8px"><input type="range" id="lh-ms-a1" min="1" max="120" value="35"><input type="range" id="lh-ms-p1" min="1" max="99" step="0.5" value="75.5"></div></div>' +
-                '<div class="truong"><label>Đồng vị 2: A₂ = <b id="lh-ms-a2v">37</b> · Chiếm <b id="lh-ms-p2v">24,2%</b></label>' +
-                  '<input type="range" id="lh-ms-a2" min="1" max="120" value="37"></div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="lh-card">' +
-              '<h3>🧮 Công thức tính Nguyên tử khối trung bình Ā</h3>' +
-              '<div class="lh-eq" id="lh-ms-calc"></div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
-      function renderMs() {
-        const peaks = customMode ? [[a1, p1], [a2, 100 - p1]] : sel.peaks;
-        const avg = peaks.reduce(function (s, kv) { return s + kv[0] * kv[1]; }, 0) / 100;
-        const b = fitCanvas(host.querySelector('#lh-ms-chart'));
-        const ctx = b.ctx; if (!ctx) return;
-        ctx.clearRect(0, 0, b.w, b.h);
-        const pad = { l: 42, r: 22, t: 18, b: 30 };
-        const pw = b.w - pad.l - pad.r, ph = b.h - pad.t - pad.b;
-        ctx.strokeStyle = 'rgba(148,163,184,0.28)'; ctx.lineWidth = 1;
-        [0, 25, 50, 75, 100].forEach(function (pct) {
-          const y = pad.t + ph - (pct / 105) * ph;
-          ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + pw, y); ctx.stroke();
-          ctx.fillStyle = '#64748B'; ctx.font = '600 10px "Be Vietnam Pro",sans-serif'; ctx.textAlign = 'right';
-          ctx.fillText(pct + '%', pad.l - 5, y + 3);
-        });
-        const minA = Math.min.apply(null, peaks.map(function (p) { return p[0]; })) - 1;
-        const maxA = Math.max.apply(null, peaks.map(function (p) { return p[0]; })) + 1;
-        const cols = ['#0284C7', '#EC4899', '#10B981'];
-        peaks.forEach(function (pk, i) {
-          const x = pad.l + ((pk[0] - minA) / Math.max(1, maxA - minA)) * pw;
-          const barH = (pk[1] / 105) * ph;
-          ctx.fillStyle = cols[i % cols.length];
-          ctx.fillRect(x - 13, pad.t + ph - barH, 26, barH);
-          ctx.fillStyle = cssVar('--chu', '#334155'); ctx.font = '800 11px "Be Vietnam Pro",sans-serif'; ctx.textAlign = 'center';
-          ctx.fillText(fmtNum(pk[1], 2) + '%', x, pad.t + ph - barH - 5);
-          ctx.fillText('m/z=' + pk[0], x, b.h - 8);
-        });
-
-        const expr = peaks.map(function (pk) { return pk[0] + '·' + fmtNum(pk[1], 2); }).join(' + ');
-        host.querySelector('#lh-ms-calc').innerHTML =
-          '<div><b>Ā = (' + expr + ') / 100 = <span style="font-size:18px;color:var(--do)">' + fmtNum(avg, 2) + '</span></b></div>' +
-          '<div class="phu" style="margin-top:4px">' + (customMode ? 'Chế độ tự chỉnh 2 đồng vị' : 'Số liệu chuẩn SGK Hóa 10 KNTT cho ' + esc(sel.ten)) + '</div>' +
-          (!customMode && sel.note ? '<div class="phu" style="margin-top:4px;font-size:11.5px">💡 ' + esc(sel.note) + '</div>' : '');
-      }
-
-      host.querySelector('#lh-ms-els').innerHTML = SAMPLES.map(function (s) {
-        return '<button type="button" class="lh-pill-btn' + (s.id === sel.id ? ' on' : '') + '" data-s="' + s.id + '">' + esc(s.ten) + '</button>';
-      }).join('');
-      host.querySelectorAll('#lh-ms-els [data-s]').forEach(function (b) {
-        b.onclick = function () {
-          SoundFX.click(); customMode = false;
-          host.querySelector('#lh-ms-sliders').classList.add('an');
-          sel = SAMPLES.find(function (x) { return x.id === b.getAttribute('data-s'); });
-          host.querySelectorAll('#lh-ms-els [data-s]').forEach(function (x) { x.classList.toggle('on', x === b); });
-          renderMs();
-        };
-      });
-      host.querySelector('#lh-ms-cust').onclick = function () {
-        customMode = !customMode; SoundFX.click();
-        host.querySelector('#lh-ms-sliders').classList.toggle('an', !customMode);
-        renderMs();
-      };
-      ['lh-ms-a1', 'lh-ms-a2', 'lh-ms-p1'].forEach(function (id) {
-        host.querySelector('#' + id).oninput = function () {
-          a1 = Number(host.querySelector('#lh-ms-a1').value);
-          a2 = Number(host.querySelector('#lh-ms-a2').value);
-          p1 = Number(host.querySelector('#lh-ms-p1').value);
-          host.querySelector('#lh-ms-a1v').textContent = a1;
-          host.querySelector('#lh-ms-a2v').textContent = a2;
-          host.querySelector('#lh-ms-p1v').textContent = fmtNum(p1, 1) + '%';
-          host.querySelector('#lh-ms-p2v').textContent = fmtNum(100 - p1, 1) + '%';
-          renderMs();
-        };
-      });
-      renderMs();
-      watchTheme(scope, renderMs);
-      const onMsResize = function () { renderMs(); };
-      window.addEventListener('resize', onMsResize);
-      scope.onCleanup(function () { window.removeEventListener('resize', onMsResize); });
-    }
-  }
-
-  /* ============================================================================
-   * SẢNH 7 PHÒNG LAB TỰ LÀM + ROUTER CHÍNH
-   * ============================================================================ */
-  function renderLobby(mainEl) {
-    let h =
+    document.title = '14 Phòng Lab 3D Hóa 10 – Thầy Hoàng';
+    app.className = 'khung-chinh';
+    const ds = curCh ? LABS_3D.filter(function (x) { return x.ch === curCh; }) : LABS_3D;
+    app.innerHTML =
       '<div class="hero-box art-flask" style="margin-bottom:14px">' +
-        '<span class="chip chinh">🇻🇳 PHÒNG THÍ NGHIỆM ẢO TIẾNG VIỆT · KHÔNG CẦN MẠNG MẠNH</span>' +
-        '<h1>7 Phòng Lab Hóa 10 Tương tác Trực quan</h1>' +
-        '<p class="phu" style="margin:0">Mô phỏng chuẩn số liệu SGK <b>Kết nối tri thức</b> (đkc 24,79 L/mol, danh pháp IUPAC) kèm kính lúp soi cấp độ hạt/ion. Chọn 1 thí nghiệm để bắt đầu ngay!</p>' +
+        '<span class="chip chinh">🧊 14 PHÒNG THÍ NGHIỆM 3D REAL-TIME · TIẾNG VIỆT</span>' +
+        '<h1>Sảnh Phòng Lab 3D Hóa Học 10</h1>' +
+        '<p class="phu" style="margin:0">Xoay 360°, trực tiếp nhỏ giọt, gắp hóa chất, bật bếp, chiếu sáng và quan sát hiện tượng chuẩn SGK Kết nối tri thức.</p>' +
       '</div>' +
-      '<div class="lh-lobby-grid">';
-    LAB_LIST.forEach(function (l, i) {
-      h += '<button type="button" class="lh-lobby-card" data-open="' + esc(l.id) + '">' +
-        '<div class="lh-lobby-art">' + l.art + '<span class="gal-tag">' + esc(l.bai) + '</span></div>' +
-        '<div class="lh-lobby-body">' +
-          '<b>' + (i + 1) + '. ' + esc(l.ten) + '</b>' +
-          '<span class="phu">' + md(l.moTa) + '</span>' +
-          '<span class="hub-go" style="color:var(--do);margin-top:auto">▶ Mở phòng Lab →</span>' +
-        '</div></button>';
-    });
-    h += '</div>' +
-      '<div class="the" style="margin-top:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">' +
-        '<div><b>🧪 Bàn thí nghiệm Ống nghiệm Cơ bản (Bài Mở đầu)</b><div class="phu">Thử nhanh các phản ứng cơ bản CaCO₃ + HCl, Zn + HCl, CuSO₄ + NaOH, Phenolphthalein.</div></div>' +
-        '<button type="button" class="nut tim" data-open="ong-nghiem">▶ Mở Bàn ống nghiệm</button>' +
-      '</div>';
-    mainEl.innerHTML = h;
-    mainEl.querySelectorAll('[data-open]').forEach(function (b) {
-      b.onclick = function () {
-        SoundFX.click();
-        window.location.hash = '#' + b.getAttribute('data-open');
-      };
-    });
-  }
+      '<div class="chip-scroll" style="margin-bottom:14px">' +
+        CHUONGS.map(function (c) {
+          return '<button type="button" class="nut nho ' + (curCh === c.id ? 'chinh' : '') + '" data-ch="' + esc(c.id) + '">' + esc(c.ten) + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="hub3d-grid">' +
+        ds.map(function (lb) {
+          const src = urlFile3D(lb.file);
+          return '<article class="hub3d-card">' +
+            '<div class="hub3d-top">' +
+              '<div class="hub3d-ic" aria-hidden="true">' + lb.ic + '</div>' +
+              '<div class="hub3d-meta">' +
+                '<b>' + esc(lb.ten) + '</b>' +
+                '<span class="phu" style="font-size:12px">🧊 3D Real-time · ' + esc(lb.bai) + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="hub3d-desc">' + md(lb.moTa) + '</div>' +
+            '<div class="hub3d-actions">' +
+              '<button type="button" class="nut nho chinh" style="flex:1" data-open="' + esc(lb.id) + '">▶ Mở Phòng Lab 3D</button>' +
+              '<a class="nut nho" href="' + esc(src) + '" target="h10_ngoai" rel="noopener" title="Mở toàn màn hình">↗</a>' +
+            '</div>' +
+          '</article>';
+        }).join('') +
+      '</div>' +
+      '<div id="slogan-slot"></div>';
 
-  function mountLab(id, sub) {
-    if (activeScope) { activeScope.destroy(); activeScope = null; }
-    const resolved = resolveAlias(id, sub);
-    const curId = resolved.id;
-    const curSub = resolved.sub;
-    renderNavBar(curId);
-    const mainEl = document.getElementById('lh-main');
-    mainEl.innerHTML = '';
-    activeScope = createScope();
-
-    if (curId === 'halide') mountHalideLab(mainEl, activeScope, curSub, false);
-    else if (curId === 'ong-nghiem') mountHalideLab(mainEl, activeScope, curSub, true);
-    else if (curId === 'toc-do') mountTocDoLab(mainEl, activeScope, curSub);
-    else if (curId === 'nhiet-luong-ke') mountNhietLuongKeLab(mainEl, activeScope, curSub);
-    else if (curId === 'kiem-luong-tinh') mountKiemLuongTinhLab(mainEl, activeScope, curSub);
-    else if (curId === 'ngon-lua') mountNgonLuaLab(mainEl, activeScope, curSub);
-    else if (curId === 'dan-dien') mountDanDienLab(mainEl, activeScope);
-    else if (curId === 'orbital-ms') mountOrbitalMsLab(mainEl, activeScope, curSub);
-    else renderLobby(mainEl);
+    renderSlogan(document.getElementById('slogan-slot'));
+    app.querySelectorAll('[data-ch]').forEach(function (b) {
+      b.onclick = function () { curCh = b.getAttribute('data-ch'); ve(); };
+    });
+    app.querySelectorAll('[data-open]').forEach(function (b) {
+      b.onclick = function () { moLab(b.getAttribute('data-open')); };
+    });
   }
 
   window.addEventListener('hashchange', function () {
-    const r = parseRoute();
-    mountLab(r.id, r.sub);
+    parseRoute({ parameter: {}, hash: location.hash });
+    ve();
   });
 
-  if (laGAS) {
-    getLocation(function (loc) {
-      const r = parseRoute();
-      const p = (loc && loc.parameter) || {};
-      apEmbed(p.embed === '1');
-      const id = r.id || p.id || '';
-      const sub = r.sub || p.sub || '';
-      mountLab(id, sub);
-    });
-  } else {
-    const r = parseRoute();
-    mountLab(r.id, r.sub);
-  }
+  veTopLinks();
+  getLocation(function (locObj) {
+    parseRoute(locObj);
+    ve();
+  });
 })();
 </script>
 </body>

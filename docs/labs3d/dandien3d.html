@@ -1,0 +1,2343 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thí nghiệm thử tính dẫn điện 3D (Ion vs Cộng hóa trị) — Hóa 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#070b14;
+    --the:#101726;
+    --vien:rgba(148,163,184,.16);
+    --chu:#e8eef7;
+    --phu:#94a3b8;
+    --tim:#7aa2f7;
+    --na:#7c3aed;
+    --cl:#16a34a;
+    --h:#e11d48;
+    --ac:#d97706;
+    --gold:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--nen);color:var(--chu);font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;overflow:hidden;user-select:none}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 392px;height:100dvh}
+  .stage{position:relative;min-height:0;touch-action:none;background:radial-gradient(115% 88% at 48% 18%,#162136 0%,#0b1120 58%,#050811 100%);overflow:hidden}
+  #cv{display:block;width:100%;height:100%;cursor:grab}
+  #cv:active{cursor:grabbing}
+  #cv.pointer{cursor:pointer}
+
+  .hud{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;z-index:3}
+  .hud-left,.hud-right{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:rgba(10,14,26,.84);border:1px solid var(--vien);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.42)}
+  .chip i{display:inline-block;width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .chip b{color:#fde68a;font-weight:800}
+  .chip.on-bright{border-color:rgba(250,204,21,.52);color:#fef08a}
+  .chip.on-dim{border-color:rgba(245,158,11,.45);color:#fed7aa}
+  .chip.off{border-color:rgba(148,163,184,.25);color:#cbd5e1}
+
+  .hud-btn{pointer-events:auto;cursor:pointer;min-height:34px;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(16,23,38,.88);border:1px solid var(--vien);color:var(--chu);transition:.15s;font-family:inherit}
+  .hud-btn:hover{border-color:rgba(255,255,255,.35);transform:translateY(-1px)}
+  .hud-btn.on{background:linear-gradient(90deg,#6d28d9,#2563eb);border-color:#93c5fd;color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.32)}
+  .hud-btn.pwr-on{background:linear-gradient(90deg,#15803d,#0d9488);border-color:#6ee7b7;color:#fff}
+
+  .nhan3d{position:absolute;transform:translate(-50%,-100%);background:rgba(10,14,26,.86);border:1px solid var(--vien);border-radius:9px;padding:3px 9px;font-size:11.2px;font-weight:800;white-space:nowrap;pointer-events:none;backdrop-filter:blur(6px);z-index:2;box-shadow:0 6px 16px rgba(0,0,0,.4);transition:opacity .2s}
+  .nhan3d small{display:block;font-weight:600;color:var(--phu);font-size:10px}
+  .nhan3d.pos{border-color:rgba(239,68,68,.5);color:#fca5a5}
+  .nhan3d.neg{border-color:rgba(96,165,250,.5);color:#93c5fd}
+  .nhan3d.sw{border-color:rgba(52,211,153,.42);color:#a7f3d0}
+
+  .cam-bar{position:absolute;left:14px;bottom:48px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+  .hint-bar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(10,14,26,.8);border:1px solid var(--vien);border-radius:99px;padding:6px 14px;font-size:11.5px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
+  .hint-bar b{color:#f8fafc}
+
+  .toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);background:rgba(12,18,34,.94);border:1px solid rgba(148,163,184,.28);border-radius:14px;padding:8px 16px;font-size:12.6px;font-weight:700;max-width:88%;text-align:center;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;z-index:4;box-shadow:0 12px 28px rgba(0,0,0,.55)}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(4px)}
+
+  .side{background:var(--the);border-left:1px solid var(--vien);padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:11px}
+  h1{font-size:16.5px;margin:0;line-height:1.32}
+  .tag{display:inline-block;background:rgba(124,58,237,.2);color:#c4b5fd;border-radius:99px;padding:2px 10px;font-size:11px;font-weight:800;margin-bottom:4px}
+
+  .box{background:rgba(255,255,255,.034);border:1px solid var(--vien);border-radius:13px;padding:10px 12px}
+  .box h3{margin:0 0 8px;font-size:11.2px;letter-spacing:.06em;text-transform:uppercase;color:var(--tim);display:flex;justify-content:space-between;align-items:center}
+
+  button{font:inherit;font-weight:700;font-size:12.4px;border:1px solid var(--vien);background:rgba(255,255,255,.055);color:var(--chu);border-radius:10px;padding:8px 10px;min-height:40px;cursor:pointer;transition:.15s}
+  button:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.28)}
+
+  .ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .btn-pwr{border-color:rgba(148,163,184,.28);background:rgba(30,41,59,.7)}
+  .btn-pwr.on{background:linear-gradient(90deg,#15803d,#0f766e);border-color:#6ee7b7;color:#fff;box-shadow:0 5px 15px rgba(16,185,129,.26)}
+  .btn-micro{border-color:rgba(148,163,184,.28);background:rgba(30,41,59,.7)}
+  .btn-micro.on{background:linear-gradient(90deg,#6d28d9,#2563eb);border-color:#93c5fd;color:#fff;box-shadow:0 5px 15px rgba(109,40,217,.28)}
+
+  .sample-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .s-btn{text-align:left;padding:8px 9px;min-height:54px;display:flex;flex-direction:column;justify-content:center;gap:2px;position:relative}
+  .s-btn .s-name{font-size:12.2px;font-weight:800;line-height:1.25}
+  .s-btn .s-sub{font-size:10.7px;font-weight:600;color:var(--phu)}
+  .s-btn.on{background:linear-gradient(135deg,rgba(109,40,217,.42),rgba(37,99,235,.32));border-color:#a78bfa;color:#fff;box-shadow:0 5px 14px rgba(109,40,217,.28)}
+  .s-btn.on .s-sub{color:#dbeafe}
+  .s-dot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:#475569}
+  .s-dot.strong{background:#facc15;box-shadow:0 0 7px #facc15}
+  .s-dot.weak{background:#f59e0b;box-shadow:0 0 6px #f59e0b}
+  .s-dot.none{background:#475569}
+
+  .readout{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+  .r-cell{background:rgba(0,0,0,.28);border:1px solid var(--vien);border-radius:9px;padding:6px 7px;text-align:center}
+  .r-cell small{display:block;font-size:10px;color:var(--phu);margin-bottom:2px}
+  .r-cell b{font-size:13px;font-weight:800;color:#f8fafc}
+  .r-cell b.bright{color:#fde047}
+  .r-cell b.dim{color:#fb923c}
+  .r-cell b.off{color:#94a3b8}
+
+  .kq{font-size:12.4px;line-height:1.56;color:#cbd5e1}
+  .kq b{color:#bae6fd}
+  .kq .na{color:#a78bfa;font-weight:800}
+  .kq .cl{color:#4ade80;font-weight:800}
+  .kq .hp{color:#fb7185;font-weight:800}
+  .kq .ac{color:#fbbf24;font-weight:800}
+  .eq{font-size:13.2px;font-weight:800;color:#fde68a;background:rgba(0,0,0,.26);border:1px solid rgba(250,204,21,.22);border-radius:9px;padding:6px 10px;margin:6px 0;text-align:center}
+
+  table{width:100%;border-collapse:collapse;font-size:11.4px}
+  td,th{padding:5px 4px;border-bottom:1px solid rgba(148,163,184,.12);text-align:left;vertical-align:middle}
+  th{color:var(--phu);font-weight:700;font-size:10.7px}
+  tr.act{background:rgba(124,58,237,.18)}
+  tr.act td{color:#fff;font-weight:700}
+
+  .q{background:rgba(34,197,94,.09);border-color:rgba(34,197,94,.32)}
+  .q h3{color:#86efac}
+  .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--phu);background:var(--nen);z-index:10}
+
+  @media (max-width:860px){
+    html,body{overflow:auto}
+    .wrap{grid-template-columns:1fr;grid-template-rows:58dvh auto;height:auto}
+    .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
+    .cam-bar{bottom:10px}
+    .hint-bar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+
+    <div class="hud">
+      <div class="hud-left" id="hudLegend">
+        <span class="chip off" id="chipAmp">⚡ <b id="hudMa">0 mA</b> · <span id="hudBulb">Đèn tắt</span></span>
+        <span class="chip" id="chipIon1" style="display:none"><i id="dotIon1"></i><span id="txtIon1"></span></span>
+        <span class="chip" id="chipIon2" style="display:none"><i id="dotIon2"></i><span id="txtIon2"></span></span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn on" id="btnHudMicro" title="Bật/tắt chế độ soi hạt vi mô trong cốc">🔬 Soi vi mô: Bật</button>
+        <button class="hud-btn on" id="btnSound" title="Bật/tắt âm thanh">🔊</button>
+      </div>
+    </div>
+
+    <div class="nhan3d pos" id="lblAnode">Anode (+) <small>Hút anion (−)</small></div>
+    <div class="nhan3d neg" id="lblCathode">Cathode (−) <small>Hút cation (+)</small></div>
+    <div class="nhan3d sw" id="lblSwitch">⚡ Click công tắc</div>
+
+    <div class="cam-bar">
+      <button class="hud-btn on" data-cam="overview">🎥 Toàn bộ mạch</button>
+      <button class="hud-btn" data-cam="beaker">🔬 Cận cốc &amp; ion</button>
+      <button class="hud-btn" data-cam="meter">💡 Bóng đèn &amp; Ampe kế</button>
+    </div>
+
+    <div class="hint-bar">🖱️ <b>Click công tắc 3D</b> trên bộ nguồn để đóng/ngắt mạch · Kéo xoay 360° · Cuộn để zoom</div>
+    <div class="toast" id="toast"></div>
+    <div class="fallback" id="fb">Thiết bị chưa bật WebGL hoặc không nạp được Three.js nên không hiển thị được phòng thí nghiệm 3D.</div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <span class="tag">Bài 11 &amp; 12 · Liên kết ion vs Cộng hóa trị · IUPAC</span>
+      <h1>Thí nghiệm thử tính dẫn điện 3D</h1>
+    </div>
+
+    <div class="box">
+      <h3>1. Nguồn điện DC &amp; Góc soi X-Ray</h3>
+      <div class="ctrl-row">
+        <button class="btn-pwr on" id="btnPower">⚡ Công tắc: BẬT</button>
+        <button class="btn-micro on" id="btnMicro">🔬 Soi hạt vi mô</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3><span>2. Chọn 6 mẫu thử trong cốc</span> <span id="testedCount" style="color:#a7f3d0;text-transform:none">1/6 đã thử</span></h3>
+      <div class="sample-grid" id="sampleGrid">
+        <button class="s-btn" data-s="water">
+          <span class="s-dot none"></span>
+          <span class="s-name">Nước cất</span>
+          <span class="s-sub">H₂O tinh khiết</span>
+        </button>
+        <button class="s-btn" data-s="sugar">
+          <span class="s-dot none"></span>
+          <span class="s-name">dd Đường saccharose</span>
+          <span class="s-sub">C₁₂H₂₂O₁₁ (aq)</span>
+        </button>
+        <button class="s-btn" data-s="nacl_solid">
+          <span class="s-dot none"></span>
+          <span class="s-name">NaCl rắn (khan)</span>
+          <span class="s-sub">Tinh thể ion khô</span>
+        </button>
+        <button class="s-btn on" data-s="nacl_aq">
+          <span class="s-dot strong"></span>
+          <span class="s-name">dd NaCl (muối ăn)</span>
+          <span class="s-sub">Ion phân li hoàn toàn</span>
+        </button>
+        <button class="s-btn" data-s="hcl">
+          <span class="s-dot strong"></span>
+          <span class="s-name">dd HCl (acid mạnh)</span>
+          <span class="s-sub">Phân li hoàn toàn + H₂</span>
+        </button>
+        <button class="s-btn" data-s="ch3cooh">
+          <span class="s-dot weak"></span>
+          <span class="s-name">dd CH₃COOH loãng</span>
+          <span class="s-sub">Acid yếu (phân li 1 phần)</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>3. Kết quả đo &amp; Hiện tượng real-time</h3>
+      <div class="readout">
+        <div class="r-cell"><small>Ampe kế</small><b id="valMa" class="bright">185 mA</b></div>
+        <div class="r-cell"><small>Bóng đèn</small><b id="valBulb" class="bright">Sáng mạnh</b></div>
+        <div class="r-cell"><small>Phân loại</small><b id="valType">Ion (aq)</b></div>
+      </div>
+      <div class="eq" id="eqBox">NaCl(s) ⟶ Na⁺(aq) + Cl⁻(aq)</div>
+      <div class="kq" id="obsTxt"></div>
+    </div>
+
+    <div class="box">
+      <h3>4. Bảng tổng hợp 6 mẫu thử</h3>
+      <table id="cmpTable">
+        <thead>
+          <tr><th>Mẫu thử</th><th>I (mA)</th><th>Bóng đèn</th><th>Hạt tự do</th></tr>
+        </thead>
+        <tbody id="cmpBody"></tbody>
+      </table>
+    </div>
+
+    <div class="box kq">
+      <h3>Ghi nhớ chuẩn SGK Hóa 10 (KNTT)</h3>
+      • <b>Điều kiện dẫn điện:</b> Trong mẫu phải có các <b>ion (hạt mang điện) chuyển động tự do</b>.<br>
+      • <b>Hợp chất ion (NaCl):</b> Ở thể <b>rắn</b>, <span class="na">Na⁺</span> và <span class="cl">Cl⁻</span> bị giữ chặt tại nút mạng tinh thể nên <b>không dẫn điện</b>. Khi hòa tan vào nước, ion tách ra tự do: <span class="na">Na⁺</span> di chuyển về cực âm <b>(−)</b>, <span class="cl">Cl⁻</span> về cực dương <b>(+)</b> → đèn <b>sáng mạnh</b>.<br>
+      • <b>Hợp chất cộng hóa trị:</b> <b>H₂O</b>, <b>C₁₂H₂₂O₁₁</b> tồn tại ở dạng phân tử trung hòa → không dẫn điện. <b>HCl</b> phân li hoàn toàn (acid mạnh) → đèn <b>rất sáng</b>; <b>CH₃COOH</b> phân li một phần (acid yếu) → đèn <b>sáng mờ</b>.
+    </div>
+
+    <div class="box q">
+      <h3>Câu hỏi tự kiểm tra</h3>
+      <div class="kq">
+        1. Tại sao cùng là muối <b>NaCl</b> nhưng <b>NaCl rắn</b> làm đèn tắt hoàn toàn (0 mA), còn <b>dd NaCl</b> lại làm đèn sáng mạnh (~185 mA)?<br>
+        2. Hãy bật <b>🔬 Soi hạt vi mô</b> và so sánh <b>dd HCl</b> với <b>dd CH₃COOH loãng</b>, sau đó thử tắt công tắc nguồn: chuyển động của các ion thay đổi thế nào?
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function loadThreeAndBoot() {
+  var MIRRORS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+    'https://unpkg.com/three@0.128.0/build/three.min.js'
+  ];
+  var idx = 0;
+  function fail() { document.getElementById('fb').style.display = 'flex'; }
+  function next() {
+    if (window.THREE && window.THREE.WebGLRenderer) { bootConductivityLab(window.THREE); return; }
+    if (idx >= MIRRORS.length) { fail(); return; }
+    var s = document.createElement('script');
+    s.src = MIRRORS[idx++];
+    s.async = true;
+    s.onload = function () {
+      if (window.THREE && window.THREE.WebGLRenderer) bootConductivityLab(window.THREE);
+      else next();
+    };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+
+function bootConductivityLab(THREE) {
+  'use strict';
+
+  const $ = function (id) { return document.getElementById(id); };
+  const stage = $('stage'), cv = $('cv');
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' });
+  } catch (e) {
+    $('fb').style.display = 'flex';
+    return;
+  }
+
+  const isLow = (window.innerWidth < 720) || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+  renderer.setPixelRatio(Math.min(isLow ? 1.5 : 2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.94;
+  renderer.shadowMap.enabled = !isLow;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  /* ==================== CRITICAL COLOR HELPER ==================== */
+  function srgbCol(hex) { return new THREE.Color(hex).convertSRGBToLinear(); }
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x070b14);
+  scene.fog = new THREE.FogExp2(0x070b14, 0.022);
+
+  /* ==================== STUDIO IBL (MUTED SOFTBOXES, NO HARSH WHITE) ==================== */
+  (function buildEnvMap() {
+    if (!THREE.PMREMGenerator) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const es = new THREE.Scene();
+    es.background = new THREE.Color(0x0b1220);
+
+    const softTop = new THREE.Mesh(
+      new THREE.PlaneGeometry(18, 8),
+      new THREE.MeshBasicMaterial({ color: 0x9aa8bf, side: THREE.DoubleSide })
+    );
+    softTop.position.set(0, 10, 2);
+    softTop.lookAt(0, 0, 0);
+    es.add(softTop);
+
+    const softLeft = new THREE.Mesh(
+      new THREE.PlaneGeometry(8, 12),
+      new THREE.MeshBasicMaterial({ color: 0x6f8fb8, side: THREE.DoubleSide })
+    );
+    softLeft.position.set(-11, 3.5, 2.5);
+    softLeft.lookAt(0, 0, 0);
+    es.add(softLeft);
+
+    const softRight = new THREE.Mesh(
+      new THREE.PlaneGeometry(8, 12),
+      new THREE.MeshBasicMaterial({ color: 0x8a8272, side: THREE.DoubleSide })
+    );
+    softRight.position.set(11, 3.5, 2.5);
+    softRight.lookAt(0, 0, 0);
+    es.add(softRight);
+
+    const softBack = new THREE.Mesh(
+      new THREE.PlaneGeometry(14, 5),
+      new THREE.MeshBasicMaterial({ color: 0x5c6b89, side: THREE.DoubleSide })
+    );
+    softBack.position.set(0, 4.2, -10);
+    softBack.lookAt(0, 0, 0);
+    es.add(softBack);
+
+    scene.environment = pmrem.fromScene(es, 0.05).texture;
+    pmrem.dispose();
+  })();
+
+  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 120);
+
+  /* ==================== STUDIO LIGHTING ==================== */
+  scene.add(new THREE.HemisphereLight(0xcbd5e1, 0x0f172a, 0.58));
+
+  const keyLight = new THREE.DirectionalLight(0xeef2f8, 0.92);
+  keyLight.position.set(5.5, 11.5, 7.8);
+  if (!isLow) {
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(1024, 1024);
+    keyLight.shadow.bias = -0.0005;
+    const sb = 6.8;
+    keyLight.shadow.camera.left = -sb;
+    keyLight.shadow.camera.right = sb;
+    keyLight.shadow.camera.top = sb;
+    keyLight.shadow.camera.bottom = -sb;
+  }
+  scene.add(keyLight);
+
+  const rimLight = new THREE.DirectionalLight(0x7aa2d4, 0.36);
+  rimLight.position.set(-7.5, 5.2, -6.5);
+  scene.add(rimLight);
+
+  const fillLight = new THREE.PointLight(0x94a3b8, 0.25, 16);
+  fillLight.position.set(-4.5, 3.8, 5.2);
+  scene.add(fillLight);
+
+  /* ==================== WEB AUDIO API (SWITCH CLICK + PROPORTIONAL ELECTRICAL HUM) ==================== */
+  let audioCtx = null, soundOn = true;
+  let humOsc1 = null, humOsc2 = null, humGain = null;
+
+  function ensureAudio() {
+    if (!soundOn) return null;
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      audioCtx = new AC();
+      humOsc1 = audioCtx.createOscillator();
+      humOsc2 = audioCtx.createOscillator();
+      humOsc1.type = 'sine';
+      humOsc1.frequency.value = 50;
+      humOsc2.type = 'triangle';
+      humOsc2.frequency.value = 100;
+
+      const humLP = audioCtx.createBiquadFilter();
+      humLP.type = 'lowpass';
+      humLP.frequency.value = 180;
+
+      const mix2 = audioCtx.createGain();
+      mix2.gain.value = 0.28;
+
+      humGain = audioCtx.createGain();
+      humGain.gain.value = 0;
+
+      humOsc1.connect(humLP);
+      humOsc2.connect(mix2);
+      mix2.connect(humLP);
+      humLP.connect(humGain);
+      humGain.connect(audioCtx.destination);
+      humOsc1.start();
+      humOsc2.start();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function updateHum(normCurrent) {
+    if (!audioCtx || !humGain) return;
+    const target = soundOn ? Math.max(0, normCurrent) * 0.032 : 0;
+    humGain.gain.setTargetAtTime(target, audioCtx.currentTime, 0.08);
+  }
+
+  function sfxToggleSwitch(turningOn) {
+    const ac = ensureAudio();
+    if (!ac) return;
+    const now = ac.currentTime;
+    // Crisp mechanical metallic click
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(turningOn ? 1150 : 840, now);
+    osc.frequency.exponentialRampToValueAtTime(turningOn ? 240 : 170, now + 0.032);
+    g.gain.setValueAtTime(0.14, now);
+    g.gain.exponentialRampToValueAtTime(0.0008, now + 0.038);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(now); osc.stop(now + 0.045);
+
+    // Subtle chassis snap
+    const len = Math.floor(ac.sampleRate * 0.025);
+    const buf = ac.createBuffer(1, len, ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (len * 0.25));
+    const ns = ac.createBufferSource(); ns.buffer = buf;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = turningOn ? 2400 : 1650;
+    const ng = ac.createGain(); ng.gain.value = 0.09;
+    ns.connect(bp); bp.connect(ng); ng.connect(ac.destination);
+    ns.start(now);
+  }
+
+  function sfxSoftTap() {
+    const ac = ensureAudio();
+    if (!ac) return;
+    const now = ac.currentTime;
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(520, now);
+    osc.frequency.exponentialRampToValueAtTime(290, now + 0.045);
+    g.gain.setValueAtTime(0.055, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(now); osc.stop(now + 0.055);
+  }
+
+  /* ==================== PROCEDURAL TEXTURES ==================== */
+  function makeTex(w, h, fn) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    fn(c.getContext('2d'), w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    t.anisotropy = 4;
+    return t;
+  }
+
+  const graniteTex = makeTex(512, 512, function (g, w, h) {
+    g.fillStyle = '#121622';
+    g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 6500; i++) {
+      const r = Math.random();
+      const a = 0.025 + Math.random() * 0.065;
+      if (r < 0.45) g.fillStyle = 'rgba(203,213,225,' + a + ')';
+      else if (r < 0.78) g.fillStyle = 'rgba(100,116,139,' + a + ')';
+      else g.fillStyle = 'rgba(15,23,42,' + (a * 1.4) + ')';
+      const sz = 1 + Math.random() * 2.4;
+      g.fillRect(Math.random() * w, Math.random() * h, sz, sz);
+    }
+    g.strokeStyle = 'rgba(255,255,255,0.02)';
+    g.lineWidth = 1;
+    for (let i = 0; i <= w; i += 128) {
+      g.beginPath(); g.moveTo(i, 0); g.lineTo(i, h); g.stroke();
+      g.beginPath(); g.moveTo(0, i); g.lineTo(w, i); g.stroke();
+    }
+  });
+  graniteTex.wrapS = graniteTex.wrapT = THREE.RepeatWrapping;
+  graniteTex.repeat.set(3.5, 2.5);
+
+  const haloTex = makeTex(128, 128, function (g) {
+    const gr = g.createRadialGradient(64, 64, 2, 64, 64, 64);
+    gr.addColorStop(0, 'rgba(255,248,220,0.92)');
+    gr.addColorStop(0.24, 'rgba(255,204,102,0.52)');
+    gr.addColorStop(0.55, 'rgba(245,158,11,0.16)');
+    gr.addColorStop(1, 'rgba(245,158,11,0)');
+    g.fillStyle = gr;
+    g.fillRect(0, 0, 128, 128);
+  });
+
+  const beakerGradTex = makeTex(512, 320, function (g, w, h) {
+    g.clearRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(241,245,249,0.78)';
+    g.fillStyle = 'rgba(241,245,249,0.82)';
+    g.lineWidth = 3;
+    const cx = w * 0.5;
+    g.beginPath(); g.moveTo(cx, 34); g.lineTo(cx, h - 24); g.stroke();
+    const marks = [250, 200, 150, 100, 50];
+    marks.forEach(function (val, idx) {
+      const y = 50 + idx * 54;
+      g.beginPath(); g.moveTo(cx - 26, y); g.lineTo(cx + 26, y); g.stroke();
+      g.font = '700 20px "Be Vietnam Pro",sans-serif';
+      g.textAlign = 'left';
+      g.textBaseline = 'middle';
+      g.fillText(val + ' mL', cx + 34, y);
+      if (idx < marks.length - 1) {
+        g.beginPath(); g.moveTo(cx - 14, y + 27); g.lineTo(cx + 14, y + 27); g.stroke();
+      }
+    });
+    g.font = '800 18px "Be Vietnam Pro",sans-serif';
+    g.textAlign = 'right';
+    g.fillText('BORO 3.3', cx - 34, 62);
+    g.font = '600 14px "Be Vietnam Pro",sans-serif';
+    g.fillText('250 mL', cx - 34, 86);
+  });
+
+  const psuPanelTex = makeTex(512, 384, function (g, w, h) {
+    g.fillStyle = '#182030';
+    g.fillRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(148,163,184,0.34)';
+    g.lineWidth = 6;
+    g.strokeRect(10, 10, w - 20, h - 20);
+
+    // Header bar
+    g.fillStyle = '#0f172a';
+    g.fillRect(18, 18, w - 36, 54);
+    g.fillStyle = '#93c5fd';
+    g.font = '800 22px "Be Vietnam Pro",sans-serif';
+    g.textAlign = 'left';
+    g.textBaseline = 'middle';
+    g.fillText('NGUỒN ĐIỆN DC · 6,0 V', 34, 46);
+    g.fillStyle = '#94a3b8';
+    g.font = '700 15px "Be Vietnam Pro",sans-serif';
+    g.textAlign = 'right';
+    g.fillText('LAB PSU-10', w - 34, 46);
+
+    // Digital readout bezel
+    g.fillStyle = '#060a12';
+    g.fillRect(285, 92, 190, 74);
+    g.strokeStyle = '#334155';
+    g.lineWidth = 3;
+    g.strokeRect(285, 92, 190, 74);
+    g.fillStyle = '#38bdf8';
+    g.font = '800 38px monospace';
+    g.textAlign = 'center';
+    g.fillText('6.0 V', 380, 132);
+
+    // Switch labels (left side)
+    g.fillStyle = '#cbd5e1';
+    g.font = '800 17px "Be Vietnam Pro",sans-serif';
+    g.textAlign = 'center';
+    g.fillText('CÔNG TẮC', 130, 108);
+    g.fillStyle = '#34d399';
+    g.font = '800 16px "Be Vietnam Pro",sans-serif';
+    g.fillText('BẬT (ON)', 130, 148);
+    g.fillStyle = '#94a3b8';
+    g.fillText('TẮT (OFF)', 130, 316);
+
+    // LED label
+    g.fillStyle = '#94a3b8';
+    g.font = '700 13px "Be Vietnam Pro",sans-serif';
+    g.fillText('NGUỒN', 236, 178);
+
+    // Terminal polarity labels (bottom-right)
+    g.fillStyle = '#ef4444';
+    g.font = '800 32px "Be Vietnam Pro",sans-serif';
+    g.fillText('+', 324, 232);
+    g.fillStyle = '#94a3b8';
+    g.fillText('−', 432, 232);
+    g.fillStyle = '#cbd5e1';
+    g.font = '700 13px "Be Vietnam Pro",sans-serif';
+    g.fillText('CỰC DƯƠNG', 324, 344);
+    g.fillText('CỰC ÂM', 432, 344);
+  });
+
+  const ammeterDialTex = makeTex(512, 384, function (g, w, h) {
+    g.fillStyle = '#f4f1e8';
+    g.fillRect(0, 0, w, h);
+
+    // Subtle vintage radial shadow
+    const gr = g.createRadialGradient(w / 2, h * 0.72, 30, w / 2, h * 0.72, 280);
+    gr.addColorStop(0, 'rgba(255,255,255,0.45)');
+    gr.addColorStop(1, 'rgba(148,163,184,0.22)');
+    g.fillStyle = gr;
+    g.fillRect(0, 0, w, h);
+
+    const cx = w * 0.5, cy = h * 0.86, rad = 248;
+    const angMin = -Math.PI * 0.5 - 0.84; // 0 mA
+    const angMax = -Math.PI * 0.5 + 0.84; // 250 mA
+
+    // Colored conductivity zones along arc
+    function drawBand(v0, v1, col, width) {
+      const a0 = angMin + (v0 / 250) * (angMax - angMin);
+      const a1 = angMin + (v1 / 250) * (angMax - angMin);
+      g.beginPath();
+      g.arc(cx, cy, rad - 12, a0, a1);
+      g.strokeStyle = col;
+      g.lineWidth = width;
+      g.stroke();
+    }
+    drawBand(0, 12, '#94a3b8', 11);
+    drawBand(12, 70, '#d97706', 11);
+    drawBand(70, 250, '#15803d', 11);
+
+    // Main outer scale arc
+    g.beginPath();
+    g.arc(cx, cy, rad, angMin, angMax);
+    g.strokeStyle = '#0f172a';
+    g.lineWidth = 3.5;
+    g.stroke();
+
+    // Ticks 0..250 mA
+    for (let v = 0; v <= 250; v += 10) {
+      const t = v / 250;
+      const a = angMin + t * (angMax - angMin);
+      const major = (v % 50 === 0);
+      const mid = (v % 25 === 0);
+      const r0 = rad + 2;
+      const r1 = rad - (major ? 26 : (mid ? 19 : 13));
+      g.beginPath();
+      g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
+      g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+      g.strokeStyle = '#0f172a';
+      g.lineWidth = major ? 3.5 : 1.8;
+      g.stroke();
+
+      if (major) {
+        const rt = rad - 48;
+        g.fillStyle = '#0f172a';
+        g.font = '800 24px "Be Vietnam Pro",sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText(String(v), cx + Math.cos(a) * rt, cy + Math.sin(a) * rt);
+      }
+    }
+
+    // Center typography
+    g.fillStyle = '#0f172a';
+    g.font = '800 44px "Be Vietnam Pro",sans-serif';
+    g.textAlign = 'center';
+    g.fillText('mA', cx, cy - 118);
+
+    g.fillStyle = '#475569';
+    g.font = '700 17px "Be Vietnam Pro",sans-serif';
+    g.fillText('AMPE KẾ DC · 0–250 mA', cx, cy - 76);
+
+    g.fillStyle = '#64748b';
+    g.font = '700 13px "Be Vietnam Pro",sans-serif';
+    g.fillText('TẮT / YẾU / MẠNH', cx, cy - 52);
+  });
+
+  /* ==================== HELPER: ROUNDED RECT EXTRUDE ==================== */
+  function makeRoundedRectShape(w, h, r) {
+    const s = new THREE.Shape();
+    const hw = w / 2, hh = h / 2;
+    s.moveTo(-hw + r, -hh);
+    s.lineTo(hw - r, -hh);
+    s.quadraticCurveTo(hw, -hh, hw, -hh + r);
+    s.lineTo(hw, hh - r);
+    s.quadraticCurveTo(hw, hh, hw - r, hh);
+    s.lineTo(-hw + r, hh);
+    s.quadraticCurveTo(-hw, hh, -hw, hh - r);
+    s.lineTo(-hw, -hh + r);
+    s.quadraticCurveTo(-hw, -hh, -hw + r, -hh);
+    return s;
+  }
+
+  /* ==================== BENCHTOP (DARK GRANITE + LAB MAT) ==================== */
+  const bench = new THREE.Mesh(
+    new THREE.CylinderGeometry(14.5, 15.0, 0.52, 64),
+    new THREE.MeshStandardMaterial({
+      map: graniteTex,
+      color: srgbCol(0xcbd5e1),
+      roughness: 0.34,
+      metalness: 0.14,
+      envMapIntensity: 0.65
+    })
+  );
+  bench.position.y = -0.26;
+  bench.receiveShadow = true;
+  scene.add(bench);
+
+  const matGeo = new THREE.ExtrudeGeometry(makeRoundedRectShape(9.4, 4.5, 0.32), {
+    depth: 0.028,
+    bevelEnabled: true,
+    bevelThickness: 0.012,
+    bevelSize: 0.014,
+    bevelSegments: 3
+  });
+  matGeo.rotateX(Math.PI / 2);
+  const labMat = new THREE.Mesh(
+    matGeo,
+    new THREE.MeshStandardMaterial({ color: srgbCol(0x161c2c), roughness: 0.62, metalness: 0.08, envMapIntensity: 0.4 })
+  );
+  labMat.position.set(0.05, 0.036, 0.08);
+  labMat.receiveShadow = true;
+  scene.add(labMat);
+
+  /* ==================== SHARED METALLIC / INSULATOR MATERIALS ==================== */
+  const matBrass = new THREE.MeshStandardMaterial({ color: srgbCol(0xc29642), roughness: 0.26, metalness: 0.86, envMapIntensity: 0.9 });
+  const matChrome = new THREE.MeshStandardMaterial({ color: srgbCol(0xb8c4d4), roughness: 0.22, metalness: 0.88, envMapIntensity: 0.95 });
+  const matDarkChassis = new THREE.MeshStandardMaterial({ color: srgbCol(0x1e2636), roughness: 0.42, metalness: 0.36, envMapIntensity: 0.6 });
+  const matRubber = new THREE.MeshStandardMaterial({ color: srgbCol(0x11151e), roughness: 0.85, metalness: 0.05 });
+  const matRedCap = new THREE.MeshStandardMaterial({ color: srgbCol(0xb91c1c), roughness: 0.38, metalness: 0.08 });
+  const matBlkCap = new THREE.MeshStandardMaterial({ color: srgbCol(0x1c212c), roughness: 0.42, metalness: 0.12 });
+  const matGraphite = new THREE.MeshStandardMaterial({ color: srgbCol(0x282d38), roughness: 0.38, metalness: 0.34, envMapIntensity: 0.55 });
+  const matWireRed = new THREE.MeshStandardMaterial({ color: srgbCol(0xb91c1c), roughness: 0.44, metalness: 0.06, envMapIntensity: 0.45 });
+  const matWireBlk = new THREE.MeshStandardMaterial({ color: srgbCol(0x1b202b), roughness: 0.48, metalness: 0.08, envMapIntensity: 0.45 });
+  const matWireCopper = new THREE.MeshStandardMaterial({ color: srgbCol(0xb45309), roughness: 0.42, metalness: 0.1, envMapIntensity: 0.45 });
+
+  function makeBindingPost(isPos) {
+    const g = new THREE.Group();
+    const baseCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.095, 0.08, 22), isPos ? matRedCap : matBlkCap);
+    baseCollar.rotation.x = Math.PI / 2;
+    g.add(baseCollar);
+    const stud = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.036, 0.16, 18), matBrass);
+    stud.rotation.x = Math.PI / 2;
+    stud.position.z = 0.06;
+    g.add(stud);
+    const nut = new THREE.Mesh(new THREE.CylinderGeometry(0.072, 0.072, 0.065, 18), isPos ? matRedCap : matBlkCap);
+    nut.rotation.x = Math.PI / 2;
+    nut.position.z = 0.11;
+    g.add(nut);
+    return g;
+  }
+
+  /* ==================== 1. BEVELED DC POWER SUPPLY (LEFT) ==================== */
+  const psuGroup = new THREE.Group();
+  psuGroup.position.set(-3.28, 0.04, 0.12);
+  psuGroup.rotation.y = 0.28;
+  scene.add(psuGroup);
+
+  const psuW = 1.92, psuH = 1.42, psuD = 1.32;
+  const psuShape = makeRoundedRectShape(psuW, psuH, 0.09);
+  const psuBodyGeo = new THREE.ExtrudeGeometry(psuShape, {
+    depth: psuD,
+    bevelEnabled: true,
+    bevelThickness: 0.065,
+    bevelSize: 0.06,
+    bevelSegments: 4
+  });
+  psuBodyGeo.center();
+  const psuBody = new THREE.Mesh(psuBodyGeo, matDarkChassis);
+  psuBody.position.y = psuH / 2 + 0.11;
+  psuBody.castShadow = !isLow;
+  psuBody.receiveShadow = true;
+  psuGroup.add(psuBody);
+
+  // 4 rubber feet
+  [[-0.74, -0.48], [0.74, -0.48], [-0.74, 0.48], [0.74, 0.48]].forEach(function (p) {
+    const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.11, 0.07, 16), matRubber);
+    foot.position.set(p[0], 0.035, p[1]);
+    psuGroup.add(foot);
+  });
+
+  // Front recessed brushed panel
+  const psuFace = new THREE.Mesh(
+    new THREE.PlaneGeometry(psuW - 0.14, psuH - 0.14),
+    new THREE.MeshStandardMaterial({ map: psuPanelTex, color: srgbCol(0xe2e8f0), roughness: 0.46, metalness: 0.12 })
+  );
+  psuFace.position.set(0, psuH / 2 + 0.11, psuD / 2 + 0.067);
+  psuGroup.add(psuFace);
+
+  // Clickable 3D Toggle Switch (left of front panel)
+  const swBase = new THREE.Group();
+  swBase.position.set(-0.44, psuH / 2 + 0.05, psuD / 2 + 0.07);
+  psuGroup.add(swBase);
+
+  const swWasher = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.03, 6), matChrome);
+  swWasher.rotation.x = Math.PI / 2;
+  swBase.add(swWasher);
+
+  const swBushing = new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.068, 0.09, 20), matChrome);
+  swBushing.rotation.x = Math.PI / 2;
+  swBushing.position.z = 0.04;
+  swBase.add(swBushing);
+
+  const swPivot = new THREE.Group();
+  swPivot.position.z = 0.065;
+  swBase.add(swPivot);
+
+  const batPts = [
+    new THREE.Vector2(0.0, 0.0),
+    new THREE.Vector2(0.032, 0.02),
+    new THREE.Vector2(0.042, 0.18),
+    new THREE.Vector2(0.062, 0.28),
+    new THREE.Vector2(0.056, 0.33),
+    new THREE.Vector2(0.0, 0.35)
+  ];
+  const batGeo = new THREE.LatheGeometry(batPts, 20);
+  batGeo.rotateX(Math.PI / 2);
+  const swBat = new THREE.Mesh(batGeo, matChrome);
+  swBat.userData.interactive = 'power';
+  swPivot.add(swBat);
+
+  // Generous invisible click hitbox around the 3D switch
+  const swHit = new THREE.Mesh(
+    new THREE.SphereGeometry(0.32, 12, 10),
+    new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+  );
+  swHit.position.set(0, 0, 0.16);
+  swHit.userData.interactive = 'power';
+  swBase.add(swHit);
+
+  // Status LED next to switch
+  const ledBezel = new THREE.Mesh(new THREE.CylinderGeometry(0.072, 0.078, 0.04, 20), matChrome);
+  ledBezel.rotation.x = Math.PI / 2;
+  ledBezel.position.set(-0.06, psuH / 2 + 0.25, psuD / 2 + 0.072);
+  psuGroup.add(ledBezel);
+
+  const ledMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x10b981),
+    emissive: srgbCol(0x10b981),
+    emissiveIntensity: 1.4,
+    roughness: 0.22,
+    metalness: 0.05
+  });
+  const ledDome = new THREE.Mesh(new THREE.SphereGeometry(0.052, 18, 14), ledMat);
+  ledDome.position.set(-0.06, psuH / 2 + 0.25, psuD / 2 + 0.088);
+  psuGroup.add(ledDome);
+
+  const ledLight = new THREE.PointLight(0x10b981, 0.45, 2.2);
+  ledLight.position.set(-0.06, psuH / 2 + 0.25, psuD / 2 + 0.24);
+  psuGroup.add(ledLight);
+
+  // Power supply binding posts (+ Red, - Black)
+  const psuPosPost = makeBindingPost(true);
+  psuPosPost.position.set(0.24, psuH / 2 - 0.16, psuD / 2 + 0.068);
+  psuGroup.add(psuPosPost);
+
+  const psuNegPost = makeBindingPost(false);
+  psuNegPost.position.set(0.62, psuH / 2 - 0.16, psuD / 2 + 0.068);
+  psuGroup.add(psuNegPost);
+
+  /* ==================== 2. BOROSILICATE GLASS BEAKER + ELECTRODES (CENTER) ==================== */
+  const R_B = 1.22, H_B = 2.48, Y_BEAKER = 0.05;
+  const H_LIQ = 1.66;
+  const Y_LIQ_BOT = Y_BEAKER + 0.09;
+  const Y_LIQ_TOP = Y_LIQ_BOT + H_LIQ;
+  const X_ELEC = 0.50;
+
+  const beakerGroup = new THREE.Group();
+  beakerGroup.position.set(0.0, Y_BEAKER, 0.22);
+  scene.add(beakerGroup);
+
+  function makeGlassFresnelMat(side, baseAlpha, tintHex) {
+    return new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      side: side,
+      uniforms: {
+        uColor: { value: new THREE.Color(tintHex || 0xcce4f7) },
+        uRim: { value: new THREE.Color(0xdbeafe) },
+        uAlpha: { value: baseAlpha },
+        uGlowCol: { value: new THREE.Color(0xffb454) },
+        uGlow: { value: 0.0 }
+      },
+      vertexShader: `
+        varying vec3 vNorm;
+        varying vec3 vView;
+        void main() {
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vNorm = normalize(normalMatrix * normal);
+          vView = normalize(-mv.xyz);
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColor;
+        uniform vec3 uRim;
+        uniform float uAlpha;
+        uniform vec3 uGlowCol;
+        uniform float uGlow;
+        varying vec3 vNorm;
+        varying vec3 vView;
+        void main() {
+          vec3 N = normalize(vNorm);
+          vec3 V = normalize(vView);
+          float ndv = abs(dot(N, V));
+          float fresnel = pow(1.0 - ndv, 2.7);
+          float spec = pow(max(0.0, dot(reflect(-normalize(vec3(0.45,0.88,0.52)), N), V)), 56.0);
+          vec3 col = mix(uColor, uRim, clamp(fresnel * 0.82 + spec * 0.62, 0.0, 1.0));
+          col += uGlowCol * uGlow * (0.45 + 0.55 * fresnel);
+          float a = clamp(uAlpha + fresnel * 0.40 + spec * 0.36 + uGlow * 0.22, 0.0, 0.88);
+          gl_FragColor = vec4(col, a);
+        }
+      `
+    });
+  }
+
+  const beakerPts = [
+    new THREE.Vector2(0.0, 0.0),
+    new THREE.Vector2(R_B - 0.12, 0.0),
+    new THREE.Vector2(R_B + 0.02, 0.05),
+    new THREE.Vector2(R_B + 0.06, 0.15),
+    new THREE.Vector2(R_B + 0.06, H_B - 0.05),
+    new THREE.Vector2(R_B + 0.13, H_B + 0.03),
+    new THREE.Vector2(R_B + 0.03, H_B + 0.06),
+    new THREE.Vector2(R_B - 0.01, H_B - 0.02),
+    new THREE.Vector2(R_B - 0.01, 0.11),
+    new THREE.Vector2(R_B - 0.08, 0.08),
+    new THREE.Vector2(0.0, 0.08)
+  ];
+  const beakerGeo = new THREE.LatheGeometry(beakerPts, isLow ? 48 : 80);
+
+  const beakerBackMat = makeGlassFresnelMat(THREE.BackSide, 0.06, 0xbcd8ee);
+  const beakerFrontMat = makeGlassFresnelMat(THREE.FrontSide, 0.085, 0xc8e2f6);
+  const beakerBack = new THREE.Mesh(beakerGeo, beakerBackMat);
+  beakerBack.renderOrder = 1;
+  const beakerFront = new THREE.Mesh(beakerGeo, beakerFrontMat);
+  beakerFront.renderOrder = 10;
+  beakerGroup.add(beakerBack, beakerFront);
+
+  // Volume graduations decal on outer wall
+  const gradMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(R_B + 0.066, R_B + 0.066, H_B * 0.76, 48, 1, true, -Math.PI * 0.28, Math.PI * 0.56),
+    new THREE.MeshBasicMaterial({ map: beakerGradTex, transparent: true, opacity: 0.72, depthWrite: false })
+  );
+  gradMesh.position.y = H_B * 0.48;
+  gradMesh.renderOrder = 11;
+  beakerGroup.add(gradMesh);
+
+  // Beer-Lambert liquid volume + concave meniscus
+  const liqUniforms = {
+    uColor: { value: new THREE.Color(0x8bc1e8) },
+    uDeep: { value: new THREE.Color(0x3a6f9c) },
+    uXray: { value: 1.0 },
+    uTime: { value: 0.0 }
+  };
+  const liqVolMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    uniforms: liqUniforms,
+    vertexShader: `
+      varying vec3 vLocal;
+      varying vec3 vNorm;
+      varying vec3 vView;
+      void main() {
+        vLocal = position;
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        vNorm = normalize(normalMatrix * normal);
+        vView = normalize(-mv.xyz);
+        gl_Position = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColor;
+      uniform vec3 uDeep;
+      uniform float uXray;
+      uniform float uTime;
+      varying vec3 vLocal;
+      varying vec3 vNorm;
+      varying vec3 vView;
+      void main() {
+        float ndv = abs(dot(normalize(vNorm), normalize(vView)));
+        float edge = pow(1.0 - ndv, 2.2);
+        float hNorm = clamp((vLocal.y + 0.83) / 1.66, 0.0, 1.0);
+        // Beer-Lambert depth attenuation: deeper tint toward bottom & edges
+        float pathLen = mix(1.25, 0.55, ndv) * mix(1.15, 0.82, hNorm);
+        vec3 col = mix(uDeep, uColor, exp(-pathLen * 0.42));
+        float caust = 0.5 + 0.5 * sin(vLocal.x * 4.5 + uTime * 1.1 + vLocal.z * 3.8);
+        col += vec3(0.08, 0.14, 0.18) * caust * (1.0 - uXray * 0.4);
+        float baseA = mix(0.24, 0.11, uXray);
+        float edgeA = mix(0.24, 0.22, uXray);
+        float a = clamp(baseA + edge * edgeA, 0.07, 0.56);
+        gl_FragColor = vec4(col, a);
+      }
+    `
+  });
+
+  const liquidGroup = new THREE.Group();
+  beakerGroup.add(liquidGroup);
+
+  const liqVol = new THREE.Mesh(
+    new THREE.CylinderGeometry(R_B - 0.025, R_B - 0.025, H_LIQ, 60, 1, true),
+    liqVolMat
+  );
+  liqVol.position.y = 0.09 + H_LIQ / 2;
+  liqVol.renderOrder = 3;
+  liquidGroup.add(liqVol);
+
+  // Curved concave capillary meniscus rim at wall + surface disc
+  const menPts = [
+    new THREE.Vector2(0.0, 0.0),
+    new THREE.Vector2(R_B - 0.22, 0.0),
+    new THREE.Vector2(R_B - 0.12, 0.008),
+    new THREE.Vector2(R_B - 0.055, 0.032),
+    new THREE.Vector2(R_B - 0.024, 0.078)
+  ];
+  const menGeo = new THREE.LatheGeometry(menPts, 60);
+  const menMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xa5d8f3),
+    transparent: true,
+    opacity: 0.36,
+    roughness: 0.08,
+    metalness: 0.04,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.06,
+    side: THREE.DoubleSide,
+    depthWrite: false
+  });
+  const meniscus = new THREE.Mesh(menGeo, menMat);
+  meniscus.position.y = 0.09 + H_LIQ;
+  meniscus.renderOrder = 4;
+  liquidGroup.add(meniscus);
+
+  // Acrylic insulating bridge resting on beaker rim
+  const bridgeShape = makeRoundedRectShape(R_B * 2 + 0.42, 0.46, 0.14);
+  const bridgeGeo = new THREE.ExtrudeGeometry(bridgeShape, {
+    depth: 0.095,
+    bevelEnabled: true,
+    bevelThickness: 0.015,
+    bevelSize: 0.015,
+    bevelSegments: 2
+  });
+  bridgeGeo.rotateX(Math.PI / 2);
+  const bridgeMesh = new THREE.Mesh(
+    bridgeGeo,
+    new THREE.MeshPhysicalMaterial({
+      color: srgbCol(0x1f293b),
+      transparent: true,
+      opacity: 0.86,
+      roughness: 0.22,
+      metalness: 0.08,
+      clearcoat: 0.65
+    })
+  );
+  bridgeMesh.position.y = H_B + 0.11;
+  bridgeMesh.castShadow = !isLow;
+  beakerGroup.add(bridgeMesh);
+
+  // 2 Cylindrical Dark Graphite Electrodes + Brass Binding Caps
+  function makeGraphiteElectrode(isPos) {
+    const g = new THREE.Group();
+    const rodH = 2.34;
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, rodH, 32), matGraphite);
+    rod.position.y = 0.28 + rodH / 2;
+    rod.castShadow = !isLow;
+    g.add(rod);
+
+    // Rounded bottom chamfer of graphite rod
+    const tip = new THREE.Mesh(new THREE.SphereGeometry(0.115, 24, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), matGraphite);
+    tip.position.y = 0.28;
+    g.add(tip);
+
+    // Insulator grommet through bridge
+    const grommet = new THREE.Mesh(new THREE.CylinderGeometry(0.165, 0.165, 0.13, 24), isPos ? matRedCap : matBlkCap);
+    grommet.position.y = H_B + 0.09;
+    g.add(grommet);
+
+    // Machined brass binding cap
+    const capBase = new THREE.Mesh(new THREE.CylinderGeometry(0.145, 0.155, 0.14, 24), matBrass);
+    capBase.position.y = H_B + 0.22;
+    g.add(capBase);
+
+    const capNeck = new THREE.Mesh(new THREE.CylinderGeometry(0.068, 0.068, 0.12, 18), matBrass);
+    capNeck.position.y = H_B + 0.34;
+    g.add(capNeck);
+
+    const capKnob = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.09, 20), isPos ? matRedCap : matBlkCap);
+    capKnob.position.y = H_B + 0.42;
+    g.add(capKnob);
+
+    const capTopBrass = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.04, 16), matBrass);
+    capTopBrass.position.y = H_B + 0.48;
+    g.add(capTopBrass);
+
+    return g;
+  }
+
+  const anodeElectrode = makeGraphiteElectrode(true);
+  anodeElectrode.position.x = -X_ELEC;
+  beakerGroup.add(anodeElectrode);
+
+  const cathodeElectrode = makeGraphiteElectrode(false);
+  cathodeElectrode.position.x = X_ELEC;
+  beakerGroup.add(cathodeElectrode);
+
+  /* ==================== 3. CLASSIC INCANDESCENT LIGHT BULB (BACK-RIGHT) ==================== */
+  const bulbGroup = new THREE.Group();
+  bulbGroup.position.set(2.38, 0.04, -0.92);
+  scene.add(bulbGroup);
+
+  // Glazed ceramic socket base
+  const sockPts = [
+    new THREE.Vector2(0.0, 0.0),
+    new THREE.Vector2(0.76, 0.0),
+    new THREE.Vector2(0.78, 0.08),
+    new THREE.Vector2(0.72, 0.14),
+    new THREE.Vector2(0.60, 0.18),
+    new THREE.Vector2(0.54, 0.44),
+    new THREE.Vector2(0.46, 0.49),
+    new THREE.Vector2(0.0, 0.49)
+  ];
+  const sockBase = new THREE.Mesh(
+    new THREE.LatheGeometry(sockPts, 44),
+    new THREE.MeshPhysicalMaterial({ color: srgbCol(0x1b2130), roughness: 0.24, metalness: 0.12, clearcoat: 0.8 })
+  );
+  sockBase.castShadow = !isLow;
+  sockBase.receiveShadow = true;
+  bulbGroup.add(sockBase);
+
+  // Brass E27 screw collar with ridges
+  const e27Pts = [
+    new THREE.Vector2(0.32, 0.46),
+    new THREE.Vector2(0.35, 0.50),
+    new THREE.Vector2(0.31, 0.54),
+    new THREE.Vector2(0.35, 0.58),
+    new THREE.Vector2(0.31, 0.62),
+    new THREE.Vector2(0.35, 0.66),
+    new THREE.Vector2(0.31, 0.70),
+    new THREE.Vector2(0.35, 0.74),
+    new THREE.Vector2(0.32, 0.78),
+    new THREE.Vector2(0.34, 0.84)
+  ];
+  const e27Mesh = new THREE.Mesh(new THREE.LatheGeometry(e27Pts, 36), matBrass);
+  bulbGroup.add(e27Mesh);
+
+  // Bulb binding terminals (front-left and front-right of ceramic base)
+  const bulbTermL = makeBindingPost(true);
+  bulbTermL.position.set(-0.62, 0.18, 0.36);
+  bulbTermL.rotation.y = -0.5;
+  bulbGroup.add(bulbTermL);
+
+  const bulbTermR = makeBindingPost(false);
+  bulbTermR.position.set(0.62, 0.18, -0.34);
+  bulbTermR.rotation.y = Math.PI - 0.5;
+  bulbGroup.add(bulbTermR);
+
+  // Glass pinch stem + lead-in wires
+  const stemMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.06, 0.11, 0.62, 16),
+    new THREE.MeshPhysicalMaterial({ color: srgbCol(0xcbd5e1), transparent: true, opacity: 0.45, roughness: 0.12 })
+  );
+  stemMesh.position.y = 1.12;
+  bulbGroup.add(stemMesh);
+
+  const leadMat = new THREE.MeshStandardMaterial({ color: srgbCol(0x94a3b8), roughness: 0.3, metalness: 0.85 });
+  const leadCurveL = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.04, 0.84, 0),
+    new THREE.Vector3(-0.09, 1.38, 0),
+    new THREE.Vector3(-0.24, 1.72, 0)
+  ]);
+  const leadCurveR = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.04, 0.84, 0),
+    new THREE.Vector3(0.09, 1.38, 0),
+    new THREE.Vector3(0.24, 1.72, 0)
+  ]);
+  bulbGroup.add(new THREE.Mesh(new THREE.TubeGeometry(leadCurveL, 18, 0.014, 8, false), leadMat));
+  bulbGroup.add(new THREE.Mesh(new THREE.TubeGeometry(leadCurveR, 18, 0.014, 8, false), leadMat));
+
+  // Coiled Tungsten Filament (TubeGeometry helical arch!)
+  const filPts = [];
+  const filSteps = 140;
+  for (let i = 0; i <= filSteps; i++) {
+    const t = i / filSteps;
+    const baseX = -0.24 + t * 0.48;
+    const baseY = 1.72 + Math.sin(t * Math.PI) * 0.24;
+    const coilAng = t * Math.PI * 2 * 16;
+    const coilR = 0.036 * Math.sin(t * Math.PI);
+    const nx = baseX;
+    const ny = baseY + Math.cos(coilAng) * coilR;
+    const nz = Math.sin(coilAng) * coilR;
+    filPts.push(new THREE.Vector3(nx, ny, nz));
+  }
+  const filCurve = new THREE.CatmullRomCurve3(filPts);
+  const filamentMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x475569),
+    emissive: srgbCol(0xff9933),
+    emissiveIntensity: 0.0,
+    roughness: 0.32,
+    metalness: 0.72
+  });
+  const filamentMesh = new THREE.Mesh(new THREE.TubeGeometry(filCurve, isLow ? 100 : 180, 0.012, 8, false), filamentMat);
+  bulbGroup.add(filamentMesh);
+
+  // Classic A19 Pear-shaped Borosilicate Bulb Glass (LatheGeometry)
+  const bulbPts = [
+    new THREE.Vector2(0.32, 0.82),
+    new THREE.Vector2(0.35, 0.96),
+    new THREE.Vector2(0.47, 1.18),
+    new THREE.Vector2(0.64, 1.46),
+    new THREE.Vector2(0.72, 1.78),
+    new THREE.Vector2(0.70, 2.04),
+    new THREE.Vector2(0.58, 2.28),
+    new THREE.Vector2(0.36, 2.45),
+    new THREE.Vector2(0.14, 2.52),
+    new THREE.Vector2(0.0, 2.53)
+  ];
+  const bulbGeo = new THREE.LatheGeometry(bulbPts, isLow ? 36 : 64);
+  const bulbBackMat = makeGlassFresnelMat(THREE.BackSide, 0.06, 0xdbeafe);
+  const bulbFrontMat = makeGlassFresnelMat(THREE.FrontSide, 0.09, 0xeef6ff);
+  const bulbBack = new THREE.Mesh(bulbGeo, bulbBackMat);
+  bulbBack.renderOrder = 1;
+  const bulbFront = new THREE.Mesh(bulbGeo, bulbFrontMat);
+  bulbFront.renderOrder = 10;
+  bulbGroup.add(bulbBack, bulbFront);
+
+  // Dynamic Warm PointLight + Soft Additive Halo Sprite
+  const bulbLight = new THREE.PointLight(0xffb454, 0, 12, 1.8);
+  bulbLight.position.set(0, 1.84, 0);
+  bulbGroup.add(bulbLight);
+
+  const haloMat = new THREE.SpriteMaterial({
+    map: haloTex,
+    color: 0xffc864,
+    transparent: true,
+    opacity: 0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const bulbHalo = new THREE.Sprite(haloMat);
+  bulbHalo.position.set(0, 1.84, 0);
+  bulbHalo.scale.set(2.4, 2.4, 1);
+  bulbHalo.renderOrder = 12;
+  bulbGroup.add(bulbHalo);
+
+  /* ==================== 4. 3D ANALOG AMMETER (FRONT-RIGHT) ==================== */
+  const amGroup = new THREE.Group();
+  amGroup.position.set(3.05, 0.04, 0.96);
+  amGroup.rotation.y = -0.42;
+  scene.add(amGroup);
+
+  // Slanted benchtop instrument profile extruded along X
+  const amProf = new THREE.Shape();
+  amProf.moveTo(-0.62, 0.0);
+  amProf.lineTo(0.66, 0.0);
+  amProf.lineTo(0.66, 0.34);
+  amProf.lineTo(0.38, 1.24);
+  amProf.lineTo(-0.56, 1.24);
+  amProf.lineTo(-0.62, 1.12);
+  amProf.closePath();
+
+  const amBodyGeo = new THREE.ExtrudeGeometry(amProf, {
+    depth: 1.72,
+    bevelEnabled: true,
+    bevelThickness: 0.06,
+    bevelSize: 0.055,
+    bevelSegments: 3
+  });
+  amBodyGeo.translate(0, 0, -0.86);
+  amBodyGeo.rotateY(-Math.PI / 2); // Slanted face faces +Z!
+
+  const amBody = new THREE.Mesh(amBodyGeo, matDarkChassis);
+  amBody.position.y = 0.06;
+  amBody.castShadow = !isLow;
+  amBody.receiveShadow = true;
+  amGroup.add(amBody);
+
+  // Slanted dial assembly aligned with front slope (dx = 0.28, dy = 0.90 -> tilt = atan2(0.28, 0.90) = 0.301 rad)
+  const slopeTilt = Math.atan2(0.28, 0.90);
+  const dialHolder = new THREE.Group();
+  dialHolder.position.set(0, 0.85, 0.53);
+  dialHolder.rotation.x = -slopeTilt;
+  amGroup.add(dialHolder);
+
+  // Chrome bezel frame
+  const bezelMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(1.52, 0.96, 0.06),
+    matChrome
+  );
+  bezelMesh.position.z = -0.02;
+  dialHolder.add(bezelMesh);
+
+  // High-res dial face
+  const dialFace = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.38, 0.84),
+    new THREE.MeshStandardMaterial({ map: ammeterDialTex, color: srgbCol(0xf8fafc), roughness: 0.55, metalness: 0.02 })
+  );
+  dialFace.position.z = 0.016;
+  dialHolder.add(dialFace);
+
+  // Live moving 3D red needle pivoted at scale arc center
+  const needlePivot = new THREE.Group();
+  needlePivot.position.set(0, -0.30, 0.032);
+  dialHolder.add(needlePivot);
+
+  const needleGeo = new THREE.BufferGeometry();
+  const needleVerts = new Float32Array([
+    -0.017, 0.0, 0.0,
+     0.017, 0.0, 0.0,
+     0.0, 0.54, 0.0
+  ]);
+  needleGeo.setAttribute('position', new THREE.BufferAttribute(needleVerts, 3));
+  needleGeo.computeVertexNormals();
+  const needleMesh = new THREE.Mesh(
+    needleGeo,
+    new THREE.MeshBasicMaterial({ color: 0xdc2626, side: THREE.DoubleSide })
+  );
+  needlePivot.add(needleMesh);
+
+  const needleCap = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.06, 0.03, 20), matBlkCap);
+  needleCap.rotation.x = Math.PI / 2;
+  needlePivot.add(needleCap);
+
+  // Clear protective glass over dial
+  const dialGlass = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.42, 0.88),
+    new THREE.MeshPhysicalMaterial({
+      color: srgbCol(0xe2e8f0),
+      transparent: true,
+      opacity: 0.16,
+      roughness: 0.06,
+      metalness: 0.05,
+      clearcoat: 1.0
+    })
+  );
+  dialGlass.position.z = 0.048;
+  dialHolder.add(dialGlass);
+
+  // Ammeter front binding posts (+ left, - right)
+  const amPosPost = makeBindingPost(true);
+  amPosPost.position.set(-0.46, 0.22, 0.72);
+  amGroup.add(amPosPost);
+
+  const amNegPost = makeBindingPost(false);
+  amNegPost.position.set(0.46, 0.22, 0.72);
+  amGroup.add(amNegPost);
+
+  /* ==================== 5. REALISTIC SERIES CIRCUIT WIRES (TUBEGEOMETRY) ==================== */
+  scene.updateMatrixWorld(true);
+  function worldPt(obj, lx, ly, lz) {
+    return obj.localToWorld(new THREE.Vector3(lx || 0, ly || 0, lz || 0));
+  }
+
+  const pPsuPos = worldPt(psuPosPost, 0, 0, 0.09);
+  const pPsuNeg = worldPt(psuNegPost, 0, 0, 0.09);
+  const pAnode = worldPt(anodeElectrode, 0, H_B + 0.34, 0);
+  const pCathode = worldPt(cathodeElectrode, 0, H_B + 0.34, 0);
+  const pAmPos = worldPt(amPosPost, 0, 0, 0.09);
+  const pAmNeg = worldPt(amNegPost, 0, 0, 0.09);
+  const pBulbL = worldPt(bulbTermL, 0, 0, 0.09);
+  const pBulbR = worldPt(bulbTermR, 0, 0, 0.09);
+
+  // Wire 1 (Red +): PSU(+) -> Anode(+)
+  const curveW1 = new THREE.CatmullRomCurve3([
+    pPsuPos,
+    pPsuPos.clone().add(new THREE.Vector3(0.28, -0.05, 0.45)),
+    new THREE.Vector3(-1.82, 0.22, 1.38),
+    new THREE.Vector3(-1.42, 1.52, 0.84),
+    new THREE.Vector3(-0.96, 2.95, 0.32),
+    pAnode
+  ]);
+
+  // Wire 2 (Copper-amber): Cathode(-) -> Ammeter(+)
+  const curveW2 = new THREE.CatmullRomCurve3([
+    pCathode,
+    new THREE.Vector3(1.06, 2.92, 0.35),
+    new THREE.Vector3(1.52, 1.48, 0.92),
+    new THREE.Vector3(1.92, 0.26, 1.56),
+    pAmPos.clone().add(new THREE.Vector3(-0.22, -0.02, 0.25)),
+    pAmPos
+  ]);
+
+  // Wire 3 (Red): Ammeter(-) -> Bulb Left Terminal
+  const curveW3 = new THREE.CatmullRomCurve3([
+    pAmNeg,
+    pAmNeg.clone().add(new THREE.Vector3(0.18, -0.04, 0.35)),
+    new THREE.Vector3(4.15, 0.14, 0.82),
+    new THREE.Vector3(3.85, 0.14, -0.45),
+    new THREE.Vector3(2.12, 0.16, -0.18),
+    pBulbL
+  ]);
+
+  // Wire 4 (Black -): Bulb Right Terminal -> PSU(-) routed cleanly around back
+  const curveW4 = new THREE.CatmullRomCurve3([
+    pBulbR,
+    pBulbR.clone().add(new THREE.Vector3(0.32, -0.04, -0.25)),
+    new THREE.Vector3(2.35, 0.11, -1.96),
+    new THREE.Vector3(0.0, 0.10, -2.02),
+    new THREE.Vector3(-2.15, 0.11, -1.68),
+    new THREE.Vector3(-2.32, 0.24, 1.15),
+    pPsuNeg.clone().add(new THREE.Vector3(0.14, -0.10, 0.36)),
+    pPsuNeg
+  ]);
+
+  const wireCurves = [curveW1, curveW2, curveW3, curveW4];
+  const wireMats = [matWireRed, matWireCopper, matWireRed, matWireBlk];
+  wireCurves.forEach(function (c, i) {
+    const m = new THREE.Mesh(new THREE.TubeGeometry(c, 54, 0.042, 12, false), wireMats[i]);
+    m.castShadow = !isLow;
+    scene.add(m);
+  });
+
+  // Animated current flow markers along external wires (visible when Micro-View ON & current > 0)
+  const pulseGeo = new THREE.SphereGeometry(0.068, 12, 10);
+  const pulseMat = new THREE.MeshBasicMaterial({ color: 0xfde047, transparent: true, opacity: 0.92 });
+  const wirePulses = [];
+  wireCurves.forEach(function (curve, ci) {
+    const cnt = ci === 3 ? 6 : 4;
+    for (let k = 0; k < cnt; k++) {
+      const m = new THREE.Mesh(pulseGeo, pulseMat);
+      m.visible = false;
+      scene.add(m);
+      wirePulses.push({ mesh: m, curve: curve, u: k / cnt });
+    }
+  });
+
+  /* ==================== 6. SAMPLE DEFINITIONS (SGK HÓA 10 KNTT) ==================== */
+  const SAMPLES = {
+    water: {
+      id: 'water',
+      name: 'Nước cất (H₂O)',
+      shortName: 'Nước cất (H₂O)',
+      maxMa: 0,
+      hasLiquid: true,
+      liqCol: 0x8cc6ec,
+      liqDeep: 0x356996,
+      typeTxt: 'CHT phân cực',
+      bulbLabel: 'Tắt',
+      freeTxt: 'Không có',
+      eq: 'H₂O(l) — phân tử trung hòa (không phân li đáng kể)',
+      legend: [
+        { col: '#dc2626', txt: 'H₂O (trung hòa)' }
+      ],
+      obsOn: 'Bóng đèn <b>tắt hoàn toàn (0 mA)</b>. Nước cất tinh khiết chỉ chứa các phân tử <b>H₂O trung hòa</b> (liên kết cộng hóa trị phân cực) chuyển động hỗn loạn, hầu như không có ion tự do nên <b>không dẫn điện</b>.',
+      obsOff: 'Mạch điện đang ngắt (<b>0 mA</b>). Các phân tử <b>H₂O</b> chuyển động nhiệt hỗn loạn trong cốc.'
+    },
+    sugar: {
+      id: 'sugar',
+      name: 'dd Đường saccharose (C₁₂H₂₂O₁₁)',
+      shortName: 'dd Đường (C₁₂H₂₂O₁₁)',
+      maxMa: 0,
+      hasLiquid: true,
+      liqCol: 0xb6d4e6,
+      liqDeep: 0x5c7c94,
+      typeTxt: 'CHT không điện li',
+      bulbLabel: 'Tắt',
+      freeTxt: 'Không có',
+      eq: 'C₁₂H₂₂O₁₁(s) ⟶ C₁₂H₂₂O₁₁(aq) (phân tử trung hòa)',
+      legend: [
+        { col: '#64748b', txt: 'C₁₂H₂₂O₁₁ (trung hòa)' },
+        { col: '#dc2626', txt: 'H₂O dung môi' }
+      ],
+      obsOn: 'Bóng đèn <b>tắt hoàn toàn (0 mA)</b>. Đường saccharose là hợp chất <b>cộng hóa trị</b>: khi tan trong nước vẫn giữ nguyên các <b>phân tử C₁₂H₂₂O₁₁ trung hòa</b>, không tách thành ion nên <b>không bị hút về điện cực</b> và không dẫn điện.',
+      obsOff: 'Mạch điện đang ngắt (<b>0 mA</b>). Các phân tử đường <b>C₁₂H₂₂O₁₁</b> trung hòa trôi nổi ngẫu nhiên trong nước.'
+    },
+    nacl_solid: {
+      id: 'nacl_solid',
+      name: 'NaCl rắn (tinh thể khan)',
+      shortName: 'NaCl rắn (khan)',
+      maxMa: 0,
+      hasLiquid: false,
+      liqCol: 0x8cc6ec,
+      liqDeep: 0x356996,
+      typeTxt: 'Tinh thể ion rắn',
+      bulbLabel: 'Tắt',
+      freeTxt: 'Ion bị khóa chặt',
+      eq: 'Mạng tinh thể Na⁺Cl⁻ rắn — ion dao động tại nút mạng',
+      legend: [
+        { col: '#6d28d9', txt: 'Na⁺ (bị khóa)' },
+        { col: '#15803d', txt: 'Cl⁻ (bị khóa)' }
+      ],
+      obsOn: 'Bóng đèn <b>tắt hoàn toàn (0 mA)</b>! Dù tinh thể NaCl được tạo thành từ các ion <span class="na">Na⁺</span> (tím đậm) và <span class="cl">Cl⁻</span> (xanh lá), nhưng ở thể rắn chúng <b>bị giữ chặt tại nút mạng tinh thể</b> bởi lực hút tĩnh điện bền vững, không thể di chuyển tự do.',
+      obsOff: 'Mạch điện đang ngắt (<b>0 mA</b>). Tinh thể muối ăn khan nằm khô ở đáy cốc, các ion <span class="na">Na⁺</span> và <span class="cl">Cl⁻</span> xếp đều đặn trong mạng lập phương.'
+    },
+    nacl_aq: {
+      id: 'nacl_aq',
+      name: 'dd NaCl (muối ăn)',
+      shortName: 'dd NaCl (aq)',
+      maxMa: 185,
+      hasLiquid: true,
+      liqCol: 0x90c8ea,
+      liqDeep: 0x3b719f,
+      typeTxt: 'Ion (điện li mạnh)',
+      bulbLabel: 'Sáng mạnh',
+      freeTxt: 'Na⁺, Cl⁻ tự do',
+      eq: 'NaCl(s) ⟶ Na⁺(aq) + Cl⁻(aq)',
+      legend: [
+        { col: '#6d28d9', txt: 'Na⁺ → cực âm (−)' },
+        { col: '#15803d', txt: 'Cl⁻ → cực dương (+)' }
+      ],
+      obsOn: 'Bóng đèn <b>sáng mạnh (~185 mA)</b>! Khi tan trong nước, mạng tinh thể NaCl bị phá vỡ hoàn toàn thành các ion tự do: cation <span class="na">Na⁺</span> (tím đậm) di chuyển có hướng về <b>Cathode (−)</b>, còn anion <span class="cl">Cl⁻</span> (xanh lá đậm) di chuyển về <b>Anode (+)</b> tạo dòng điện mạnh!',
+      obsOff: 'Mạch điện đang ngắt (<b>0 mA</b>). Bóng đèn tắt; các ion <span class="na">Na⁺</span> và <span class="cl">Cl⁻</span> ngừng trôi có hướng và quay về chuyển động nhiệt hỗn loạn.'
+    },
+    hcl: {
+      id: 'hcl',
+      name: 'dd HCl (acid mạnh)',
+      shortName: 'dd HCl (aq)',
+      maxMa: 240,
+      hasLiquid: true,
+      liqCol: 0x8dc2e6,
+      liqDeep: 0x386a94,
+      typeTxt: 'Acid mạnh',
+      bulbLabel: 'Rất sáng',
+      freeTxt: 'H⁺, Cl⁻ (rất linh động)',
+      eq: 'HCl(aq) ⟶ H⁺(aq) + Cl⁻(aq)   |   2H⁺ + 2e⁻ → H₂↑',
+      legend: [
+        { col: '#dc2626', txt: 'H⁺ → cực âm (−) + bọt H₂' },
+        { col: '#15803d', txt: 'Cl⁻ → cực dương (+)' }
+      ],
+      obsOn: 'Bóng đèn <b>sáng rất mạnh (~240 mA)</b>! HCl phân li hoàn toàn thành <span class="hp">H⁺</span> (kích thước nhỏ, độ linh động rất cao) và <span class="cl">Cl⁻</span>. Trên bề mặt <b>Cathode (−)</b> xuất hiện dòng <b>bọt khí H₂ nhỏ li ti</b> bay lên liên tục!',
+      obsOff: 'Mạch điện đang ngắt (<b>0 mA</b>). Phản ứng thoát khí H₂ ở cực âm dừng lại, các ion <span class="hp">H⁺</span> và <span class="cl">Cl⁻</span> chuyển động nhiệt tự do.'
+    },
+    ch3cooh: {
+      id: 'ch3cooh',
+      name: 'dd CH₃COOH loãng (acid yếu)',
+      shortName: 'dd CH₃COOH loãng',
+      maxMa: 32,
+      hasLiquid: true,
+      liqCol: 0xa2cbe2,
+      liqDeep: 0x4b748f,
+      typeTxt: 'Acid yếu',
+      bulbLabel: 'Sáng mờ',
+      freeTxt: 'Rất ít H⁺, CH₃COO⁻',
+      eq: 'CH₃COOH(aq) ⇌ CH₃COO⁻(aq) + H⁺(aq)',
+      legend: [
+        { col: '#dc2626', txt: 'Ít H⁺ → (−)' },
+        { col: '#d97706', txt: 'Ít CH₃COO⁻ → (+)' }
+      ],
+      obsOn: 'Bóng đèn chỉ <b>sáng mờ ánh cam (~32 mA)</b>! Quan sát ở chế độ soi vi mô thấy <b>phần lớn phân tử CH₃COOH vẫn còn nguyên vẹn</b> (trung hòa, trôi tự do), chỉ một phần rất nhỏ phân li thành <span class="hp">H⁺</span> và <span class="ac">CH₃COO⁻</span> di chuyển về 2 cực.',
+      obsOff: 'Mạch điện đang ngắt (<b>0 mA</b>). Đa số là phân tử <b>CH₃COOH</b> trung hòa kèm số ít ion <span class="hp">H⁺</span> và <span class="ac">CH₃COO⁻</span> chuyển động hỗn loạn.'
+    }
+  };
+  const SAMPLE_ORDER = ['water', 'sugar', 'nacl_solid', 'nacl_aq', 'hcl', 'ch3cooh'];
+
+  /* ==================== 7. MICRO-VIEW PARTICLES + SOLID NaCl + H2 BUBBLES ==================== */
+  const microGroup = new THREE.Group();
+  beakerGroup.add(microGroup);
+
+  // Materials strictly converted via srgbCol()!
+  const matNaIon = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0x6d28d9), roughness: 0.30, metalness: 0.08, clearcoat: 0.28, clearcoatRoughness: 0.22, envMapIntensity: 0.55
+  });
+  const matClIon = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0x15803d), roughness: 0.32, metalness: 0.06, clearcoat: 0.25, clearcoatRoughness: 0.24, envMapIntensity: 0.55
+  });
+  const matHIon = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xdc2626), roughness: 0.28, metalness: 0.08, clearcoat: 0.30, envMapIntensity: 0.55
+  });
+  const matAcIon = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xd97706), roughness: 0.34, metalness: 0.08, clearcoat: 0.24, envMapIntensity: 0.55
+  });
+  const matAtomO = new THREE.MeshStandardMaterial({ color: srgbCol(0xb91c1c), roughness: 0.38, metalness: 0.05 });
+  const matAtomH = new THREE.MeshStandardMaterial({ color: srgbCol(0xdbeafe), roughness: 0.42, metalness: 0.04 });
+  const matAtomC = new THREE.MeshStandardMaterial({ color: srgbCol(0x334155), roughness: 0.44, metalness: 0.12 });
+  const matAtomO_dim = new THREE.MeshStandardMaterial({ color: srgbCol(0xb91c1c), transparent: true, opacity: 0.30, roughness: 0.42, depthWrite: false });
+  const matAtomH_dim = new THREE.MeshStandardMaterial({ color: srgbCol(0xdbeafe), transparent: true, opacity: 0.28, roughness: 0.44, depthWrite: false });
+  const matLatticeBond = new THREE.MeshStandardMaterial({ color: srgbCol(0x64748b), transparent: true, opacity: 0.52, roughness: 0.5 });
+
+  const geoIon = new THREE.SphereGeometry(1, isLow ? 16 : 24, isLow ? 12 : 18);
+  const geoAtom = new THREE.SphereGeometry(1, 12, 10);
+
+  function buildWaterMol(dim) {
+    const g = new THREE.Group();
+    const mO = dim ? matAtomO_dim : matAtomO;
+    const mH = dim ? matAtomH_dim : matAtomH;
+    const o = new THREE.Mesh(geoAtom, mO);
+    o.scale.setScalar(0.055);
+    g.add(o);
+    const halfAng = (104.5 * Math.PI / 180) / 2;
+    const d = 0.058;
+    const h1 = new THREE.Mesh(geoAtom, mH);
+    h1.scale.setScalar(0.036);
+    h1.position.set(Math.sin(halfAng) * d, Math.cos(halfAng) * d, 0);
+    const h2 = new THREE.Mesh(geoAtom, mH);
+    h2.scale.setScalar(0.036);
+    h2.position.set(-Math.sin(halfAng) * d, Math.cos(halfAng) * d, 0);
+    g.add(h1, h2);
+    return g;
+  }
+
+  function buildSugarMol() {
+    // Disaccharide-style neutral covalent cluster (C12H22O11 visual representation)
+    const g = new THREE.Group();
+    const coords = [
+      [-0.08, 0.03, 0, matAtomC, 0.044], [-0.03, 0.07, 0.02, matAtomC, 0.044],
+      [0.03, 0.04, 0, matAtomO, 0.042], [0.09, 0.02, -0.01, matAtomC, 0.044],
+      [0.06, -0.05, 0.02, matAtomC, 0.044], [-0.05, -0.04, -0.02, matAtomC, 0.044],
+      [-0.12, -0.02, 0.03, matAtomO, 0.038], [0.13, 0.05, 0.02, matAtomO, 0.038],
+      [0.0, 0.11, -0.02, matAtomH, 0.028], [0.11, -0.06, -0.03, matAtomH, 0.028],
+      [-0.08, -0.09, 0.01, matAtomH, 0.028]
+    ];
+    coords.forEach(function (c) {
+      const m = new THREE.Mesh(geoAtom, c[3]);
+      m.scale.setScalar(c[4]);
+      m.position.set(c[0], c[1], c[2]);
+      g.add(m);
+    });
+    return g;
+  }
+
+  function buildAceticMol() {
+    // Intact neutral CH3COOH molecule
+    const g = new THREE.Group();
+    const parts = [
+      [-0.055, 0, 0, matAtomC, 0.044],
+      [0.035, 0.01, 0, matAtomC, 0.044],
+      [0.085, 0.065, 0, matAtomO, 0.040],
+      [0.085, -0.05, 0, matAtomO, 0.040],
+      [0.132, -0.03, 0, matAtomH, 0.028],
+      [-0.095, 0.045, 0.02, matAtomH, 0.027],
+      [-0.095, -0.04, 0.02, matAtomH, 0.027],
+      [-0.075, 0, -0.05, matAtomH, 0.027]
+    ];
+    parts.forEach(function (p) {
+      const m = new THREE.Mesh(geoAtom, p[3]);
+      m.scale.setScalar(p[4]);
+      m.position.set(p[0], p[1], p[2]);
+      g.add(m);
+    });
+    return g;
+  }
+
+  function buildAcetateIon() {
+    // CH3COO- anion (rich amber tinted cluster)
+    const g = new THREE.Group();
+    const core = new THREE.Mesh(geoIon, matAcIon);
+    core.scale.setScalar(0.082);
+    g.add(core);
+    const o1 = new THREE.Mesh(geoAtom, matAtomO);
+    o1.scale.setScalar(0.044); o1.position.set(0.07, 0.045, 0);
+    const o2 = new THREE.Mesh(geoAtom, matAtomO);
+    o2.scale.setScalar(0.044); o2.position.set(0.07, -0.045, 0);
+    g.add(o1, o2);
+    return g;
+  }
+
+  /* ---- Dry NaCl solid crystal pile (macro crystals + locked 3D ionic lattice inside) ---- */
+  const solidNaClGroup = new THREE.Group();
+  beakerGroup.add(solidNaClGroup);
+
+  const saltOuterMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xe2e8f0),
+    roughness: 0.28,
+    metalness: 0.04,
+    clearcoat: 0.55,
+    transparent: true,
+    opacity: 0.92
+  });
+  const saltOuterGroup = new THREE.Group();
+  solidNaClGroup.add(saltOuterGroup);
+
+  // Mound of realistic cubic salt crystals at bottom of dry beaker touching both electrodes
+  for (let i = 0; i < 64; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const rr = Math.pow(Math.random(), 0.6) * (R_B - 0.16);
+    const sz = 0.08 + Math.random() * 0.14;
+    const cube = new THREE.Mesh(new THREE.BoxGeometry(sz, sz, sz), saltOuterMat);
+    const moundH = Math.max(0.05, 0.58 * (1 - rr / (R_B + 0.15))) * Math.random();
+    cube.position.set(Math.cos(ang) * rr, 0.12 + moundH, Math.sin(ang) * rr);
+    cube.rotation.set(Math.random() * 1.4, Math.random() * 1.4, Math.random() * 1.4);
+    saltOuterGroup.add(cube);
+  }
+
+  // Ordered 3D cubic lattice of locked Na+ & Cl- ions inside the salt block
+  const saltLatticeGroup = new THREE.Group();
+  saltLatticeGroup.position.set(0, 0.44, 0);
+  solidNaClGroup.add(saltLatticeGroup);
+
+  const lockedIons = [];
+  const step = 0.21;
+  const nx = 5, ny = 3, nz = 4;
+  for (let ix = 0; ix < nx; ix++) {
+    for (let iy = 0; iy < ny; iy++) {
+      for (let iz = 0; iz < nz; iz++) {
+        const isNa = ((ix + iy + iz) % 2 === 0);
+        const bx = (ix - (nx - 1) / 2) * step;
+        const by = (iy - (ny - 1) / 2) * step;
+        const bz = (iz - (nz - 1) / 2) * step;
+        const ion = new THREE.Mesh(geoIon, isNa ? matNaIon : matClIon);
+        ion.scale.setScalar(isNa ? 0.064 : 0.088);
+        ion.position.set(bx, by, bz);
+        saltLatticeGroup.add(ion);
+        lockedIons.push({ mesh: ion, bx: bx, by: by, bz: bz, ph: Math.random() * Math.PI * 2 });
+      }
+    }
+  }
+  // Thin crystal lattice struts
+  const bondGeo = new THREE.CylinderGeometry(0.008, 0.008, step, 6);
+  for (let ix = 0; ix < nx; ix++) {
+    for (let iy = 0; iy < ny; iy++) {
+      for (let iz = 0; iz < nz; iz++) {
+        const bx = (ix - (nx - 1) / 2) * step;
+        const by = (iy - (ny - 1) / 2) * step;
+        const bz = (iz - (nz - 1) / 2) * step;
+        if (ix + 1 < nx) {
+          const b = new THREE.Mesh(bondGeo, matLatticeBond);
+          b.rotation.z = Math.PI / 2;
+          b.position.set(bx + step / 2, by, bz);
+          saltLatticeGroup.add(b);
+        }
+        if (iy + 1 < ny) {
+          const b = new THREE.Mesh(bondGeo, matLatticeBond);
+          b.position.set(bx, by + step / 2, bz);
+          saltLatticeGroup.add(b);
+        }
+        if (iz + 1 < nz) {
+          const b = new THREE.Mesh(bondGeo, matLatticeBond);
+          b.rotation.x = Math.PI / 2;
+          b.position.set(bx, by, bz + step / 2);
+          saltLatticeGroup.add(b);
+        }
+      }
+    }
+  }
+
+  /* ---- Dynamic Liquid Micro-Particles Pool ---- */
+  let particles = [];
+
+  function randomInBeaker() {
+    const ang = Math.random() * Math.PI * 2;
+    const rad = Math.sqrt(Math.random()) * (R_B - 0.18);
+    const y = 0.22 + Math.random() * (H_LIQ - 0.28);
+    return new THREE.Vector3(Math.cos(ang) * rad, y, Math.sin(ang) * rad);
+  }
+
+  function clearParticles() {
+    particles.forEach(function (p) { microGroup.remove(p.mesh); });
+    particles = [];
+  }
+
+  function populateParticles(sampleId) {
+    clearParticles();
+    const s = SAMPLES[sampleId];
+    solidNaClGroup.visible = !s.hasLiquid;
+    liquidGroup.visible = s.hasLiquid;
+    if (!s.hasLiquid) return;
+
+    function addParticle(mesh, charge, mobility) {
+      const pos = randomInBeaker();
+      mesh.position.copy(pos);
+      mesh.rotation.set(Math.random() * 6.28, Math.random() * 6.28, Math.random() * 6.28);
+      microGroup.add(mesh);
+      particles.push({
+        mesh: mesh,
+        charge: charge, // +1 moves right (+x to cathode), -1 moves left (-x to anode), 0 neutral
+        mobility: mobility || 1.0,
+        vx: (Math.random() - 0.5) * 0.24,
+        vy: (Math.random() - 0.5) * 0.18,
+        vz: (Math.random() - 0.5) * 0.24,
+        rotV: new THREE.Vector3((Math.random() - 0.5) * 1.4, (Math.random() - 0.5) * 1.4, (Math.random() - 0.5) * 1.4)
+      });
+    }
+
+    if (sampleId === 'water') {
+      const n = isLow ? 28 : 42;
+      for (let i = 0; i < n; i++) addParticle(buildWaterMol(false), 0, 0);
+    } else if (sampleId === 'sugar') {
+      const nSug = isLow ? 13 : 19;
+      for (let i = 0; i < nSug; i++) addParticle(buildSugarMol(), 0, 0);
+      const nW = isLow ? 12 : 18;
+      for (let i = 0; i < nW; i++) addParticle(buildWaterMol(true), 0, 0);
+    } else if (sampleId === 'nacl_aq') {
+      const nIon = isLow ? 16 : 24;
+      for (let i = 0; i < nIon; i++) {
+        const na = new THREE.Mesh(geoIon, matNaIon);
+        na.scale.setScalar(0.068);
+        addParticle(na, +1, 1.0);
+        const cl = new THREE.Mesh(geoIon, matClIon);
+        cl.scale.setScalar(0.094);
+        addParticle(cl, -1, 0.88);
+      }
+      const nW = isLow ? 10 : 15;
+      for (let i = 0; i < nW; i++) addParticle(buildWaterMol(true), 0, 0);
+    } else if (sampleId === 'hcl') {
+      const nIon = isLow ? 18 : 26;
+      for (let i = 0; i < nIon; i++) {
+        const hp = new THREE.Mesh(geoIon, matHIon);
+        hp.scale.setScalar(0.056);
+        addParticle(hp, +1, 1.45); // H+ high ionic mobility!
+        const cl = new THREE.Mesh(geoIon, matClIon);
+        cl.scale.setScalar(0.092);
+        addParticle(cl, -1, 1.02);
+      }
+      const nW = isLow ? 10 : 14;
+      for (let i = 0; i < nW; i++) addParticle(buildWaterMol(true), 0, 0);
+    } else if (sampleId === 'ch3cooh') {
+      // Mostly intact neutral CH3COOH molecules + very few dissociated H+ & CH3COO-
+      const nMol = isLow ? 16 : 24;
+      for (let i = 0; i < nMol; i++) addParticle(buildAceticMol(), 0, 0);
+      const nDiss = 4;
+      for (let i = 0; i < nDiss; i++) {
+        const hp = new THREE.Mesh(geoIon, matHIon);
+        hp.scale.setScalar(0.056);
+        addParticle(hp, +1, 0.95);
+        addParticle(buildAcetateIon(), -1, 0.62);
+      }
+      const nW = isLow ? 8 : 12;
+      for (let i = 0; i < nW; i++) addParticle(buildWaterMol(true), 0, 0);
+    }
+  }
+
+  /* ---- Fine H2 Micro-Bubbles Rising at Cathode (-) in Acid Solutions ---- */
+  const bubbleCount = isLow ? 34 : 56;
+  const bubbleGeo = new THREE.SphereGeometry(1, 10, 8);
+  const bubbleMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xe0f2fe),
+    roughness: 0.08,
+    metalness: 0.05,
+    transparent: true,
+    opacity: 0.68,
+    clearcoat: 1.0
+  });
+  const bubbles = [];
+  const bubbleGroup = new THREE.Group();
+  beakerGroup.add(bubbleGroup);
+
+  for (let i = 0; i < bubbleCount; i++) {
+    const m = new THREE.Mesh(bubbleGeo, bubbleMat);
+    const sz = 0.016 + Math.random() * 0.022;
+    m.scale.setScalar(sz);
+    m.visible = false;
+    bubbleGroup.add(m);
+    bubbles.push({
+      mesh: m,
+      ang: Math.random() * Math.PI * 2,
+      y: 0.30 + Math.random() * (H_LIQ - 0.25),
+      spd: 0.55 + Math.random() * 0.65,
+      rOff: 0.125 + Math.random() * 0.055,
+      ph: Math.random() * 6.28
+    });
+  }
+
+  /* ==================== 8. STATE & UI SYNCHRONIZATION ==================== */
+  let currentSample = 'nacl_aq';
+  let powerOn = true;
+  let microOn = true;
+  const testedSet = new Set(['nacl_aq']);
+
+  let curMa = 0;           // smoothed current (mA)
+  let needleAng = 0.84;    // ammeter needle angle (+0.84 = 0 mA left, -0.84 = 250 mA right)
+  let needleVel = 0;
+  let switchAng = 0.52;    // +0.52 = ON, -0.52 = OFF
+  let xrayBlend = 1.0;
+
+  let toastTimer = null;
+  function showToast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('on'); }, 2400);
+  }
+
+  function renderCompareTable() {
+    const tbody = $('cmpBody');
+    let html = '';
+    SAMPLE_ORDER.forEach(function (id) {
+      const s = SAMPLES[id];
+      const act = (id === currentSample) ? ' class="act"' : '';
+      const mark = testedSet.has(id) ? '✓ ' : '';
+      html += '<tr' + act + '><td>' + mark + s.shortName + '</td><td>' + s.maxMa + '</td><td>' + s.bulbLabel + '</td><td>' + s.freeTxt + '</td></tr>';
+    });
+    tbody.innerHTML = html;
+    $('testedCount').textContent = testedSet.size + '/6 đã thử';
+  }
+
+  function syncUI() {
+    const s = SAMPLES[currentSample];
+    const targetMa = powerOn ? s.maxMa : 0;
+
+    // Power buttons
+    $('btnPower').classList.toggle('on', powerOn);
+    $('btnPower').textContent = powerOn ? '⚡ Công tắc: BẬT' : '⭕ Công tắc: TẮT';
+
+    // Micro-View buttons
+    $('btnMicro').classList.toggle('on', microOn);
+    $('btnHudMicro').classList.toggle('on', microOn);
+    $('btnHudMicro').textContent = microOn ? '🔬 Soi vi mô: Bật' : '🔬 Soi vi mô: Tắt';
+
+    // Sample cards
+    document.querySelectorAll('#sampleGrid .s-btn').forEach(function (btn) {
+      btn.classList.toggle('on', btn.dataset.s === currentSample);
+    });
+
+    // Readouts
+    $('valMa').textContent = targetMa + ' mA';
+    $('hudMa').textContent = targetMa + ' mA';
+    $('valType').textContent = s.typeTxt;
+
+    let bulbTxt = 'Đèn tắt', bulbCls = 'off', chipCls = 'chip off';
+    if (targetMa >= 150) {
+      bulbTxt = targetMa >= 220 ? 'Rất sáng' : 'Sáng mạnh';
+      bulbCls = 'bright';
+      chipCls = 'chip on-bright';
+    } else if (targetMa > 10) {
+      bulbTxt = 'Sáng mờ';
+      bulbCls = 'dim';
+      chipCls = 'chip on-dim';
+    }
+    $('valBulb').textContent = bulbTxt;
+    $('valBulb').className = bulbCls;
+    $('valMa').className = bulbCls;
+    $('hudBulb').textContent = bulbTxt;
+    $('chipAmp').className = chipCls;
+
+    $('eqBox').textContent = s.eq;
+    $('obsTxt').innerHTML = powerOn ? s.obsOn : s.obsOff;
+
+    // Dynamic Ion Legend Chips
+    const lg = s.legend || [];
+    if (lg[0]) {
+      $('chipIon1').style.display = 'inline-flex';
+      $('dotIon1').style.background = lg[0].col;
+      $('dotIon1').style.boxShadow = '0 0 7px ' + lg[0].col;
+      $('txtIon1').textContent = lg[0].txt;
+    } else {
+      $('chipIon1').style.display = 'none';
+    }
+    if (lg[1]) {
+      $('chipIon2').style.display = 'inline-flex';
+      $('dotIon2').style.background = lg[1].col;
+      $('dotIon2').style.boxShadow = '0 0 7px ' + lg[1].col;
+      $('txtIon2').textContent = lg[1].txt;
+    } else {
+      $('chipIon2').style.display = 'none';
+    }
+
+    renderCompareTable();
+  }
+
+  function selectSample(id) {
+    if (!SAMPLES[id]) return;
+    currentSample = id;
+    testedSet.add(id);
+    const s = SAMPLES[id];
+    liqUniforms.uColor.value.setHex(s.liqCol);
+    liqUniforms.uDeep.value.setHex(s.liqDeep);
+    populateParticles(id);
+    syncUI();
+    sfxSoftTap();
+    showToast('Đã đổ mẫu: ' + s.name);
+  }
+
+  function togglePower() {
+    powerOn = !powerOn;
+    sfxToggleSwitch(powerOn);
+    syncUI();
+    showToast(powerOn ? '⚡ Đã BẬT nguồn điện DC (6,0 V)' : '⭕ Đã TẮT nguồn điện — ion ngừng trôi có hướng');
+  }
+
+  function toggleMicro() {
+    microOn = !microOn;
+    sfxSoftTap();
+    syncUI();
+    showToast(microOn ? '🔬 Đã bật chế độ Soi hạt vi mô trong cốc' : '🧪 Chế độ quan sát vĩ mô (thủy tinh thật)');
+  }
+
+  // Wire UI Events
+  $('btnPower').addEventListener('click', togglePower);
+  $('btnMicro').addEventListener('click', toggleMicro);
+  $('btnHudMicro').addEventListener('click', toggleMicro);
+
+  document.querySelectorAll('#sampleGrid .s-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () { selectSample(btn.dataset.s); });
+  });
+
+  $('btnSound').addEventListener('click', function () {
+    soundOn = !soundOn;
+    $('btnSound').classList.toggle('on', soundOn);
+    $('btnSound').textContent = soundOn ? '🔊' : '🔇';
+    if (!soundOn) updateHum(0);
+    else sfxSoftTap();
+  });
+
+  /* ==================== 9. SMOOTH INERTIAL CAMERA + 3 PRESETS + RAYCAST SWITCH ==================== */
+  const CAM_PRESETS = {
+    overview: { theta: 0.14, phi: 1.15, dist: 10.6, tx: 0.12, ty: 1.28, tz: 0.08 },
+    beaker:   { theta: 0.08, phi: 1.24, dist: 5.0,  tx: 0.0,  ty: 1.32, tz: 0.22 },
+    meter:    { theta: -0.26, phi: 1.18, dist: 5.8, tx: 2.65, ty: 1.16, tz: 0.18 }
+  };
+
+  let camTheta = 0.14, camPhi = 1.15, camDist = 10.6;
+  let tarTheta = 0.14, tarPhi = 1.15, tarDist = 10.6;
+  const camTarget = new THREE.Vector3(0.12, 1.28, 0.08);
+  const tarTarget = new THREE.Vector3(0.12, 1.28, 0.08);
+
+  function setCamPreset(name) {
+    const p = CAM_PRESETS[name];
+    if (!p) return;
+    tarTheta = p.theta;
+    tarPhi = p.phi;
+    tarDist = p.dist;
+    tarTarget.set(p.tx, p.ty, p.tz);
+    document.querySelectorAll('.cam-bar .hud-btn').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.cam === name);
+    });
+    sfxSoftTap();
+  }
+
+  document.querySelectorAll('.cam-bar .hud-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () { setCamPreset(btn.dataset.cam); });
+  });
+
+  const raycaster = new THREE.Raycaster();
+  const pointerNDC = new THREE.Vector2();
+  const interactives = [swHit, swBat];
+
+  let isDragging = false, downX = 0, downY = 0, lastX = 0, lastY = 0, movedPx = 0;
+  const activePointers = new Map();
+  let lastPinchDist = 0;
+
+  function setNDC(clientX, clientY) {
+    const r = cv.getBoundingClientRect();
+    pointerNDC.x = ((clientX - r.left) / r.width) * 2 - 1;
+    pointerNDC.y = -((clientY - r.top) / r.height) * 2 + 1;
+  }
+
+  cv.addEventListener('pointerdown', function (e) {
+    ensureAudio();
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    cv.setPointerCapture(e.pointerId);
+    if (activePointers.size === 1) {
+      isDragging = true;
+      downX = lastX = e.clientX;
+      downY = lastY = e.clientY;
+      movedPx = 0;
+    } else if (activePointers.size === 2) {
+      isDragging = false;
+      const pts = Array.from(activePointers.values());
+      lastPinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+    }
+  });
+
+  cv.addEventListener('pointermove', function (e) {
+    if (activePointers.has(e.pointerId)) {
+      activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    }
+    if (activePointers.size === 2) {
+      const pts = Array.from(activePointers.values());
+      const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      if (lastPinchDist > 0) {
+        tarDist = Math.max(3.6, Math.min(16.5, tarDist - (d - lastPinchDist) * 0.025));
+      }
+      lastPinchDist = d;
+      return;
+    }
+    if (isDragging) {
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      movedPx += Math.hypot(dx, dy);
+      tarTheta -= dx * 0.0068;
+      tarPhi = Math.max(0.42, Math.min(1.48, tarPhi - dy * 0.0056));
+      lastX = e.clientX;
+      lastY = e.clientY;
+    } else {
+      // Hover detection over 3D toggle switch
+      setNDC(e.clientX, e.clientY);
+      raycaster.setFromCamera(pointerNDC, camera);
+      const hits = raycaster.intersectObjects(interactives, false);
+      cv.classList.toggle('pointer', hits.length > 0);
+    }
+  });
+
+  function onPointerUp(e) {
+    activePointers.delete(e.pointerId);
+    if (activePointers.size < 2) lastPinchDist = 0;
+    if (isDragging) {
+      isDragging = false;
+      if (movedPx < 8) {
+        setNDC(e.clientX, e.clientY);
+        raycaster.setFromCamera(pointerNDC, camera);
+        const hits = raycaster.intersectObjects(interactives, false);
+        if (hits.length > 0 && hits[0].object.userData.interactive === 'power') {
+          togglePower();
+        }
+      }
+    }
+  }
+  cv.addEventListener('pointerup', onPointerUp);
+  cv.addEventListener('pointercancel', onPointerUp);
+
+  cv.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    tarDist = Math.max(3.6, Math.min(16.5, tarDist + e.deltaY * 0.006));
+  }, { passive: false });
+
+  /* ==================== 10. 3D LABEL PROJECTION ==================== */
+  const projVec = new THREE.Vector3();
+  function placeLabel(el, worldPos, visible) {
+    if (!visible) { el.style.opacity = '0'; return; }
+    projVec.copy(worldPos).project(camera);
+    if (projVec.z > 1) { el.style.opacity = '0'; return; }
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const x = (projVec.x * 0.5 + 0.5) * w;
+    const y = (-projVec.y * 0.5 + 0.5) * h;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.opacity = '1';
+  }
+
+  /* ==================== 11. RESIZE & VISIBILITY PAUSE ==================== */
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (w <= 0 || h <= 0) return;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let paused = false;
+  document.addEventListener('visibilitychange', function () {
+    paused = document.hidden;
+    if (paused) updateHum(0);
+    else lastT = performance.now();
+  });
+
+  /* ==================== 12. INITIALIZE & MAIN ANIMATION LOOP ==================== */
+  populateParticles(currentSample);
+  syncUI();
+
+  let lastT = performance.now();
+  let elapsed = 0;
+
+  const colDimEmissive = srgbCol(0xea580c);
+  const colBrightEmissive = srgbCol(0xffc24d);
+  const colHotEmissive = srgbCol(0xfff1c4);
+  const colColdFil = srgbCol(0x475569);
+  const colLedOn = srgbCol(0x10b981);
+  const colLedOff = srgbCol(0x451a24);
+  const colLedOffEm = srgbCol(0x280c12);
+  const tmpCol = new THREE.Color();
+
+  const lblPosAnode = worldPt(anodeElectrode, 0, H_B + 0.64, 0);
+  const lblPosCathode = worldPt(cathodeElectrode, 0, H_B + 0.64, 0);
+  const lblPosSwitch = worldPt(swBase, 0, 0.42, 0.25);
+
+  function animate(now) {
+    requestAnimationFrame(animate);
+    if (paused) return;
+    const dt = Math.min(0.04, (now - lastT) / 1000);
+    lastT = now;
+    elapsed += dt;
+
+    // 1. Inertial camera update
+    const damp = 1 - Math.exp(-8.5 * dt);
+    camTheta += (tarTheta - camTheta) * damp;
+    camPhi += (tarPhi - camPhi) * damp;
+    camDist += (tarDist - camDist) * damp;
+    camTarget.lerp(tarTarget, damp);
+
+    camera.position.set(
+      camTarget.x + camDist * Math.sin(camPhi) * Math.sin(camTheta),
+      camTarget.y + camDist * Math.cos(camPhi),
+      camTarget.z + camDist * Math.sin(camPhi) * Math.cos(camTheta)
+    );
+    camera.lookAt(camTarget);
+
+    // 2. Power switch lever & status LED animation
+    const targetSw = powerOn ? 0.50 : -0.50;
+    switchAng += (targetSw - switchAng) * (1 - Math.exp(-16 * dt));
+    swPivot.rotation.x = -switchAng;
+
+    if (powerOn) {
+      ledMat.color.copy(colLedOn);
+      ledMat.emissive.copy(colLedOn);
+      ledMat.emissiveIntensity = 1.45;
+      ledLight.intensity = 0.45;
+    } else {
+      ledMat.color.copy(colLedOff);
+      ledMat.emissive.copy(colLedOffEm);
+      ledMat.emissiveIntensity = 0.15;
+      ledLight.intensity = 0.0;
+    }
+
+    // 3. Real-time electrical current, ammeter needle spring physics, bulb thermal glow
+    const s = SAMPLES[currentSample];
+    const targetMa = powerOn ? s.maxMa : 0;
+    curMa += (targetMa - curMa) * (1 - Math.exp(-7.0 * dt));
+    const normI = Math.max(0, Math.min(1, curMa / 240));
+
+    // Spring-damper for ammeter needle (0 mA = +0.84 rad, 250 mA = -0.84 rad)
+    const targetNeedle = 0.84 - (curMa / 250) * 1.68;
+    const springK = 88.0, dampC = 11.5;
+    needleVel += ((targetNeedle - needleAng) * springK - needleVel * dampC) * dt;
+    needleAng += needleVel * dt;
+    needlePivot.rotation.z = needleAng;
+
+    // Electrical hum proportional to current
+    updateHum(normI);
+
+    // Incandescent bulb thermal glow (OFF -> DIM orange-amber -> BRIGHT -> VERY BRIGHT)
+    if (normI < 0.01) {
+      filamentMat.color.copy(colColdFil);
+      filamentMat.emissiveIntensity = 0;
+      bulbLight.intensity = 0;
+      haloMat.opacity = 0;
+      bulbBackMat.uniforms.uGlow.value = 0;
+      bulbFrontMat.uniforms.uGlow.value = 0;
+    } else {
+      // Color temperature shifts smoothly with current
+      if (normI < 0.35) {
+        const k = normI / 0.35;
+        tmpCol.copy(colDimEmissive).lerp(colBrightEmissive, k * 0.35);
+      } else {
+        const k = (normI - 0.35) / 0.65;
+        tmpCol.copy(colBrightEmissive).lerp(colHotEmissive, k);
+      }
+      const flicker = 1 + Math.sin(elapsed * 22) * 0.015;
+      filamentMat.color.copy(tmpCol);
+      filamentMat.emissive.copy(tmpCol);
+      filamentMat.emissiveIntensity = (0.7 + normI * 4.4) * flicker;
+
+      bulbLight.color.setHex(normI < 0.30 ? 0xff7a1a : (normI < 0.85 ? 0xffbe55 : 0xffe4a8));
+      bulbLight.intensity = (0.35 + Math.pow(normI, 1.15) * 3.2) * flicker;
+
+      haloMat.color.setHex(normI < 0.30 ? 0xf97316 : (normI < 0.85 ? 0xfbbf24 : 0xfef08a));
+      haloMat.opacity = Math.min(0.88, (0.18 + Math.pow(normI, 0.9) * 0.68) * flicker);
+      const hScale = 1.1 + normI * 1.95;
+      bulbHalo.scale.set(hScale, hScale, 1);
+
+      const gVal = Math.min(0.82, 0.14 + normI * 0.62);
+      bulbBackMat.uniforms.uGlow.value = gVal;
+      bulbFrontMat.uniforms.uGlow.value = gVal * 0.7;
+    }
+
+    // 4. X-ray Micro-View smooth blend
+    const targetXray = microOn ? 1.0 : 0.0;
+    xrayBlend += (targetXray - xrayBlend) * (1 - Math.exp(-9.0 * dt));
+    liqUniforms.uXray.value = xrayBlend;
+    liqUniforms.uTime.value = elapsed;
+    menMat.opacity = 0.36 - xrayBlend * 0.14;
+    microGroup.visible = (xrayBlend > 0.04) && s.hasLiquid;
+
+    // Solid NaCl outer crystal opacity vs inner locked lattice
+    if (!s.hasLiquid) {
+      saltOuterMat.opacity = 0.92 - xrayBlend * 0.72;
+      saltLatticeGroup.visible = xrayBlend > 0.08;
+      // Gentle thermal vibration at fixed lattice nodes (never migrating!)
+      const vibAmp = powerOn ? 0.0075 : 0.0055;
+      for (let i = 0; i < lockedIons.length; i++) {
+        const li = lockedIons[i];
+        li.mesh.position.set(
+          li.bx + Math.sin(elapsed * 9.5 + li.ph) * vibAmp,
+          li.by + Math.cos(elapsed * 8.2 + li.ph * 1.3) * vibAmp,
+          li.bz + Math.sin(elapsed * 7.6 + li.ph * 1.7) * vibAmp
+        );
+      }
+    }
+
+    // 5. Micro-View Ion / Molecule Kinematics inside Beaker
+    const maxR = R_B - 0.16;
+    const minY = 0.22, maxY = H_LIQ - 0.08;
+    const driftStrength = powerOn ? (0.48 + normI * 0.44) : 0.0;
+
+    if (microGroup.visible) {
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        // Random Brownian thermal kicks
+        p.vx += (Math.random() - 0.5) * 0.95 * dt;
+        p.vy += (Math.random() - 0.5) * 0.85 * dt;
+        p.vz += (Math.random() - 0.5) * 0.95 * dt;
+
+        // Fluid viscous damping
+        const visc = Math.exp(-3.4 * dt);
+        p.vx *= visc; p.vy *= visc; p.vz *= visc;
+
+        // Directional electric field drift ONLY for charged ions when power is ON!
+        let dx = p.vx;
+        if (p.charge !== 0 && driftStrength > 0.01) {
+          dx += p.charge * p.mobility * driftStrength;
+        }
+
+        const pos = p.mesh.position;
+        pos.x += dx * dt;
+        pos.y += p.vy * dt;
+        pos.z += p.vz * dt;
+
+        // Smooth wrap-around for migrating ions so steady current never clumps at walls
+        if (p.charge !== 0 && driftStrength > 0.01) {
+          if (p.charge > 0 && pos.x > X_ELEC + 0.34) {
+            pos.x = -X_ELEC - 0.28 + Math.random() * 0.12;
+            pos.y = minY + Math.random() * (maxY - minY);
+            pos.z = (Math.random() - 0.5) * 1.1;
+          } else if (p.charge < 0 && pos.x < -X_ELEC - 0.34) {
+            pos.x = X_ELEC + 0.28 - Math.random() * 0.12;
+            pos.y = minY + Math.random() * (maxY - minY);
+            pos.z = (Math.random() - 0.5) * 1.1;
+          }
+        }
+
+        // Cylindrical containment inside beaker
+        const rr = Math.hypot(pos.x, pos.z);
+        if (rr > maxR) {
+          const sScale = maxR / rr;
+          pos.x *= sScale;
+          pos.z *= sScale;
+          p.vx *= -0.7;
+          p.vz *= -0.7;
+        }
+        if (pos.y < minY) { pos.y = minY; p.vy = Math.abs(p.vy) * 0.7; }
+        if (pos.y > maxY) { pos.y = maxY; p.vy = -Math.abs(p.vy) * 0.7; }
+
+        p.mesh.rotation.x += p.rotV.x * dt;
+        p.mesh.rotation.y += p.rotV.y * dt;
+        p.mesh.rotation.z += p.rotV.z * dt;
+      }
+    }
+
+    // 6. H2 Micro-Bubbles Rising at Cathode (-) in Acid Solutions (HCl vigorous, CH3COOH gentle)
+    const activeBubbleCount = (!powerOn || !s.hasLiquid)
+      ? 0
+      : (currentSample === 'hcl' ? bubbleCount : (currentSample === 'ch3cooh' ? Math.floor(bubbleCount * 0.22) : 0));
+
+    for (let i = 0; i < bubbleCount; i++) {
+      const b = bubbles[i];
+      if (i >= activeBubbleCount) {
+        b.mesh.visible = false;
+        continue;
+      }
+      b.mesh.visible = true;
+      b.y += b.spd * (currentSample === 'hcl' ? 1.15 : 0.65) * dt;
+      if (b.y > 0.09 + H_LIQ - 0.04) {
+        b.y = 0.32 + Math.random() * 0.45;
+        b.ang = Math.random() * Math.PI * 2;
+      }
+      const wobble = Math.sin(elapsed * 6.5 + b.ph) * 0.025;
+      b.mesh.position.set(
+        X_ELEC + Math.cos(b.ang) * b.rOff + wobble,
+        b.y,
+        Math.sin(b.ang) * b.rOff
+      );
+    }
+
+    // 7. External Wire Current Pulses (visible in Micro-View when current flows)
+    const showPulses = microOn && normI > 0.03;
+    const pulseSpeed = 0.22 + normI * 0.85;
+    for (let i = 0; i < wirePulses.length; i++) {
+      const wp = wirePulses[i];
+      wp.mesh.visible = showPulses;
+      if (showPulses) {
+        wp.u = (wp.u + pulseSpeed * dt) % 1.0;
+        wp.curve.getPointAt(wp.u, wp.mesh.position);
+      }
+    }
+
+    // 8. Floating 3D Polarity & Switch Labels
+    placeLabel($('lblAnode'), lblPosAnode, microOn || powerOn);
+    placeLabel($('lblCathode'), lblPosCathode, microOn || powerOn);
+    placeLabel($('lblSwitch'), lblPosSwitch, true);
+
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(animate);
+}
+</script>
+</body>
+</html>

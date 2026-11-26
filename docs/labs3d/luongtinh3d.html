@@ -1,0 +1,1520 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tính lưỡng tính của Al(OH)₃ &amp; So sánh Mg(OH)₂ 3D — Hóa 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#07060e;
+    --the:#120f22;
+    --vien:rgba(255,255,255,.12);
+    --chu:#f5f2fb;
+    --phu:#aba0c4;
+    --tim:#a78bfa;
+    --al:#38bdf8;
+    --mg:#fbbf24;
+    --naoh:#818cf8;
+    --hcl:#f43f5e;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--nen);color:var(--chu);font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;overflow:hidden;user-select:none}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 388px;height:100dvh}
+  .stage{position:relative;min-height:0;touch-action:none;background:radial-gradient(circle at 50% 42%,#18142c 0%,#090814 62%,#06050c 100%);overflow:hidden}
+  #cv{display:block;width:100%;height:100%;cursor:grab}
+  #cv:active{cursor:grabbing}
+
+  .hud{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;z-index:3}
+  .hud-left,.hud-right{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:rgba(12,10,24,.84);border:1px solid var(--vien);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.42)}
+  .chip b{color:#fde68a;font-weight:800}
+  .chip.reag-naoh{border-color:rgba(129,140,248,.48);color:#c7d2fe}
+  .chip.reag-hcl{border-color:rgba(244,63,94,.48);color:#fda4af}
+  .hud-btn{pointer-events:auto;cursor:pointer;min-height:34px;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(20,16,36,.88);border:1px solid var(--vien);color:var(--chu);transition:.15s}
+  .hud-btn:hover{border-color:rgba(255,255,255,.35);transform:translateY(-1px)}
+  .hud-btn.on{background:linear-gradient(90deg,#6d28d9,#2563eb);border-color:#93c5fd;color:#fff}
+
+  .nhan3d{position:absolute;transform:translate(-50%,-100%);background:rgba(12,10,24,.88);border:1px solid var(--vien);border-radius:11px;padding:5px 11px;font-size:11.8px;font-weight:800;white-space:nowrap;pointer-events:none;backdrop-filter:blur(6px);z-index:2;box-shadow:0 8px 20px rgba(0,0,0,.45);transition:border-color .2s,box-shadow .2s}
+  .nhan3d.active{border-color:rgba(167,139,250,.75);box-shadow:0 0 18px rgba(139,92,246,.32)}
+  .nhan3d small{display:block;font-weight:600;color:var(--phu);font-size:10.5px;margin-top:1px}
+  .nhan3d .st-ppt{color:#f8fafc}
+  .nhan3d .st-clear{color:#7dd3fc}
+  .nhan3d .st-stay{color:#fde68a}
+
+  .cam-bar{position:absolute;left:14px;bottom:48px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+  .hint-bar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(12,10,24,.8);border:1px solid var(--vien);border-radius:99px;padding:6px 14px;font-size:11.5px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
+  .hint-bar b{color:#f8fafc}
+
+  .toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);background:rgba(15,11,30,.95);border:1px solid rgba(167,139,250,.38);border-radius:14px;padding:9px 16px;font-size:12.6px;font-weight:700;max-width:88%;text-align:center;opacity:0;transition:opacity .24s,transform .24s;pointer-events:none;z-index:4;box-shadow:0 12px 30px rgba(0,0,0,.55)}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(4px)}
+
+  .side{background:var(--the);border-left:1px solid var(--vien);padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+  h1{font-size:16.2px;margin:0;line-height:1.32}
+  .tag{display:inline-block;background:rgba(56,189,248,.16);color:#7dd3fc;border-radius:99px;padding:2px 10px;font-size:11px;font-weight:800;margin-bottom:4px}
+
+  .box{background:rgba(255,255,255,.036);border:1px solid var(--vien);border-radius:13px;padding:10px 12px}
+  .box h3{margin:0 0 8px;font-size:11.2px;letter-spacing:.06em;text-transform:uppercase;color:var(--tim);display:flex;justify-content:space-between;align-items:center}
+
+  button{font:inherit;font-weight:700;font-size:12.3px;border:1px solid var(--vien);background:rgba(255,255,255,.06);color:var(--chu);border-radius:10px;padding:8px 10px;min-height:38px;cursor:pointer;transition:.15s}
+  button:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.28)}
+  button:active{transform:scale(.98)}
+  .seg{display:flex;gap:6px}
+  .seg button{flex:1}
+  button.on-naoh{background:linear-gradient(90deg,#4f46e5,#7c3aed);border-color:#a5b4fc;color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.35)}
+  button.on-hcl{background:linear-gradient(90deg,#be123c,#e11d48);border-color:#fda4af;color:#fff;box-shadow:0 4px 14px rgba(225,29,72,.35)}
+  button.on-tube{background:linear-gradient(90deg,#0369a1,#6d28d9);border-color:#7dd3fc;color:#fff}
+
+  .chinh{width:100%;background:linear-gradient(90deg,#6d28d9,#0284c7);border:0;color:#fff;font-size:13.4px;margin-top:7px;box-shadow:0 6px 16px rgba(109,40,217,.3)}
+  .chinh:hover{filter:brightness(1.08)}
+  .chinh.hcl-btn{background:linear-gradient(90deg,#be123c,#9333ea)}
+
+  .meter{margin-bottom:9px}
+  .meter:last-child{margin-bottom:0}
+  .meter-head{display:flex;justify-content:space-between;align-items:baseline;font-size:12.1px;margin-bottom:4px}
+  .meter-head b{font-weight:800}
+  .meter-bar{position:relative;height:10px;background:rgba(255,255,255,.08);border-radius:99px;overflow:visible}
+  .meter-fill{height:100%;width:0%;border-radius:99px;transition:width .22s ease}
+  .meter-fill.al{background:linear-gradient(90deg,#38bdf8,#a78bfa,#34d399)}
+  .meter-fill.mg{background:linear-gradient(90deg,#f59e0b,#f97316)}
+  .tick{position:absolute;top:-3px;width:2px;height:16px;background:rgba(255,255,255,.45);border-radius:2px}
+  .tick span{position:absolute;top:15px;left:50%;transform:translateX(-50%);font-size:9.5px;color:var(--phu);white-space:nowrap}
+  .meter-sub{display:flex;justify-content:space-between;font-size:11px;color:var(--phu);margin-top:14px}
+
+  .eq-box{font-size:12.8px;line-height:1.58;color:#e2dcf2}
+  .eq-line{padding:5px 8px;border-radius:8px;margin:4px 0;background:rgba(255,255,255,.03);border:1px solid transparent;transition:.2s}
+  .eq-line.hl{background:rgba(139,92,246,.16);border-color:rgba(167,139,250,.48);color:#fff}
+  .eq-line b{color:#fde68a}
+  .eq-line .tag-sm{display:inline-block;font-size:10px;padding:1px 6px;border-radius:99px;background:rgba(255,255,255,.1);margin-right:4px;color:#c4b5fd}
+
+  .kq{font-size:12.3px;line-height:1.56;color:#d6cde8}
+  .kq b{color:#fde68a}
+  .q{background:rgba(34,197,94,.09);border-color:rgba(34,197,94,.34)}
+  .q h3{color:#86efac}
+  .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--phu);background:var(--nen);z-index:10}
+
+  @media (max-width:860px){
+    html,body{overflow:auto}
+    .wrap{grid-template-columns:1fr;grid-template-rows:56dvh auto;height:auto}
+    .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
+    .cam-bar{bottom:10px}
+    .hint-bar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="hud">
+      <div class="hud-left">
+        <span class="chip reag-naoh" id="chipReag">🧪 Ống nhỏ giọt: <b id="reagTxt">dd NaOH 1M</b></span>
+        <span class="chip" id="chipSel">🎯 Đang chọn: <b id="selTxt">Ống 1 (AlCl₃)</b></span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn on" id="btnSound" title="Bật/tắt âm thanh">🔊</button>
+      </div>
+    </div>
+
+    <div class="nhan3d active" id="nhan0"></div>
+    <div class="nhan3d" id="nhan1"></div>
+
+    <div class="cam-bar">
+      <button class="hud-btn on" data-cam="iso">🎥 Cả 2 ống</button>
+      <button class="hud-btn" data-cam="al">🔎 Cận Al(OH)₃</button>
+      <button class="hud-btn" data-cam="mg">🔬 Cận Mg(OH)₂</button>
+    </div>
+
+    <div class="hint-bar">🖱️ <b>Click ống nghiệm</b> để nhỏ 1 giọt · <b>Giữ chuột</b> trên ống để nhỏ liên tục · Kéo nền để xoay 360°</div>
+    <div class="toast" id="toast"></div>
+    <div class="fallback" id="fb">Thiết bị chưa bật WebGL hoặc không nạp được Three.js nên không hiển thị được phòng thí nghiệm 3D.</div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <span class="tag">Bài 7 · Xu hướng biến đổi tính chất · Hydroxide lưỡng tính</span>
+      <h1>Tính lưỡng tính của Al(OH)₃ &amp; So sánh Mg(OH)₂ 3D</h1>
+    </div>
+
+    <div class="box">
+      <h3><span>1. Chọn thuốc thử &amp; Ống nghiệm</span></h3>
+      <div class="seg" style="margin-bottom:7px">
+        <button id="btnReagNaOH" class="on-naoh">💧 dd NaOH 1M (Base)</button>
+        <button id="btnReagHCl">🧪 dd HCl 1M (Acid)</button>
+      </div>
+      <div class="seg" style="margin-bottom:7px">
+        <button id="btnTube0" class="on-tube">Ống 1: dd AlCl₃</button>
+        <button id="btnTube1">Ống 2: dd MgCl₂</button>
+      </div>
+      <button class="chinh" id="btnDrop1">💧 Nhỏ 1 giọt (+0,25 tỉ lệ mol)</button>
+      <div class="seg" style="margin-top:6px">
+        <button id="btnDrop4">💦 Nhỏ nhanh 4 giọt</button>
+        <button id="btnBoth">⚡ Nhỏ song song 2 ống</button>
+      </div>
+      <div class="seg" style="margin-top:6px">
+        <button id="btnShake">🔄 Lắc nhẹ ống</button>
+        <button id="btnReset">↺ Rửa 2 ống làm lại</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3><span>2. Tỉ lệ mol thực tế</span><span style="text-transform:none;color:var(--phu)">1,0 mmol muối/ống</span></h3>
+      <div class="meter">
+        <div class="meter-head">
+          <span style="color:var(--al);font-weight:800">Ống 1 · AlCl₃</span>
+          <span id="alRatioTxt">n(OH⁻)/n(Al³⁺) = <b>0,00</b></span>
+        </div>
+        <div class="meter-bar">
+          <div class="meter-fill al" id="alBar"></div>
+          <div class="tick" style="left:60%"><span>3 (max ↓)</span></div>
+          <div class="tick" style="left:80%"><span>4 (tan hết)</span></div>
+        </div>
+        <div class="meter-sub">
+          <span id="alPptTxt">Kết tủa Al(OH)₃: 0%</span>
+          <span id="alStateTxt" style="color:#7dd3fc">Dung dịch trong suốt</span>
+        </div>
+      </div>
+
+      <div class="meter" style="margin-top:12px">
+        <div class="meter-head">
+          <span style="color:var(--mg);font-weight:800">Ống 2 · MgCl₂</span>
+          <span id="mgRatioTxt">n(OH⁻)/n(Mg²⁺) = <b>0,00</b></span>
+        </div>
+        <div class="meter-bar">
+          <div class="meter-fill mg" id="mgBar"></div>
+          <div class="tick" style="left:40%"><span>2 (max ↓)</span></div>
+          <div class="tick" style="left:80%"><span>dư NaOH</span></div>
+        </div>
+        <div class="meter-sub">
+          <span id="mgPptTxt">Kết tủa Mg(OH)₂: 0%</span>
+          <span id="mgStateTxt" style="color:#fde68a">Dung dịch trong suốt</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>3. Phương trình hóa học đang xảy ra</h3>
+      <div class="eq-box">
+        <div class="eq-line" id="eqAl1"><span class="tag-sm">Tạo ↓</span><b>AlCl₃ + 3NaOH → Al(OH)₃↓ + 3NaCl</b></div>
+        <div class="eq-line" id="eqAl2"><span class="tag-sm">Tan base</span><b>Al(OH)₃ + NaOH → Na[Al(OH)₄]</b></div>
+        <div class="eq-line" id="eqAl3"><span class="tag-sm">Tan acid</span><b>Al(OH)₃ + 3HCl → AlCl₃ + 3H₂O</b></div>
+        <div class="eq-line" id="eqAl4"><span class="tag-sm">Tái tạo ↓</span><b>Na[Al(OH)₄] + HCl → Al(OH)₃↓ + NaCl + H₂O</b></div>
+        <div class="eq-line" id="eqMg1"><span class="tag-sm">Ống 2</span><b>MgCl₂ + 2NaOH → Mg(OH)₂↓ + 2NaCl</b></div>
+        <div class="eq-line" id="eqMg2"><span class="tag-sm">Tan acid</span><b>Mg(OH)₂ + 2HCl → MgCl₂ + 2H₂O</b></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>4. Nhận xét &amp; Giải thích (SGK Hóa 10)</h3>
+      <div class="kq" id="kq">
+        Hãy nhỏ <b>dd NaOH 1M</b> vào cả hai ống để so sánh trực tiếp: <b>Al(OH)₃</b> tạo kết tủa keo trắng rồi <b>tan hoàn toàn trong NaOH dư</b> (hydroxide lưỡng tính), còn <b>Mg(OH)₂</b> kết tủa trắng và <b>không tan</b> trong NaOH dư (hydroxide base).
+      </div>
+    </div>
+
+    <div class="box q">
+      <h3>Câu hỏi tự kiểm tra</h3>
+      <div class="kq">
+        1. Khi đã hòa tan hết kết tủa ở Ống 1 thành dung dịch <b>Na[Al(OH)₄]</b> trong suốt, chuyện gì xảy ra nếu em đổi sang <b>dd HCl 1M</b> và nhỏ từng giọt từ từ?<br>
+        2. Trong chu kì 3 (Na → Mg → Al), tính base của các hydroxide <b>NaOH – Mg(OH)₂ – Al(OH)₃</b> biến đổi như thế nào?
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function loadThreeAndBoot() {
+  var MIRRORS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+    'https://unpkg.com/three@0.128.0/build/three.min.js'
+  ];
+  var idx = 0;
+  function fail() { document.getElementById('fb').style.display = 'flex'; }
+  function next() {
+    if (window.THREE && window.THREE.WebGLRenderer) { bootApp(window.THREE); return; }
+    if (idx >= MIRRORS.length) { fail(); return; }
+    var s = document.createElement('script');
+    s.src = MIRRORS[idx++];
+    s.async = true;
+    s.onload = function () {
+      if (window.THREE && window.THREE.WebGLRenderer) bootApp(window.THREE);
+      else next();
+    };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+
+function bootApp(THREE) {
+  'use strict';
+  const $ = function (id) { return document.getElementById(id); };
+  const stage = $('stage'), cv = $('cv');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' });
+  } catch (e) {
+    $('fb').style.display = 'flex';
+    return;
+  }
+
+  const isLow = (window.innerWidth < 720) || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+  renderer.setPixelRatio(Math.min(isLow ? 1.5 : 2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
+  renderer.shadowMap.enabled = !isLow;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  function srgbCol(hex) { return new THREE.Color(hex).convertSRGBToLinear(); }
+
+  const BG_HEX = 0x07060e;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(BG_HEX);
+
+  /* ==================== STUDIO IBL ==================== */
+  (function buildEnvMap() {
+    if (!THREE.PMREMGenerator) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const es = new THREE.Scene();
+    es.background = new THREE.Color(0x0c0a18);
+    const sTop = new THREE.Mesh(new THREE.PlaneGeometry(16, 6), new THREE.MeshBasicMaterial({ color: 0xcbd5e1, side: THREE.DoubleSide }));
+    sTop.position.set(0, 8.5, 3); sTop.lookAt(0, 0, 0); es.add(sTop);
+    const sL = new THREE.Mesh(new THREE.PlaneGeometry(6, 12), new THREE.MeshBasicMaterial({ color: 0x9fb5ce, side: THREE.DoubleSide }));
+    sL.position.set(-9, 3, 2); sL.lookAt(0, 0, 0); es.add(sL);
+    const sR = new THREE.Mesh(new THREE.PlaneGeometry(6, 12), new THREE.MeshBasicMaterial({ color: 0xd6cbb2, side: THREE.DoubleSide }));
+    sR.position.set(9, 3, 2); sR.lookAt(0, 0, 0); es.add(sR);
+    scene.environment = pmrem.fromScene(es, 0.05).texture;
+    pmrem.dispose();
+  })();
+
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+
+  scene.add(new THREE.HemisphereLight(0xe2e8f0, 0x131022, 0.78));
+  const keyLight = new THREE.DirectionalLight(0xfffaf2, 1.02);
+  keyLight.position.set(4.5, 9.2, 6.8);
+  if (!isLow) {
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(1024, 1024);
+    keyLight.shadow.bias = -0.0005;
+    const sb = 4.6;
+    keyLight.shadow.camera.left = -sb; keyLight.shadow.camera.right = sb;
+    keyLight.shadow.camera.top = sb; keyLight.shadow.camera.bottom = -sb;
+  }
+  scene.add(keyLight);
+
+  const backRim = new THREE.PointLight(0xcbd5e1, 0.88, 15);
+  backRim.position.set(0, 2.5, -3.2);
+  scene.add(backRim);
+
+  /* ==================== WEB AUDIO (GIỌT RƠI + LẮC + TAN KẾT TỦA) ==================== */
+  let audioCtx = null, soundOn = true;
+  function ensureAudio() {
+    if (!soundOn) return null;
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      audioCtx = new AC();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function sfxDrop(pitch) {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'sine';
+    const f = pitch || (500 + Math.random() * 140);
+    o.frequency.setValueAtTime(f, now);
+    o.frequency.exponentialRampToValueAtTime(f * 2.1, now + 0.065);
+    g.gain.setValueAtTime(0.055, now);
+    g.gain.exponentialRampToValueAtTime(0.0008, now + 0.075);
+    o.connect(g); g.connect(ac.destination);
+    o.start(now); o.stop(now + 0.08);
+  }
+  function sfxShake() {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    const len = Math.floor(ac.sampleRate * 0.28);
+    const buf = ac.createBuffer(1, len, ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) {
+      const t = i / len;
+      d[i] = (Math.random() * 2 - 1) * Math.sin(t * Math.PI) * (0.6 + 0.4 * Math.sin(t * Math.PI * 6));
+    }
+    const src = ac.createBufferSource(); src.buffer = buf;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 680; bp.Q.value = 1.4;
+    const g = ac.createGain(); g.gain.value = 0.09;
+    src.connect(bp); bp.connect(g); g.connect(ac.destination);
+    src.start(now);
+  }
+  function sfxClearChime() {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    [587.3, 880].forEach(function (f, i) {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(f, now + i * 0.07);
+      g.gain.setValueAtTime(0.045, now + i * 0.07);
+      g.gain.exponentialRampToValueAtTime(0.0008, now + i * 0.07 + 0.24);
+      o.connect(g); g.connect(ac.destination);
+      o.start(now + i * 0.07); o.stop(now + i * 0.07 + 0.26);
+    });
+  }
+
+  /* ==================== PROCEDURAL TEXTURES & STUDIO FLOOR ==================== */
+  function makeTex(w, h, fn) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    fn(c.getContext('2d'), w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  const studioFloorMat = new THREE.ShaderMaterial({
+    uniforms: { uBgColor: { value: new THREE.Color(BG_HEX) } },
+    vertexShader: `
+      varying vec3 vWorld;
+      void main() {
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorld = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uBgColor;
+      varying vec3 vWorld;
+      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      void main() {
+        vec2 dVec = vec2(vWorld.x * 0.27, (vWorld.z - 0.12) * (vWorld.z < 0.0 ? 0.78 : 0.38));
+        float dist = length(dVec);
+        float fade = 1.0 - smoothstep(0.32, 1.08, dist);
+        float grain = (hash(floor(vWorld.xz * 85.0)) - 0.5) * 0.020;
+        vec2 grid = abs(fract(vWorld.xz * 0.85) - 0.5);
+        float line = (1.0 - smoothstep(0.0, 0.015, min(grid.x, grid.y))) * 0.022;
+        vec3 stoneCol = vec3(0.072, 0.066, 0.102) + grain + line;
+        float rackAO = 1.0 - (1.0 - smoothstep(0.0, 0.65, abs(vWorld.z))) * (1.0 - smoothstep(1.6, 2.5, abs(vWorld.x))) * 0.48;
+        stoneCol *= rackAO;
+        gl_FragColor = vec4(mix(uBgColor, stoneCol, fade), 1.0);
+      }
+    `
+  });
+  const studioFloor = new THREE.Mesh(new THREE.PlaneGeometry(24, 20), studioFloorMat);
+  studioFloor.rotation.x = -Math.PI / 2;
+  scene.add(studioFloor);
+
+  const backdropGlowTex = makeTex(256, 256, function (g, w, h) {
+    const gr = g.createRadialGradient(w / 2, h / 2, 6, w / 2, h / 2, w / 2);
+    gr.addColorStop(0, 'rgba(148,163,184,0.16)');
+    gr.addColorStop(0.55, 'rgba(51,65,85,0.045)');
+    gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  });
+  const backdropGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: backdropGlowTex, transparent: true, depthWrite: false }));
+  backdropGlow.position.set(0, 1.75, -2.5);
+  backdropGlow.scale.set(7.6, 4.6, 1);
+  scene.add(backdropGlow);
+
+  const oakTex = makeTex(512, 256, function (g, w, h) {
+    const gr = g.createLinearGradient(0, 0, w, 0);
+    gr.addColorStop(0, '#442613'); gr.addColorStop(0.5, '#59341c'); gr.addColorStop(1, '#3d2110');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 90; i++) {
+      g.strokeStyle = 'rgba(18,7,2,' + (0.1 + Math.random() * 0.16) + ')';
+      g.lineWidth = 1 + Math.random() * 2;
+      const y = Math.random() * h;
+      g.beginPath(); g.moveTo(0, y);
+      g.bezierCurveTo(w * 0.35, y + 5, w * 0.65, y - 5, w, y);
+      g.stroke();
+    }
+  });
+
+  const scaleTex = makeTex(256, 512, function (g, w, h) {
+    g.clearRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(255,255,255,0.44)';
+    g.fillStyle = 'rgba(255,255,255,0.64)';
+    g.lineWidth = 2;
+    g.font = '700 17px "Be Vietnam Pro",sans-serif';
+    for (let ml = 2; ml <= 10; ml += 2) {
+      const y = h - (ml / 10.3) * (h - 28) - 10;
+      g.beginPath(); g.moveTo(116, y); g.lineTo(138, y); g.stroke();
+      g.fillText(ml + 'mL', 143, y + 6);
+    }
+  });
+
+  /* ==================== BEVELED OAK & BRASS 2-TUBE RACK ==================== */
+  const TUBE_X = [-0.95, 0.95];
+  const rackGroup = new THREE.Group();
+  scene.add(rackGroup);
+
+  const woodMat = new THREE.MeshStandardMaterial({ map: oakTex, roughness: 0.45, metalness: 0.05 });
+  const brassMat = new THREE.MeshStandardMaterial({ color: srgbCol(0xc7952f), roughness: 0.25, metalness: 0.86 });
+
+  (function buildRack() {
+    const halfW = 1.92;
+    const baseShape = new THREE.Shape();
+    const bZ = 0.56;
+    baseShape.moveTo(-halfW, -bZ); baseShape.lineTo(halfW, -bZ);
+    baseShape.lineTo(halfW, bZ); baseShape.lineTo(-halfW, bZ);
+    baseShape.closePath();
+    const baseGeo = new THREE.ExtrudeGeometry(baseShape, {
+      depth: 0.10, bevelEnabled: true, bevelThickness: 0.018, bevelSize: 0.018, bevelSegments: 2
+    });
+    baseGeo.rotateX(Math.PI / 2);
+    const basePlate = new THREE.Mesh(baseGeo, woodMat);
+    basePlate.position.y = 0.12;
+    basePlate.castShadow = true; basePlate.receiveShadow = true;
+    rackGroup.add(basePlate);
+
+    TUBE_X.forEach(function (x) {
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.048, 0.26, 14), brassMat);
+      stem.position.set(x, 0.23, 0); rackGroup.add(stem);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.018, 12, 28), brassMat);
+      ring.rotation.x = Math.PI / 2; ring.position.set(x, 0.395, 0); rackGroup.add(ring);
+    });
+
+    const deckShape = new THREE.Shape();
+    const dZ = 0.48;
+    deckShape.moveTo(-halfW, -dZ); deckShape.lineTo(halfW, -dZ);
+    deckShape.lineTo(halfW, dZ); deckShape.lineTo(-halfW, dZ);
+    deckShape.closePath();
+    TUBE_X.forEach(function (x) {
+      const hole = new THREE.Path();
+      hole.absarc(x, 0, 0.40, 0, Math.PI * 2, true);
+      deckShape.holes.push(hole);
+    });
+    const deckGeo = new THREE.ExtrudeGeometry(deckShape, {
+      depth: 0.11, bevelEnabled: true, bevelThickness: 0.016, bevelSize: 0.016, bevelSegments: 2, curveSegments: 32
+    });
+    deckGeo.rotateX(Math.PI / 2);
+    const topDeck = new THREE.Mesh(deckGeo, woodMat);
+    topDeck.position.y = 2.34;
+    topDeck.castShadow = true;
+    rackGroup.add(topDeck);
+
+    TUBE_X.forEach(function (x) {
+      const gr = new THREE.Mesh(new THREE.TorusGeometry(0.402, 0.018, 12, 32), brassMat);
+      gr.rotation.x = Math.PI / 2; gr.position.set(x, 2.35, 0); rackGroup.add(gr);
+    });
+
+    [-halfW + 0.22, halfW - 0.22].forEach(function (px) {
+      [-0.30, 0.30].forEach(function (pz) {
+        const post = new THREE.Mesh(new THREE.CylinderGeometry(0.050, 0.050, 2.24, 16), brassMat);
+        post.position.set(px, 1.20, pz); rackGroup.add(post);
+      });
+    });
+
+    // Brass nameplate plaque on front edge
+    const plaque = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.065, 0.02), brassMat);
+    plaque.position.set(0, 0.065, bZ + 0.015);
+    rackGroup.add(plaque);
+  })();
+
+  /* ==================== TUBE GEOMETRY, LIQUID, PRECIPITATE & FRESNEL GLASS ==================== */
+  const OUTER_R = 0.36;
+  const LIQ_R = 0.316;
+  const TUBE_H = 2.95; // from bottom pole y=0 to rim
+
+  function buildTestTubeGeo() {
+    const pts = [];
+    const segArc = 16;
+    for (let i = 0; i <= segArc; i++) {
+      const a = -Math.PI / 2 + (i / segArc) * (Math.PI / 2);
+      pts.push(new THREE.Vector2(Math.max(0.002, Math.cos(a) * OUTER_R), OUTER_R + Math.sin(a) * OUTER_R));
+    }
+    pts.push(new THREE.Vector2(OUTER_R, TUBE_H - 0.09));
+    pts.push(new THREE.Vector2(OUTER_R + 0.018, TUBE_H - 0.03));
+    pts.push(new THREE.Vector2(OUTER_R + 0.044, TUBE_H));
+    pts.push(new THREE.Vector2(OUTER_R + 0.030, TUBE_H + 0.016));
+    pts.push(new THREE.Vector2(OUTER_R - 0.016, TUBE_H - 0.006));
+    return new THREE.LatheGeometry(pts, isLow ? 32 : 48);
+  }
+  const TUBE_GEO = buildTestTubeGeo();
+
+  function buildSeamlessLiquidGeo(R) {
+    const pts = [];
+    const segArc = 14;
+    for (let i = 0; i <= segArc; i++) {
+      const a = -Math.PI / 2 + (i / segArc) * (Math.PI / 2);
+      pts.push(new THREE.Vector2(Math.max(0.002, Math.cos(a) * R), R + Math.sin(a) * R));
+    }
+    const cylSegs = 22;
+    for (let j = 1; j <= cylSegs; j++) {
+      pts.push(new THREE.Vector2(R, R + j / cylSegs));
+    }
+    return new THREE.LatheGeometry(pts, isLow ? 28 : 40);
+  }
+  const LIQ_GEO = buildSeamlessLiquidGeo(LIQ_R);
+
+  function buildBottomSedimentGeo() {
+    const SEG_R = isLow ? 24 : 36, SEG_SIDE = 18, SEG_CAP = 10;
+    const positions = [], meta = [], indices = [];
+    const totalRings = SEG_SIDE + 1 + SEG_CAP;
+    for (let r = 0; r < totalRings; r++) {
+      const isCap = r <= SEG_SIDE ? 0 : 1;
+      const param = isCap === 0 ? (r / SEG_SIDE) : (1.0 - (r - SEG_SIDE) / SEG_CAP);
+      for (let c = 0; c <= SEG_R; c++) {
+        const ang = (c / SEG_R) * Math.PI * 2;
+        positions.push(Math.cos(ang), 0, Math.sin(ang));
+        meta.push(isCap, param);
+      }
+    }
+    const stride = SEG_R + 1;
+    for (let r = 0; r < totalRings - 1; r++) {
+      for (let c = 0; c < SEG_R; c++) {
+        const a = r * stride + c, b = a + stride;
+        indices.push(a, a + 1, b, a + 1, b + 1, b);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geo.setAttribute('aMeta', new THREE.Float32BufferAttribute(meta, 2));
+    geo.setIndex(indices);
+    return geo;
+  }
+  const SEDIMENT_GEO = buildBottomSedimentGeo();
+
+  function makeSedimentMat(isGelatinous) {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uHeight: { value: 0 },
+        uRadius: { value: LIQ_R - 0.008 },
+        uSlosh: { value: 0 },
+        uColorLight: { value: isGelatinous ? new THREE.Color(0.89, 0.94, 0.98) : new THREE.Color(0.95, 0.95, 0.93) },
+        uColorDark: { value: isGelatinous ? new THREE.Color(0.62, 0.72, 0.82) : new THREE.Color(0.72, 0.73, 0.75) },
+        uGelMode: { value: isGelatinous ? 1.0 : 0.0 },
+        uAlpha: { value: 0 }
+      },
+      vertexShader: `
+        attribute vec2 aMeta;
+        uniform float uTime;
+        uniform float uHeight;
+        uniform float uRadius;
+        uniform float uSlosh;
+        uniform float uGelMode;
+        varying vec3 vLocal;
+        varying float vIsCap;
+        varying float vParam;
+        void main() {
+          vIsCap = aMeta.x;
+          vParam = aMeta.y;
+          float h = max(0.001, uHeight);
+          float ang = atan(position.z, position.x);
+          float bump = (sin(ang * 5.0 + uTime * 0.4) * 0.5 + cos(ang * 3.0 - 1.1) * 0.5) * (uGelMode > 0.5 ? 0.026 : 0.012);
+          float rOut, yOut;
+          if (vIsCap < 0.5) {
+            yOut = vParam * h;
+            if (yOut < uRadius) {
+              float dy = uRadius - yOut;
+              rOut = sqrt(max(0.0, uRadius * uRadius - dy * dy));
+            } else {
+              rOut = uRadius;
+            }
+            if (vParam > 0.85) yOut += bump * (vParam - 0.85) * 6.0;
+          } else {
+            float topR = (h < uRadius) ? sqrt(max(0.0, uRadius * uRadius - (uRadius - h) * (uRadius - h))) : uRadius;
+            rOut = topR * vParam;
+            float mound = (1.0 - vParam * vParam) * (uGelMode > 0.5 ? 0.055 : 0.025) * smoothstep(0.02, 0.25, h);
+            yOut = h + mound + bump * vParam;
+          }
+          vec3 p = vec3(position.x * rOut, yOut, position.z * rOut);
+          p.y += p.x * uSlosh * 0.45 * smoothstep(0.05, 0.4, h);
+          vLocal = p;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColorLight;
+        uniform vec3 uColorDark;
+        uniform float uGelMode;
+        uniform float uAlpha;
+        varying vec3 vLocal;
+        varying float vIsCap;
+        varying float vParam;
+        float hash(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+        void main() {
+          if (uAlpha < 0.01) discard;
+          float n = hash(floor(vLocal * (uGelMode > 0.5 ? 24.0 : 48.0)));
+          float shade = clamp(0.45 + vLocal.x * 0.65 + vIsCap * 0.24 + (n - 0.5) * 0.12, 0.0, 1.0);
+          vec3 col = mix(uColorDark, uColorLight, shade);
+          float a = uAlpha * (uGelMode > 0.5 ? 0.84 : 0.96);
+          gl_FragColor = vec4(col, a);
+        }
+      `,
+      transparent: true,
+      depthWrite: true,
+      side: THREE.DoubleSide
+    });
+  }
+
+  function makeLiquidMat(isGelatinous) {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uSpanH: { value: 0.95 },
+        uRadius: { value: LIQ_R },
+        uSlosh: { value: 0 },
+        uCloudAmt: { value: 0 },
+        uSettlingCeil: { value: 1.0 },
+        uPlumeAmp: { value: 0 },
+        uPlumeProg: { value: 0 },
+        uGelMode: { value: isGelatinous ? 1.0 : 0.0 },
+        uDissolveShimmer: { value: 0 }
+      },
+      vertexShader: `
+        uniform float uSpanH;
+        uniform float uRadius;
+        uniform float uSlosh;
+        varying vec3 vLocalP;
+        varying float vHNorm;
+        varying vec3 vNormalW;
+        varying vec3 vViewDir;
+        void main() {
+          vec3 p = position;
+          float totalSpan = max(0.05, uSpanH);
+          float cylSpan = max(0.02, totalSpan - uRadius);
+          float yOut = (p.y <= uRadius) ? p.y : (uRadius + (p.y - uRadius) * cylSpan);
+          vHNorm = clamp(yOut / totalSpan, 0.0, 1.0);
+          yOut += p.x * uSlosh * smoothstep(0.16, 1.0, vHNorm);
+          p.y = yOut;
+          vLocalP = p;
+          vec4 wp = modelMatrix * vec4(p, 1.0);
+          vNormalW = normalize(mat3(modelMatrix) * normal);
+          vViewDir = normalize(cameraPosition - wp.xyz);
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform float uCloudAmt;
+        uniform float uSettlingCeil;
+        uniform float uPlumeAmp;
+        uniform float uPlumeProg;
+        uniform float uGelMode;
+        uniform float uDissolveShimmer;
+        varying vec3 vLocalP;
+        varying float vHNorm;
+        varying vec3 vNormalW;
+        varying vec3 vViewDir;
+
+        float hash(vec3 p){
+          p = fract(p * 0.3183099 + 0.1);
+          p *= 17.0;
+          return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+        }
+        float noise3(vec3 x){
+          vec3 i = floor(x), f = fract(x);
+          f = f * f * (3.0 - 2.0 * f);
+          return mix(
+            mix(mix(hash(i), hash(i + vec3(1,0,0)), f.x),
+                mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
+            mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
+                mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y), f.z);
+        }
+        float fbm(vec3 p){
+          float v = 0.0, a = 0.52;
+          for(int i = 0; i < 4; i++){ v += a * noise3(p); p = p * 2.04 + vec3(1.5, -1.1, 0.8); a *= 0.5; }
+          return v;
+        }
+
+        void main() {
+          vec3 N = normalize(vNormalW);
+          vec3 V = normalize(vViewDir);
+          float ndv = abs(dot(N, V));
+          float fresnel = pow(1.0 - ndv, 3.0);
+
+          // Base crystal-clear aqueous solution
+          vec3 clearCol = mix(vec3(0.84, 0.91, 0.98), vec3(0.96, 0.98, 1.0), fresnel * 0.55);
+          float clearAlpha = 0.055 + fresnel * 0.34;
+
+          // Billowing gelatinous Al(OH)3 curd clouds vs powdery Mg(OH)2
+          float scale = uGelMode > 0.5 ? 5.6 : 9.2;
+          vec3 adv = vec3(vLocalP.x * scale, (vLocalP.y + uTime * (uGelMode > 0.5 ? 0.11 : 0.22)) * scale * 0.85, vLocalP.z * scale);
+          float f1 = fbm(adv);
+          float f2 = noise3(adv * 2.2 + vec3(0.0, uTime * 0.25, 0.0));
+
+          // Vortex mushroom plume when a drop hits
+          float headH = 1.0 - uPlumeProg * 0.84;
+          float capBell = exp(-pow((vHNorm - headH) * 5.0, 2.0)) * 0.14;
+          float rAllow = 0.08 + capBell + (1.0 - vHNorm) * 0.08;
+          float rAct = length(vLocalP.xz) + (f1 - 0.5) * 0.14;
+          float plume = uPlumeAmp * (1.0 - smoothstep(rAllow * 0.4, rAllow + 0.09, rAct)) * smoothstep(headH - 0.10, headH + 0.06, vHNorm) * smoothstep(0.24, 0.72, f1);
+
+          float ceilFade = 1.0 - smoothstep(uSettlingCeil - 0.14, uSettlingCeil + 0.10, vHNorm + (f1 - 0.5) * 0.18);
+          float curds = smoothstep(uGelMode > 0.5 ? 0.28 : 0.34, 0.76, f1 * 0.74 + f2 * 0.34) * uCloudAmt * ceilFade;
+          float cloudMask = clamp(max(plume * 1.15, curds * (uGelMode > 0.5 ? 1.12 : 1.05)), 0.0, 0.94);
+
+          // Dissolving clarity streaks when precipitate melts back to clear solution
+          float shimmer = uDissolveShimmer * smoothstep(0.45, 0.82, f2) * (1.0 - cloudMask * 0.5) * 0.26;
+
+          vec3 lightDir = normalize(vec3(0.42, 0.74, 0.62));
+          float wrap = clamp(dot(N, lightDir) * 0.5 + 0.56, 0.0, 1.0);
+          vec3 pLight = uGelMode > 0.5 ? vec3(0.92, 0.96, 1.0) : vec3(0.97, 0.97, 0.95);
+          vec3 pDark  = uGelMode > 0.5 ? vec3(0.64, 0.75, 0.86) : vec3(0.75, 0.76, 0.79);
+          vec3 cloudCol = mix(pDark, pLight, clamp(wrap * (0.85 + 0.24 * f2), 0.0, 1.0));
+
+          vec3 col = mix(clearCol, cloudCol, cloudMask);
+          col = mix(col, vec3(0.75, 0.92, 1.0), shimmer);
+          float alpha = max(clearAlpha + shimmer * 0.35, cloudMask * (uGelMode > 0.5 ? 0.86 : 0.92));
+          gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.95));
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+  }
+
+  function makeMeniscusMat() {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uSlosh: { value: 0 },
+        uImpact: { value: 0 },
+        uCloudAmt: { value: 0 }
+      },
+      vertexShader: `
+        uniform float uTime;
+        uniform float uSlosh;
+        uniform float uImpact;
+        varying vec2 vPos;
+        varying float vWave;
+        void main() {
+          vec3 p = position;
+          float rNorm = clamp(length(p.xy) / 0.316, 0.0, 1.0);
+          float concave = -0.020 * (1.0 - rNorm * rNorm) + 0.013 * pow(rNorm, 5.0);
+          float ripple = sin(rNorm * 22.0 - uTime * 24.0) * exp(-rNorm * 2.0) * 0.028 * uImpact;
+          float y = concave + ripple + p.x * uSlosh;
+          vWave = ripple;
+          vPos = p.xy / 0.316;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p.x, y, -p.y, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uImpact;
+        uniform float uCloudAmt;
+        varying vec2 vPos;
+        varying float vWave;
+        void main() {
+          float r = length(vPos);
+          if (r > 1.0) discard;
+          float rim = smoothstep(0.80, 0.995, r);
+          float waveHi = clamp(vWave * 30.0, 0.0, 0.6) * uImpact;
+          vec3 col = mix(vec3(0.88, 0.94, 1.0), vec3(1.0), clamp(rim * 0.72 + waveHi + uCloudAmt * 0.25, 0.0, 0.96));
+          float a = 0.12 + rim * 0.65 + waveHi * 0.55 + uCloudAmt * 0.28;
+          gl_FragColor = vec4(col, clamp(a, 0.0, 0.92));
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+  }
+
+  function makeGlassFrontMat() {
+    return new THREE.ShaderMaterial({
+      uniforms: { uRimColor: { value: new THREE.Color(0.86, 0.91, 0.97) } },
+      vertexShader: `
+        varying vec3 vN;
+        varying vec3 vV;
+        void main() {
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          vN = normalize(mat3(modelMatrix) * normal);
+          vV = normalize(cameraPosition - wp.xyz);
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uRimColor;
+        varying vec3 vN;
+        varying vec3 vV;
+        void main() {
+          float ndv = abs(dot(normalize(vN), normalize(vV)));
+          float outerRim = pow(1.0 - ndv, 3.4);
+          float innerWall = exp(-pow((ndv - 0.42) * 14.0, 2.0)) * 0.16;
+          vec3 col = uRimColor * (0.90 + outerRim * 0.55);
+          float a = 0.018 + outerRim * 0.58 + innerWall;
+          gl_FragColor = vec4(col, clamp(a, 0.0, 0.88));
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.FrontSide
+    });
+  }
+
+  const glassBackMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xcbd5e1),
+    roughness: 0.08,
+    metalness: 0.05,
+    transparent: true,
+    opacity: 0.13,
+    depthWrite: false,
+    side: THREE.BackSide
+  });
+
+  const scaleMat = new THREE.MeshBasicMaterial({
+    map: scaleTex,
+    transparent: true,
+    opacity: 0.62,
+    depthWrite: false,
+    side: THREE.FrontSide
+  });
+
+  /* ==================== BUILD 2 TEST TUBES + STOICHIOMETRY STATE ==================== */
+  const tubes = [];
+  const hitMeshes = [];
+
+  const TUBE_DEFS = [
+    { idx: 0, x: TUBE_X[0], name: 'AlCl₃', cation: 'Al³⁺', hydroxide: 'Al(OH)₃', isAl: true },
+    { idx: 1, x: TUBE_X[1], name: 'MgCl₂', cation: 'Mg²⁺', hydroxide: 'Mg(OH)₂', isAl: false }
+  ];
+
+  TUBE_DEFS.forEach(function (def) {
+    const root = new THREE.Group();
+    root.position.set(def.x, 0.25, 0);
+    scene.add(root);
+
+    const glassBack = new THREE.Mesh(TUBE_GEO, glassBackMat);
+    glassBack.renderOrder = 1;
+    root.add(glassBack);
+
+    const sedMat = makeSedimentMat(def.isAl);
+    const sedMesh = new THREE.Mesh(SEDIMENT_GEO, sedMat);
+    sedMesh.position.y = 0.036;
+    sedMesh.renderOrder = 3;
+    root.add(sedMesh);
+
+    const liqMat = makeLiquidMat(def.isAl);
+    const liqMesh = new THREE.Mesh(LIQ_GEO, liqMat);
+    liqMesh.position.y = 0.032;
+    liqMesh.renderOrder = 5;
+    root.add(liqMesh);
+
+    const meniMat = makeMeniscusMat();
+    const meniMesh = new THREE.Mesh(new THREE.CircleGeometry(LIQ_R, 36), meniMat);
+    meniMesh.position.y = 0.032 + 0.95;
+    meniMesh.renderOrder = 6;
+    root.add(meniMesh);
+
+    const scaleCyl = new THREE.Mesh(new THREE.CylinderGeometry(OUTER_R + 0.004, OUTER_R + 0.004, 2.25, 32, 1, true, -0.55, 1.1), scaleMat);
+    scaleCyl.position.y = 1.48;
+    scaleCyl.renderOrder = 8;
+    root.add(scaleCyl);
+
+    const glassFront = new THREE.Mesh(TUBE_GEO, makeGlassFrontMat());
+    glassFront.renderOrder = 10;
+    root.add(glassFront);
+
+    // Subtle selection ring on top deck collar
+    const selRing = new THREE.Mesh(
+      new THREE.TorusGeometry(0.435, 0.014, 10, 36),
+      new THREE.MeshBasicMaterial({ color: def.isAl ? 0x38bdf8 : 0xfbbf24, transparent: true, opacity: def.idx === 0 ? 0.72 : 0.0 })
+    );
+    selRing.rotation.x = Math.PI / 2;
+    selRing.position.set(def.x, 2.365, 0);
+    scene.add(selRing);
+
+    // Invisible click target cylinder
+    const hit = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.46, 0.46, 3.3, 14),
+      new THREE.MeshBasicMaterial({ visible: false })
+    );
+    hit.position.set(def.x, 1.75, 0);
+    hit.userData = { tubeIdx: def.idx };
+    scene.add(hit);
+    hitMeshes.push(hit);
+
+    tubes.push({
+      idx: def.idx,
+      def: def,
+      root: root,
+      selRing: selRing,
+      sedMat: sedMat,
+      liqMat: liqMat,
+      meniMat: meniMat,
+      meniMesh: meniMesh,
+      // Exact stoichiometric moles (in mmol, initial salt = 1.00 mmol in 2.8 mL)
+      nNaOH: 0,
+      nHCl: 0,
+      volMl: 2.8,
+      pptTarget: 0,    // 0..1 fraction of max precipitate
+      pptVis: 0,       // smoothly animated precipitate amount
+      sedVis: 0,       // settled bottom layer 0..1
+      settlingCeil: 1.0,
+      plumeAmp: 0,
+      plumeProg: 0,
+      impact: 0,
+      slosh: 0,
+      sloshVel: 0,
+      dissolveShimmer: 0,
+      prevPpt: 0,
+      lastEvent: 'init'
+    });
+  });
+
+  /* ==================== GLASS DROPPER PIPETTE ==================== */
+  const dropper = new THREE.Group();
+  scene.add(dropper);
+
+  (function buildDropper() {
+    // Glass barrel (LatheGeometry)
+    const pts = [
+      new THREE.Vector2(0.012, 0.0),
+      new THREE.Vector2(0.020, 0.14),
+      new THREE.Vector2(0.068, 0.42),
+      new THREE.Vector2(0.072, 1.18),
+      new THREE.Vector2(0.088, 1.24),
+      new THREE.Vector2(0.072, 1.26)
+    ];
+    const barrelGeo = new THREE.LatheGeometry(pts, 28);
+    const barrelFront = new THREE.Mesh(barrelGeo, makeGlassFrontMat());
+    barrelFront.renderOrder = 11;
+    dropper.add(barrelFront);
+    const barrelBack = new THREE.Mesh(barrelGeo, glassBackMat);
+    barrelBack.renderOrder = 2;
+    dropper.add(barrelBack);
+
+    // Internal liquid column inside dropper
+    const liqPts = [
+      new THREE.Vector2(0.008, 0.02),
+      new THREE.Vector2(0.015, 0.14),
+      new THREE.Vector2(0.056, 0.40),
+      new THREE.Vector2(0.058, 0.92),
+      new THREE.Vector2(0.002, 0.92)
+    ];
+    const dropLiqMat = new THREE.MeshStandardMaterial({
+      color: srgbCol(0x818cf8), roughness: 0.15, metalness: 0.05, transparent: true, opacity: 0.58
+    });
+    const dropLiq = new THREE.Mesh(new THREE.LatheGeometry(liqPts, 20), dropLiqMat);
+    dropLiq.renderOrder = 6;
+    dropper.add(dropLiq);
+    dropper.userData.liqMat = dropLiqMat;
+
+    // Squeeze rubber bulb (LatheGeometry)
+    const bulbPts = [
+      new THREE.Vector2(0.074, 1.22),
+      new THREE.Vector2(0.105, 1.30),
+      new THREE.Vector2(0.132, 1.52),
+      new THREE.Vector2(0.118, 1.72),
+      new THREE.Vector2(0.058, 1.84),
+      new THREE.Vector2(0.002, 1.87)
+    ];
+    const bulbMat = new THREE.MeshStandardMaterial({
+      color: srgbCol(0x3730a3), roughness: 0.58, metalness: 0.04
+    });
+    const bulb = new THREE.Mesh(new THREE.LatheGeometry(bulbPts, 24), bulbMat);
+    dropper.add(bulb);
+    dropper.userData.bulb = bulb;
+    dropper.userData.bulbMat = bulbMat;
+  })();
+
+  let dropperPos = new THREE.Vector3(TUBE_X[0], 3.55, 0);
+  let dropperTargetX = TUBE_X[0];
+  let bulbSqueeze = 0;
+
+  /* ==================== FALLING DROPLET POOL ==================== */
+  const DROP_POOL = [];
+  const dropGeo = new THREE.SphereGeometry(0.036, 12, 12);
+  dropGeo.scale(0.82, 1.48, 0.82);
+  for (let i = 0; i < 18; i++) {
+    const dm = new THREE.Mesh(dropGeo, new THREE.MeshPhysicalMaterial({
+      color: srgbCol(0xc7d2fe), roughness: 0.06, metalness: 0.05, clearcoat: 0.8, transparent: true, opacity: 0.82
+    }));
+    dm.visible = false;
+    dm.renderOrder = 9;
+    scene.add(dm);
+    DROP_POOL.push({ mesh: dm, active: false, tubeIdx: 0, reag: 'naoh', y: 0, vy: 0, dose: 0.25 });
+  }
+  let dropCursor = 0;
+
+  /* ==================== REACTION ENGINE (EXACT STOICHIOMETRY) ==================== */
+  let currentReag = 'naoh'; // 'naoh' | 'hcl'
+  let activeTubeIdx = 0;
+  let toastTimer = null;
+
+  function showToast(msg) {
+    const el = $('toast');
+    el.innerHTML = msg;
+    el.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('on'); }, 3200);
+  }
+
+  function computeTubeSpecies(t) {
+    const ohNet = t.nNaOH - t.nHCl; // mmol net OH- per 1.0 mmol salt
+    if (t.def.isAl) {
+      if (ohNet <= 0) {
+        return { ohNet: ohNet, ppt: 0, aluminate: 0, excessH: -ohNet, excessOH: 0, phase: 'acid_or_salt' };
+      } else if (ohNet <= 3.0) {
+        return { ohNet: ohNet, ppt: ohNet / 3.0, aluminate: 0, excessH: 0, excessOH: 0, phase: 'precipitating' };
+      } else if (ohNet < 4.0) {
+        return { ohNet: ohNet, ppt: 4.0 - ohNet, aluminate: ohNet - 3.0, excessH: 0, excessOH: 0, phase: 'dissolving_base' };
+      } else {
+        return { ohNet: ohNet, ppt: 0, aluminate: 1.0, excessH: 0, excessOH: ohNet - 4.0, phase: 'aluminate_clear' };
+      }
+    } else {
+      if (ohNet <= 0) {
+        return { ohNet: ohNet, ppt: 0, excessH: -ohNet, excessOH: 0, phase: 'acid_or_salt' };
+      } else if (ohNet < 2.0) {
+        return { ohNet: ohNet, ppt: ohNet / 2.0, excessH: 0, excessOH: 0, phase: 'precipitating' };
+      } else {
+        return { ohNet: ohNet, ppt: 1.0, excessH: 0, excessOH: ohNet - 2.0, phase: 'base_insoluble' };
+      }
+    }
+  }
+
+  function spawnDrop(tubeIdx, reag, dose) {
+    const t = tubes[tubeIdx];
+    activeTubeIdx = tubeIdx;
+    dropperTargetX = t.def.x;
+    bulbSqueeze = 1.0;
+
+    const d = DROP_POOL[dropCursor % DROP_POOL.length];
+    dropCursor++;
+    d.active = true;
+    d.tubeIdx = tubeIdx;
+    d.reag = reag;
+    d.dose = dose || 0.25;
+    d.y = 3.52;
+    d.vy = -1.4;
+    d.mesh.position.set(t.def.x, d.y, 0);
+    d.mesh.material.color.copy(srgbCol(reag === 'naoh' ? 0xa5b4fc : 0xfda4af));
+    d.mesh.visible = true;
+    updateSelectionUI();
+  }
+
+  function applyDropImpact(t, reag, dose) {
+    const before = computeTubeSpecies(t);
+    if (reag === 'naoh') t.nNaOH = Math.min(8.0, t.nNaOH + dose);
+    else t.nHCl = Math.min(8.0, t.nHCl + dose);
+    t.volMl = Math.min(9.6, t.volMl + dose * 0.42);
+
+    const after = computeTubeSpecies(t);
+    t.pptTarget = after.ppt;
+    t.impact = 1.0;
+    sfxDrop(t.def.isAl ? 540 : 480);
+
+    // Visual response: plume when forming precipitate, clarity shimmer when dissolving!
+    if (after.ppt > before.ppt + 0.005) {
+      t.plumeAmp = Math.min(1.0, t.plumeAmp + 0.85);
+      t.plumeProg = 0.04;
+      t.settlingCeil = 1.0;
+    } else if (after.ppt < before.ppt - 0.005) {
+      t.dissolveShimmer = 1.0;
+      t.settlingCeil = Math.min(1.0, t.settlingCeil + 0.35);
+      if (after.ppt <= 0.001 && before.ppt > 0.01) {
+        sfxClearChime();
+        if (t.def.isAl && reag === 'naoh') {
+          showToast('✨ Kết tủa keo trắng <b>Al(OH)₃</b> đã <b>tan hoàn toàn</b> trong NaOH dư → <b>Na[Al(OH)₄]</b> trong suốt!');
+        } else if (reag === 'hcl') {
+          showToast('✨ Kết tủa <b>' + t.def.hydroxide + '</b> đã <b>tan hoàn toàn</b> trong dung dịch HCl!');
+        }
+      }
+    } else if (!t.def.isAl && reag === 'naoh' && after.ohNet > 2.2) {
+      t.sloshVel += 0.25;
+      if (Math.abs(after.ohNet - 2.5) < 0.15 || Math.abs(after.ohNet - 3.5) < 0.15) {
+        showToast('⚠️ <b>Mg(OH)₂ không có tính lưỡng tính</b> — nhỏ dư NaOH kết tủa vẫn <b>không tan</b>!');
+      }
+    }
+
+    // Determine exact reaction equation to highlight
+    let eqId = '';
+    if (t.def.isAl) {
+      if (reag === 'naoh') {
+        if (before.ohNet < 3.0 && after.ohNet > 0) eqId = 'eqAl1';
+        else if (before.ohNet >= 3.0 && before.ppt > 0) eqId = 'eqAl2';
+      } else {
+        if (before.ohNet > 3.0 && after.ppt > before.ppt) {
+          eqId = 'eqAl4';
+          if (before.ppt <= 0.01 && after.ppt > 0.01) {
+            showToast('🧪 HCl trung hòa Na[Al(OH)₄] → <b>tái tạo kết tủa keo trắng Al(OH)₃↓</b>!');
+          }
+        } else if (before.ppt > 0 && after.ppt < before.ppt) {
+          eqId = 'eqAl3';
+        }
+      }
+    } else {
+      if (reag === 'naoh' && before.ohNet < 2.0 && after.ohNet > 0) eqId = 'eqMg1';
+      else if (reag === 'hcl' && before.ppt > 0 && after.ppt < before.ppt) eqId = 'eqMg2';
+    }
+    t.lastEvent = eqId;
+    updateReadouts(eqId);
+  }
+
+  function highlightEq(eqId) {
+    ['eqAl1', 'eqAl2', 'eqAl3', 'eqAl4', 'eqMg1', 'eqMg2'].forEach(function (id) {
+      $(id).classList.toggle('hl', id === eqId);
+    });
+  }
+
+  function updateSelectionUI() {
+    $('btnReagNaOH').className = currentReag === 'naoh' ? 'on-naoh' : '';
+    $('btnReagHCl').className = currentReag === 'hcl' ? 'on-hcl' : '';
+    $('btnTube0').className = activeTubeIdx === 0 ? 'on-tube' : '';
+    $('btnTube1').className = activeTubeIdx === 1 ? 'on-tube' : '';
+
+    const cr = $('chipReag');
+    cr.className = 'chip ' + (currentReag === 'naoh' ? 'reag-naoh' : 'reag-hcl');
+    $('reagTxt').textContent = currentReag === 'naoh' ? 'dd NaOH 1M' : 'dd HCl 1M';
+    $('selTxt').textContent = activeTubeIdx === 0 ? 'Ống 1 (AlCl₃)' : 'Ống 2 (MgCl₂)';
+
+    const btn1 = $('btnDrop1');
+    btn1.className = 'chinh' + (currentReag === 'hcl' ? ' hcl-btn' : '');
+    btn1.textContent = currentReag === 'naoh'
+      ? '💧 Nhỏ 1 giọt NaOH (+0,25 tỉ lệ mol)'
+      : '🧪 Nhỏ 1 giọt HCl (+0,25 tỉ lệ mol)';
+
+    dropper.userData.liqMat.color.copy(srgbCol(currentReag === 'naoh' ? 0x818cf8 : 0xf43f5e));
+    dropper.userData.bulbMat.color.copy(srgbCol(currentReag === 'naoh' ? 0x3730a3 : 0x9f1239));
+
+    tubes.forEach(function (t, i) {
+      t.selRing.material.opacity = (i === activeTubeIdx) ? 0.78 : 0.0;
+      $('nhan' + i).classList.toggle('active', i === activeTubeIdx);
+    });
+  }
+
+  function fmt(v) { return v.toFixed(2).replace('.', ','); }
+
+  function updateReadouts(lastEq) {
+    if (lastEq) highlightEq(lastEq);
+    const s0 = computeTubeSpecies(tubes[0]);
+    const s1 = computeTubeSpecies(tubes[1]);
+
+    // AlCl3 meter (max scale = 5.0 -> 100%)
+    const r0 = Math.max(0, s0.ohNet);
+    $('alRatioTxt').innerHTML = 'n(OH⁻)<sub>ròng</sub>/n(Al³⁺) = <b>' + fmt(s0.ohNet) + '</b>';
+    $('alBar').style.width = Math.min(100, (r0 / 5.0) * 100).toFixed(1) + '%';
+    const pct0 = Math.round(s0.ppt * 100);
+    $('alPptTxt').textContent = 'Kết tủa Al(OH)₃: ' + pct0 + '%';
+
+    let st0 = 'Dung dịch AlCl₃ trong suốt', cls0 = 'st-clear';
+    if (s0.ohNet < -0.05) { st0 = 'Môi trường acid dư (Al³⁺ tan)'; cls0 = 'st-clear'; }
+    else if (s0.ppt > 0.01 && s0.ohNet <= 3.02) { st0 = 'Kết tủa keo trắng Al(OH)₃↓ đang tăng'; cls0 = 'st-ppt'; }
+    else if (s0.ppt > 0.01 && s0.ohNet > 3.02) { st0 = 'Al(OH)₃↓ đang tan dần trong NaOH dư'; cls0 = 'st-ppt'; }
+    else if (s0.ohNet >= 3.99) { st0 = 'Tan hoàn toàn → dd Na[Al(OH)₄] trong suốt!'; cls0 = 'st-clear'; }
+    $('alStateTxt').textContent = st0;
+    $('nhan0').innerHTML = 'Ống 1 · dd AlCl₃ <small class="' + cls0 + '">' + (pct0 > 0 ? ('Al(OH)₃↓ keo trắng (' + pct0 + '%)') : (s0.ohNet >= 3.99 ? '✨ Tan hết → Na[Al(OH)₄]' : 'Trong suốt')) + '</small>';
+
+    // MgCl2 meter (max scale = 5.0 -> 100%)
+    const r1 = Math.max(0, s1.ohNet);
+    $('mgRatioTxt').innerHTML = 'n(OH⁻)<sub>ròng</sub>/n(Mg²⁺) = <b>' + fmt(s1.ohNet) + '</b>';
+    $('mgBar').style.width = Math.min(100, (r1 / 5.0) * 100).toFixed(1) + '%';
+    const pct1 = Math.round(s1.ppt * 100);
+    $('mgPptTxt').textContent = 'Kết tủa Mg(OH)₂: ' + pct1 + '%';
+
+    let st1 = 'Dung dịch MgCl₂ trong suốt', cls1 = 'st-clear';
+    if (s1.ohNet < -0.05) { st1 = 'Môi trường acid dư (Mg²⁺ tan)'; cls1 = 'st-clear'; }
+    else if (s1.ppt > 0.01 && s1.ohNet <= 2.02) { st1 = 'Kết tủa trắng Mg(OH)₂↓'; cls1 = 'st-ppt'; }
+    else if (s1.ohNet > 2.02) { st1 = 'NaOH dư: Mg(OH)₂↓ KHÔNG TAN!'; cls1 = 'st-stay'; }
+    $('mgStateTxt').textContent = st1;
+    $('nhan1').innerHTML = 'Ống 2 · dd MgCl₂ <small class="' + cls1 + '">' + (s1.ohNet > 2.02 ? 'Mg(OH)₂↓ (Không tan trong NaOH dư)' : (pct1 > 0 ? ('Mg(OH)₂↓ trắng (' + pct1 + '%)') : 'Trong suốt')) + '</small>';
+
+    // Dynamic explanation
+    const kq = $('kq');
+    if (s0.ohNet >= 3.99 && s1.ohNet >= 2.5) {
+      kq.innerHTML = '🎯 <b>Đối chứng hoàn hảo!</b> Cùng nhỏ dư <b>NaOH</b>: Ống 1 có <b>Al(OH)₃</b> tan hoàn toàn thành phức <b>Na[Al(OH)₄]</b> trong suốt → <b>Al(OH)₃ là hydroxide lưỡng tính</b>. Ống 2 có <b>Mg(OH)₂</b> giữ nguyên kết tủa trắng → <b>Mg(OH)₂ chỉ có tính base</b>. Thử đổi sang <b>HCl 1M</b> nhỏ vào cả 2 ống xem điều kỳ diệu!';
+    } else if (s0.ohNet >= 3.99) {
+      kq.innerHTML = '✨ Ống 1: Ở tỉ lệ <b>n(OH⁻)/n(Al³⁺) ≥ 4</b>, toàn bộ kết tủa keo trắng Al(OH)₃ đã tan hết tạo dung dịch <b>Na[Al(OH)₄]</b> trong suốt. Hãy nhỏ <b>NaOH</b> dư sang <b>Ống 2 (MgCl₂)</b> để so sánh, hoặc đổi sang <b>HCl</b> nhỏ từng giọt vào Ống 1!';
+    } else if (s0.ppt > 0.2 && s0.ohNet <= 3.05) {
+      kq.innerHTML = '☁️ Ống 1 xuất hiện đám mây kết tủa <b>keo trắng Al(OH)₃↓</b> lơ lửng rồi lắng dần (đạt cực đại tại tỉ lệ <b>3 : 1</b>). Hãy tiếp tục nhỏ thêm <b>NaOH</b> để thấy kết tủa tan trở lại, hoặc nhỏ <b>HCl</b> để thấy nó cũng tan trong acid!';
+    } else if (s1.ohNet > 2.2) {
+      kq.innerHTML = '⚪ Ống 2: Dù đã nhỏ dư <b>NaOH</b> (tỉ lệ &gt; 2), kết tủa trắng <b>Mg(OH)₂↓</b> vẫn <b>không tan</b> vì Mg(OH)₂ là base, chỉ tan được khi nhỏ dung dịch acid <b>HCl</b>.';
+    } else {
+      kq.innerHTML = 'Nhỏ <b>dd NaOH 1M</b> vào từng ống (hoặc bấm <b>Nhỏ song song 2 ống</b>) để quan sát đồng thời sự hình thành và hòa tan kết tủa của <b>Al(OH)₃</b> so với <b>Mg(OH)₂</b>.';
+    }
+  }
+
+  function resetAll() {
+    tubes.forEach(function (t) {
+      t.nNaOH = 0; t.nHCl = 0; t.volMl = 2.8;
+      t.pptTarget = 0; t.pptVis = 0; t.sedVis = 0;
+      t.settlingCeil = 1.0; t.plumeAmp = 0; t.plumeProg = 0;
+      t.impact = 0; t.slosh = 0; t.sloshVel = 0; t.dissolveShimmer = 0;
+    });
+    DROP_POOL.forEach(function (d) { d.active = false; d.mesh.visible = false; });
+    highlightEq('');
+    updateReadouts('');
+    showToast('↺ Đã rửa sạch 2 ống và nạp mới <b>AlCl₃</b> &amp; <b>MgCl₂</b>.');
+  }
+
+  /* ==================== CAMERA CONTROLLER (INERTIAL ORBIT + PRESETS) ==================== */
+  const CAM_PRESETS = {
+    iso: { theta: 0.18, phi: 1.24, r: 6.3, ty: 1.68, tx: 0.0 },
+    al:  { theta: -0.22, phi: 1.32, r: 4.1, ty: 1.42, tx: TUBE_X[0] },
+    mg:  { theta: 0.22, phi: 1.32, r: 4.1, ty: 1.42, tx: TUBE_X[1] }
+  };
+  let camCur = { theta: 0.18, phi: 1.24, r: 6.3, tx: 0, ty: 1.68 };
+  let camDst = { theta: 0.18, phi: 1.24, r: 6.3, tx: 0, ty: 1.68 };
+
+  document.querySelectorAll('.cam-bar [data-cam]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const k = btn.getAttribute('data-cam');
+      const p = CAM_PRESETS[k];
+      if (!p) return;
+      camDst.theta = p.theta; camDst.phi = p.phi; camDst.r = p.r; camDst.tx = p.tx; camDst.ty = p.ty;
+      document.querySelectorAll('.cam-bar [data-cam]').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    });
+  });
+
+  /* ==================== POINTER INTERACTION (ORBIT + CLICK/HOLD TUBE TO DROP) ==================== */
+  const raycaster = new THREE.Raycaster();
+  const ptr = new THREE.Vector2();
+  let dragging = false, downX = 0, downY = 0, lastX = 0, lastY = 0;
+  let holdTubeIdx = -1, holdTimer = null, holdInterval = null;
+
+  function hitTestTube(clientX, clientY) {
+    const r = cv.getBoundingClientRect();
+    ptr.x = ((clientX - r.left) / r.width) * 2 - 1;
+    ptr.y = -((clientY - r.top) / r.height) * 2 + 1;
+    raycaster.setFromCamera(ptr, camera);
+    const hits = raycaster.intersectObjects(hitMeshes, false);
+    return hits.length ? hits[0].object.userData.tubeIdx : -1;
+  }
+
+  function stopHoldStream() {
+    holdTubeIdx = -1;
+    clearTimeout(holdTimer);
+    clearInterval(holdInterval);
+  }
+
+  cv.addEventListener('pointerdown', function (e) {
+    ensureAudio();
+    downX = lastX = e.clientX;
+    downY = lastY = e.clientY;
+    const ti = hitTestTube(e.clientX, e.clientY);
+    if (ti >= 0) {
+      holdTubeIdx = ti;
+      activeTubeIdx = ti;
+      dropperTargetX = tubes[ti].def.x;
+      updateSelectionUI();
+      holdTimer = setTimeout(function () {
+        if (holdTubeIdx >= 0) {
+          spawnDrop(holdTubeIdx, currentReag, 0.25);
+          holdInterval = setInterval(function () {
+            if (holdTubeIdx >= 0) spawnDrop(holdTubeIdx, currentReag, 0.25);
+          }, 230);
+        }
+      }, 260);
+    } else {
+      dragging = true;
+      cv.setPointerCapture(e.pointerId);
+    }
+  });
+
+  cv.addEventListener('pointermove', function (e) {
+    if (holdTubeIdx >= 0 && Math.hypot(e.clientX - downX, e.clientY - downY) > 10) {
+      stopHoldStream();
+      dragging = true;
+    }
+    if (dragging) {
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      lastX = e.clientX; lastY = e.clientY;
+      camDst.theta -= dx * 0.0065;
+      camDst.phi = Math.max(0.52, Math.min(1.52, camDst.phi - dy * 0.0055));
+    } else {
+      const ti = hitTestTube(e.clientX, e.clientY);
+      cv.style.cursor = ti >= 0 ? 'pointer' : 'grab';
+    }
+  });
+
+  cv.addEventListener('pointerup', function (e) {
+    if (holdTubeIdx >= 0 && Math.hypot(e.clientX - downX, e.clientY - downY) <= 10) {
+      spawnDrop(holdTubeIdx, currentReag, 0.25);
+    }
+    stopHoldStream();
+    dragging = false;
+  });
+  cv.addEventListener('pointercancel', function () { stopHoldStream(); dragging = false; });
+
+  cv.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    camDst.r = Math.max(3.3, Math.min(9.5, camDst.r + e.deltaY * 0.0045));
+  }, { passive: false });
+
+  /* ==================== UI BUTTON HANDLERS ==================== */
+  $('btnSound').addEventListener('click', function () {
+    soundOn = !soundOn;
+    this.classList.toggle('on', soundOn);
+    this.textContent = soundOn ? '🔊' : '🔇';
+  });
+  $('btnReagNaOH').addEventListener('click', function () { currentReag = 'naoh'; updateSelectionUI(); });
+  $('btnReagHCl').addEventListener('click', function () { currentReag = 'hcl'; updateSelectionUI(); });
+  $('btnTube0').addEventListener('click', function () { activeTubeIdx = 0; dropperTargetX = TUBE_X[0]; updateSelectionUI(); });
+  $('btnTube1').addEventListener('click', function () { activeTubeIdx = 1; dropperTargetX = TUBE_X[1]; updateSelectionUI(); });
+
+  $('btnDrop1').addEventListener('click', function () {
+    ensureAudio();
+    spawnDrop(activeTubeIdx, currentReag, 0.25);
+  });
+  $('btnDrop4').addEventListener('click', function () {
+    ensureAudio();
+    const ti = activeTubeIdx, rg = currentReag;
+    for (let k = 0; k < 4; k++) {
+      setTimeout(function () { spawnDrop(ti, rg, 0.25); }, k * 145);
+    }
+  });
+  $('btnBoth').addEventListener('click', function () {
+    ensureAudio();
+    const rg = currentReag;
+    spawnDrop(0, rg, 0.50);
+    setTimeout(function () { spawnDrop(1, rg, 0.50); }, 210);
+  });
+  $('btnShake').addEventListener('click', function () {
+    ensureAudio();
+    sfxShake();
+    tubes.forEach(function (t) {
+      t.sloshVel += (t.idx === 0 ? 1.9 : -1.9);
+      t.settlingCeil = 1.0;
+      t.sedVis *= 0.45;
+    });
+  });
+  $('btnReset').addEventListener('click', function () { ensureAudio(); resetAll(); });
+
+  /* ==================== RESIZE & PAUSE ON HIDDEN ==================== */
+  function onResize() {
+    const w = stage.clientWidth || 1, h = stage.clientHeight || 1;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  window.addEventListener('resize', onResize);
+  onResize();
+
+  let paused = false;
+  document.addEventListener('visibilitychange', function () { paused = document.hidden; });
+
+  /* ==================== ANIMATION LOOP ==================== */
+  const projV = new THREE.Vector3();
+  let lastT = performance.now();
+  let elapsed = 0;
+
+  updateSelectionUI();
+  updateReadouts('');
+
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (paused) { lastT = now; return; }
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+    elapsed += dt;
+
+    // Smooth camera
+    const ease = 1 - Math.exp(-dt * 7.5);
+    camCur.theta += (camDst.theta - camCur.theta) * ease;
+    camCur.phi += (camDst.phi - camCur.phi) * ease;
+    camCur.r += (camDst.r - camCur.r) * ease;
+    camCur.tx += (camDst.tx - camCur.tx) * ease;
+    camCur.ty += (camDst.ty - camCur.ty) * ease;
+
+    camera.position.set(
+      camCur.tx + camCur.r * Math.sin(camCur.phi) * Math.sin(camCur.theta),
+      camCur.ty + camCur.r * Math.cos(camCur.phi),
+      camCur.r * Math.sin(camCur.phi) * Math.cos(camCur.theta)
+    );
+    camera.lookAt(camCur.tx, camCur.ty, 0);
+
+    // Smooth dropper hover & bulb squeeze
+    dropperPos.x += (dropperTargetX - dropperPos.x) * Math.min(1, dt * 10);
+    dropperPos.y = 3.56 + Math.sin(elapsed * 2.2) * 0.03 - bulbSqueeze * 0.07;
+    dropper.position.copy(dropperPos);
+    bulbSqueeze = Math.max(0, bulbSqueeze - dt * 4.5);
+    const sq = 1.0 - bulbSqueeze * 0.16;
+    dropper.userData.bulb.scale.set(sq, 1.0 + bulbSqueeze * 0.06, sq);
+
+    // Update falling drops
+    for (let i = 0; i < DROP_POOL.length; i++) {
+      const d = DROP_POOL[i];
+      if (!d.active) continue;
+      const t = tubes[d.tubeIdx];
+      const spanH = 0.56 + (t.volMl / 10.0) * 1.92;
+      const meniWorldY = t.root.position.y + 0.032 + spanH;
+      d.vy -= 9.5 * dt;
+      d.y += d.vy * dt;
+      d.mesh.position.y = d.y;
+      if (d.y <= meniWorldY) {
+        d.active = false;
+        d.mesh.visible = false;
+        applyDropImpact(t, d.reag, d.dose);
+      }
+    }
+
+    // Update each tube visuals
+    const sw = stage.clientWidth, sh = stage.clientHeight;
+    tubes.forEach(function (t, idx) {
+      const spanH = 0.56 + (t.volMl / 10.0) * 1.92;
+
+      // Smoothly approach stoichiometric precipitate target (both growth AND dissolution to 0!)
+      const rate = t.pptTarget < t.pptVis ? 2.2 : 2.8;
+      t.pptVis += (t.pptTarget - t.pptVis) * Math.min(1, dt * rate);
+      if (t.pptTarget <= 0.001 && t.pptVis < 0.005) t.pptVis = 0;
+
+      // Gentle settling: gelatinous Al(OH)3 stays suspended higher & fluffier, Mg(OH)2 settles denser
+      const sedRate = t.def.isAl ? 0.10 : 0.20;
+      const maxSedFrac = t.def.isAl ? 0.52 : 0.72;
+      if (t.pptVis > 0.01) {
+        t.sedVis = Math.min(t.pptVis * maxSedFrac, t.sedVis + dt * sedRate * t.pptVis);
+        t.settlingCeil = Math.max(t.def.isAl ? 0.58 : 0.42, t.settlingCeil - dt * (t.def.isAl ? 0.025 : 0.045));
+      } else {
+        t.sedVis = Math.max(0, t.sedVis - dt * 1.8);
+        t.settlingCeil = 1.0;
+      }
+      if (t.sedVis > t.pptVis * maxSedFrac) {
+        t.sedVis += (t.pptVis * maxSedFrac - t.sedVis) * Math.min(1, dt * 3.5);
+      }
+
+      // Slosh spring-damper
+      t.sloshVel += (-26.0 * t.slosh - 4.2 * t.sloshVel) * dt;
+      t.slosh += t.sloshVel * dt;
+
+      // Plume, impact & shimmer decay
+      if (t.plumeAmp > 0.001) {
+        t.plumeProg = Math.min(1.0, t.plumeProg + dt * 0.72);
+        t.plumeAmp = Math.max(0, t.plumeAmp - dt * 0.62);
+      }
+      t.impact = Math.max(0, t.impact - dt * 1.65);
+      t.dissolveShimmer = Math.max(0, t.dissolveShimmer - dt * 0.95);
+
+      const suspendedAmt = Math.max(0, t.pptVis - t.sedVis * 0.45);
+      t.liqMat.uniforms.uTime.value = elapsed;
+      t.liqMat.uniforms.uSpanH.value = spanH;
+      t.liqMat.uniforms.uSlosh.value = t.slosh;
+      t.liqMat.uniforms.uCloudAmt.value = suspendedAmt;
+      t.liqMat.uniforms.uSettlingCeil.value = t.settlingCeil;
+      t.liqMat.uniforms.uPlumeAmp.value = t.plumeAmp;
+      t.liqMat.uniforms.uPlumeProg.value = t.plumeProg;
+      t.liqMat.uniforms.uDissolveShimmer.value = t.dissolveShimmer;
+
+      t.sedMat.uniforms.uTime.value = elapsed;
+      t.sedMat.uniforms.uHeight.value = t.sedVis * (t.def.isAl ? 0.72 : 0.56);
+      t.sedMat.uniforms.uSlosh.value = t.slosh;
+      t.sedMat.uniforms.uAlpha.value = Math.min(1.0, t.sedVis * 2.8);
+
+      t.meniMesh.position.y = 0.032 + spanH;
+      t.meniMat.uniforms.uTime.value = elapsed;
+      t.meniMat.uniforms.uSlosh.value = t.slosh;
+      t.meniMat.uniforms.uImpact.value = t.impact;
+      t.meniMat.uniforms.uCloudAmt.value = suspendedAmt * 0.75;
+
+      // Project floating 3D HTML label above tube mouth
+      projV.set(t.def.x, 3.36, 0).project(camera);
+      const lb = $('nhan' + idx);
+      if (projV.z < 1) {
+        lb.style.display = '';
+        lb.style.left = ((projV.x * 0.5 + 0.5) * sw) + 'px';
+        lb.style.top = ((-projV.y * 0.5 + 0.5) * sh) + 'px';
+      } else {
+        lb.style.display = 'none';
+      }
+    });
+
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbital nguyên tử (s, p, d) &amp; Xen phủ liên kết (σ, π) 3D — Hóa 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#070b14;
+    --the:#101726;
+    --vien:rgba(148,163,184,.16);
+    --chu:#e8eef7;
+    --phu:#94a3b8;
+    --tim:#7aa2f7;
+    --pos:#5b8def;
+    --neg:#df6579;
+    --ovl:#38bdf8;
+    --gold:#eab308;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--nen);color:var(--chu);font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;overflow:hidden;user-select:none}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 376px;height:100dvh}
+  .stage{position:relative;min-height:0;touch-action:none;background:radial-gradient(115% 88% at 50% 4%,#121f36 0%,#0a101e 58%,#060911 100%);overflow:hidden}
+  #cv{display:block;width:100%;height:100%;cursor:grab}
+  #cv:active{cursor:grabbing}
+
+  .hud{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;z-index:3}
+  .hud-left,.hud-right{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:rgba(10,14,26,.82);border:1px solid var(--vien);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.38)}
+  .chip i{display:inline-block;width:10px;height:10px;border-radius:50%}
+  .chip b{color:#fde68a;font-weight:800}
+  .hud-btn{pointer-events:auto;cursor:pointer;min-height:34px;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(16,22,38,.86);border:1px solid var(--vien);color:var(--chu);transition:.15s}
+  .hud-btn:hover{border-color:rgba(255,255,255,.34);transform:translateY(-1px)}
+  .hud-btn.on{background:linear-gradient(90deg,#4338ca,#7c3aed);border-color:#c4b5fd;color:#fff}
+
+  .cam-bar{position:absolute;left:14px;bottom:46px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+  .hint-bar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(10,14,26,.78);border:1px solid var(--vien);border-radius:99px;padding:6px 14px;font-size:11.5px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
+  .hint-bar b{color:#f8fafc}
+
+  .side{background:var(--the);border-left:1px solid var(--vien);padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:11px}
+  h1{font-size:16.2px;margin:0;line-height:1.32}
+  .tag{display:inline-block;background:rgba(91,141,239,.18);color:#93c5fd;border-radius:99px;padding:2px 10px;font-size:11px;font-weight:800;margin-bottom:4px}
+
+  .mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:rgba(0,0,0,.32);padding:4px;border-radius:11px;border:1px solid var(--vien)}
+  .mode-tabs button{min-height:38px;padding:6px 6px;border:0;border-radius:8px;font-size:12px;background:transparent;color:var(--phu)}
+  .mode-tabs button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);color:#fff;box-shadow:0 4px 12px rgba(109,40,217,.36)}
+
+  .box{background:rgba(255,255,255,.036);border:1px solid var(--vien);border-radius:13px;padding:10px 12px}
+  .box h3{margin:0 0 8px;font-size:11.2px;letter-spacing:.06em;text-transform:uppercase;color:var(--tim);display:flex;justify-content:space-between;align-items:center}
+
+  .orb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .bond-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .seg{display:flex;gap:5px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:80px}
+
+  button{font:inherit;font-weight:700;font-size:12.2px;border:1px solid var(--vien);background:rgba(255,255,255,.055);color:var(--chu);border-radius:10px;padding:7px 8px;min-height:38px;cursor:pointer;transition:.15s}
+  button:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.28)}
+  button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);border-color:rgba(255,255,255,.32);color:#fff}
+  button .sub{display:block;font-size:10.3px;font-weight:600;color:#cbd5e1;opacity:.85;margin-top:1px}
+
+  .chinh{width:100%;background:linear-gradient(90deg,#0284c7,#6d28d9);border:0;color:#fff;font-size:13px;margin-top:8px;box-shadow:0 6px 16px rgba(2,132,199,.25)}
+  .chinh:hover{filter:brightness(1.08)}
+
+  label.row{display:flex;align-items:center;gap:8px;font-size:12.4px;margin:5px 0;cursor:pointer}
+  input[type=range]{width:100%;accent-color:var(--tim);cursor:pointer}
+  input[type=checkbox]{accent-color:var(--tim);width:17px;height:17px;cursor:pointer}
+
+  .qnum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:7px}
+  .qcell{background:rgba(0,0,0,.26);border:1px solid var(--vien);border-radius:9px;padding:6px 8px;text-align:center}
+  .qcell span{display:block;font-size:10.2px;color:var(--phu)}
+  .qcell b{font-size:13.2px;color:#e0e7ff}
+
+  .energy-wrap{background:rgba(6,10,20,.65);border:1px solid var(--vien);border-radius:10px;padding:7px 8px 4px;margin-top:8px}
+  .energy-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--phu);margin-bottom:4px}
+  .energy-head b{color:#7dd3fc}
+  #peCanvas{width:100%;height:96px;display:block}
+
+  .kq{font-size:12.4px;line-height:1.58;color:#cbd5e1}
+  .kq b{color:#bae6fd}
+  .kq .pos{color:#93c5fd;font-weight:800}
+  .kq .neg{color:#fda4af;font-weight:800}
+  .q{background:rgba(34,197,94,.09);border-color:rgba(34,197,94,.32)}
+  .q h3{color:#86efac}
+
+  .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--phu);background:var(--nen);z-index:10}
+
+  @media (max-width:860px){
+    html,body{overflow:auto}
+    .wrap{grid-template-columns:1fr;grid-template-rows:58dvh auto;height:auto}
+    .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
+    .cam-bar{bottom:10px}
+    .hint-bar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="hud">
+      <div class="hud-left">
+        <span class="chip"><i style="background:var(--pos);box-shadow:0 0 7px var(--pos)"></i>Pha dương (+)</span>
+        <span class="chip"><i style="background:var(--neg);box-shadow:0 0 7px var(--neg)"></i>Pha âm (−)</span>
+        <span class="chip" id="chipStatus">⚛️ Orbital: <b id="statusTxt">2p<sub>z</sub></b></span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn on" id="btnSound" title="Bật/tắt âm thanh">🔊</button>
+      </div>
+    </div>
+
+    <div class="cam-bar">
+      <button class="hud-btn" data-cam="iso">🎥 Góc 3D chuẩn</button>
+      <button class="hud-btn" data-cam="z">🔭 Nhìn dọc trục z</button>
+      <button class="hud-btn" data-cam="slice">📐 Chính diện cắt lát</button>
+    </div>
+
+    <div class="hint-bar" id="hint">🖱️ Kéo xoay 360° · Cuộn để zoom · Bật <b>Cắt lát mặt phẳng</b> để quan sát nút xuyên tâm của orbital 2s</div>
+    <div class="fallback" id="fb">Thiết bị chưa bật WebGL hoặc không nạp được Three.js nên không hiển thị được mô hình 3D.</div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <span class="tag">Bài 3 &amp; Bài 12 · SGK Hóa 10 KNTT</span>
+      <h1>Orbital nguyên tử (s, p, d) &amp; Xen phủ liên kết (σ, π) 3D</h1>
+    </div>
+
+    <div class="mode-tabs" id="mainTabs">
+      <button class="on" data-tab="orbital">⚛️ Hình dạng Orbital 3D</button>
+      <button data-tab="overlap">🔗 Xen phủ σ &amp; π</button>
+    </div>
+
+    <!-- ==================== TAB 1: ORBITAL 3D ==================== -->
+    <div id="panelOrbital">
+      <div class="box">
+        <h3>Chọn Orbital nguyên tử (AO)</h3>
+        <div class="orb-grid" id="orbGrid">
+          <button data-orb="1s">1s<span class="sub">Hình cầu</span></button>
+          <button data-orb="2s">2s<span class="sub">Có 1 nút cầu</span></button>
+          <button data-orb="2px">2p<sub>x</sub><span class="sub">Trục Ox</span></button>
+          <button data-orb="2py">2p<sub>y</sub><span class="sub">Trục Oy</span></button>
+          <button data-orb="2pz" class="on">2p<sub>z</sub><span class="sub">Trục Oz</span></button>
+          <button data-orb="2pall">2p tổng<span class="sub">p<sub>x</sub>+p<sub>y</sub>+p<sub>z</sub></span></button>
+          <button data-orb="3dz2">3d<sub>z²</sub><span class="sub">Vành xuyến</span></button>
+          <button data-orb="3dxy">3d<sub>xy</sub><span class="sub">4 thùy chéo</span></button>
+          <button data-orb="3dx2y2">3d<sub>x²-y²</sub><span class="sub">Dọc Ox, Oy</span></button>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:10px">
+        <h3>Kiểu biểu diễn xác suất lượng tử</h3>
+        <div class="seg" id="viewModeSeg">
+          <button data-vm="cloud">Đám mây hạt</button>
+          <button data-vm="surface">Mặt biên 90%</button>
+          <button data-vm="both" class="on">Kết hợp cả hai</button>
+        </div>
+        <label class="row" style="margin-top:8px"><input type="checkbox" id="chkSlice"> ✂️ Cắt lát mặt phẳng (soi nút cầu 2s &amp; mặt phẳng nút)</label>
+        <label class="row"><input type="checkbox" id="chkAxes" checked> Hiện hệ trục tọa độ Oxyz</label>
+        <label class="row"><input type="checkbox" id="chkRotate" checked> Tự xoay chậm 360°</label>
+      </div>
+
+      <div class="box" style="margin-top:10px">
+        <h3>Thông số hàm sóng |ψ<sub>n,l,m</sub>|²</h3>
+        <div class="qnum">
+          <div class="qcell"><span>Lớp (n)</span><b id="qnN">2</b></div>
+          <div class="qcell"><span>Phân lớp</span><b id="qnL">p (l = 1)</b></div>
+          <div class="qcell"><span>Số nút</span><b id="qnNodes">1 mặt nút</b></div>
+        </div>
+        <div class="kq" id="orbInfo"></div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: XEN PHỦ LIÊN KẾT ==================== -->
+    <div id="panelOverlap" style="display:none">
+      <div class="box">
+        <h3>Chọn kiểu xen phủ chuẩn SGK Bài 12</h3>
+        <div class="bond-grid" id="bondGrid">
+          <button data-bond="ss" class="on">s – s (H₂)<span class="sub">Xen phủ trục → σ</span></button>
+          <button data-bond="sp">s – p (HCl)<span class="sub">Xen phủ trục → σ</span></button>
+          <button data-bond="pp_sigma">p – p trục (Cl₂)<span class="sub">Xen phủ trục → σ</span></button>
+          <button data-bond="pp_pi">p – p bên (π)<span class="sub">O₂, N₂, C₂H₄</span></button>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:10px">
+        <h3><span>Khoảng cách 2 hạt nhân (d)</span> <b id="distTxt" style="color:#7dd3fc">3.20 Å</b></h3>
+        <input type="range" id="distRange" min="0.45" max="3.80" step="0.02" value="3.20">
+        <div style="display:flex;justify-content:space-between;font-size:10.3px;color:var(--phu);margin-top:2px">
+          <span>Đẩy mạnh</span><span id="dOptLabel" style="color:#4ade80">Độ dài tối ưu d₀</span><span>Tách rời</span>
+        </div>
+        <button class="chinh" id="btnAutoBond">▶ Tự tiến lại ghép liên kết</button>
+        <button style="width:100%;margin-top:6px" id="btnResetBond">↺ Tách xa 2 nguyên tử</button>
+
+        <div class="energy-wrap">
+          <div class="energy-head"><span>Đường cong thế năng E(d)</span><b id="energyState">Chưa xen phủ</b></div>
+          <canvas id="peCanvas" width="330" height="96"></canvas>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:10px">
+        <h3>Phân tích vùng xen phủ</h3>
+        <div class="kq" id="bondInfo"></div>
+      </div>
+    </div>
+
+    <div class="box q">
+      <h3>Câu hỏi tự kiểm tra SGK Hóa 10</h3>
+      <div class="kq" id="quizBox">1. Bật <b>2s</b> rồi tích <b>Cắt lát mặt phẳng</b>: vùng trống hình cầu nằm giữa lõi dương và vỏ âm gọi là gì?<br>2. Chuyển sang tab <b>Xen phủ σ &amp; π</b>: vì sao liên kết π kém bền hơn liên kết σ?</div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function loadThreeAndBoot() {
+  var MIRRORS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+    'https://unpkg.com/three@0.128.0/build/three.min.js'
+  ];
+  var idx = 0;
+  function fail() { document.getElementById('fb').style.display = 'flex'; }
+  function next() {
+    if (window.THREE && window.THREE.WebGLRenderer) { bootOrbitalApp(window.THREE); return; }
+    if (idx >= MIRRORS.length) { fail(); return; }
+    var s = document.createElement('script');
+    s.src = MIRRORS[idx++];
+    s.async = true;
+    s.onload = function () {
+      if (window.THREE && window.THREE.WebGLRenderer) bootOrbitalApp(window.THREE);
+      else next();
+    };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+
+function bootOrbitalApp(THREE) {
+  'use strict';
+  const $ = function (id) { return document.getElementById(id); };
+  function srgbCol(hex) { return new THREE.Color(hex).convertSRGBToLinear(); }
+
+  /* ==================== WEB AUDIO NHẸ NHÀNG ==================== */
+  let soundOn = true, audioCtx = null;
+  function playTone(freq, dur, vol, type) {
+    if (!soundOn) return;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = type || 'sine';
+      o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(freq * 1.18, audioCtx.currentTime + dur);
+      g.gain.setValueAtTime(vol || 0.038, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0006, audioCtx.currentTime + dur);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + dur + 0.01);
+    } catch (e) {}
+  }
+
+  /* ==================== RENDERER, SCENE, STUDIO IBL ==================== */
+  const stage = $('stage'), cv = $('cv');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  } catch (e) {
+    $('fb').style.display = 'flex';
+    return;
+  }
+  const isLow = (window.innerWidth < 720) || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+  renderer.setPixelRatio(Math.min(isLow ? 1.5 : 2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
+  renderer.localClippingEnabled = true;
+
+  const scene = new THREE.Scene();
+
+  (function buildEnvMap() {
+    if (!THREE.PMREMGenerator) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const es = new THREE.Scene();
+    es.background = new THREE.Color(0x0b1220);
+    const sTop = new THREE.Mesh(new THREE.PlaneGeometry(16, 8), new THREE.MeshBasicMaterial({ color: 0x94a3b8, side: THREE.DoubleSide }));
+    sTop.position.set(0, 9, 3); sTop.lookAt(0, 0, 0); es.add(sTop);
+    const sL = new THREE.Mesh(new THREE.PlaneGeometry(7, 12), new THREE.MeshBasicMaterial({ color: 0x6b8ec4, side: THREE.DoubleSide }));
+    sL.position.set(-10, 2, 2); sL.lookAt(0, 0, 0); es.add(sL);
+    const sR = new THREE.Mesh(new THREE.PlaneGeometry(7, 12), new THREE.MeshBasicMaterial({ color: 0xa67382, side: THREE.DoubleSide }));
+    sR.position.set(10, 2, 2); sR.lookAt(0, 0, 0); es.add(sR);
+    scene.environment = pmrem.fromScene(es, 0.06).texture;
+    pmrem.dispose();
+  })();
+
+  const camera = new THREE.PerspectiveCamera(37, 1, 0.1, 160);
+  scene.add(new THREE.HemisphereLight(0xdbeafe, 0x0f172a, 0.72));
+  const keyLight = new THREE.DirectionalLight(0xf1f5f9, 1.05);
+  keyLight.position.set(7, 10, 8);
+  scene.add(keyLight);
+  const rimLight = new THREE.DirectionalLight(0x8ba6c7, 0.42);
+  rimLight.position.set(-7, -4, -8);
+  scene.add(rimLight);
+
+  /* ==================== TEXTURE HELPERS ==================== */
+  function makeTex(w, h, fn) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    fn(c.getContext('2d'), w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  // Soft radial Gaussian glow dot for probability cloud particles (calm, zero harsh edges)
+  const softDotTex = makeTex(64, 64, function (g, w, h) {
+    const gr = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+    gr.addColorStop(0.0, 'rgba(255,255,255,0.92)');
+    gr.addColorStop(0.28, 'rgba(255,255,255,0.48)');
+    gr.addColorStop(0.65, 'rgba(255,255,255,0.10)');
+    gr.addColorStop(1.0, 'rgba(255,255,255,0.0)');
+    g.fillStyle = gr;
+    g.fillRect(0, 0, w, h);
+  });
+
+  function makeAxisLabel(text, col) {
+    const tex = makeTex(128, 128, function (g, w, h) {
+      g.clearRect(0, 0, w, h);
+      g.beginPath();
+      g.arc(w / 2, h / 2, 42, 0, Math.PI * 2);
+      g.fillStyle = 'rgba(10,16,30,0.72)';
+      g.fill();
+      g.strokeStyle = col;
+      g.lineWidth = 3.5;
+      g.stroke();
+      g.font = '800 58px "Be Vietnam Pro", sans-serif';
+      g.fillStyle = col;
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(text, w / 2, h / 2 + 3);
+    });
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+    sp.scale.set(0.54, 0.54, 1);
+    sp.renderOrder = 20;
+    return sp;
+  }
+
+  /* ==================== Oxyz 3D AXIS GIZMO ==================== */
+  // Chemistry convention: x -> Three +X, y -> Three +Z, z -> Three +Y (vertical!)
+  const axesGroup = new THREE.Group();
+  scene.add(axesGroup);
+
+  function addChemAxis(dir, len, hex, labelTxt) {
+    const mat = new THREE.MeshStandardMaterial({ color: srgbCol(hex), roughness: 0.45, metalness: 0.25, transparent: true, opacity: 0.72 });
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, len * 2, 12), mat);
+    const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+    shaft.quaternion.copy(q);
+    axesGroup.add(shaft);
+
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.19, 14), mat);
+    head.quaternion.copy(q);
+    head.position.copy(dir).multiplyScalar(len + 0.06);
+    axesGroup.add(head);
+
+    const lbl = makeAxisLabel(labelTxt, '#' + hex.toString(16).padStart(6, '0'));
+    lbl.position.copy(dir).multiplyScalar(len + 0.48);
+    axesGroup.add(lbl);
+  }
+  addChemAxis(new THREE.Vector3(1, 0, 0), 3.65, 0xe28a97, 'x');
+  addChemAxis(new THREE.Vector3(0, 0, 1), 3.65, 0x6ec9a8, 'y');
+  addChemAxis(new THREE.Vector3(0, 1, 0), 3.65, 0x7cb0f8, 'z');
+
+  // Subtle equatorial reference ring
+  const eqRing = new THREE.Mesh(
+    new THREE.RingGeometry(3.48, 3.52, 96),
+    new THREE.MeshBasicMaterial({ color: 0x334155, side: THREE.DoubleSide, transparent: true, opacity: 0.22 })
+  );
+  eqRing.rotation.x = -Math.PI / 2;
+  axesGroup.add(eqRing);
+
+  /* ==================== SHARED CLIPPING PLANE & PHASE MATERIALS ==================== */
+  // Slices away front hemisphere (Three.js z > 0) cleanly so inner nodes are exposed
+  const slicePlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0.0);
+
+  const POS_HEX = 0x3b6ee8;   // Calm cool indigo-blue (+ phase)
+  const NEG_HEX = 0xd95770;   // Muted rose-coral (- phase)
+  const POS_PT  = new THREE.Color(0x5b8ef8);
+  const NEG_PT  = new THREE.Color(0xe66d84);
+  const OVL_PT  = new THREE.Color(0x4fd1f5);
+
+  function createLobeMaterials(hex, opacityFront, opacityBack) {
+    const col = srgbCol(hex);
+    const backMat = new THREE.MeshPhysicalMaterial({
+      color: col,
+      roughness: 0.34,
+      metalness: 0.04,
+      transparent: true,
+      opacity: opacityBack,
+      side: THREE.BackSide,
+      depthWrite: false,
+      clearcoat: 0.28,
+      clearcoatRoughness: 0.35
+    });
+    const frontMat = new THREE.MeshPhysicalMaterial({
+      color: col,
+      roughness: 0.26,
+      metalness: 0.05,
+      transparent: true,
+      opacity: opacityFront,
+      side: THREE.FrontSide,
+      depthWrite: false,
+      clearcoat: 0.42,
+      clearcoatRoughness: 0.25
+    });
+    return { backMat, frontMat };
+  }
+
+  const posMats = createLobeMaterials(POS_HEX, 0.36, 0.16);
+  const negMats = createLobeMaterials(NEG_HEX, 0.36, 0.16);
+  const allLobeMats = [posMats.backMat, posMats.frontMat, negMats.backMat, negMats.frontMat];
+
+  function makeDoublePassMesh(geo, mats) {
+    const g = new THREE.Group();
+    const mBack = new THREE.Mesh(geo, mats.backMat);
+    mBack.renderOrder = 1;
+    const mFront = new THREE.Mesh(geo, mats.frontMat);
+    mFront.renderOrder = 9;
+    g.add(mBack, mFront);
+    return g;
+  }
+
+  // Warm nucleus sphere
+  const nucleusMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(0xf59e0b),
+    emissive: srgbCol(0xb45309),
+    emissiveIntensity: 0.55,
+    roughness: 0.28,
+    metalness: 0.25
+  });
+
+  /* ==================== QUANTUM WAVEFUNCTIONS psi(x, y, z) ==================== */
+  // Coordinates here are Chemistry coords (cx, cy, cz), mapped to Three.js (cx, cz, cy)
+  function evalPsi(type, x, y, z) {
+    const r = Math.sqrt(x * x + y * y + z * z) + 1e-6;
+    if (type === '1s') {
+      return Math.exp(-r * 1.15);
+    }
+    if (type === '2s') {
+      // Radial node at r = 1.18 (scaled a0 units)
+      const rho = r * 1.7;
+      return (2.0 - rho) * Math.exp(-rho * 0.5);
+    }
+    if (type === '2px') return (x / r) * Math.abs(x / r) * r * Math.exp(-r * 1.15);
+    if (type === '2py') return (y / r) * Math.abs(y / r) * r * Math.exp(-r * 1.15);
+    if (type === '2pz') return (z / r) * Math.abs(z / r) * r * Math.exp(-r * 1.15);
+    if (type === '3dz2') {
+      return (3 * z * z - r * r) * Math.exp(-r * 0.86);
+    }
+    if (type === '3dxy') {
+      return (x * y) * Math.exp(-r * 0.88);
+    }
+    if (type === '3dx2y2') {
+      return (x * x - y * y) * Math.exp(-r * 0.88);
+    }
+    return 0;
+  }
+
+  // Importance / rejection sampling for true |psi|^2 probability clouds
+  const POINT_COUNT = isLow ? 3800 : 5200;
+
+  function sampleOrbitalCloud(type) {
+    const positions = new Float32Array(POINT_COUNT * 3);
+    const colors = new Float32Array(POINT_COUNT * 3);
+    const rawChemY = new Float32Array(POINT_COUNT); // Stored for fast cross-section slicing!
+
+    if (type === '2pall') {
+      const subs = ['2px', '2py', '2pz'];
+      let idx = 0;
+      const perSub = Math.floor(POINT_COUNT / 3);
+      for (let s = 0; s < 3; s++) {
+        const sub = subs[s];
+        let maxP = 0.105;
+        let placed = 0;
+        let guard = 0;
+        while (placed < perSub && idx < POINT_COUNT && guard < 180000) {
+          guard++;
+          const cx = (Math.random() * 2 - 1) * 3.3;
+          const cy = (Math.random() * 2 - 1) * 3.3;
+          const cz = (Math.random() * 2 - 1) * 3.3;
+          const val = evalPsi(sub, cx, cy, cz);
+          const p = val * val;
+          if (Math.random() * maxP < p) {
+            positions[idx * 3] = cx;
+            positions[idx * 3 + 1] = cz; // Three Y = chem Z
+            positions[idx * 3 + 2] = cy; // Three Z = chem Y
+            rawChemY[idx] = cy;
+            const c = val >= 0 ? POS_PT : NEG_PT;
+            colors[idx * 3] = c.r;
+            colors[idx * 3 + 1] = c.g;
+            colors[idx * 3 + 2] = c.b;
+            idx++;
+            placed++;
+          }
+        }
+      }
+      return { positions, colors, rawChemY };
+    }
+
+    const bound = (type === '1s') ? 2.4 : (type === '2s' ? 3.55 : (type.startsWith('3d') ? 3.85 : 3.4));
+    // Estimate max |psi|^2 empirically for tight acceptance
+    let maxP = 0;
+    for (let k = 0; k < 2500; k++) {
+      const cx = (Math.random() * 2 - 1) * bound;
+      const cy = (Math.random() * 2 - 1) * bound;
+      const cz = (Math.random() * 2 - 1) * bound;
+      const v = evalPsi(type, cx, cy, cz);
+      const p = v * v;
+      if (p > maxP) maxP = p;
+    }
+    if (type === '2s') maxP *= 0.22; // Boost outer shell sampling slightly so both core & outer shell are vivid
+    else maxP *= 0.85;
+
+    let idx = 0, guard = 0;
+    while (idx < POINT_COUNT && guard < 360000) {
+      guard++;
+      const cx = (Math.random() * 2 - 1) * bound;
+      const cy = (Math.random() * 2 - 1) * bound;
+      const cz = (Math.random() * 2 - 1) * bound;
+      const r = Math.sqrt(cx * cx + cy * cy + cz * cz);
+      if (r > bound) continue;
+      const val = evalPsi(type, cx, cy, cz);
+      let p = val * val;
+      if (type === '2s' && r > 1.18) p *= 3.8; // Visually clear outer 2s shell + radial gap at r = 1.18
+      if (Math.random() * maxP < p) {
+        positions[idx * 3] = cx;
+        positions[idx * 3 + 1] = cz; // Three Y = chem Z
+        positions[idx * 3 + 2] = cy; // Three Z = chem Y
+        rawChemY[idx] = cy;
+        const c = val >= 0 ? POS_PT : NEG_PT;
+        colors[idx * 3] = c.r;
+        colors[idx * 3 + 1] = c.g;
+        colors[idx * 3 + 2] = c.b;
+        idx++;
+      }
+    }
+    return { positions, colors, rawChemY };
+  }
+
+  /* ==================== ANALYTICAL 90% BOUNDARY SURFACE GEOMETRIES ==================== */
+  // Orbital p chuẩn "hình số 8 nổi" (thùy giọt nước |Y_1,0|^2 = cos²(θ), thắt eo rõ tại hạt nhân)
+  // QUAN TRỌNG: LatheGeometry phải duyệt điểm từ gốc (y nhỏ) lên đỉnh (y lớn) để pháp tuyến hướng RA NGOÀI!
+  function buildPLobeGeo(scaleR) {
+    const pts = [];
+    const segs = 48;
+    for (let i = segs; i >= 0; i--) {
+      const t = (i / segs) * (Math.PI * 0.5); // pi/2 (gốc hạt nhân) -> 0 (đỉnh thùy)
+      const c = Math.cos(t);
+      const r = scaleR * c * c; // r(θ) = R·cos²(θ): tỉ lệ W/H ≈ 0.77, eo thắt giọt nước chuẩn SGK!
+      const x = r * Math.sin(t);
+      const y = r * c;
+      pts.push(new THREE.Vector2(Math.max(0.0005, x), y));
+    }
+    const geo = new THREE.LatheGeometry(pts, 48);
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  // Smooth d_z^2 axial lobe LatheGeometry (duyệt từ gốc lên đỉnh để pháp tuyến hướng ra ngoài)
+  function buildDz2LobeGeo(scaleR) {
+    const pts = [];
+    const tMax = Math.acos(1 / Math.sqrt(3));
+    const segs = 40;
+    for (let i = segs; i >= 0; i--) {
+      const t = (i / segs) * tMax;
+      const r = scaleR * Math.max(0, 3 * Math.cos(t) * Math.cos(t) - 1);
+      pts.push(new THREE.Vector2(Math.max(0.0005, r * Math.sin(t)), r * Math.cos(t)));
+    }
+    const geo = new THREE.LatheGeometry(pts, 48);
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  // Smooth d_z^2 equatorial torus ring (duyệt từ dưới lên trên: tMax -> tMin để pháp tuyến hướng ra ngoài)
+  function buildDz2RingGeo(scaleR) {
+    const pts = [];
+    const tMin = Math.acos(1 / Math.sqrt(3));
+    const tMax = Math.PI - tMin;
+    const segs = 48;
+    for (let i = segs; i >= 0; i--) {
+      const t = tMin + (i / segs) * (tMax - tMin);
+      const r = scaleR * Math.abs(3 * Math.cos(t) * Math.cos(t) - 1) * 1.32;
+      pts.push(new THREE.Vector2(Math.max(0.0005, r * Math.sin(t)), r * Math.cos(t)));
+    }
+    const geo = new THREE.LatheGeometry(pts, 56);
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  // Smooth cloverleaf d-lobe (duyệt từ gốc lên đỉnh để pháp tuyến hướng ra ngoài)
+  function buildDLobeGeo(scaleR) {
+    const pts = [];
+    const segs = 40;
+    for (let i = segs; i >= 0; i--) {
+      const t = (i / segs) * (Math.PI * 0.5);
+      const r = scaleR * Math.pow(Math.cos(t), 1.85);
+      pts.push(new THREE.Vector2(Math.max(0.0005, r * Math.sin(t)), r * Math.cos(t)));
+    }
+    const geo = new THREE.LatheGeometry(pts, 44);
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  const pLobeGeo = buildPLobeGeo(2.68);
+  const dz2LobeGeo = buildDz2LobeGeo(1.42);
+  const dz2RingGeo = buildDz2RingGeo(1.16);
+  const dLobeGeo = buildDLobeGeo(2.68);
+
+  function addPLobePair(parent, axisDir) {
+    const qPos = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), axisDir.clone().normalize());
+    const qNeg = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), axisDir.clone().negate().normalize());
+    const mPos = makeDoublePassMesh(pLobeGeo, posMats);
+    mPos.quaternion.copy(qPos);
+    const mNeg = makeDoublePassMesh(pLobeGeo, negMats);
+    mNeg.quaternion.copy(qNeg);
+    parent.add(mPos, mNeg);
+  }
+
+  /* ==================== TAB 1 SCENE GROUP ==================== */
+  const orbitalRoot = new THREE.Group();
+  scene.add(orbitalRoot);
+
+  const orbNucleus = new THREE.Mesh(new THREE.SphereGeometry(0.11, 24, 24), nucleusMat);
+  orbitalRoot.add(orbNucleus);
+
+  let currentSurfaceGroup = new THREE.Group();
+  let currentNodeGuide = new THREE.Group();
+  orbitalRoot.add(currentSurfaceGroup);
+  orbitalRoot.add(currentNodeGuide);
+
+  // Reusable PointCloud with custom slice-aware shader/opacity
+  const cloudGeo = new THREE.BufferGeometry();
+  const cloudPosArr = new Float32Array(POINT_COUNT * 3);
+  const cloudColArr = new Float32Array(POINT_COUNT * 3);
+  const cloudVisiblePos = new Float32Array(POINT_COUNT * 3);
+  let cachedCloudData = null;
+
+  cloudGeo.setAttribute('position', new THREE.BufferAttribute(cloudVisiblePos, 3));
+  cloudGeo.setAttribute('color', new THREE.BufferAttribute(cloudColArr, 3));
+
+  const cloudMat = new THREE.PointsMaterial({
+    size: isLow ? 0.14 : 0.125,
+    map: softDotTex,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.62,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+  });
+  const cloudPoints = new THREE.Points(cloudGeo, cloudMat);
+  cloudPoints.renderOrder = 5;
+  orbitalRoot.add(cloudPoints);
+
+  const ORB_META = {
+    '1s': {
+      label: '1s', n: '1', l: 's (l = 0)', nodes: '0 nút',
+      info: 'Orbital <b>1s</b> có dạng <b>hình cầu</b> đối xứng quanh hạt nhân, không phụ thuộc phương hướng. Xác suất tìm thấy electron lớn nhất ở gần hạt nhân và giảm đều ra xa.'
+    },
+    '2s': {
+      label: '2s', n: '2', l: 's (l = 0)', nodes: '1 nút cầu',
+      info: 'Orbital <b>2s</b> có dạng <b>hình cầu</b> lớn hơn 1s và có <b>1 mặt nút cầu xuyên tâm</b> (vùng xác suất = 0 ngăn cách <span class="pos">lõi dương bên trong</span> và <span class="neg">vỏ âm bên ngoài</span>). Hãy bật <b>Cắt lát</b> để thấy rõ!'
+    },
+    '2px': {
+      label: '2p<sub>x</sub>', n: '2', l: 'p (l = 1)', nodes: '1 mặt nút yz',
+      info: 'Orbital <b>2p<sub>x</sub></b> có dạng <b>hình số 8 nổi</b> (2 thùy đối xứng dọc trục <b>Ox</b>, mang hai pha <span class="pos">+</span> và <span class="neg">−</span>). Mặt phẳng <b>yz</b> đi qua hạt nhân là mặt phẳng nút.'
+    },
+    '2py': {
+      label: '2p<sub>y</sub>', n: '2', l: 'p (l = 1)', nodes: '1 mặt nút xz',
+      info: 'Orbital <b>2p<sub>y</sub></b> có dạng <b>hình số 8 nổi</b> định hướng dọc trục <b>Oy</b>, hoàn toàn tương đương về năng lượng với 2p<sub>x</sub> và 2p<sub>z</sub>.'
+    },
+    '2pz': {
+      label: '2p<sub>z</sub>', n: '2', l: 'p (l = 1)', nodes: '1 mặt nút xy',
+      info: 'Orbital <b>2p<sub>z</sub></b> có dạng <b>hình số 8 nổi</b> định hướng dọc trục thẳng đứng <b>Oz</b>. Mặt phẳng ngang <b>xy</b> là mặt phẳng nút (xác suất electron = 0).'
+    },
+    '2pall': {
+      label: '2p tổng hợp', n: '2', l: '3 AO p', nodes: '3 trục vuông góc',
+      info: 'Phân lớp <b>2p</b> gồm <b>3 orbital</b> (2p<sub>x</sub>, 2p<sub>y</sub>, 2p<sub>z</sub>) có cùng mức năng lượng, định hướng vuông góc nhau theo 3 trục <b>Ox, Oy, Oz</b> trong không gian 3 chiều.'
+    },
+    '3dz2': {
+      label: '3d<sub>z²</sub>', n: '3', l: 'd (l = 2)', nodes: '2 mặt nón nút',
+      info: 'Orbital <b>3d<sub>z²</sub></b> có hình dạng đặc biệt gồm <span class="pos">2 thùy chính dọc trục Oz</span> và <span class="neg">1 vành xuyến (vòng nhẫn)</span> bao quanh trong mặt phẳng xích đạo xy.'
+    },
+    '3dxy': {
+      label: '3d<sub>xy</sub>', n: '3', l: 'd (l = 2)', nodes: '2 mặt nút xz, yz',
+      info: 'Orbital <b>3d<sub>xy</sub></b> gồm <b>4 thùy hình cỏ 4 lá</b> nằm trong mặt phẳng <b>xy</b>, hướng dọc các đường phân giác giữa trục Ox và Oy với dấu pha xen kẽ <span class="pos">+</span> / <span class="neg">−</span>.'
+    },
+    '3dx2y2': {
+      label: '3d<sub>x²-y²</sub>', n: '3', l: 'd (l = 2)', nodes: '2 mặt nút chéo',
+      info: 'Orbital <b>3d<sub>x²-y²</sub></b> gồm <b>4 thùy hình cỏ 4 lá</b> nằm ngay dọc theo hai trục <b>Ox</b> (<span class="pos">+</span>) và <b>Oy</b> (<span class="neg">−</span>), xoay 45° so với orbital 3d<sub>xy</sub>.'
+    }
+  };
+
+  let curTab = 'orbital';
+  let curOrb = '2pz';
+  let curViewMode = 'both';
+  let sliceOn = false;
+  let autoRotate = true;
+
+  function applySliceState() {
+    const planes = sliceOn ? [slicePlane] : [];
+    for (let i = 0; i < allLobeMats.length; i++) {
+      allLobeMats[i].clippingPlanes = planes;
+      allLobeMats[i].needsUpdate = true;
+    }
+    if (cachedCloudData) {
+      const posAttr = cloudGeo.getAttribute('position');
+      const src = cachedCloudData.positions;
+      const chemY = cachedCloudData.rawChemY;
+      for (let i = 0; i < POINT_COUNT; i++) {
+        if (sliceOn && chemY[i] > 0.02) {
+          posAttr.array[i * 3] = 0;
+          posAttr.array[i * 3 + 1] = 0;
+          posAttr.array[i * 3 + 2] = 9999; // Hide cleanly outside frustum
+        } else {
+          posAttr.array[i * 3] = src[i * 3];
+          posAttr.array[i * 3 + 1] = src[i * 3 + 1];
+          posAttr.array[i * 3 + 2] = src[i * 3 + 2];
+        }
+      }
+      posAttr.needsUpdate = true;
+    }
+    currentNodeGuide.visible = sliceOn && (curViewMode !== 'cloud' || curOrb === '2s');
+  }
+
+  function applyViewMode() {
+    cloudPoints.visible = (curViewMode === 'cloud' || curViewMode === 'both');
+    currentSurfaceGroup.visible = (curViewMode === 'surface' || curViewMode === 'both');
+    cloudMat.opacity = (curViewMode === 'cloud') ? 0.80 : 0.54;
+    posMats.frontMat.opacity = (curViewMode === 'surface') ? 0.50 : 0.30;
+    negMats.frontMat.opacity = (curViewMode === 'surface') ? 0.50 : 0.30;
+    posMats.backMat.opacity  = (curViewMode === 'surface') ? 0.22 : 0.13;
+    negMats.backMat.opacity  = (curViewMode === 'surface') ? 0.22 : 0.13;
+    applySliceState();
+  }
+
+  function buildOrbital(type) {
+    curOrb = type;
+    while (currentSurfaceGroup.children.length) currentSurfaceGroup.remove(currentSurfaceGroup.children[0]);
+    while (currentNodeGuide.children.length) currentNodeGuide.remove(currentNodeGuide.children[0]);
+
+    if (type === '1s') {
+      currentSurfaceGroup.add(makeDoublePassMesh(new THREE.SphereGeometry(1.75, 48, 36), posMats));
+    } else if (type === '2s') {
+      // Inner + core & outer - shell with clear radial node gap!
+      currentSurfaceGroup.add(makeDoublePassMesh(new THREE.SphereGeometry(0.92, 40, 32), posMats));
+      currentSurfaceGroup.add(makeDoublePassMesh(new THREE.SphereGeometry(2.45, 52, 40), negMats));
+      // Glowing dashed-like radial node ring visible on cross-section plane (xy-cut -> xz in Three)
+      const nodeRing = new THREE.Mesh(
+        new THREE.RingGeometry(1.16, 1.21, 72),
+        new THREE.MeshBasicMaterial({ color: 0xfef08a, side: THREE.DoubleSide, transparent: true, opacity: 0.78 })
+      );
+      currentNodeGuide.add(nodeRing);
+    } else if (type === '2px') {
+      addPLobePair(currentSurfaceGroup, new THREE.Vector3(1, 0, 0));
+    } else if (type === '2py') {
+      addPLobePair(currentSurfaceGroup, new THREE.Vector3(0, 0, 1));
+    } else if (type === '2pz') {
+      addPLobePair(currentSurfaceGroup, new THREE.Vector3(0, 1, 0));
+    } else if (type === '2pall') {
+      addPLobePair(currentSurfaceGroup, new THREE.Vector3(1, 0, 0));
+      addPLobePair(currentSurfaceGroup, new THREE.Vector3(0, 0, 1));
+      addPLobePair(currentSurfaceGroup, new THREE.Vector3(0, 1, 0));
+    } else if (type === '3dz2') {
+      const topL = makeDoublePassMesh(dz2LobeGeo, posMats);
+      const botL = makeDoublePassMesh(dz2LobeGeo, posMats);
+      botL.rotation.z = Math.PI;
+      const ring = makeDoublePassMesh(dz2RingGeo, negMats);
+      currentSurfaceGroup.add(topL, botL, ring);
+    } else if (type === '3dxy') {
+      const dirs = [
+        { v: new THREE.Vector3(1, 0, 1), pos: true },
+        { v: new THREE.Vector3(-1, 0, -1), pos: true },
+        { v: new THREE.Vector3(1, 0, -1), pos: false },
+        { v: new THREE.Vector3(-1, 0, 1), pos: false }
+      ];
+      dirs.forEach(function (d) {
+        const m = makeDoublePassMesh(dLobeGeo, d.pos ? posMats : negMats);
+        m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.v.normalize());
+        currentSurfaceGroup.add(m);
+      });
+    } else if (type === '3dx2y2') {
+      const dirs = [
+        { v: new THREE.Vector3(1, 0, 0), pos: true },
+        { v: new THREE.Vector3(-1, 0, 0), pos: true },
+        { v: new THREE.Vector3(0, 0, 1), pos: false },
+        { v: new THREE.Vector3(0, 0, -1), pos: false }
+      ];
+      dirs.forEach(function (d) {
+        const m = makeDoublePassMesh(dLobeGeo, d.pos ? posMats : negMats);
+        m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.v.normalize());
+        currentSurfaceGroup.add(m);
+      });
+    }
+
+    // Re-sample true quantum probability cloud
+    cachedCloudData = sampleOrbitalCloud(type);
+    const colAttr = cloudGeo.getAttribute('color');
+    colAttr.array.set(cachedCloudData.colors);
+    colAttr.needsUpdate = true;
+
+    const meta = ORB_META[type];
+    $('statusTxt').innerHTML = meta.label;
+    $('qnN').textContent = meta.n;
+    $('qnL').textContent = meta.l;
+    $('qnNodes').textContent = meta.nodes;
+    $('orbInfo').innerHTML = meta.info;
+    applyViewMode();
+  }
+
+  /* ==================== TAB 2: OVERLAP (SIGMA & PI) SCENE ==================== */
+  const overlapRoot = new THREE.Group();
+  overlapRoot.visible = false;
+  scene.add(overlapRoot);
+
+  // Subtle dashed internuclear axis along X
+  const axisLinePts = [];
+  for (let i = -24; i <= 24; i++) {
+    axisLinePts.push(new THREE.Vector3(i * 0.22, 0, 0));
+  }
+  const interAxis = new THREE.LineSegments(
+    new THREE.BufferGeometry().setFromPoints(axisLinePts),
+    new THREE.LineBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.45 })
+  );
+  overlapRoot.add(interAxis);
+
+  const atomL = new THREE.Group();
+  const atomR = new THREE.Group();
+  overlapRoot.add(atomL, atomR);
+
+  // Glowing overlap electron density bridge (1 zone for sigma, 2 zones top/bottom for pi)
+  const ovlMat = new THREE.MeshBasicMaterial({
+    color: 0x38bdf8,
+    transparent: true,
+    opacity: 0.0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const ovlBridgeSigma = new THREE.Mesh(new THREE.SphereGeometry(0.88, 32, 24), ovlMat);
+  ovlBridgeSigma.renderOrder = 11;
+  overlapRoot.add(ovlBridgeSigma);
+
+  const ovlBridgePiTop = new THREE.Mesh(new THREE.SphereGeometry(0.68, 28, 20), ovlMat.clone());
+  const ovlBridgePiBot = new THREE.Mesh(new THREE.SphereGeometry(0.68, 28, 20), ovlMat.clone());
+  ovlBridgePiTop.renderOrder = 11;
+  ovlBridgePiBot.renderOrder = 11;
+  overlapRoot.add(ovlBridgePiTop, ovlBridgePiBot);
+
+  // Quantum probability cloud for the overlap pair (2,800 particles dynamically shifting & brightening in overlap!)
+  const OVL_PTS = isLow ? 2200 : 3200;
+  const ovlCloudGeo = new THREE.BufferGeometry();
+  const ovlBaseLocal = new Float32Array(OVL_PTS * 3);
+  const ovlSideArr = new Int8Array(OVL_PTS); // -1 left, +1 right
+  const ovlPhaseArr = new Int8Array(OVL_PTS); // +1 or -1
+  const ovlPosArr = new Float32Array(OVL_PTS * 3);
+  const ovlColArr = new Float32Array(OVL_PTS * 3);
+  ovlCloudGeo.setAttribute('position', new THREE.BufferAttribute(ovlPosArr, 3));
+  ovlCloudGeo.setAttribute('color', new THREE.BufferAttribute(ovlColArr, 3));
+  const ovlCloud = new THREE.Points(ovlCloudGeo, new THREE.PointsMaterial({
+    size: isLow ? 0.145 : 0.13,
+    map: softDotTex,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.65,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+  }));
+  ovlCloud.renderOrder = 6;
+  overlapRoot.add(ovlCloud);
+
+  const BOND_META = {
+    ss: {
+      name: 'Liên kết σ (s – s · H₂)',
+      dOpt: 1.48, dScale: 0.74, // display Å = d * 0.5
+      atomL: 'H (1s)', atomR: 'H (1s)',
+      type: 'sigma',
+      info: '<b>Xen phủ trục s – s (phân tử H₂):</b> Hai orbital cầu <b>1s</b> tiến lại dọc theo trục nối hai hạt nhân, tạo <b>1 vùng xen phủ mật độ electron lớn</b> ngay giữa 2 hạt nhân → tạo <b>liên kết σ bền vững</b>.'
+    },
+    sp: {
+      name: 'Liên kết σ (s – p · HCl)',
+      dOpt: 1.72, dScale: 0.74,
+      atomL: 'H (1s)', atomR: 'Cl (3p)',
+      type: 'sigma',
+      info: '<b>Xen phủ trục s – p (phân tử HCl):</b> Orbital <b>1s</b> của H xen phủ dọc trục với 1 thùy cùng pha của orbital <b>3p</b> của Cl → tạo <b>liên kết σ</b>. Thùy bên kia của p co nhỏ nhẹ do mật độ electron dồn vào vùng liên kết.'
+    },
+    pp_sigma: {
+      name: 'Liên kết σ (p – p trục · Cl₂)',
+      dOpt: 2.08, dScale: 0.96,
+      atomL: 'Cl (3p)', atomR: 'Cl (3p)',
+      type: 'sigma',
+      info: '<b>Xen phủ trục p – p (phân tử Cl₂):</b> Hai orbital <b>3p</b> nằm cùng trên trục liên kết hướng hai thùy cùng pha (<span class="pos">+</span>) vào nhau, xen phủ sâu → tạo <b>liên kết σ</b> có mật độ e⁻ tập trung cao trên trục nối.'
+    },
+    pp_pi: {
+      name: 'Liên kết π (p – p bên · O₂, N₂, C₂H₄)',
+      dOpt: 1.56, dScale: 0.78,
+      atomL: '2p<sub>z</sub>', atomR: '2p<sub>z</sub>',
+      type: 'pi',
+      info: '<b>Xen phủ bên p – p (Liên kết π):</b> Hai orbital <b>2p<sub>z</sub></b> đặt song song, xen phủ nhau ở <b>2 vùng phía trên và phía dưới</b> trục nối hạt nhân (trục liên kết là mặt phẳng nút!). Do diện tích xen phủ nhỏ hơn xen phủ trục nên <b>liên kết π kém bền hơn liên kết σ</b>.'
+    }
+  };
+
+  let curBond = 'ss';
+  let bondDist = 3.20; // Scene units
+  let autoBondDir = 0; // -1 approaching, 0 idle
+  let bondLockedPing = false;
+
+  const bondPosMats = createLobeMaterials(POS_HEX, 0.34, 0.14);
+  const bondNegMats = createLobeMaterials(NEG_HEX, 0.34, 0.14);
+  const sBondGeo = new THREE.SphereGeometry(1.36, 44, 32);
+  const pBondGeo = buildPLobeGeo(2.05);
+
+  function makeAtomBadge(txt) {
+    const tex = makeTex(220, 72, function (g, w, h) {
+      g.fillStyle = 'rgba(10,16,30,0.82)';
+      g.strokeStyle = 'rgba(148,163,184,0.45)';
+      g.lineWidth = 3;
+      g.beginPath();
+      if (g.roundRect) g.roundRect(6, 8, w - 12, h - 16, 26);
+      else g.rect(6, 8, w - 12, h - 16);
+      g.fill(); g.stroke();
+      g.font = '700 28px "Be Vietnam Pro", sans-serif';
+      g.fillStyle = '#fde68a';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(txt, w / 2, h / 2 + 1);
+    });
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+    sp.scale.set(1.35, 0.44, 1);
+    sp.renderOrder = 21;
+    return sp;
+  }
+
+  let lobeMeshL = null, lobeMeshR = null;
+
+  function sampleSingleAtomParticles(kind, startIdx, count, side) {
+    let placed = 0, guard = 0;
+    while (placed < count && guard < 120000) {
+      guard++;
+      const x = (Math.random() * 2 - 1) * 2.4;
+      const y = (Math.random() * 2 - 1) * 2.4;
+      const z = (Math.random() * 2 - 1) * 2.4;
+      const r = Math.sqrt(x * x + y * y + z * z) + 1e-5;
+      let val = 0, maxP = 0.35;
+      if (kind === 's') {
+        val = Math.exp(-r * 1.18);
+        maxP = 0.72;
+      } else if (kind === 'px_in') {
+        // Positive lobe points toward origin (-side * x > 0)
+        val = (-side * x) * Math.exp(-r * 1.08);
+        maxP = 0.22;
+      } else if (kind === 'pz') {
+        val = y * Math.exp(-r * 1.08); // Three.js Y is vertical Z
+        maxP = 0.22;
+      }
+      if (Math.random() * maxP < val * val) {
+        const idx = startIdx + placed;
+        ovlBaseLocal[idx * 3] = x;
+        ovlBaseLocal[idx * 3 + 1] = y;
+        ovlBaseLocal[idx * 3 + 2] = z;
+        ovlSideArr[idx] = side;
+        ovlPhaseArr[idx] = val >= 0 ? 1 : -1;
+        placed++;
+      }
+    }
+  }
+
+  function buildBondScene(type) {
+    curBond = type;
+    while (atomL.children.length) atomL.remove(atomL.children[0]);
+    while (atomR.children.length) atomR.remove(atomR.children[0]);
+    const meta = BOND_META[type];
+
+    // Nuclei
+    const nL = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 24), nucleusMat);
+    const nR = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 24), nucleusMat);
+    atomL.add(nL); atomR.add(nR);
+
+    const bL = makeAtomBadge(meta.atomL); bL.position.set(0, -1.78, 0); atomL.add(bL);
+    const bR = makeAtomBadge(meta.atomR); bR.position.set(0, -1.78, 0); atomR.add(bR);
+
+    lobeMeshL = new THREE.Group();
+    lobeMeshR = new THREE.Group();
+    atomL.add(lobeMeshL); atomR.add(lobeMeshR);
+
+    if (type === 'ss') {
+      lobeMeshL.add(makeDoublePassMesh(sBondGeo, bondPosMats));
+      lobeMeshR.add(makeDoublePassMesh(sBondGeo, bondPosMats));
+      sampleSingleAtomParticles('s', 0, OVL_PTS / 2, -1);
+      sampleSingleAtomParticles('s', OVL_PTS / 2, OVL_PTS / 2, 1);
+    } else if (type === 'sp') {
+      lobeMeshL.add(makeDoublePassMesh(sBondGeo, bondPosMats));
+      const pIn = makeDoublePassMesh(pBondGeo, bondPosMats);
+      pIn.rotation.z = Math.PI / 2; // points -X toward H
+      const pOut = makeDoublePassMesh(pBondGeo, bondNegMats);
+      pOut.rotation.z = -Math.PI / 2; // points +X away
+      lobeMeshR.add(pIn, pOut);
+      sampleSingleAtomParticles('s', 0, OVL_PTS / 2, -1);
+      sampleSingleAtomParticles('px_in', OVL_PTS / 2, OVL_PTS / 2, 1);
+    } else if (type === 'pp_sigma') {
+      const lIn = makeDoublePassMesh(pBondGeo, bondPosMats); lIn.rotation.z = -Math.PI / 2;
+      const lOut = makeDoublePassMesh(pBondGeo, bondNegMats); lOut.rotation.z = Math.PI / 2;
+      lobeMeshL.add(lIn, lOut);
+      const rIn = makeDoublePassMesh(pBondGeo, bondPosMats); rIn.rotation.z = Math.PI / 2;
+      const rOut = makeDoublePassMesh(pBondGeo, bondNegMats); rOut.rotation.z = -Math.PI / 2;
+      lobeMeshR.add(rIn, rOut);
+      sampleSingleAtomParticles('px_in', 0, OVL_PTS / 2, -1);
+      sampleSingleAtomParticles('px_in', OVL_PTS / 2, OVL_PTS / 2, 1);
+    } else if (type === 'pp_pi') {
+      const lTop = makeDoublePassMesh(pBondGeo, bondPosMats);
+      const lBot = makeDoublePassMesh(pBondGeo, bondNegMats); lBot.rotation.z = Math.PI;
+      lobeMeshL.add(lTop, lBot);
+      const rTop = makeDoublePassMesh(pBondGeo, bondPosMats);
+      const rBot = makeDoublePassMesh(pBondGeo, bondNegMats); rBot.rotation.z = Math.PI;
+      lobeMeshR.add(rTop, rBot);
+      sampleSingleAtomParticles('pz', 0, OVL_PTS / 2, -1);
+      sampleSingleAtomParticles('pz', OVL_PTS / 2, OVL_PTS / 2, 1);
+    }
+
+    $('bondInfo').innerHTML = meta.info;
+    $('dOptLabel').textContent = 'Tối ưu d₀ ≈ ' + (meta.dOpt * meta.dScale).toFixed(2) + ' Å';
+    if (curTab === 'overlap') $('statusTxt').innerHTML = meta.name;
+    bondDist = 3.25;
+    $('distRange').value = bondDist.toFixed(2);
+    autoBondDir = 0;
+    bondLockedPing = false;
+    updateBondGeometry();
+  }
+
+  // Morse-like potential energy curve E(d)
+  function morseEnergy(d, dOpt) {
+    const a = 1.65;
+    const x = Math.exp(-a * (d - dOpt));
+    return (1 - x) * (1 - x) - 1; // min = -1 at d = dOpt, 0 at inf, >0 when compressed
+  }
+
+  function drawPECurve(d, dOpt) {
+    const c = $('peCanvas');
+    const g = c.getContext('2d');
+    const w = c.width, h = c.height;
+    g.clearRect(0, 0, w, h);
+
+    // Zero line (E = 0)
+    const yZero = 34;
+    g.strokeStyle = 'rgba(148,163,184,0.28)';
+    g.setLineDash([4, 4]);
+    g.beginPath(); g.moveTo(14, yZero); g.lineTo(w - 10, yZero); g.stroke();
+    g.setLineDash([]);
+
+    // Optimal d0 marker line
+    function mapX(dist) { return 18 + ((dist - 0.45) / (3.80 - 0.45)) * (w - 30); }
+    function mapY(e) { return Math.max(8, Math.min(h - 10, yZero + (-e) * 44)); }
+
+    const xOpt = mapX(dOpt);
+    g.strokeStyle = 'rgba(74,222,128,0.35)';
+    g.beginPath(); g.moveTo(xOpt, 10); g.lineTo(xOpt, h - 10); g.stroke();
+
+    // Curve
+    g.strokeStyle = '#60a5fa';
+    g.lineWidth = 2.2;
+    g.beginPath();
+    let started = false;
+    for (let dd = 0.55; dd <= 3.80; dd += 0.05) {
+      const e = morseEnergy(dd, dOpt);
+      const px = mapX(dd), py = mapY(e);
+      if (e > 0.72) continue;
+      if (!started) { g.moveTo(px, py); started = true; }
+      else g.lineTo(px, py);
+    }
+    g.stroke();
+
+    // Live indicator dot
+    const curE = morseEnergy(d, dOpt);
+    const dx = mapX(d), dy = mapY(Math.min(0.65, curE));
+    const dotCol = curE < -0.78 ? '#4ade80' : (curE > 0.08 ? '#f87171' : '#38bdf8');
+    g.beginPath();
+    g.arc(dx, dy, 6.2, 0, Math.PI * 2);
+    g.fillStyle = dotCol;
+    g.fill();
+    g.strokeStyle = '#ffffff';
+    g.lineWidth = 1.8;
+    g.stroke();
+
+    // Axis labels
+    g.font = '600 10px "Be Vietnam Pro", sans-serif';
+    g.fillStyle = '#94a3b8';
+    g.fillText('E = 0', w - 36, yZero - 5);
+    g.fillStyle = '#86efac';
+    g.fillText('d₀', xOpt - 6, h - 2);
+
+    const stateEl = $('energyState');
+    if (curE < -0.82) {
+      stateEl.textContent = 'Bền vững tối đa (Liên kết hình thành)';
+      stateEl.style.color = '#4ade80';
+    } else if (curE > 0.08) {
+      stateEl.textContent = 'Đẩy hạt nhân mạnh (Quá gần!)';
+      stateEl.style.color = '#fda4af';
+    } else if (d < 2.85) {
+      stateEl.textContent = 'Đang xen phủ · Năng lượng giảm';
+      stateEl.style.color = '#7dd3fc';
+    } else {
+      stateEl.textContent = 'Tách rời · Chưa xen phủ';
+      stateEl.style.color = '#94a3b8';
+    }
+  }
+
+  function updateBondGeometry() {
+    const meta = BOND_META[curBond];
+    const half = bondDist * 0.5;
+    atomL.position.set(-half, 0, 0);
+    atomR.position.set(half, 0, 0);
+
+    // Overlap strength [0..1] peaking near dOpt
+    const rawOvl = Math.max(0, Math.min(1, (3.15 - bondDist) / (3.15 - meta.dOpt * 0.85)));
+    const smoothOvl = rawOvl * rawOvl * (3 - 2 * rawOvl);
+
+    // Subtle real-time lobe polarization/elongation along bond axis as atoms bond
+    if (lobeMeshL && lobeMeshR) {
+      if (meta.type === 'sigma') {
+        const stretchX = 1 + smoothOvl * 0.16;
+        const squashYZ = 1 - smoothOvl * 0.07;
+        lobeMeshL.scale.set(stretchX, squashYZ, squashYZ);
+        lobeMeshR.scale.set(stretchX, squashYZ, squashYZ);
+      } else {
+        // Pi lobes lean gently toward each other
+        const lean = smoothOvl * 0.14;
+        lobeMeshL.scale.set(1 + lean * 1.1, 1 - lean * 0.25, 1);
+        lobeMeshR.scale.set(1 + lean * 1.1, 1 - lean * 0.25, 1);
+      }
+    }
+
+    // Glowing overlap bridges
+    if (meta.type === 'sigma') {
+      ovlBridgeSigma.visible = smoothOvl > 0.04;
+      ovlBridgePiTop.visible = false;
+      ovlBridgePiBot.visible = false;
+      ovlBridgeSigma.material.opacity = smoothOvl * 0.34;
+      ovlBridgeSigma.scale.set(0.65 + smoothOvl * 0.48, 0.72 + smoothOvl * 0.18, 0.72 + smoothOvl * 0.18);
+    } else {
+      ovlBridgeSigma.visible = false;
+      ovlBridgePiTop.visible = smoothOvl > 0.04;
+      ovlBridgePiBot.visible = smoothOvl > 0.04;
+      ovlBridgePiTop.position.set(0, 0.96, 0);
+      ovlBridgePiBot.position.set(0, -0.96, 0);
+      ovlBridgePiTop.material.color.setHex(0x60a5fa);
+      ovlBridgePiBot.material.color.setHex(0xf472b6);
+      ovlBridgePiTop.material.opacity = smoothOvl * 0.30;
+      ovlBridgePiBot.material.opacity = smoothOvl * 0.30;
+      const sx = 0.8 + smoothOvl * 0.55;
+      ovlBridgePiTop.scale.set(sx, 0.62, 0.62);
+      ovlBridgePiBot.scale.set(sx, 0.62, 0.62);
+    }
+
+    // Update 3,200 cloud particles with dynamic pull into the overlap zone + cyan-gold brightening
+    const posAttr = ovlCloudGeo.getAttribute('position');
+    const colAttr = ovlCloudGeo.getAttribute('color');
+    for (let i = 0; i < OVL_PTS; i++) {
+      const side = ovlSideArr[i];
+      const lx = ovlBaseLocal[i * 3];
+      const ly = ovlBaseLocal[i * 3 + 1];
+      const lz = ovlBaseLocal[i * 3 + 2];
+      let wx = side * half + lx;
+      let wy = ly;
+      let wz = lz;
+
+      // Pull inner-facing electrons slightly toward shared bridge
+      const inBetween = (Math.abs(wx) < half + 0.55);
+      let ovlGlow = 0;
+      if (meta.type === 'sigma') {
+        const distBridge = Math.sqrt(wx * wx * 1.1 + wy * wy + wz * wz);
+        if (distBridge < 1.25 && smoothOvl > 0.05) {
+          const pull = smoothOvl * (1 - distBridge / 1.25);
+          wx *= (1 - pull * 0.22);
+          ovlGlow = pull;
+        }
+      } else {
+        const distTop = Math.sqrt(wx * wx * 1.1 + (wy - 0.95) * (wy - 0.95) + wz * wz);
+        const distBot = Math.sqrt(wx * wx * 1.1 + (wy + 0.95) * (wy + 0.95) + wz * wz);
+        const dMin = Math.min(distTop, distBot);
+        if (dMin < 1.08 && smoothOvl > 0.05) {
+          const pull = smoothOvl * (1 - dMin / 1.08);
+          wx *= (1 - pull * 0.24);
+          ovlGlow = pull;
+        }
+      }
+
+      posAttr.array[i * 3] = wx;
+      posAttr.array[i * 3 + 1] = wy;
+      posAttr.array[i * 3 + 2] = wz;
+
+      const baseC = ovlPhaseArr[i] > 0 ? POS_PT : NEG_PT;
+      const mix = Math.min(1, ovlGlow * 1.25);
+      colAttr.array[i * 3]     = baseC.r * (1 - mix) + OVL_PT.r * mix;
+      colAttr.array[i * 3 + 1] = baseC.g * (1 - mix) + OVL_PT.g * mix;
+      colAttr.array[i * 3 + 2] = baseC.b * (1 - mix) + OVL_PT.b * mix;
+    }
+    posAttr.needsUpdate = true;
+    colAttr.needsUpdate = true;
+
+    const dispAngstrom = (bondDist * meta.dScale).toFixed(2);
+    $('distTxt').textContent = dispAngstrom + ' Å';
+    drawPECurve(bondDist, meta.dOpt);
+  }
+
+  /* ==================== SMOOTH INERTIAL ORBIT CAMERA ==================== */
+  let camTheta = 0.68, camPhi = 1.16, camRadius = 9.2;
+  let tgtTheta = 0.68, tgtPhi = 1.16, tgtRadius = 9.2;
+  let dragging = false, lastX = 0, lastY = 0;
+
+  function setCamPreset(mode) {
+    if (mode === 'iso') { tgtTheta = 0.68; tgtPhi = 1.16; tgtRadius = (curTab === 'overlap') ? 10.2 : 9.2; }
+    else if (mode === 'z') { tgtTheta = 0.02; tgtPhi = 0.22; tgtRadius = 9.8; }
+    else if (mode === 'slice') { tgtTheta = 0.0; tgtPhi = 1.54; tgtRadius = (curTab === 'overlap') ? 9.8 : 8.6; }
+    playTone(520, 0.07, 0.028);
+  }
+
+  cv.addEventListener('pointerdown', function (e) {
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+    cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    const dx = e.clientX - lastX, dy = e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    tgtTheta -= dx * 0.0075;
+    tgtPhi = Math.max(0.14, Math.min(Math.PI - 0.14, tgtPhi - dy * 0.0075));
+  });
+  cv.addEventListener('pointerup', function () { dragging = false; });
+  cv.addEventListener('pointercancel', function () { dragging = false; });
+  cv.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    tgtRadius = Math.max(4.6, Math.min(17.5, tgtRadius + e.deltaY * 0.007));
+  }, { passive: false });
+
+  /* ==================== UI EVENT WIRING ==================== */
+  $('mainTabs').addEventListener('click', function (e) {
+    const btn = e.target.closest('button[data-tab]');
+    if (!btn) return;
+    const tab = btn.dataset.tab;
+    curTab = tab;
+    $('mainTabs').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    $('panelOrbital').style.display = (tab === 'orbital') ? 'block' : 'none';
+    $('panelOverlap').style.display = (tab === 'overlap') ? 'block' : 'none';
+    orbitalRoot.visible = (tab === 'orbital');
+    overlapRoot.visible = (tab === 'overlap');
+    axesGroup.visible = (tab === 'orbital') ? $('chkAxes').checked : false;
+    if (tab === 'orbital') {
+      $('statusTxt').innerHTML = ORB_META[curOrb].label;
+      $('hint').innerHTML = '🖱️ Kéo xoay 360° · Cuộn để zoom · Bật <b>Cắt lát mặt phẳng</b> để quan sát nút xuyên tâm của orbital 2s';
+      tgtRadius = 9.2;
+    } else {
+      $('statusTxt').innerHTML = BOND_META[curBond].name;
+      $('hint').innerHTML = '🖱️ Kéo thanh <b>Khoảng cách 2 hạt nhân</b> hoặc bấm <b>Tự tiến lại ghép liên kết</b> để quan sát vùng xen phủ';
+      tgtTheta = 0.18; tgtPhi = 1.38; tgtRadius = 10.2;
+      updateBondGeometry();
+    }
+    playTone(580, 0.09, 0.032);
+  });
+
+  $('orbGrid').addEventListener('click', function (e) {
+    const btn = e.target.closest('button[data-orb]');
+    if (!btn) return;
+    $('orbGrid').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    buildOrbital(btn.dataset.orb);
+    playTone(460, 0.08, 0.03);
+  });
+
+  $('viewModeSeg').addEventListener('click', function (e) {
+    const btn = e.target.closest('button[data-vm]');
+    if (!btn) return;
+    $('viewModeSeg').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    curViewMode = btn.dataset.vm;
+    applyViewMode();
+    playTone(500, 0.06, 0.025);
+  });
+
+  $('chkSlice').addEventListener('change', function (e) {
+    sliceOn = e.target.checked;
+    applySliceState();
+    if (sliceOn) { tgtTheta = 0.08; tgtPhi = 1.48; }
+    playTone(sliceOn ? 640 : 410, 0.08, 0.03);
+  });
+  $('chkAxes').addEventListener('change', function (e) {
+    if (curTab === 'orbital') axesGroup.visible = e.target.checked;
+  });
+  $('chkRotate').addEventListener('change', function (e) {
+    autoRotate = e.target.checked;
+  });
+
+  $('bondGrid').addEventListener('click', function (e) {
+    const btn = e.target.closest('button[data-bond]');
+    if (!btn) return;
+    $('bondGrid').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    buildBondScene(btn.dataset.bond);
+    playTone(520, 0.08, 0.03);
+  });
+
+  $('distRange').addEventListener('input', function (e) {
+    autoBondDir = 0;
+    bondDist = parseFloat(e.target.value);
+    updateBondGeometry();
+  });
+
+  $('btnAutoBond').addEventListener('click', function () {
+    if (bondDist <= BOND_META[curBond].dOpt + 0.06) bondDist = 3.35;
+    autoBondDir = -1;
+    bondLockedPing = false;
+    playTone(440, 0.09, 0.03);
+  });
+
+  $('btnResetBond').addEventListener('click', function () {
+    autoBondDir = 0;
+    bondDist = 3.35;
+    $('distRange').value = bondDist.toFixed(2);
+    updateBondGeometry();
+    playTone(360, 0.08, 0.028);
+  });
+
+  document.querySelectorAll('.cam-bar button[data-cam]').forEach(function (btn) {
+    btn.addEventListener('click', function () { setCamPreset(btn.dataset.cam); });
+  });
+
+  $('btnSound').addEventListener('click', function () {
+    soundOn = !soundOn;
+    $('btnSound').classList.toggle('on', soundOn);
+    $('btnSound').textContent = soundOn ? '🔊' : '🔇';
+    if (soundOn) playTone(620, 0.08, 0.03);
+  });
+
+  /* ==================== RESIZE & RENDER LOOP ==================== */
+  function resize() {
+    const w = stage.clientWidth || 640;
+    const h = stage.clientHeight || 480;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  buildOrbital('2pz');
+  buildBondScene('ss');
+
+  let paused = false;
+  document.addEventListener('visibilitychange', function () { paused = document.hidden; });
+
+  let lastT = performance.now();
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (paused) { lastT = now; return; }
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+
+    if (curTab === 'orbital' && autoRotate && !dragging) {
+      tgtTheta += dt * 0.24;
+    }
+
+    if (curTab === 'overlap' && autoBondDir !== 0) {
+      const targetD = BOND_META[curBond].dOpt;
+      bondDist += autoBondDir * dt * 1.05;
+      if (bondDist <= targetD) {
+        bondDist = targetD;
+        autoBondDir = 0;
+        if (!bondLockedPing) {
+          bondLockedPing = true;
+          playTone(660, 0.16, 0.04, 'triangle');
+          setTimeout(function () { playTone(880, 0.18, 0.035, 'sine'); }, 90);
+        }
+      }
+      $('distRange').value = bondDist.toFixed(2);
+      updateBondGeometry();
+    }
+
+    // Subtle quantum shimmer on overlap glow
+    if (curTab === 'overlap') {
+      const pulse = 1 + Math.sin(now * 0.0045) * 0.045;
+      ovlBridgeSigma.scale.y *= 1; // keep stable
+      if (ovlBridgeSigma.visible) ovlBridgeSigma.rotation.y += dt * 0.4;
+      ovlCloud.rotation.x = Math.sin(now * 0.001) * 0.015;
+    }
+
+    camTheta += (tgtTheta - camTheta) * Math.min(1, dt * 8.5);
+    camPhi   += (tgtPhi - camPhi) * Math.min(1, dt * 8.5);
+    camRadius += (tgtRadius - camRadius) * Math.min(1, dt * 8.5);
+
+    camera.position.set(
+      camRadius * Math.sin(camPhi) * Math.sin(camTheta),
+      camRadius * Math.cos(camPhi),
+      camRadius * Math.sin(camPhi) * Math.cos(camTheta)
+    );
+    camera.lookAt(0, 0, 0);
+
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>

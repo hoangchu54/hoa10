@@ -1,0 +1,1419 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phản ứng Oxi hóa – Khử 3D (Bài 15) — Hóa 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#080610;
+    --the:#151026;
+    --vien:rgba(255,255,255,.12);
+    --chu:#f7f2fc;
+    --phu:#b6a6cc;
+    --tim:#a78bfa;
+    --xanh:#38bdf8;
+    --dong:#fb923c;
+    --bac:#e2e8f0;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--nen);color:var(--chu);font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;overflow:hidden;user-select:none}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 392px;height:100dvh}
+  .stage{position:relative;min-height:0;touch-action:none;background:radial-gradient(circle at 50% 42%,#1c1633 0%,#0a0816 62%,#05040a 100%);overflow:hidden}
+  #cv{display:block;width:100%;height:100%;cursor:grab}
+  #cv:active{cursor:grabbing}
+
+  .hud{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;z-index:3}
+  .hud-left,.hud-right{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:rgba(12,9,24,.84);border:1px solid var(--vien);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+  .chip b{color:#fde68a;font-weight:800}
+  .chip.mode{color:#bae6fd;border-color:rgba(56,189,248,.34)}
+  .hud-btn{pointer-events:auto;cursor:pointer;min-height:34px;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(21,16,38,.86);border:1px solid var(--vien);color:var(--chu);transition:.15s}
+  .hud-btn:hover{border-color:rgba(255,255,255,.35);transform:translateY(-1px)}
+  .hud-btn.on{background:linear-gradient(90deg,#0284c7,#7c3aed);border-color:#7dd3fc;color:#fff}
+
+  .nhan3d{position:absolute;transform:translate(-50%,-100%);background:rgba(12,9,24,.88);border:1px solid var(--vien);border-radius:10px;padding:4px 10px;font-size:11.6px;font-weight:800;white-space:nowrap;pointer-events:none;backdrop-filter:blur(6px);z-index:2;box-shadow:0 6px 16px rgba(0,0,0,.42)}
+  .nhan3d small{display:block;font-weight:600;color:var(--phu);font-size:10.4px}
+  .nhan3d .c-blue{color:#7dd3fc}
+  .nhan3d .c-cu{color:#fdba74}
+  .nhan3d .c-ag{color:#f1f5f9}
+
+  .cam-bar{position:absolute;left:14px;bottom:48px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+  .hint-bar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(12,9,24,.78);border:1px solid var(--vien);border-radius:99px;padding:6px 14px;font-size:11.5px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
+  .hint-bar b{color:#f8fafc}
+
+  .toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);background:rgba(14,10,28,.94);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:9px 16px;font-size:12.6px;font-weight:700;max-width:88%;text-align:center;opacity:0;transition:opacity .24s,transform .24s;pointer-events:none;z-index:4;box-shadow:0 12px 30px rgba(0,0,0,.55)}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(4px)}
+
+  .side{background:var(--the);border-left:1px solid var(--vien);padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:11px}
+  h1{font-size:16.4px;margin:0;line-height:1.32}
+  .tag{display:inline-block;background:rgba(56,189,248,.16);color:#7dd3fc;border-radius:99px;padding:2px 10px;font-size:11px;font-weight:800;margin-bottom:4px}
+
+  .box{background:rgba(255,255,255,.038);border:1px solid var(--vien);border-radius:13px;padding:10px 12px}
+  .box h3{margin:0 0 8px;font-size:11.2px;letter-spacing:.06em;text-transform:uppercase;color:var(--tim);display:flex;justify-content:space-between;align-items:center}
+
+  button{font:inherit;font-weight:700;font-size:12.4px;border:1px solid var(--vien);background:rgba(255,255,255,.06);color:var(--chu);border-radius:10px;padding:8px 10px;min-height:40px;cursor:pointer;transition:.15s}
+  button:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.28)}
+  button.on{background:linear-gradient(90deg,#0284c7,#7c3aed);border-color:rgba(125,211,252,.55);color:#fff}
+  .chinh{width:100%;background:linear-gradient(90deg,#0284c7,#6d28d9);border:0;color:#fff;font-size:13.8px;box-shadow:0 6px 18px rgba(2,132,199,.32)}
+  .chinh:hover{filter:brightness(1.08)}
+  .chinh.warn{background:linear-gradient(90deg,#c2410c,#7c3aed)}
+
+  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+  .tab-btn{padding:8px;min-height:50px;text-align:left;display:flex;flex-direction:column;justify-content:center;gap:2px}
+  .tab-btn span{font-size:12.2px;font-weight:800}
+  .tab-btn small{font-size:10.5px;color:var(--phu);font-weight:600}
+  .tab-btn.on small{color:#e0f2fe}
+
+  .seg{display:flex;gap:6px;margin-top:7px}
+  .seg button{flex:1}
+
+  .e-box{display:grid;grid-template-columns:1fr;gap:7px}
+  .e-card{background:rgba(10,7,20,.68);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 10px;position:relative;overflow:hidden}
+  .e-card.oxh{border-left:3px solid #fb923c}
+  .e-card.khu{border-left:3px solid #38bdf8}
+  .e-head{display:flex;justify-content:space-between;align-items:center;font-size:10.8px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+  .e-card.oxh .e-head{color:#fdba74}
+  .e-card.khu .e-head{color:#7dd3fc}
+  .e-eq{font-size:13.4px;font-weight:800;color:#f8fafc}
+  .e-flow{display:flex;align-items:center;justify-content:center;gap:8px;font-size:11.6px;font-weight:800;color:#fde68a;padding:4px 8px;background:rgba(250,204,21,.08);border:1px dashed rgba(250,204,21,.35);border-radius:8px}
+  .e-dot{width:8px;height:8px;border-radius:50%;background:#fde047;box-shadow:0 0 8px #fde047;opacity:.35;transition:opacity .2s}
+  .e-dot.live{opacity:1;animation:epulse .9s infinite alternate}
+  @keyframes epulse{from{transform:scale(.85);opacity:.65}to{transform:scale(1.25);opacity:1}}
+
+  .meter-row{display:flex;justify-content:space-between;font-size:11.8px;margin-bottom:4px;color:var(--phu)}
+  .meter-row b{color:#f8fafc}
+  .bar-bg{height:8px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden;margin-bottom:8px}
+  .bar-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#38bdf8,#a78bfa);transition:width .12s linear}
+
+  .eq{font-size:13.8px;font-weight:800;color:#fde68a;line-height:1.55}
+  .kq{font-size:12.3px;line-height:1.56;color:#ecdef9}
+  .kq b{color:#fde68a}
+
+  .q{background:rgba(34,197,94,.09);border-color:rgba(34,197,94,.34)}
+  .q h3{color:#86efac}
+
+  .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--phu);background:var(--nen);z-index:10}
+
+  @media (max-width:860px){
+    html,body{overflow:auto}
+    .wrap{grid-template-columns:1fr;grid-template-rows:58dvh auto;height:auto}
+    .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
+    .cam-bar{bottom:10px}
+    .hint-bar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="hud">
+      <div class="hud-left">
+        <span class="chip mode" id="chipMode">✨ Cây bạc: Cu + 2AgNO₃</span>
+        <span class="chip">⏱️ <b id="dongHo">0,0 s</b></span>
+        <span class="chip" id="chipTocDo">Tốc độ ×1</span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn on" id="btnEflow" title="Hiện luồng hạt electron trao đổi">⚡ Luồng e⁻: Bật</button>
+        <button class="hud-btn on" id="btnSound" title="Bật/tắt âm thanh">🔊</button>
+      </div>
+    </div>
+
+    <div class="nhan3d" id="nhanKimLoai"></div>
+    <div class="nhan3d" id="nhanDungDich"></div>
+
+    <div class="cam-bar">
+      <button class="hud-btn on" data-cam="iso">🎥 Toàn cảnh</button>
+      <button class="hud-btn" data-cam="close">🔎 Cận tinh thể</button>
+      <button class="hud-btn" data-cam="side">🔬 Ngang mực dd</button>
+    </div>
+
+    <div class="hint-bar">🖱️ <b>Click trực tiếp thanh kim loại</b> để nhúng / rút khỏi dung dịch · Kéo xoay 360° · Cuộn phóng to</div>
+    <div class="toast" id="toast"></div>
+    <div class="fallback" id="fb">Thiết bị chưa bật WebGL hoặc không nạp được Three.js nên không hiển thị được phòng thí nghiệm 3D.</div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <span class="tag">Bài 15 · Phản ứng Oxi hóa – Khử · SGK KNTT</span>
+      <h1>Phản ứng Oxi hóa – Khử trong dung dịch 3D</h1>
+    </div>
+
+    <div class="box">
+      <h3>1. Chọn thí nghiệm &amp; thao tác</h3>
+      <div class="tabs">
+        <button class="tab-btn on" id="tabCuAg">
+          <span>🌿 Cây bạc (Cu + AgNO₃)</span>
+          <small>Dây đồng xoắn · tinh thể Ag↓</small>
+        </button>
+        <button class="tab-btn" id="tabZnCu">
+          <span>🧡 Kẽm đẩy đồng (Zn + CuSO₄)</span>
+          <small>Lá kẽm ăn mòn · Cu↓ đỏ nâu</small>
+        </button>
+      </div>
+      <button class="chinh" id="btnDip">⬇️ Nhúng dây Cu vào dung dịch AgNO₃</button>
+      <div class="seg">
+        <button id="btnSpeed">⏩ Tua nhanh ×4</button>
+        <button id="btnReset">↺ Làm lại mẫu mới</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3><span>2. Quá trình nhường – nhận electron</span> <span id="stLive" style="color:#7dd3fc;text-transform:none">Chờ nhúng</span></h3>
+      <div class="e-box">
+        <div class="e-card oxh">
+          <div class="e-head"><span>Quá trình oxi hóa (Chất khử)</span><span id="oxhTag">Cu⁰ → Cu²⁺</span></div>
+          <div class="e-eq" id="oxhEq">Cu → Cu²⁺ + 2e</div>
+        </div>
+        <div class="e-flow">
+          <span class="e-dot" id="eDot1"></span>
+          <span id="eFlowText">2e chuyển từ Cu sang 2 ion Ag⁺</span>
+          <span class="e-dot" id="eDot2"></span>
+        </div>
+        <div class="e-card khu">
+          <div class="e-head"><span>Quá trình khử (Chất oxi hóa)</span><span id="khuTag">Ag⁺ → Ag⁰</span></div>
+          <div class="e-eq" id="khuEq">Ag⁺ + 1e → Ag↓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>3. Tiến độ phản ứng &amp; hiện tượng real-time</h3>
+      <div class="meter-row"><span>Mức độ phản ứng</span><b id="pctText">0%</b></div>
+      <div class="bar-bg"><div class="bar-fill" id="pctBar"></div></div>
+      <div class="meter-row"><span id="ionLabel">Màu dung dịch (nồng độ Cu²⁺)</span><b id="ionVal">Không màu</b></div>
+      <div class="kq" id="hienTuong" style="margin-top:6px"></div>
+    </div>
+
+    <div class="box">
+      <h3>Phương trình hóa học (chuẩn IUPAC)</h3>
+      <div class="eq" id="ptHoaHoc">Cu(s) + 2AgNO₃(aq) → Cu(NO₃)₂(aq) + 2Ag(s)↓</div>
+      <div class="kq" id="giaiThich" style="margin-top:5px"></div>
+    </div>
+
+    <div class="box q">
+      <h3>Câu hỏi tự kiểm tra (SGK Bài 15)</h3>
+      <div class="kq" id="cauHoi"></div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function loadThreeAndBoot() {
+  var MIRRORS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+    'https://unpkg.com/three@0.128.0/build/three.min.js'
+  ];
+  var idx = 0;
+  function fail() { document.getElementById('fb').style.display = 'flex'; }
+  function next() {
+    if (window.THREE && window.THREE.WebGLRenderer) { bootOxhApp(window.THREE); return; }
+    if (idx >= MIRRORS.length) { fail(); return; }
+    var s = document.createElement('script');
+    s.src = MIRRORS[idx++];
+    s.async = true;
+    s.onload = function () {
+      if (window.THREE && window.THREE.WebGLRenderer) bootOxhApp(window.THREE);
+      else next();
+    };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+
+function bootOxhApp(THREE) {
+  'use strict';
+  const $ = function (id) { return document.getElementById(id); };
+  const stage = $('stage'), cv = $('cv');
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' }); }
+  catch (e) { $('fb').style.display = 'flex'; return; }
+
+  const isLow = (window.innerWidth < 720) || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+  renderer.setPixelRatio(Math.min(isLow ? 1.5 : 2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
+  renderer.shadowMap.enabled = !isLow;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  function srgbCol(hex) { return new THREE.Color(hex).convertSRGBToLinear(); }
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x090713);
+  scene.fog = new THREE.FogExp2(0x090713, 0.025);
+
+  /* ==================== STUDIO IBL (MUTED SOFTBOXES) ==================== */
+  (function buildEnvMap() {
+    if (!THREE.PMREMGenerator) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const es = new THREE.Scene();
+    es.background = new THREE.Color(0x100c1e);
+    const sTop = new THREE.Mesh(new THREE.PlaneGeometry(16, 7), new THREE.MeshBasicMaterial({ color: 0xaab4c4, side: THREE.DoubleSide }));
+    sTop.position.set(0, 9.5, 2.5); sTop.lookAt(0, 0, 0); es.add(sTop);
+    const sL = new THREE.Mesh(new THREE.PlaneGeometry(6.5, 11), new THREE.MeshBasicMaterial({ color: 0x8aa8cf, side: THREE.DoubleSide }));
+    sL.position.set(-9.5, 3.2, 2.0); sL.lookAt(0, 0, 0); es.add(sL);
+    const sR = new THREE.Mesh(new THREE.PlaneGeometry(6.5, 11), new THREE.MeshBasicMaterial({ color: 0xc2b098, side: THREE.DoubleSide }));
+    sR.position.set(9.5, 3.2, 2.0); sR.lookAt(0, 0, 0); es.add(sR);
+    const sBack = new THREE.Mesh(new THREE.PlaneGeometry(12, 4.5), new THREE.MeshBasicMaterial({ color: 0x7b6ea8, side: THREE.DoubleSide }));
+    sBack.position.set(0, 4.0, -9.0); sBack.lookAt(0, 0, 0); es.add(sBack);
+    scene.environment = pmrem.fromScene(es, 0.05).texture;
+    pmrem.dispose();
+  })();
+
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+
+  /* ==================== ÁNH SÁNG STUDIO ==================== */
+  scene.add(new THREE.HemisphereLight(0xdbeafe, 0x1a132c, 0.68));
+  const keyLight = new THREE.DirectionalLight(0xfef9f0, 1.05);
+  keyLight.position.set(4.6, 9.5, 6.8);
+  if (!isLow) {
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(1024, 1024);
+    keyLight.shadow.bias = -0.0005;
+    const sb = 5.0;
+    keyLight.shadow.camera.left = -sb; keyLight.shadow.camera.right = sb;
+    keyLight.shadow.camera.top = sb; keyLight.shadow.camera.bottom = -sb;
+  }
+  scene.add(keyLight);
+
+  const rimLight = new THREE.PointLight(0x7dd3fc, 0.65, 16);
+  rimLight.position.set(-5.2, 4.5, -4.5);
+  scene.add(rimLight);
+
+  const fillLight = new THREE.PointLight(0xfde68a, 0.34, 14);
+  fillLight.position.set(4.5, 2.6, 4.2);
+  scene.add(fillLight);
+
+  /* ==================== WEB AUDIO API ==================== */
+  let audioCtx = null, soundOn = true;
+  function ensureAudio() {
+    if (!soundOn) return null;
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      audioCtx = new AC();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function sfxSplash(dipIn) {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(dipIn ? 340 : 220, now);
+    osc.frequency.exponentialRampToValueAtTime(dipIn ? 130 : 460, now + 0.14);
+    g.gain.setValueAtTime(0.001, now);
+    g.gain.linearRampToValueAtTime(0.11, now + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0008, now + 0.18);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(now); osc.stop(now + 0.19);
+  }
+  function sfxCrystalTick() {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = 'triangle';
+    const f = 1400 + Math.random() * 1400;
+    osc.frequency.setValueAtTime(f, now);
+    osc.frequency.exponentialRampToValueAtTime(f * 1.12, now + 0.05);
+    g.gain.setValueAtTime(0.018, now);
+    g.gain.exponentialRampToValueAtTime(0.0005, now + 0.07);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(now); osc.stop(now + 0.08);
+  }
+  function sfxClick() {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(620, now);
+    osc.frequency.exponentialRampToValueAtTime(300, now + 0.035);
+    g.gain.setValueAtTime(0.06, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(now); osc.stop(now + 0.05);
+  }
+
+  /* ==================== PROCEDURAL TEXTURES ==================== */
+  function makeBenchTex() {
+    const c = document.createElement('canvas'); c.width = 512; c.height = 512;
+    const g = c.getContext('2d');
+    g.fillStyle = '#181424'; g.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 4200; i++) {
+      const x = Math.random() * 512, y = Math.random() * 512;
+      g.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.025)' : 'rgba(0,0,0,0.08)';
+      g.fillRect(x, y, 2, 2);
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(4, 4);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  function makeBeakerScaleTex() {
+    const c = document.createElement('canvas'); c.width = 512; c.height = 512;
+    const g = c.getContext('2d');
+    g.clearRect(0, 0, 512, 512);
+    g.strokeStyle = 'rgba(235,245,255,0.72)';
+    g.fillStyle = 'rgba(235,245,255,0.78)';
+    g.font = 'bold 20px "Be Vietnam Pro", sans-serif';
+    g.textAlign = 'left';
+    const marks = [
+      { y: 410, lbl: '50' }, { y: 340, lbl: '100' }, { y: 270, lbl: '150' },
+      { y: 200, lbl: '200' }, { y: 130, lbl: '250 mL' }
+    ];
+    for (let i = 0; i < marks.length; i++) {
+      const m = marks[i];
+      g.lineWidth = 3;
+      g.beginPath(); g.moveTo(210, m.y); g.lineTo(252, m.y); g.stroke();
+      g.fillText(m.lbl, 260, m.y + 7);
+      if (i < marks.length - 1) {
+        g.lineWidth = 2;
+        g.beginPath(); g.moveTo(222, m.y - 35); g.lineTo(248, m.y - 35); g.stroke();
+      }
+    }
+    g.font = 'bold 18px sans-serif';
+    g.fillStyle = 'rgba(220,235,255,0.55)';
+    g.fillText('BORO 3.3', 214, 466);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  function makeWoodTex() {
+    const c = document.createElement('canvas'); c.width = 256; c.height = 256;
+    const g = c.getContext('2d');
+    g.fillStyle = '#5c3d28'; g.fillRect(0, 0, 256, 256);
+    for (let y = 0; y < 256; y += 3) {
+      g.fillStyle = 'rgba(35,18,8,' + (0.08 + Math.sin(y * 0.14) * 0.06) + ')';
+      g.fillRect(0, y, 256, 2);
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  /* ==================== BÀN THÍ NGHIỆM & GIÁ ĐỠ ==================== */
+  const bench = new THREE.Mesh(
+    new THREE.BoxGeometry(16, 0.5, 11),
+    new THREE.MeshStandardMaterial({ map: makeBenchTex(), color: srgbCol(0x28213a), roughness: 0.78, metalness: 0.08 })
+  );
+  bench.position.set(0, -0.25, 0);
+  bench.receiveShadow = true;
+  scene.add(bench);
+
+  // Đế gỗ vát cạnh (ExtrudeGeometry) đặt cốc
+  function makeBeveledPad(w, d, h) {
+    const s = new THREE.Shape();
+    const r = 0.22;
+    s.moveTo(-w / 2 + r, -d / 2);
+    s.lineTo(w / 2 - r, -d / 2);
+    s.quadraticCurveTo(w / 2, -d / 2, w / 2, -d / 2 + r);
+    s.lineTo(w / 2, d / 2 - r);
+    s.quadraticCurveTo(w / 2, d / 2, w / 2 - r, d / 2);
+    s.lineTo(-w / 2 + r, d / 2);
+    s.quadraticCurveTo(-w / 2, d / 2, -w / 2, d / 2 - r);
+    s.lineTo(-w / 2, -d / 2 + r);
+    s.quadraticCurveTo(-w / 2, -d / 2, -w / 2 + r, -d / 2);
+    const geo = new THREE.ExtrudeGeometry(s, { depth: h, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.035, bevelSegments: 3 });
+    geo.rotateX(-Math.PI / 2);
+    return geo;
+  }
+  const basePad = new THREE.Mesh(
+    makeBeveledPad(3.5, 3.1, 0.14),
+    new THREE.MeshStandardMaterial({ map: makeWoodTex(), color: srgbCol(0x6e4a32), roughness: 0.62, metalness: 0.05 })
+  );
+  basePad.position.set(0, 0.035, 0);
+  basePad.castShadow = true;
+  basePad.receiveShadow = true;
+  scene.add(basePad);
+
+  // Giá sắt kẹp (Retort Stand) đặt lệch sau-trái cốc
+  const standGroup = new THREE.Group();
+  const matIron = new THREE.MeshStandardMaterial({ color: srgbCol(0x3a4252), roughness: 0.36, metalness: 0.82 });
+  const matChrome = new THREE.MeshStandardMaterial({ color: srgbCol(0xbec6d2), roughness: 0.18, metalness: 0.92 });
+  const standFoot = new THREE.Mesh(makeBeveledPad(1.25, 1.65, 0.10), matIron);
+  standFoot.position.set(-1.95, 0.035, -0.35);
+  standFoot.castShadow = true; standFoot.receiveShadow = true;
+  standGroup.add(standFoot);
+
+  const standRod = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 5.2, 20), matChrome);
+  standRod.position.set(-2.0, 2.65, -0.55);
+  standRod.castShadow = true;
+  standGroup.add(standRod);
+
+  // Cụm kẹp trượt lên/xuống (dip assembly)
+  const holderGroup = new THREE.Group();
+  const clampBoss = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.28, 18), matIron);
+  clampBoss.position.set(-2.0, 0, -0.55);
+  holderGroup.add(clampBoss);
+
+  const knob = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.16, 16), new THREE.MeshStandardMaterial({ color: srgbCol(0x1f2937), roughness: 0.5, metalness: 0.2 }));
+  knob.rotation.z = Math.PI / 2;
+  knob.position.set(-2.18, 0, -0.55);
+  holderGroup.add(knob);
+
+  const armCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-2.0, 0, -0.55),
+    new THREE.Vector3(-1.1, 0, -0.35),
+    new THREE.Vector3(-0.35, 0, -0.06),
+    new THREE.Vector3(0, 0, 0)
+  ]);
+  const armMesh = new THREE.Mesh(new THREE.TubeGeometry(armCurve, 24, 0.042, 12, false), matChrome);
+  armMesh.castShadow = true;
+  holderGroup.add(armMesh);
+
+  // Kẹp gỗ / silicone kẹp đầu thanh kim loại
+  const clipCap = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.14, 0.12, 0.26, 20),
+    new THREE.MeshStandardMaterial({ color: srgbCol(0x2d3748), roughness: 0.52, metalness: 0.25 })
+  );
+  clipCap.position.set(0, -0.05, 0);
+  holderGroup.add(clipCap);
+
+  // Vùng click 3D bao quanh cụm kim loại (hitbox tàng hình)
+  const hitMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.65, 0.65, 2.9, 12),
+    new THREE.MeshBasicMaterial({ visible: false })
+  );
+  hitMesh.position.set(0, -1.25, 0);
+  holderGroup.add(hitMesh);
+
+  const Y_UP = 4.55;
+  const Y_DOWN = 3.02;
+  holderGroup.position.set(0, Y_UP, 0);
+  scene.add(standGroup);
+  scene.add(holderGroup);
+
+  /* ==================== CỐC THỦY TINH BOROSILICATE (LATHE + FRESNEL) ==================== */
+  const BEAKER_Y = 0.21;
+  const BEAKER_R = 1.06;
+  const BEAKER_H = 2.65;
+  const LIQ_H = 1.88;
+
+  const beakerPts = [
+    new THREE.Vector2(0.001, 0.0),
+    new THREE.Vector2(0.95, 0.0),
+    new THREE.Vector2(1.03, 0.05),
+    new THREE.Vector2(1.06, 0.16),
+    new THREE.Vector2(1.06, BEAKER_H - 0.12),
+    new THREE.Vector2(1.13, BEAKER_H),
+    new THREE.Vector2(1.11, BEAKER_H + 0.03),
+    new THREE.Vector2(1.03, BEAKER_H - 0.08),
+    new THREE.Vector2(1.01, 0.18),
+    new THREE.Vector2(0.96, 0.09),
+    new THREE.Vector2(0.001, 0.08)
+  ];
+  const beakerGeo = new THREE.LatheGeometry(beakerPts, isLow ? 36 : 56);
+
+  const glassBackMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xbfd8f5),
+    roughness: 0.08,
+    metalness: 0.0,
+    transparent: true,
+    opacity: 0.14,
+    side: THREE.BackSide,
+    depthWrite: false
+  });
+  const beakerBack = new THREE.Mesh(beakerGeo, glassBackMat);
+  beakerBack.position.y = BEAKER_Y;
+  beakerBack.renderOrder = 1;
+  scene.add(beakerBack);
+
+  const glassFrontMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    side: THREE.FrontSide,
+    uniforms: {
+      uColor: { value: srgbCol(0xdbeafe) },
+      uRim: { value: srgbCol(0x93c5fd) }
+    },
+    vertexShader: `
+      varying vec3 vNorm;
+      varying vec3 vView;
+      void main() {
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        vNorm = normalize(normalMatrix * normal);
+        vView = normalize(-mv.xyz);
+        gl_Position = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColor;
+      uniform vec3 uRim;
+      varying vec3 vNorm;
+      varying vec3 vView;
+      void main() {
+        float ndv = clamp(abs(dot(normalize(vNorm), normalize(vView))), 0.0, 1.0);
+        float fres = pow(1.0 - ndv, 3.0);
+        vec3 col = mix(uColor, uRim, fres * 0.85);
+        float spec = pow(max(dot(reflect(-normalize(vec3(0.45,0.8,0.6)), normalize(vNorm)), normalize(vView)), 0.0), 42.0);
+        col += vec3(0.85, 0.92, 1.0) * spec * 0.45;
+        float alpha = clamp(0.055 + fres * 0.44 + spec * 0.25, 0.0, 0.72);
+        gl_FragColor = vec4(col, alpha);
+      }
+    `
+  });
+  const beakerFront = new THREE.Mesh(beakerGeo, glassFrontMat);
+  beakerFront.position.y = BEAKER_Y;
+  beakerFront.renderOrder = 10;
+  scene.add(beakerFront);
+
+  // Vạch chia thể tích in trên thành cốc
+  const scaleCyl = new THREE.Mesh(
+    new THREE.CylinderGeometry(BEAKER_R + 0.008, BEAKER_R + 0.008, BEAKER_H - 0.3, 44, 1, true, -Math.PI * 0.35, Math.PI * 0.7),
+    new THREE.MeshBasicMaterial({ map: makeBeakerScaleTex(), transparent: true, opacity: 0.62, depthWrite: false })
+  );
+  scaleCyl.position.y = BEAKER_Y + BEAKER_H * 0.5;
+  scaleCyl.renderOrder = 11;
+  scene.add(scaleCyl);
+
+  /* ==================== DUNG DỊCH GLSL BEER-LAMBERT + MENISCUS ==================== */
+  const liqUniforms = {
+    uTime: { value: 0 },
+    uColor: { value: srgbCol(0xcbd5e1) },
+    uDeep: { value: srgbCol(0x94a3b8) },
+    uTintStrength: { value: 0.0 },
+    uRipple: { value: 0.0 }
+  };
+
+  const liqMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    uniforms: liqUniforms,
+    vertexShader: `
+      uniform float uTime;
+      uniform float uRipple;
+      varying vec3 vPos;
+      varying vec3 vNorm;
+      varying vec3 vView;
+      void main() {
+        vec3 p = position;
+        if (p.y > 1.82) {
+          float r = length(p.xz);
+          float men = smoothstep(0.65, 1.0, r) * 0.048;
+          float wave = sin(r * 14.0 - uTime * 6.0) * 0.014 * uRipple * (1.0 - r * 0.5);
+          p.y += men + wave;
+        }
+        vPos = p;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        vNorm = normalize(normalMatrix * normal);
+        vView = normalize(-mv.xyz);
+        gl_Position = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColor;
+      uniform vec3 uDeep;
+      uniform float uTintStrength;
+      varying vec3 vPos;
+      varying vec3 vNorm;
+      varying vec3 vView;
+      void main() {
+        float h = clamp(vPos.y / 1.88, 0.0, 1.0);
+        float ndv = clamp(abs(dot(normalize(vNorm), normalize(vView))), 0.0, 1.0);
+        float fres = pow(1.0 - ndv, 2.2);
+        vec3 clearCol = vec3(0.72, 0.80, 0.88);
+        vec3 baseCol = mix(clearCol, mix(uDeep, uColor, h * 0.65 + 0.25), uTintStrength);
+        // Beer-Lambert edge depth & meniscus highlight
+        vec3 col = mix(baseCol, baseCol * 0.72, fres * 0.4 * uTintStrength);
+        if (vPos.y > 1.82) {
+          col += vec3(0.22, 0.28, 0.34) * (0.25 + fres * 0.55);
+        }
+        float baseAlpha = mix(0.16, 0.66, uTintStrength);
+        float alpha = clamp(baseAlpha + fres * 0.22, 0.14, 0.84);
+        gl_FragColor = vec4(col, alpha);
+      }
+    `
+  });
+
+  const liqPts = [
+    new THREE.Vector2(0.001, 0.0),
+    new THREE.Vector2(0.95, 0.0),
+    new THREE.Vector2(0.99, 0.06),
+    new THREE.Vector2(0.995, LIQ_H),
+    new THREE.Vector2(0.85, LIQ_H - 0.01),
+    new THREE.Vector2(0.45, LIQ_H - 0.015),
+    new THREE.Vector2(0.001, LIQ_H - 0.015)
+  ];
+  const liqMesh = new THREE.Mesh(new THREE.LatheGeometry(liqPts, isLow ? 32 : 48), liqMat);
+  liqMesh.position.y = BEAKER_Y + 0.095;
+  liqMesh.renderOrder = 3;
+  scene.add(liqMesh);
+
+  // Vòng meniscus sáng quanh mặt thoáng
+  const meniscusRing = new THREE.Mesh(
+    new THREE.TorusGeometry(0.985, 0.016, 10, 48),
+    new THREE.MeshBasicMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.42, depthWrite: false })
+  );
+  meniscusRing.rotation.x = Math.PI / 2;
+  meniscusRing.position.y = BEAKER_Y + 0.095 + LIQ_H + 0.032;
+  meniscusRing.renderOrder = 5;
+  scene.add(meniscusRing);
+
+  /* ==================== MÔ HÌNH 1: DÂY ĐỒNG XOẮN + CÂY BẠC TINH THỂ ==================== */
+  const cuGroup = new THREE.Group();
+  holderGroup.add(cuGroup);
+
+  const matCu = new THREE.MeshStandardMaterial({
+    color: srgbCol(0xc25927),
+    roughness: 0.23,
+    metalness: 0.90
+  });
+  const matCuSub = new THREE.MeshStandardMaterial({
+    color: srgbCol(0xb55022),
+    roughness: 0.28,
+    metalness: 0.88
+  });
+
+  // Phần dây đồng trên (không ngập)
+  const cuTopCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, -0.10, 0),
+    new THREE.Vector3(0, -0.62, 0),
+    new THREE.Vector3(0.08, -0.88, 0.05),
+    new THREE.Vector3(0.24, -1.04, 0.0)
+  ]);
+  const cuTopWire = new THREE.Mesh(new THREE.TubeGeometry(cuTopCurve, 24, 0.036, 12, false), matCu);
+  cuTopWire.castShadow = true;
+  cuGroup.add(cuTopWire);
+
+  // Phần dây đồng xoắn lò xo (ngập trong AgNO3)
+  const spiralPts = [];
+  const TURNS = 4.6;
+  const STEPS = 110;
+  for (let i = 0; i <= STEPS; i++) {
+    const t = i / STEPS;
+    const ang = t * Math.PI * 2 * TURNS;
+    const rad = 0.24 + Math.sin(t * Math.PI) * 0.06;
+    const y = -1.04 - t * 1.48;
+    spiralPts.push(new THREE.Vector3(Math.cos(ang) * rad, y, Math.sin(ang) * rad));
+  }
+  const cuSpiralCurve = new THREE.CatmullRomCurve3(spiralPts);
+  const cuSpiralMesh = new THREE.Mesh(new THREE.TubeGeometry(cuSpiralCurve, isLow ? 72 : 120, 0.036, 10, false), matCuSub);
+  cuSpiralMesh.castShadow = true;
+  cuGroup.add(cuSpiralMesh);
+
+  // Cây bạc tinh thể (Silver dendritic needles mọc dọc theo dây đồng xoắn)
+  const silverGroup = new THREE.Group();
+  cuGroup.add(silverGroup);
+
+  const matSilver = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xe2e8f0),
+    roughness: 0.14,
+    metalness: 0.96,
+    clearcoat: 0.35,
+    clearcoatRoughness: 0.12
+  });
+
+  const SILVER_COUNT = isLow ? 160 : 250;
+  // Hình kim tinh thể nhánh (dendrite shard)
+  const needleGeo = new THREE.ConeGeometry(0.018, 0.26, 4);
+  needleGeo.translate(0, 0.13, 0);
+  const silverInst = new THREE.InstancedMesh(needleGeo, matSilver, SILVER_COUNT);
+  silverInst.renderOrder = 4;
+  silverGroup.add(silverInst);
+
+  // Nhánh phụ nhỏ mọc tỏa xiên tạo hiệu ứng cây tinh thể lông vũ
+  const twigGeo = new THREE.OctahedronGeometry(0.024, 0);
+  twigGeo.scale(0.55, 2.2, 0.55);
+  twigGeo.translate(0, 0.04, 0);
+  const TWIG_COUNT = isLow ? 140 : 220;
+  const twigInst = new THREE.InstancedMesh(twigGeo, matSilver, TWIG_COUNT);
+  twigInst.renderOrder = 4;
+  silverGroup.add(twigInst);
+
+  const silverData = [];
+  const twigData = [];
+  const dummy = new THREE.Object3D();
+  const upVec = new THREE.Vector3(0, 1, 0);
+
+  for (let i = 0; i < SILVER_COUNT; i++) {
+    const u = 0.04 + (i / SILVER_COUNT) * 0.94 + (Math.random() - 0.5) * 0.015;
+    const p = cuSpiralCurve.getPointAt(Math.max(0.01, Math.min(0.99, u)));
+    const outDir = new THREE.Vector3(p.x, (Math.random() - 0.52) * 0.55, p.z).normalize();
+    // Thêm độ lệch góc tự nhiên của tinh thể
+    outDir.x += (Math.random() - 0.5) * 0.55;
+    outDir.y += (Math.random() - 0.55) * 0.45;
+    outDir.z += (Math.random() - 0.5) * 0.55;
+    outDir.normalize();
+    const quat = new THREE.Quaternion().setFromUnitVectors(upVec, outDir);
+    const maxLen = 0.45 + Math.random() * 1.15;
+    const maxRad = 0.65 + Math.random() * 0.75;
+    const birth = Math.random() * 0.58;
+    silverData.push({ pos: p, quat, maxLen, maxRad, birth });
+  }
+  for (let i = 0; i < TWIG_COUNT; i++) {
+    const parent = silverData[Math.floor(Math.random() * silverData.length)];
+    const dir = new THREE.Vector3(0, 1, 0).applyQuaternion(parent.quat);
+    const side = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+    const branchDir = dir.clone().multiplyScalar(0.65).add(side.multiplyScalar(0.65)).normalize();
+    const quat = new THREE.Quaternion().setFromUnitVectors(upVec, branchDir);
+    const dist = 0.06 + Math.random() * 0.16;
+    twigData.push({
+      base: parent.pos,
+      dir,
+      dist,
+      quat,
+      maxScale: 0.6 + Math.random() * 1.0,
+      birth: Math.min(0.85, parent.birth + 0.16 + Math.random() * 0.18)
+    });
+  }
+
+  // Bụi tinh thể bạc rơi nhẹ xuống đáy cốc
+  const AG_FALL_COUNT = isLow ? 36 : 60;
+  const agFallInst = new THREE.InstancedMesh(new THREE.OctahedronGeometry(0.014, 0), matSilver, AG_FALL_COUNT);
+  agFallInst.renderOrder = 4;
+  scene.add(agFallInst);
+  const agFallData = [];
+  for (let i = 0; i < AG_FALL_COUNT; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const r = 0.1 + Math.random() * 0.65;
+    agFallData.push({
+      x: Math.cos(ang) * r,
+      z: Math.sin(ang) * r,
+      y: BEAKER_Y + 0.12 + Math.random() * 1.35,
+      vy: 0.12 + Math.random() * 0.16,
+      rot: Math.random() * Math.PI,
+      thresh: 0.25 + Math.random() * 0.65
+    });
+  }
+
+  /* ==================== MÔ HÌNH 2: LÁ KẼM + LỚP PHỦ ĐỒNG ĐỎ NÂU + BỘT ĐỒNG RƠI ==================== */
+  const znGroup = new THREE.Group();
+  znGroup.visible = false;
+  holderGroup.add(znGroup);
+
+  const matZnTop = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x98a4b3),
+    roughness: 0.28,
+    metalness: 0.86
+  });
+  const matZnSub = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x8a96a6),
+    roughness: 0.34,
+    metalness: 0.82
+  });
+
+  function makeStripGeo(w, h, t) {
+    const s = new THREE.Shape();
+    const r = 0.03;
+    s.moveTo(-w / 2 + r, -h); s.lineTo(w / 2 - r, -h);
+    s.quadraticCurveTo(w / 2, -h, w / 2, -h + r);
+    s.lineTo(w / 2, 0); s.lineTo(-w / 2, 0);
+    s.lineTo(-w / 2, -h + r);
+    s.quadraticCurveTo(-w / 2, -h, -w / 2 + r, -h);
+    const geo = new THREE.ExtrudeGeometry(s, { depth: t, bevelEnabled: true, bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 2 });
+    geo.translate(0, 0, -t / 2);
+    return geo;
+  }
+
+  // Nửa trên lá kẽm (không bị ăn mòn)
+  const znTopMesh = new THREE.Mesh(makeStripGeo(0.42, 0.92, 0.055), matZnTop);
+  znTopMesh.position.set(0, -0.10, 0);
+  znTopMesh.castShadow = true;
+  znGroup.add(znTopMesh);
+
+  // Nửa dưới lá kẽm (ngập trong CuSO4 -> ăn mòn, mỏng & hẹp dần)
+  const znSubMesh = new THREE.Mesh(makeStripGeo(0.42, 1.56, 0.055), matZnSub);
+  znSubMesh.position.set(0, -1.00, 0);
+  znSubMesh.castShadow = true;
+  znGroup.add(znSubMesh);
+
+  // Lớp bám đồng đỏ nâu xốp mọc phủ trên bề mặt phần ngập của lá kẽm
+  const matCuDeposit = new THREE.MeshStandardMaterial({
+    color: srgbCol(0xa33d1d),
+    roughness: 0.56,
+    metalness: 0.58
+  });
+  const DEP_COUNT = isLow ? 150 : 230;
+  const depGeo = new THREE.DodecahedronGeometry(0.036, 0);
+  const cuDepInst = new THREE.InstancedMesh(depGeo, matCuDeposit, DEP_COUNT);
+  cuDepInst.renderOrder = 4;
+  znGroup.add(cuDepInst);
+
+  const depData = [];
+  for (let i = 0; i < DEP_COUNT; i++) {
+    const face = Math.random() > 0.5 ? 1 : -1;
+    const isEdge = Math.random() < 0.26;
+    const x = isEdge ? (Math.random() > 0.5 ? 0.19 : -0.19) : (Math.random() - 0.5) * 0.38;
+    const y = -1.06 - Math.random() * 1.46;
+    const z = isEdge ? (Math.random() - 0.5) * 0.04 : face * (0.032 + Math.random() * 0.015);
+    depData.push({
+      x, y, z,
+      rx: Math.random() * Math.PI,
+      ry: Math.random() * Math.PI,
+      maxS: 0.55 + Math.random() * 1.15,
+      birth: Math.random() * 0.55
+    });
+  }
+
+  // Vảy/bột đồng đỏ nâu bong ra rơi lơ lửng và lắng dưới đáy cốc
+  const FLAKE_COUNT = isLow ? 90 : 150;
+  const flakeGeo = new THREE.DodecahedronGeometry(0.022, 0);
+  flakeGeo.scale(1.2, 0.45, 0.9);
+  const cuFlakeInst = new THREE.InstancedMesh(flakeGeo, matCuDeposit, FLAKE_COUNT);
+  cuFlakeInst.renderOrder = 4;
+  scene.add(cuFlakeInst);
+
+  const flakeData = [];
+  for (let i = 0; i < FLAKE_COUNT; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const rr = Math.random() * 0.72;
+    flakeData.push({
+      startX: (Math.random() - 0.5) * 0.44,
+      startY: BEAKER_Y + 0.55 + Math.random() * 1.35,
+      startZ: (Math.random() - 0.5) * 0.18,
+      landX: Math.cos(ang) * rr,
+      landZ: Math.sin(ang) * rr,
+      landY: BEAKER_Y + 0.115 + Math.random() * 0.055,
+      phase: Math.random() * Math.PI * 2,
+      birth: 0.10 + Math.random() * 0.75,
+      speed: 0.35 + Math.random() * 0.35,
+      scale: 0.6 + Math.random() * 0.95
+    });
+  }
+
+  // Lớp cặn bột đồng tích tụ dần ở đáy cốc (thí nghiệm 2)
+  const cuSediment = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.86, 0.94, 0.08, 36),
+    new THREE.MeshStandardMaterial({ color: srgbCol(0x8f3317), roughness: 0.74, metalness: 0.38, transparent: true, opacity: 0.92 })
+  );
+  cuSediment.position.set(0, BEAKER_Y + 0.105, 0);
+  cuSediment.scale.set(0.01, 0.01, 0.01);
+  cuSediment.visible = false;
+  cuSediment.renderOrder = 3;
+  scene.add(cuSediment);
+
+  /* ==================== LUỒNG ELECTRON TRAO ĐỔI (3D MICRO-SPARKS) ==================== */
+  const E_COUNT = 36;
+  const eGeo = new THREE.SphereGeometry(0.022, 8, 8);
+  const eMat = new THREE.MeshBasicMaterial({ color: 0xfde047, transparent: true, opacity: 0.88 });
+  const eInst = new THREE.InstancedMesh(eGeo, eMat, E_COUNT);
+  eInst.renderOrder = 6;
+  scene.add(eInst);
+
+  const eData = [];
+  for (let i = 0; i < E_COUNT; i++) {
+    eData.push({
+      ang: Math.random() * Math.PI * 2,
+      y: BEAKER_Y + 0.4 + Math.random() * 1.45,
+      t: Math.random(),
+      spd: 0.55 + Math.random() * 0.45
+    });
+  }
+
+  /* ==================== TRẠNG THÁI & DỮ LIỆU SGK ==================== */
+  const MODES = {
+    cu_ag: {
+      chip: '✨ Cây bạc: Cu + 2AgNO₃',
+      dipBtn: '⬇️ Nhúng dây Cu vào dung dịch AgNO₃',
+      liftBtn: '⬆️ Rút dây Cu lên khỏi dung dịch',
+      oxhTag: 'Cu⁰ → Cu²⁺',
+      oxhEq: 'Cu → Cu²⁺ + 2e',
+      khuTag: 'Ag⁺ → Ag⁰',
+      khuEq: 'Ag⁺ + 1e → Ag↓',
+      eFlow: '2e chuyển từ dây Cu sang 2 ion Ag⁺',
+      ionLabel: 'Dung dịch (nồng độ Cu²⁺)',
+      eq: 'Cu(s) + 2AgNO₃(aq) → Cu(NO₃)₂(aq) + 2Ag(s)↓',
+      explain: '• <b>Cu</b> có tính khử mạnh hơn Ag nên đẩy được Ag⁺ ra khỏi muối.<br>• Các tinh thể <b>Ag kim loại</b> màu trắng bạc kết tinh nhánh trực tiếp trên bề mặt dây đồng tạo hình "cây bạc" lấp lánh.<br>• Ion <b>Cu²⁺</b> tan vào dung dịch khiến nước từ <b>không màu</b> chuyển sang <b>xanh lam</b> đậm dần.',
+      quiz: '1. Xác định chất khử, chất oxi hóa và số electron trao đổi khi 1 mol Cu phản ứng hết với AgNO₃ dư.<br>2. Nếu thay dây Cu bằng dây Ag nhúng vào dung dịch Cu(NO₃)₂ thì có hiện tượng gì không? Giải thích.',
+      metalName: 'Dây đồng xoắn (Cu)',
+      solName: 'Dung dịch AgNO₃'
+    },
+    zn_cu: {
+      chip: '🧡 Kẽm đẩy đồng: Zn + CuSO₄',
+      dipBtn: '⬇️ Nhúng lá Zn vào dung dịch CuSO₄',
+      liftBtn: '⬆️ Rút lá Zn lên khỏi dung dịch',
+      oxhTag: 'Zn⁰ → Zn²⁺',
+      oxhEq: 'Zn → Zn²⁺ + 2e',
+      khuTag: 'Cu²⁺ → Cu⁰',
+      khuEq: 'Cu²⁺ + 2e → Cu↓',
+      eFlow: '2e chuyển từ lá Zn sang ion Cu²⁺',
+      ionLabel: 'Dung dịch (màu xanh Cu²⁺)',
+      eq: 'Zn(s) + CuSO₄(aq) → ZnSO₄(aq) + Cu(s)↓',
+      explain: '• <b>Zn</b> là chất khử (nhường 2e thành Zn²⁺ tan vào nước) nên phần lá kẽm ngập trong dung dịch <b>bị ăn mòn, mỏng dần</b>.<br>• Ion <b>Cu²⁺</b> nhận 2e thành <b>Cu kim loại màu đỏ nâu</b> bám xốp trên lá kẽm và bong rơi xuống đáy cốc.<br>• Do Cu²⁺ bị khử hết thành Cu và ion Zn²⁺ không màu, dung dịch <b>nhạt dần từ xanh lam đến mất màu hoàn toàn</b>.',
+      quiz: '1. Sau phản ứng, khối lượng lá kẽm (tính cả lớp đồng bám vào) thay đổi như thế nào? Tại sao?<br>2. Viết phương trình ion rút gọn và chỉ rõ quá trình oxi hóa, quá trình khử.',
+      metalName: 'Lá kẽm (Zn)',
+      solName: 'Dung dịch CuSO₄'
+    }
+  };
+
+  let curMode = 'cu_ag';
+  let dipped = false;
+  let holderY = Y_UP;
+  let progress = 0; // 0..1
+  let elapsed = 0;
+  let speedMul = 1;
+  let showEflow = true;
+  let ripplePower = 0;
+  let soundTickTimer = 0;
+  let paused = false;
+
+  const colClear = srgbCol(0xcbd5e1);
+  const colClearDeep = srgbCol(0x94a3b8);
+  const colCuBlue = srgbCol(0x0b7ed8);
+  const colCuDeep = srgbCol(0x064e96);
+  const colAgBlue = srgbCol(0x0ea5e9);
+  const colAgDeep = srgbCol(0x0369a1);
+
+  let toastTimer = null;
+  function showToast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('on'); }, 2600);
+  }
+
+  function syncUI() {
+    const m = MODES[curMode];
+    $('chipMode').textContent = m.chip;
+    $('oxhTag').textContent = m.oxhTag;
+    $('oxhEq').textContent = m.oxhEq;
+    $('khuTag').textContent = m.khuTag;
+    $('khuEq').textContent = m.khuEq;
+    $('eFlowText').textContent = m.eFlow;
+    $('ionLabel').textContent = m.ionLabel;
+    $('ptHoaHoc').textContent = m.eq;
+    $('giaiThich').innerHTML = m.explain;
+    $('cauHoi').innerHTML = m.quiz;
+    $('tabCuAg').classList.toggle('on', curMode === 'cu_ag');
+    $('tabZnCu').classList.toggle('on', curMode === 'zn_cu');
+
+    const btnDip = $('btnDip');
+    btnDip.textContent = dipped ? m.liftBtn : m.dipBtn;
+    btnDip.classList.toggle('warn', dipped);
+
+    const activeNow = dipped && progress < 0.999 && holderY < Y_DOWN + 0.35;
+    $('eDot1').classList.toggle('live', activeNow);
+    $('eDot2').classList.toggle('live', activeNow);
+    $('stLive').textContent = progress >= 0.999 ? 'Hoàn tất ✓' : (activeNow ? 'Đang trao đổi e⁻...' : (dipped ? 'Đang hạ xuống...' : 'Chờ nhúng'));
+
+    const pct = Math.round(progress * 100);
+    $('pctText').textContent = pct + '%';
+    $('pctBar').style.width = pct + '%';
+
+    if (curMode === 'cu_ag') {
+      if (progress < 0.05) $('ionVal').textContent = 'Không màu (AgNO₃)';
+      else if (progress < 0.45) $('ionVal').textContent = 'Xanh lam nhạt (Cu²⁺ tăng)';
+      else if (progress < 0.85) $('ionVal').textContent = 'Xanh lam rõ (Cu(NO₃)₂)';
+      else $('ionVal').textContent = 'Xanh lam đậm (Cu²⁺ cực đại)';
+
+      if (!dipped && progress === 0) {
+        $('hienTuong').innerHTML = 'Dây đồng xoắn màu đỏ cam treo trên dung dịch <b>AgNO₃ trong suốt</b>. Bấm nút hoặc click trực tiếp dây đồng để nhúng vào dung dịch.';
+      } else if (progress < 0.4) {
+        $('hienTuong').innerHTML = 'Các mầm tinh thể <b>Ag trắng bạc</b> bắt đầu kết tinh bám quanh dây đồng; dung dịch ánh xanh nhạt do ion <b>Cu²⁺</b> tan ra.';
+      } else if (progress < 0.95) {
+        $('hienTuong').innerHTML = 'Tinh thể <b>bạc hình kim</b> mọc tua tủa thành "cây bạc" lấp lánh trên dây đồng; dung dịch chuyển <b>xanh lam</b> rõ rệt.';
+      } else {
+        $('hienTuong').innerHTML = '<b>Phản ứng hoàn tất:</b> Dây đồng phủ đầy tinh thể <b>Ag↓ trắng bạc</b> (lõi Cu mảnh lại), dung dịch chuyển màu <b>xanh lam Cu(NO₃)₂</b>.';
+      }
+    } else {
+      if (progress < 0.05) $('ionVal').textContent = 'Xanh lam đậm (CuSO₄)';
+      else if (progress < 0.45) $('ionVal').textContent = 'Xanh nhạt dần (Cu²⁺ giảm)';
+      else if (progress < 0.92) $('ionVal').textContent = 'Rất nhạt (còn ít Cu²⁺)';
+      else $('ionVal').textContent = 'Không màu hoàn toàn (ZnSO₄)';
+
+      if (!dipped && progress === 0) {
+        $('hienTuong').innerHTML = 'Lá kẽm sáng màu treo trên dung dịch <b>CuSO₄ màu xanh lam đậm</b>. Nhúng lá kẽm để quan sát phản ứng oxi hóa – khử.';
+      } else if (progress < 0.4) {
+        $('hienTuong').innerHTML = 'Lớp <b>đồng đỏ nâu</b> bắt đầu bám lên phần lá kẽm ngập nước; dung dịch xanh lam nhạt dần do Cu²⁺ bị khử.';
+      } else if (progress < 0.95) {
+        $('hienTuong').innerHTML = 'Lá kẽm bị <b>ăn mòn mỏng dần</b>, lớp Cu đỏ nâu bám dày và bong thành vảy lắng xuống đáy; màu xanh dung dịch phai rõ rệt.';
+      } else {
+        $('hienTuong').innerHTML = '<b>Phản ứng hoàn tất:</b> Dung dịch <b>mất màu hoàn toàn (ZnSO₄)</b>, lá kẽm mòn mỏng và phủ lớp <b>Cu↓ đỏ nâu</b> cùng cặn đồng dưới đáy cốc.';
+      }
+    }
+  }
+
+  function resetExperiment(mode) {
+    if (mode) curMode = mode;
+    dipped = false;
+    holderY = Y_UP;
+    holderGroup.position.y = Y_UP;
+    progress = 0;
+    elapsed = 0;
+    ripplePower = 0;
+    cuGroup.visible = (curMode === 'cu_ag');
+    znGroup.visible = (curMode === 'zn_cu');
+    agFallInst.visible = (curMode === 'cu_ag');
+    cuFlakeInst.visible = (curMode === 'zn_cu');
+    cuSediment.visible = false;
+    cuSediment.scale.set(0.01, 0.01, 0.01);
+    cuSpiralMesh.scale.set(1, 1, 1);
+    znSubMesh.scale.set(1, 1, 1);
+
+    // Ẩn hết tinh thể / lớp phủ về scale 0
+    dummy.position.set(0, -99, 0);
+    dummy.scale.set(0, 0, 0);
+    dummy.updateMatrix();
+    for (let i = 0; i < SILVER_COUNT; i++) silverInst.setMatrixAt(i, dummy.matrix);
+    silverInst.instanceMatrix.needsUpdate = true;
+    for (let i = 0; i < TWIG_COUNT; i++) twigInst.setMatrixAt(i, dummy.matrix);
+    twigInst.instanceMatrix.needsUpdate = true;
+    for (let i = 0; i < AG_FALL_COUNT; i++) {
+      agFallData[i].y = BEAKER_Y + 0.45 + Math.random() * 1.25;
+      agFallInst.setMatrixAt(i, dummy.matrix);
+    }
+    agFallInst.instanceMatrix.needsUpdate = true;
+    for (let i = 0; i < DEP_COUNT; i++) cuDepInst.setMatrixAt(i, dummy.matrix);
+    cuDepInst.instanceMatrix.needsUpdate = true;
+    for (let i = 0; i < FLAKE_COUNT; i++) cuFlakeInst.setMatrixAt(i, dummy.matrix);
+    cuFlakeInst.instanceMatrix.needsUpdate = true;
+    for (let i = 0; i < E_COUNT; i++) eInst.setMatrixAt(i, dummy.matrix);
+    eInst.instanceMatrix.needsUpdate = true;
+
+    updateLiquidColor();
+    $('dongHo').textContent = '0,0 s';
+    syncUI();
+  }
+
+  function updateLiquidColor() {
+    if (curMode === 'cu_ag') {
+      const k = Math.pow(progress, 0.85);
+      liqUniforms.uColor.value.copy(colClear).lerp(colAgBlue, k);
+      liqUniforms.uDeep.value.copy(colClearDeep).lerp(colAgDeep, k);
+      liqUniforms.uTintStrength.value = k * 0.92;
+    } else {
+      const rem = Math.max(0, 1 - Math.pow(progress, 0.92));
+      liqUniforms.uColor.value.copy(colClear).lerp(colCuBlue, rem);
+      liqUniforms.uDeep.value.copy(colClearDeep).lerp(colCuDeep, rem);
+      liqUniforms.uTintStrength.value = rem * 0.96;
+    }
+  }
+
+  function toggleDip() {
+    ensureAudio();
+    dipped = !dipped;
+    sfxSplash(dipped);
+    if (dipped) {
+      ripplePower = 1.0;
+      showToast(curMode === 'cu_ag'
+        ? 'Đã nhúng dây Cu vào AgNO₃ — quan sát cây bạc kết tinh!'
+        : 'Đã nhúng lá Zn vào CuSO₄ — quan sát màu xanh phai dần!');
+    } else {
+      showToast('Đã rút thanh kim loại lên khỏi dung dịch (tạm dừng phản ứng)');
+    }
+    syncUI();
+  }
+
+  /* ==================== CAMERA ORBIT MƯỢT + PRESETS ==================== */
+  const CAM_PRESETS = {
+    iso: { yaw: 0.42, pitch: 0.30, dist: 7.4, ty: 2.15 },
+    close: { yaw: 0.22, pitch: 0.14, dist: 4.35, ty: 1.50 },
+    side: { yaw: 0.0, pitch: 0.04, dist: 5.4, ty: 1.48 }
+  };
+  const cam = {
+    yaw: CAM_PRESETS.iso.yaw, pitch: CAM_PRESETS.iso.pitch, dist: CAM_PRESETS.iso.dist, ty: CAM_PRESETS.iso.ty,
+    tYaw: CAM_PRESETS.iso.yaw, tPitch: CAM_PRESETS.iso.pitch, tDist: CAM_PRESETS.iso.dist, tTy: CAM_PRESETS.iso.ty
+  };
+
+  function setCamPreset(name) {
+    const p = CAM_PRESETS[name] || CAM_PRESETS.iso;
+    cam.tYaw = p.yaw; cam.tPitch = p.pitch; cam.tDist = p.dist; cam.tTy = p.ty;
+    document.querySelectorAll('.cam-bar .hud-btn').forEach(function (b) {
+      b.classList.toggle('on', b.getAttribute('data-cam') === name);
+    });
+  }
+
+  let drag = false, moved = false, px = 0, py = 0;
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+
+  cv.addEventListener('pointerdown', function (e) {
+    drag = true; moved = false; px = e.clientX; py = e.clientY;
+    cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    const dx = e.clientX - px, dy = e.clientY - py;
+    if (Math.hypot(dx, dy) > 4) moved = true;
+    cam.tYaw -= dx * 0.0075;
+    cam.tPitch = Math.max(-0.08, Math.min(1.15, cam.tPitch + dy * 0.0065));
+    px = e.clientX; py = e.clientY;
+  });
+  cv.addEventListener('pointerup', function (e) {
+    drag = false;
+    if (!moved) {
+      const rect = cv.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObject(hitMesh, false);
+      if (hits.length > 0) toggleDip();
+    }
+  });
+  cv.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    cam.tDist = Math.max(3.3, Math.min(11.5, cam.tDist + e.deltaY * 0.0045));
+  }, { passive: false });
+  cv.addEventListener('dblclick', function () { setCamPreset('iso'); });
+
+  /* ==================== SỰ KIỆN UI ==================== */
+  $('tabCuAg').onclick = function () { sfxClick(); resetExperiment('cu_ag'); };
+  $('tabZnCu').onclick = function () { sfxClick(); resetExperiment('zn_cu'); };
+  $('btnDip').onclick = toggleDip;
+  $('btnReset').onclick = function () { sfxClick(); resetExperiment(); showToast('Đã chuẩn bị mẫu kim loại & dung dịch mới'); };
+  $('btnSpeed').onclick = function () {
+    sfxClick();
+    speedMul = speedMul === 1 ? 4 : 1;
+    $('btnSpeed').classList.toggle('on', speedMul === 4);
+    $('btnSpeed').textContent = speedMul === 4 ? '⏩ Đang tua ×4' : '⏩ Tua nhanh ×4';
+    $('chipTocDo').textContent = 'Tốc độ ×' + speedMul;
+  };
+  $('btnEflow').onclick = function () {
+    sfxClick();
+    showEflow = !showEflow;
+    $('btnEflow').classList.toggle('on', showEflow);
+    $('btnEflow').textContent = showEflow ? '⚡ Luồng e⁻: Bật' : '⚡ Luồng e⁻: Tắt';
+    eInst.visible = showEflow;
+  };
+  $('btnSound').onclick = function () {
+    soundOn = !soundOn;
+    $('btnSound').classList.toggle('on', soundOn);
+    $('btnSound').textContent = soundOn ? '🔊' : '🔇';
+    if (soundOn) sfxClick();
+  };
+  document.querySelectorAll('.cam-bar .hud-btn').forEach(function (btn) {
+    btn.onclick = function () { sfxClick(); setCamPreset(btn.getAttribute('data-cam')); };
+  });
+
+  /* ==================== NHÃN 3D ==================== */
+  const projV = new THREE.Vector3();
+  function placeLabel(el, wx, wy, wz, html) {
+    projV.set(wx, wy, wz).project(camera);
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (projV.z > 1) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    el.style.left = ((projV.x * 0.5 + 0.5) * w) + 'px';
+    el.style.top = ((-projV.y * 0.5 + 0.5) * h) + 'px';
+    el.innerHTML = html;
+  }
+
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (w < 2 || h < 2) return;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', function () { paused = document.hidden; });
+
+  /* ==================== VÒNG LẶP RENDER REAL-TIME ==================== */
+  let lastT = performance.now();
+  let simTime = 0;
+
+  function animate(now) {
+    requestAnimationFrame(animate);
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+    if (paused) return;
+    simTime += dt;
+
+    // Camera mượt quán tính
+    const kCam = 1 - Math.exp(-8 * dt);
+    cam.yaw += (cam.tYaw - cam.yaw) * kCam;
+    cam.pitch += (cam.tPitch - cam.pitch) * kCam;
+    cam.dist += (cam.tDist - cam.dist) * kCam;
+    cam.ty += (cam.tTy - cam.ty) * kCam;
+    camera.position.set(
+      Math.sin(cam.yaw) * Math.cos(cam.pitch) * cam.dist,
+      cam.ty + Math.sin(cam.pitch) * cam.dist,
+      Math.cos(cam.yaw) * Math.cos(cam.pitch) * cam.dist
+    );
+    camera.lookAt(0, cam.ty, 0);
+
+    // Chuyển động nhúng / rút thanh kim loại
+    const targetY = dipped ? Y_DOWN : Y_UP;
+    const prevY = holderY;
+    holderY += (targetY - holderY) * (1 - Math.exp(-7.5 * dt));
+    holderGroup.position.y = holderY;
+    if (dipped && prevY > Y_DOWN + 0.45 && holderY <= Y_DOWN + 0.45) {
+      ripplePower = Math.max(ripplePower, 0.85);
+    }
+
+    ripplePower = Math.max(0, ripplePower - dt * 0.65);
+    liqUniforms.uTime.value = simTime;
+    liqUniforms.uRipple.value = ripplePower;
+
+    const submerged = dipped && holderY < Y_DOWN + 0.32;
+    const reacting = submerged && progress < 1.0;
+
+    if (reacting) {
+      const rate = (curMode === 'cu_ag' ? 0.042 : 0.048) * speedMul;
+      progress = Math.min(1, progress + dt * rate);
+      elapsed += dt * speedMul;
+      $('dongHo').textContent = elapsed.toFixed(1).replace('.', ',') + ' s';
+
+      soundTickTimer -= dt * speedMul;
+      if (soundTickTimer <= 0) {
+        soundTickTimer = 0.65 + Math.random() * 0.9;
+        if (Math.random() < 0.65) sfxCrystalTick();
+      }
+      updateLiquidColor();
+      syncUI();
+    }
+
+    // Cập nhật hình thái thực tế theo progress
+    if (curMode === 'cu_ag') {
+      // Dây đồng mảnh nhẹ khi bị oxi hóa
+      const thin = 1 - progress * 0.16;
+      cuSpiralMesh.scale.set(thin, 1, thin);
+
+      // Mọc tinh thể bạc (cây bạc nhánh)
+      for (let i = 0; i < SILVER_COUNT; i++) {
+        const d = silverData[i];
+        const g = Math.max(0, Math.min(1, (progress - d.birth) / 0.42));
+        if (g <= 0.001) {
+          dummy.scale.set(0, 0, 0);
+        } else {
+          const ease = 1 - Math.pow(1 - g, 2.2);
+          dummy.position.copy(d.pos);
+          dummy.quaternion.copy(d.quat);
+          dummy.scale.set(d.maxRad * ease, d.maxLen * ease, d.maxRad * ease);
+        }
+        dummy.updateMatrix();
+        silverInst.setMatrixAt(i, dummy.matrix);
+      }
+      silverInst.instanceMatrix.needsUpdate = true;
+
+      for (let i = 0; i < TWIG_COUNT; i++) {
+        const tw = twigData[i];
+        const g = Math.max(0, Math.min(1, (progress - tw.birth) / 0.32));
+        if (g <= 0.001) {
+          dummy.scale.set(0, 0, 0);
+        } else {
+          const ease = 1 - Math.pow(1 - g, 2);
+          dummy.position.copy(tw.base).addScaledVector(tw.dir, tw.dist * ease);
+          dummy.quaternion.copy(tw.quat);
+          dummy.scale.setScalar(tw.maxScale * ease);
+        }
+        dummy.updateMatrix();
+        twigInst.setMatrixAt(i, dummy.matrix);
+      }
+      twigInst.instanceMatrix.needsUpdate = true;
+
+      // Vài tinh thể bạc nhỏ rơi lấp lánh xuống đáy
+      for (let i = 0; i < AG_FALL_COUNT; i++) {
+        const f = agFallData[i];
+        if (progress < f.thresh) {
+          dummy.scale.set(0, 0, 0);
+        } else {
+          if (f.y > BEAKER_Y + 0.115 && reacting) {
+            f.y = Math.max(BEAKER_Y + 0.115, f.y - f.vy * dt * speedMul);
+            f.rot += dt * 2.2;
+          }
+          dummy.position.set(f.x, f.y, f.z);
+          dummy.rotation.set(f.rot, f.rot * 0.7, 0);
+          dummy.scale.setScalar(0.9);
+        }
+        dummy.updateMatrix();
+        agFallInst.setMatrixAt(i, dummy.matrix);
+      }
+      agFallInst.instanceMatrix.needsUpdate = true;
+    } else {
+      // Lá kẽm bị ăn mòn mỏng & hẹp dần ở phần ngập
+      const wScale = 1 - progress * 0.28;
+      const tScale = 1 - progress * 0.42;
+      znSubMesh.scale.set(wScale, 1 - progress * 0.05, tScale);
+
+      // Lớp đồng đỏ nâu mọc bám trên lá kẽm
+      for (let i = 0; i < DEP_COUNT; i++) {
+        const d = depData[i];
+        const g = Math.max(0, Math.min(1, (progress - d.birth) / 0.45));
+        if (g <= 0.001) {
+          dummy.scale.set(0, 0, 0);
+        } else {
+          const ease = 1 - Math.pow(1 - g, 2);
+          dummy.position.set(d.x * wScale, d.y, d.z * (0.65 + 0.35 * tScale));
+          dummy.rotation.set(d.rx, d.ry, 0);
+          dummy.scale.set(d.maxS * ease, d.maxS * ease * 0.85, d.maxS * ease * 0.75);
+        }
+        dummy.updateMatrix();
+        cuDepInst.setMatrixAt(i, dummy.matrix);
+      }
+      cuDepInst.instanceMatrix.needsUpdate = true;
+
+      // Vảy đồng đỏ nâu bong ra rơi lắng xuống đáy
+      for (let i = 0; i < FLAKE_COUNT; i++) {
+        const f = flakeData[i];
+        if (progress < f.birth) {
+          dummy.scale.set(0, 0, 0);
+        } else {
+          const fallP = Math.min(1, (progress - f.birth) / (0.28 / f.speed));
+          const ease = 1 - Math.pow(1 - fallP, 1.8);
+          const x = f.startX + (f.landX - f.startX) * ease + Math.sin(simTime * 2.5 + f.phase) * 0.04 * (1 - ease);
+          const y = f.startY + (f.landY - f.startY) * ease;
+          const z = f.startZ + (f.landZ - f.startZ) * ease + Math.cos(simTime * 2.1 + f.phase) * 0.04 * (1 - ease);
+          dummy.position.set(x, y, z);
+          dummy.rotation.set(f.phase + fallP * 4, f.phase * 1.4, fallP * 2.5);
+          dummy.scale.setScalar(f.scale);
+        }
+        dummy.updateMatrix();
+        cuFlakeInst.setMatrixAt(i, dummy.matrix);
+      }
+      cuFlakeInst.instanceMatrix.needsUpdate = true;
+
+      // Lớp bột đồng tích tụ đáy cốc
+      if (progress > 0.12) {
+        cuSediment.visible = true;
+        const sed = Math.min(1, (progress - 0.12) / 0.85);
+        cuSediment.scale.set(0.35 + sed * 0.65, 0.2 + sed * 1.15, 0.35 + sed * 0.65);
+      }
+    }
+
+    // Hạt electron trao đổi bay quanh bề mặt kim loại khi đang phản ứng
+    if (showEflow) {
+      for (let i = 0; i < E_COUNT; i++) {
+        const e = eData[i];
+        if (!reacting) {
+          dummy.scale.set(0, 0, 0);
+        } else {
+          e.t = (e.t + dt * e.spd * (speedMul === 4 ? 1.8 : 1.0)) % 1;
+          const r = 0.24 + e.t * 0.52;
+          const ang = e.ang + simTime * 1.6;
+          dummy.position.set(Math.cos(ang) * r, e.y + Math.sin(e.t * Math.PI) * 0.12, Math.sin(ang) * r);
+          const sc = Math.sin(e.t * Math.PI) * 1.15;
+          dummy.scale.setScalar(sc);
+        }
+        dummy.updateMatrix();
+        eInst.setMatrixAt(i, dummy.matrix);
+      }
+      eInst.instanceMatrix.needsUpdate = true;
+    }
+
+    // Nhãn 3D nổi
+    const m = MODES[curMode];
+    placeLabel(
+      $('nhanKimLoai'), 0, holderY + 0.32, 0,
+      '<span class="c-cu">' + m.metalName + '</span><small>' + (dipped ? 'Click để rút lên' : 'Click để nhúng') + '</small>'
+    );
+    const solSub = curMode === 'cu_ag'
+      ? (progress > 0.25 ? 'Đang chuyển sang Cu(NO₃)₂ xanh lam' : 'Trong suốt (ion Ag⁺)')
+      : (progress > 0.85 ? 'Đã mất màu → ZnSO₄' : (progress > 0.2 ? 'Xanh lam đang nhạt dần' : 'Xanh lam đậm (ion Cu²⁺)'));
+    placeLabel(
+      $('nhanDungDich'), 1.32, BEAKER_Y + 1.25, 0,
+      '<span class="c-blue">' + m.solName + '</span><small>' + solSub + '</small>'
+    );
+
+    renderer.render(scene, camera);
+  }
+
+  resize();
+  resetExperiment('cu_ag');
+  requestAnimationFrame(animate);
+}
+</script>
+</body>
+</html>

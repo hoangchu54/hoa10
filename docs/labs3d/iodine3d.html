@@ -1,0 +1,1293 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thăng hoa Iodine (I₂) 3D — Hóa 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#07060e;
+    --the:#130f22;
+    --vien:rgba(255,255,255,.12);
+    --chu:#f5f0fb;
+    --phu:#b0a1c7;
+    --tim:#a78bfa;
+    --iod:#9333ea;
+    --ice:#7dd3fc;
+    --heat:#f97316;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--nen);color:var(--chu);font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;overflow:hidden;user-select:none}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 384px;height:100dvh}
+  .stage{position:relative;min-height:0;touch-action:none;background:radial-gradient(circle at 50% 42%,#1a132c 0%,#090714 62%,#05040b 100%);overflow:hidden}
+  #cv{display:block;width:100%;height:100%;cursor:grab}
+  #cv:active{cursor:grabbing}
+
+  .hud{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;z-index:3}
+  .hud-left,.hud-right{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:rgba(12,9,24,.84);border:1px solid var(--vien);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.42)}
+  .chip b{color:#fde68a;font-weight:800}
+  .chip.hot{border-color:rgba(249,115,22,.52);color:#fdba74}
+  .chip.iod{border-color:rgba(168,85,247,.46);color:#d8b4fe}
+  .hud-btn{pointer-events:auto;cursor:pointer;min-height:34px;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(21,16,38,.88);border:1px solid var(--vien);color:var(--chu);transition:.15s}
+  .hud-btn:hover{border-color:rgba(255,255,255,.35);transform:translateY(-1px)}
+  .hud-btn.on{background:linear-gradient(90deg,#6d28d9,#9333ea);border-color:#d8b4fe;color:#fff}
+
+  .nhan3d{position:absolute;transform:translate(-50%,-100%);background:rgba(12,9,24,.86);border:1px solid var(--vien);border-radius:10px;padding:4px 10px;font-size:11.3px;font-weight:800;white-space:nowrap;pointer-events:none;backdrop-filter:blur(6px);z-index:2;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+  .nhan3d small{display:block;font-weight:600;color:var(--phu);font-size:10.3px}
+
+  .cam-bar{position:absolute;left:14px;bottom:48px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+  .hint-bar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(12,9,24,.80);border:1px solid var(--vien);border-radius:99px;padding:6px 14px;font-size:11.5px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
+  .hint-bar b{color:#f8fafc}
+
+  .toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);background:rgba(15,10,30,.95);border:1px solid rgba(192,132,252,.4);border-radius:14px;padding:9px 16px;font-size:12.6px;font-weight:700;max-width:88%;text-align:center;opacity:0;transition:opacity .24s,transform .24s;pointer-events:none;z-index:4;box-shadow:0 12px 30px rgba(0,0,0,.55)}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(4px)}
+
+  .side{background:var(--the);border-left:1px solid var(--vien);padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+  h1{font-size:16.4px;margin:0;line-height:1.32}
+  .tag{display:inline-block;background:rgba(168,85,247,.2);color:#d8b4fe;border-radius:99px;padding:2px 10px;font-size:11px;font-weight:800;margin-bottom:4px}
+
+  .box{background:rgba(255,255,255,.036);border:1px solid var(--vien);border-radius:13px;padding:10px 12px}
+  .box h3{margin:0 0 8px;font-size:11.2px;letter-spacing:.06em;text-transform:uppercase;color:var(--tim);display:flex;justify-content:space-between;align-items:center}
+
+  button{font:inherit;font-weight:700;font-size:12.3px;border:1px solid var(--vien);background:rgba(255,255,255,.06);color:var(--chu);border-radius:10px;padding:8px 10px;min-height:38px;cursor:pointer;transition:.15s}
+  button:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.28)}
+  button:active{transform:scale(.98)}
+  .seg{display:flex;gap:6px}
+  .seg button{flex:1}
+  button.on-heat{background:linear-gradient(90deg,#c2410c,#ea580c);border-color:#fdba74;color:#fff;box-shadow:0 4px 14px rgba(234,88,12,.36)}
+  button.on-inspect{background:linear-gradient(90deg,#6d28d9,#9333ea);border-color:#e9d5ff;color:#fff;box-shadow:0 4px 16px rgba(147,51,234,.42)}
+
+  .chinh{width:100%;background:linear-gradient(90deg,#7e22ce,#c026d3);border:0;color:#fff;font-size:13.4px;margin-top:7px;box-shadow:0 6px 16px rgba(126,34,206,.34)}
+  .chinh:hover{filter:brightness(1.08)}
+  .chinh.inspect-on{background:linear-gradient(90deg,#0284c7,#6d28d9)}
+
+  input[type=range]{width:100%;accent-color:#f97316;cursor:pointer}
+  .scale-lbl{display:flex;justify-content:space-between;font-size:10.3px;color:var(--phu);margin-top:2px}
+
+  .mass-row{margin:7px 0}
+  .mass-row:first-of-type{margin-top:0}
+  .mass-head{display:flex;justify-content:space-between;font-size:11.9px;margin-bottom:3px}
+  .bar{height:8px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0%;border-radius:99px;transition:width .18s}
+  .bar.solid i{background:linear-gradient(90deg,#4c1d95,#6b21a8)}
+  .bar.vapor i{background:linear-gradient(90deg,#7e22ce,#a855f7)}
+  .bar.dep i{background:linear-gradient(90deg,#38bdf8,#a855f7)}
+
+  .eq{font-size:13.6px;font-weight:800;color:#e9d5ff;background:rgba(147,51,234,.14);border:1px solid rgba(192,132,252,.3);border-radius:10px;padding:7px 10px;text-align:center;line-height:1.5}
+  .kq{font-size:12.3px;line-height:1.56;color:#dbd1ea}
+  .kq b{color:#fde68a}
+  .q{background:rgba(34,197,94,.09);border-color:rgba(34,197,94,.34)}
+  .q h3{color:#86efac}
+  .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--phu);background:var(--nen);z-index:10}
+
+  @media (max-width:860px){
+    html,body{overflow:auto}
+    .wrap{grid-template-columns:1fr;grid-template-rows:56dvh auto;height:auto}
+    .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
+    .cam-bar{bottom:10px}
+    .hint-bar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="hud">
+      <div class="hud-left">
+        <span class="chip" id="chipTemp">🌡️ Đáy cốc: <b id="tempHud">25 °C</b></span>
+        <span class="chip iod">❄️ Đáy bát đá: <b>~0 °C</b></span>
+        <span class="chip" id="chipPhase">Trạng thái: <b id="phaseHud">I₂ rắn tinh thể</b></span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn on" id="btnSound" title="Bật/tắt âm thanh">🔊</button>
+      </div>
+    </div>
+
+    <div class="nhan3d" id="lblDish">Bát sứ đựng nước đá <small id="lblDishSub">0 °C · Bề mặt ngưng tụ</small></div>
+    <div class="nhan3d" id="lblBot">Tinh thể I₂ rắn <small id="lblBotSub">Tím đen ánh kim · 100%</small></div>
+
+    <div class="cam-bar">
+      <button class="hud-btn on" data-cam="iso">🎥 Toàn bộ dụng cụ</button>
+      <button class="hud-btn" data-cam="vessel">🔎 Cận cốc &amp; hơi I₂</button>
+      <button class="hud-btn" data-cam="crystal">💎 Soi tinh thể đáy bát</button>
+    </div>
+
+    <div class="hint-bar">🖱️ <b>Click núm xoay bếp điện</b> để bật/tắt nhiệt · Kéo xoay 360° · Cuộn để zoom</div>
+    <div class="toast" id="toast"></div>
+    <div class="fallback" id="fb">Thiết bị chưa bật WebGL hoặc không nạp được Three.js nên không hiển thị được thí nghiệm 3D.</div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <span class="tag">Bài 21 · Nhóm Halogen · Sự thăng hoa của đơn chất</span>
+      <h1>Thí nghiệm: Thăng hoa Iodine (I₂) 3D</h1>
+    </div>
+
+    <div class="box">
+      <h3><span>1. Bếp điện gốm hồng ngoại</span><b id="stoveStateTxt" style="color:#94a3b8">ĐANG TẮT</b></h3>
+      <div class="seg" style="margin-bottom:8px">
+        <button id="btnHeatOn">🔥 Bật đun nhẹ (115 °C)</button>
+        <button id="btnHeatOff">❄️ Tắt bếp làm nguội</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px">
+        <span>Nhiệt độ đặt của bếp:</span><b id="targetTempTxt" style="color:#fdba74">25 °C</b>
+      </div>
+      <input type="range" id="tempSlider" min="25" max="130" value="25" step="1">
+      <div class="scale-lbl">
+        <span>25 °C (Phòng)</span>
+        <span style="color:#c084fc">~65 °C (Bắt đầu thăng hoa)</span>
+        <span style="color:#fb923c">130 °C</span>
+      </div>
+      <button class="chinh" id="btnInspect">🔎 Nhấc bát đá xem tinh thể I₂</button>
+      <button style="width:100%;margin-top:6px" id="btnReset">↺ Nạp lại tinh thể I₂ mới ở đáy cốc</button>
+    </div>
+
+    <div class="box">
+      <h3><span>2. Chuyển hóa pha I₂ (Bảo toàn khối lượng)</span></h3>
+      <div class="mass-row">
+        <div class="mass-head"><span>I₂ rắn ở đáy cốc</span><b id="mSolidTxt">100%</b></div>
+        <div class="bar solid"><i id="barSolid" style="width:100%"></i></div>
+      </div>
+      <div class="mass-row">
+        <div class="mass-head"><span>Hơi I₂ màu tím khói trong cốc</span><b id="mVaporTxt">0%</b></div>
+        <div class="bar vapor"><i id="barVapor" style="width:0%"></i></div>
+      </div>
+      <div class="mass-row">
+        <div class="mass-head"><span>Tinh thể hình kim I₂ bám đáy bát đá</span><b id="mDepTxt">0%</b></div>
+        <div class="bar dep"><i id="barDep" style="width:0%"></i></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>3. Hiện tượng &amp; Bản chất (SGK Hóa 10)</h3>
+      <div class="eq">I₂ (rắn, tím đen) ⇄ I₂ (hơi, màu tím)<br><span style="font-size:11.2px;font-weight:600;color:#cbd5e1">Thăng hoa trực tiếp — Không qua trạng thái lỏng!</span></div>
+      <div class="kq" id="kq" style="margin-top:8px">
+        Ở điều kiện thường, <b>iodine (I₂)</b> là tinh thể màu tím đen có ánh kim. Hãy bật bếp đun nhẹ để quan sát tinh thể ở đáy cốc <b>chuyển thẳng thành hơi màu tím</b> mà không hề nóng chảy thành chất lỏng!
+      </div>
+    </div>
+
+    <div class="box q">
+      <h3>Câu hỏi tự kiểm tra</h3>
+      <div class="kq">
+        1. Vì sao trong thí nghiệm phải đặt <b>bát sứ đựng nước đá</b> lên trên miệng cốc thủy tinh?<br>
+        2. Ứng dụng thực tế của hiện tượng thăng hoa iodine là gì? (Gợi ý: tách tinh chế I₂ khỏi tạp chất rắn không bay hơi).
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function loadThreeAndBoot() {
+  var MIRRORS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+    'https://unpkg.com/three@0.128.0/build/three.min.js'
+  ];
+  var idx = 0;
+  function fail() { document.getElementById('fb').style.display = 'flex'; }
+  function next() {
+    if (window.THREE && window.THREE.WebGLRenderer) { bootApp(window.THREE); return; }
+    if (idx >= MIRRORS.length) { fail(); return; }
+    var s = document.createElement('script');
+    s.src = MIRRORS[idx++];
+    s.async = true;
+    s.onload = function () {
+      if (window.THREE && window.THREE.WebGLRenderer) bootApp(window.THREE);
+      else next();
+    };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+
+function bootApp(THREE) {
+  'use strict';
+  const $ = function (id) { return document.getElementById(id); };
+  const stage = $('stage'), cv = $('cv');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' });
+  } catch (e) {
+    $('fb').style.display = 'flex';
+    return;
+  }
+
+  const isLow = (window.innerWidth < 720) || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+  renderer.setPixelRatio(Math.min(isLow ? 1.5 : 2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.94;
+  renderer.shadowMap.enabled = !isLow;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  function srgbCol(hex) { return new THREE.Color(hex).convertSRGBToLinear(); }
+
+  const BG_HEX = 0x07060e;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(BG_HEX);
+
+  /* ==================== STUDIO IBL ==================== */
+  (function buildEnvMap() {
+    if (!THREE.PMREMGenerator) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const es = new THREE.Scene();
+    es.background = new THREE.Color(0x0d0a1a);
+    const sTop = new THREE.Mesh(new THREE.PlaneGeometry(16, 7), new THREE.MeshBasicMaterial({ color: 0xcbd5e1, side: THREE.DoubleSide }));
+    sTop.position.set(0, 9, 2); sTop.lookAt(0, 0, 0); es.add(sTop);
+    const sL = new THREE.Mesh(new THREE.PlaneGeometry(6, 12), new THREE.MeshBasicMaterial({ color: 0x99b2cc, side: THREE.DoubleSide }));
+    sL.position.set(-9, 3, 2); sL.lookAt(0, 0, 0); es.add(sL);
+    const sR = new THREE.Mesh(new THREE.PlaneGeometry(6, 12), new THREE.MeshBasicMaterial({ color: 0xbaa8cc, side: THREE.DoubleSide }));
+    sR.position.set(9, 3, 2); sR.lookAt(0, 0, 0); es.add(sR);
+    scene.environment = pmrem.fromScene(es, 0.05).texture;
+    pmrem.dispose();
+  })();
+
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+
+  scene.add(new THREE.HemisphereLight(0xe2e8f0, 0x151026, 0.72));
+  const keyLight = new THREE.DirectionalLight(0xfffaf4, 1.0);
+  keyLight.position.set(4.5, 9.2, 6.5);
+  if (!isLow) {
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(1024, 1024);
+    keyLight.shadow.bias = -0.0005;
+    const sb = 4.2;
+    keyLight.shadow.camera.left = -sb; keyLight.shadow.camera.right = sb;
+    keyLight.shadow.camera.top = sb; keyLight.shadow.camera.bottom = -sb;
+  }
+  scene.add(keyLight);
+
+  const rimLight = new THREE.PointLight(0xd8ccf0, 0.9, 14);
+  rimLight.position.set(-2.6, 3.2, -2.8);
+  scene.add(rimLight);
+
+  // Subtle inspection light for deposited metallic I2 needles
+  const inspectLight = new THREE.PointLight(0xe9d5ff, 0.0, 7);
+  inspectLight.position.set(0.6, 3.6, 2.4);
+  scene.add(inspectLight);
+
+  // Warm infrared glow from heating coil
+  const coilLight = new THREE.PointLight(0xea580c, 0.0, 5.5);
+  coilLight.position.set(0, 0.72, 0);
+  scene.add(coilLight);
+
+  /* ==================== WEB AUDIO ==================== */
+  let audioCtx = null, soundOn = true, humGain = null, humOsc = null;
+  function ensureAudio() {
+    if (!soundOn) return null;
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      audioCtx = new AC();
+      humOsc = audioCtx.createOscillator();
+      humOsc.type = 'sine';
+      humOsc.frequency.value = 96;
+      humGain = audioCtx.createGain();
+      humGain.gain.value = 0;
+      humOsc.connect(humGain);
+      humGain.connect(audioCtx.destination);
+      humOsc.start();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function sfxClick(hi) {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(hi ? 620 : 380, now);
+    o.frequency.exponentialRampToValueAtTime(hi ? 880 : 220, now + 0.055);
+    g.gain.setValueAtTime(0.08, now);
+    g.gain.exponentialRampToValueAtTime(0.0008, now + 0.065);
+    o.connect(g); g.connect(ac.destination);
+    o.start(now); o.stop(now + 0.07);
+  }
+  function sfxPorcelain() {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    [1240, 1860].forEach(function (f, i) {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(f, now + i * 0.02);
+      g.gain.setValueAtTime(0.038, now + i * 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0006, now + 0.16);
+      o.connect(g); g.connect(ac.destination);
+      o.start(now + i * 0.02); o.stop(now + 0.18);
+    });
+  }
+  function sfxSparkle() {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'sine';
+    const f = 2100 + Math.random() * 1400;
+    o.frequency.setValueAtTime(f, now);
+    g.gain.setValueAtTime(0.015, now);
+    g.gain.exponentialRampToValueAtTime(0.0004, now + 0.09);
+    o.connect(g); g.connect(ac.destination);
+    o.start(now); o.stop(now + 0.1);
+  }
+
+  /* ==================== DARK GRANITE STUDIO BENCH ==================== */
+  function makeTex(w, h, fn) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    fn(c.getContext('2d'), w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  const benchMat = new THREE.ShaderMaterial({
+    uniforms: { uBgColor: { value: new THREE.Color(BG_HEX) } },
+    vertexShader: `
+      varying vec3 vWorld;
+      void main() {
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorld = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uBgColor;
+      varying vec3 vWorld;
+      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      void main() {
+        vec2 dVec = vec2(vWorld.x * 0.28, (vWorld.z - 0.10) * (vWorld.z < 0.0 ? 0.72 : 0.36));
+        float fade = 1.0 - smoothstep(0.32, 1.05, length(dVec));
+        float speck = (hash(floor(vWorld.xz * 75.0)) - 0.5) * 0.025 + (hash(floor(vWorld.xz * 22.0)) - 0.5) * 0.015;
+        vec3 gran = vec3(0.075, 0.070, 0.098) + speck;
+        float ao = 1.0 - (1.0 - smoothstep(0.95, 1.85, length(vWorld.xz))) * 0.52;
+        gran *= ao;
+        gl_FragColor = vec4(mix(uBgColor, gran, fade), 1.0);
+      }
+    `
+  });
+  const bench = new THREE.Mesh(new THREE.PlaneGeometry(24, 20), benchMat);
+  bench.rotation.x = -Math.PI / 2;
+  scene.add(bench);
+
+  /* ==================== CERAMIC ROUND LAB HEATER (LatheGeometry + SPIRAL COIL) ==================== */
+  const heaterGroup = new THREE.Group();
+  scene.add(heaterGroup);
+
+  const metalBodyMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x2d3342), roughness: 0.34, metalness: 0.72
+  });
+  const ceramicTopMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x1f1e28), roughness: 0.28, metalness: 0.14
+  });
+  const coilMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x3a241f),
+    emissive: srgbCol(0xdc2626),
+    emissiveIntensity: 0.0,
+    roughness: 0.35,
+    metalness: 0.55
+  });
+  const ledMat = new THREE.MeshStandardMaterial({
+    color: srgbCol(0x334155),
+    emissive: srgbCol(0xf97316),
+    emissiveIntensity: 0.0,
+    roughness: 0.2
+  });
+
+  let heaterKnob = null;
+  let knobHit = null;
+
+  (function buildHeater() {
+    // Chamfered round housing via LatheGeometry
+    const pts = [
+      new THREE.Vector2(0.01, 0.02),
+      new THREE.Vector2(1.36, 0.02),
+      new THREE.Vector2(1.42, 0.08),
+      new THREE.Vector2(1.42, 0.42),
+      new THREE.Vector2(1.36, 0.52),
+      new THREE.Vector2(1.16, 0.54),
+      new THREE.Vector2(1.10, 0.54)
+    ];
+    const body = new THREE.Mesh(new THREE.LatheGeometry(pts, 48), metalBodyMat);
+    body.castShadow = true; body.receiveShadow = true;
+    heaterGroup.add(body);
+
+    // 4 rubber feet
+    const footMat = new THREE.MeshStandardMaterial({ color: srgbCol(0x11131a), roughness: 0.8 });
+    for (let i = 0; i < 4; i++) {
+      const a = i * Math.PI / 2 + Math.PI / 4;
+      const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.12, 0.04, 16), footMat);
+      foot.position.set(Math.cos(a) * 1.12, 0.02, Math.sin(a) * 1.12);
+      heaterGroup.add(foot);
+    }
+
+    // Recessed ceramic burner disc + translucent glass-ceramic ring
+    const burner = new THREE.Mesh(new THREE.CylinderGeometry(1.12, 1.14, 0.07, 48), ceramicTopMat);
+    burner.position.y = 0.555;
+    burner.receiveShadow = true;
+    heaterGroup.add(burner);
+
+    // Spiral infrared heating coil (TubeGeometry) recessed slightly inside ceramic top
+    const spiralPts = [];
+    const turns = 4.2, steps = 110;
+    for (let i = 0; i <= steps; i++) {
+      const u = i / steps;
+      const ang = u * turns * Math.PI * 2;
+      const rad = 0.14 + u * 0.78;
+      spiralPts.push(new THREE.Vector3(Math.cos(ang) * rad, 0.592, Math.sin(ang) * rad));
+    }
+    const spiralCurve = new THREE.CatmullRomCurve3(spiralPts);
+    const coilMesh = new THREE.Mesh(new THREE.TubeGeometry(spiralCurve, isLow ? 84 : 140, 0.024, 8, false), coilMat);
+    heaterGroup.add(coilMesh);
+
+    // Thin dark ceramic glass diffuser plate over coil
+    const diffuser = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.06, 1.06, 0.015, 48),
+      new THREE.MeshPhysicalMaterial({
+        color: srgbCol(0x181524), roughness: 0.14, metalness: 0.1, clearcoat: 0.8, transparent: true, opacity: 0.58
+      })
+    );
+    diffuser.position.y = 0.612;
+    heaterGroup.add(diffuser);
+
+    // Front bevel control console + clickable rotary knob
+    const panel = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.30, 0.14, 24), metalBodyMat);
+    panel.rotation.x = Math.PI / 2 - 0.18;
+    panel.position.set(0, 0.25, 1.38);
+    heaterGroup.add(panel);
+
+    heaterKnob = new THREE.Group();
+    heaterKnob.position.set(0, 0.26, 1.48);
+    const knobCyl = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.14, 0.16, 0.12, 24),
+      new THREE.MeshStandardMaterial({ color: srgbCol(0x181a24), roughness: 0.32, metalness: 0.45 })
+    );
+    knobCyl.rotation.x = Math.PI / 2;
+    heaterKnob.add(knobCyl);
+    const notch = new THREE.Mesh(
+      new THREE.BoxGeometry(0.025, 0.09, 0.03),
+      new THREE.MeshStandardMaterial({ color: srgbCol(0xfb923c), emissive: srgbCol(0xea580c), emissiveIntensity: 0.6 })
+    );
+    notch.position.set(0, 0.06, 0.06);
+    heaterKnob.add(notch);
+    heaterGroup.add(heaterKnob);
+
+    // Status LED beside knob
+    const led = new THREE.Mesh(new THREE.SphereGeometry(0.036, 14, 12), ledMat);
+    led.position.set(0.36, 0.27, 1.36);
+    heaterGroup.add(led);
+
+    // Generous invisible hit sphere for clicking the heater knob
+    knobHit = new THREE.Mesh(
+      new THREE.SphereGeometry(0.34, 12, 12),
+      new THREE.MeshBasicMaterial({ visible: false })
+    );
+    knobHit.position.set(0, 0.26, 1.48);
+    scene.add(knobHit);
+  })();
+
+  /* ==================== BOROSILICATE SUBLIMATION BEAKER ==================== */
+  const BEAKER_Y = 0.625;
+  const BEAKER_R = 0.88;
+  const BEAKER_H = 2.18;
+
+  const vesselGroup = new THREE.Group();
+  vesselGroup.position.y = BEAKER_Y;
+  scene.add(vesselGroup);
+
+  function buildBeakerGeo() {
+    const pts = [];
+    pts.push(new THREE.Vector2(0.004, 0.0));
+    pts.push(new THREE.Vector2(BEAKER_R - 0.14, 0.0));
+    for (let i = 0; i <= 10; i++) {
+      const a = -Math.PI / 2 + (i / 10) * (Math.PI / 2);
+      pts.push(new THREE.Vector2((BEAKER_R - 0.14) + Math.cos(a) * 0.14, 0.14 + Math.sin(a) * 0.14));
+    }
+    pts.push(new THREE.Vector2(BEAKER_R, BEAKER_H - 0.08));
+    pts.push(new THREE.Vector2(BEAKER_R + 0.055, BEAKER_H));
+    pts.push(new THREE.Vector2(BEAKER_R + 0.035, BEAKER_H + 0.025));
+    pts.push(new THREE.Vector2(BEAKER_R - 0.025, BEAKER_H - 0.01));
+    return new THREE.LatheGeometry(pts, isLow ? 36 : 56);
+  }
+  const BEAKER_GEO = buildBeakerGeo();
+
+  const glassBackMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xcbd5e1), roughness: 0.08, metalness: 0.04,
+    transparent: true, opacity: 0.13, depthWrite: false, side: THREE.BackSide
+  });
+  const beakerBack = new THREE.Mesh(BEAKER_GEO, glassBackMat);
+  beakerBack.renderOrder = 1;
+  vesselGroup.add(beakerBack);
+
+  const beakerFrontMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uRimColor: { value: new THREE.Color(0.86, 0.90, 0.97) },
+      uVaporTint: { value: 0.0 }
+    },
+    vertexShader: `
+      varying vec3 vN;
+      varying vec3 vV;
+      varying float vY;
+      void main() {
+        vY = position.y;
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vN = normalize(mat3(modelMatrix) * normal);
+        vV = normalize(cameraPosition - wp.xyz);
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uRimColor;
+      uniform float uVaporTint;
+      varying vec3 vN;
+      varying vec3 vV;
+      varying float vY;
+      void main() {
+        float ndv = abs(dot(normalize(vN), normalize(vV)));
+        float outerRim = pow(1.0 - ndv, 3.2);
+        float innerWall = exp(-pow((ndv - 0.44) * 14.0, 2.0)) * 0.15;
+        vec3 baseCol = mix(uRimColor, vec3(0.76, 0.62, 0.88), uVaporTint * 0.32);
+        vec3 col = baseCol * (0.90 + outerRim * 0.56);
+        float a = 0.018 + outerRim * 0.58 + innerWall;
+        gl_FragColor = vec4(col, clamp(a, 0.0, 0.88));
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    side: THREE.FrontSide
+  });
+  const beakerFront = new THREE.Mesh(BEAKER_GEO, beakerFrontMat);
+  beakerFront.renderOrder = 10;
+  vesselGroup.add(beakerFront);
+
+  // Subtle beaker graduation markings
+  const beakerScaleTex = makeTex(256, 256, function (g, w, h) {
+    g.clearRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(255,255,255,0.42)';
+    g.fillStyle = 'rgba(255,255,255,0.58)';
+    g.lineWidth = 2;
+    g.font = '700 18px "Be Vietnam Pro",sans-serif';
+    [50, 100, 150, 200, 250].forEach(function (ml, idx) {
+      const y = h - 32 - idx * 46;
+      g.beginPath(); g.moveTo(96, y); g.lineTo(132, y); g.stroke();
+      g.fillText(ml + ' mL', 140, y + 6);
+    });
+  });
+  const beakerScale = new THREE.Mesh(
+    new THREE.CylinderGeometry(BEAKER_R + 0.004, BEAKER_R + 0.004, 1.7, 32, 1, true, -0.45, 0.9),
+    new THREE.MeshBasicMaterial({ map: beakerScaleTex, transparent: true, opacity: 0.58, depthWrite: false })
+  );
+  beakerScale.position.y = 1.08;
+  beakerScale.renderOrder = 9;
+  vesselGroup.add(beakerScale);
+
+  /* ==================== DARK PURPLE-BLACK METALLIC SOLID I₂ CRYSTALS AT BOTTOM ==================== */
+  const solidCrystalMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0x211030),
+    emissive: srgbCol(0x12061c),
+    emissiveIntensity: 0.25,
+    roughness: 0.20,
+    metalness: 0.82,
+    clearcoat: 0.55,
+    clearcoatRoughness: 0.16,
+    envMapIntensity: 1.15
+  });
+
+  const bottomCrystals = [];
+  const bottomCluster = new THREE.Group();
+  vesselGroup.add(bottomCluster);
+
+  (function buildBottomIodineCrystals() {
+    const baseGeo = new THREE.OctahedronGeometry(1, 0);
+    const count = isLow ? 30 : 44;
+    for (let i = 0; i < count; i++) {
+      const m = new THREE.Mesh(baseGeo, solidCrystalMat);
+      const r = Math.sqrt(Math.random()) * 0.54;
+      const a = Math.random() * Math.PI * 2;
+      const sx = 0.055 + Math.random() * 0.075;
+      const sy = 0.028 + Math.random() * 0.048;
+      const sz = 0.055 + Math.random() * 0.075;
+      m.position.set(Math.cos(a) * r, 0.032 + sy * 0.55 + Math.max(0, (0.35 - r) * 0.18), Math.sin(a) * r);
+      m.rotation.set(Math.random() * 2.2, Math.random() * Math.PI * 2, Math.random() * 2.2);
+      m.scale.set(sx, sy, sz);
+      m.renderOrder = 3;
+      bottomCluster.add(m);
+      bottomCrystals.push({
+        mesh: m,
+        baseScale: new THREE.Vector3(sx, sy, sz),
+        baseY: m.position.y,
+        threshold: (i / count) * 0.72 // outer/smaller crystals vanish progressively down to 0
+      });
+    }
+  })();
+
+  /* ==================== GLSL VOLUMETRIC SMOKY ROYAL PLUM-VIOLET I₂ VAPOR ==================== */
+  // Muted, realistic laboratory iodine vapor — NEVER neon magenta!
+  const vaporMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uConc: { value: 0 },
+      uHeatDrive: { value: 0 }
+    },
+    vertexShader: `
+      varying vec3 vLocal;
+      varying vec3 vN;
+      varying vec3 vV;
+      void main() {
+        vLocal = position;
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vN = normalize(mat3(modelMatrix) * normal);
+        vV = normalize(cameraPosition - wp.xyz);
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform float uConc;
+      uniform float uHeatDrive;
+      varying vec3 vLocal;
+      varying vec3 vN;
+      varying vec3 vV;
+
+      float hash(vec3 p){
+        p = fract(p * 0.3183099 + 0.1);
+        p *= 17.0;
+        return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+      }
+      float noise3(vec3 x){
+        vec3 i = floor(x), f = fract(x);
+        f = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(mix(hash(i), hash(i + vec3(1,0,0)), f.x),
+              mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
+          mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
+              mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y), f.z);
+      }
+      float fbm(vec3 p){
+        float v = 0.0, a = 0.52;
+        for(int i = 0; i < 4; i++){ v += a * noise3(p); p = p * 2.04 + vec3(1.3, -1.1, 0.9); a *= 0.5; }
+        return v;
+      }
+
+      void main() {
+        if (uConc < 0.005) discard;
+        float hNorm = clamp((vLocal.y + 1.0) / 2.0, 0.0, 1.0);
+        float ndv = abs(dot(normalize(vN), normalize(vV)));
+
+        // Convection swirl rising from hot bottom toward cold dish
+        float riseSpeed = 0.32 + uHeatDrive * 0.55;
+        vec3 q = vec3(vLocal.x * 2.4, vLocal.y * 1.9 - uTime * riseSpeed, vLocal.z * 2.4);
+        float n1 = fbm(q);
+        float n2 = fbm(q * 1.85 + vec3(n1 * 0.7, -uTime * 0.25, -n1 * 0.6));
+        float wisp = smoothstep(0.18, 0.85, n1 * 0.62 + n2 * 0.45);
+
+        // Soft vertical fade near extreme top/bottom
+        float vertMask = smoothstep(0.0, 0.14, hNorm) * (1.0 - smoothstep(0.90, 1.0, hNorm));
+        // Denser smoky core in middle-lower beaker, softer rim
+        float edgeSoft = pow(ndv, 0.48);
+
+        // Rich muted royal plum-violet (real iodine vapor, zero neon pink glare)
+        vec3 deepPlum = vec3(0.22, 0.055, 0.30);
+        vec3 smokyViolet = vec3(0.45, 0.145, 0.54);
+        vec3 litEdge = vec3(0.56, 0.28, 0.68);
+        vec3 col = mix(deepPlum, smokyViolet, wisp);
+        col = mix(col, litEdge, pow(1.0 - ndv, 2.2) * 0.32);
+
+        float alpha = uConc * (0.34 + 0.54 * wisp) * vertMask * (0.45 + 0.55 * edgeSoft);
+        gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.86));
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide
+  });
+
+  // Inner concentric volumetric vapor shells for true 3D depth
+  const vaporShell1 = new THREE.Mesh(new THREE.CylinderGeometry(BEAKER_R - 0.06, BEAKER_R - 0.06, BEAKER_H - 0.18, 32, 16, true), vaporMat);
+  vaporShell1.position.y = BEAKER_H * 0.5;
+  vaporShell1.renderOrder = 5;
+  vesselGroup.add(vaporShell1);
+
+  const vaporShell2 = new THREE.Mesh(new THREE.CylinderGeometry(BEAKER_R * 0.58, BEAKER_R * 0.64, BEAKER_H - 0.26, 24, 12, true), vaporMat);
+  vaporShell2.position.y = BEAKER_H * 0.48;
+  vaporShell2.renderOrder = 4;
+  vesselGroup.add(vaporShell2);
+
+  // Soft volumetric vapor billboard puffs rising inside vessel
+  const puffTex = makeTex(128, 128, function (g, w, h) {
+    g.clearRect(0, 0, w, h);
+    for (let k = 0; k < 9; k++) {
+      const ox = w * 0.5 + (Math.random() - 0.5) * 24;
+      const oy = h * 0.5 + (Math.random() - 0.5) * 24;
+      const rad = 24 + Math.random() * 24;
+      const gr = g.createRadialGradient(ox, oy, 2, ox, oy, rad);
+      gr.addColorStop(0, 'rgba(138, 52, 168, 0.24)');
+      gr.addColorStop(0.55, 'rgba(88, 28, 120, 0.10)');
+      gr.addColorStop(1, 'rgba(55, 16, 80, 0)');
+      g.fillStyle = gr; g.beginPath(); g.arc(ox, oy, rad, 0, Math.PI * 2); g.fill();
+    }
+  });
+  const vaporPuffs = [];
+  for (let i = 0; i < (isLow ? 16 : 26); i++) {
+    const pm = new THREE.SpriteMaterial({ map: puffTex, transparent: true, opacity: 0, depthWrite: false });
+    const sp = new THREE.Sprite(pm);
+    sp.renderOrder = 6;
+    vesselGroup.add(sp);
+    vaporPuffs.push({
+      sprite: sp, mat: pm,
+      phase: Math.random(),
+      ang: Math.random() * Math.PI * 2,
+      rad: 0.08 + Math.random() * 0.46,
+      spd: 0.14 + Math.random() * 0.16,
+      s0: 0.42 + Math.random() * 0.35
+    });
+  }
+
+  /* ==================== PORCELAIN EVAPORATING DISH + ICE CUBES + DEPOSITED I₂ NEEDLES ==================== */
+  const dishPivot = new THREE.Group();
+  const DISH_REST_Y = BEAKER_Y + BEAKER_H - 0.02;
+  dishPivot.position.set(0, DISH_REST_Y, 0);
+  scene.add(dishPivot);
+
+  const porcelainMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xe6ecf2),
+    roughness: 0.16,
+    metalness: 0.03,
+    clearcoat: 0.72,
+    clearcoatRoughness: 0.12
+  });
+
+  const iceMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0xcfe9fa),
+    roughness: 0.12,
+    metalness: 0.04,
+    clearcoat: 0.85,
+    clearcoatRoughness: 0.08,
+    transparent: true,
+    opacity: 0.72
+  });
+
+  const meltWaterMat = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0x93c5fd),
+    roughness: 0.06,
+    metalness: 0.06,
+    clearcoat: 0.9,
+    transparent: true,
+    opacity: 0.42
+  });
+
+  const depositedNeedles = [];
+  const iceCubes = [];
+
+  (function buildPorcelainDishAndNeedles() {
+    // Smooth glazed porcelain evaporating dish profile (curved convex underside extending slightly into beaker top!)
+    const pts = [];
+    const seg = 16;
+    // Outer underside curve from bottom center (0, -0.26) up to lip (1.16, 0.44)
+    for (let i = 0; i <= seg; i++) {
+      const t = i / seg;
+      const r = Math.sin(t * Math.PI * 0.5) * 1.15;
+      const y = -0.26 + Math.pow(t, 1.85) * 0.68;
+      pts.push(new THREE.Vector2(Math.max(0.004, r), y));
+    }
+    // Rounded porcelain rim
+    pts.push(new THREE.Vector2(1.19, 0.45));
+    pts.push(new THREE.Vector2(1.15, 0.48));
+    pts.push(new THREE.Vector2(1.09, 0.46));
+    // Inner bowl concave curve down to (0.004, -0.17)
+    for (let i = seg; i >= 0; i--) {
+      const t = i / seg;
+      const r = Math.sin(t * Math.PI * 0.5) * 1.06;
+      const y = -0.17 + Math.pow(t, 1.85) * 0.61;
+      pts.push(new THREE.Vector2(Math.max(0.004, r), y));
+    }
+    const dishMesh = new THREE.Mesh(new THREE.LatheGeometry(pts, isLow ? 36 : 52), porcelainMat);
+    dishMesh.castShadow = true;
+    dishMesh.receiveShadow = true;
+    dishPivot.add(dishMesh);
+
+    // Cold meltwater pool inside dish
+    const waterPool = new THREE.Mesh(new THREE.CylinderGeometry(0.86, 0.45, 0.16, 32), meltWaterMat);
+    waterPool.position.y = 0.06;
+    waterPool.renderOrder = 4;
+    dishPivot.add(waterPool);
+
+    // Chamfered glistening ice cubes nested inside porcelain dish
+    const iceShape = new THREE.Shape();
+    const s = 0.125, r = 0.03;
+    iceShape.moveTo(-s + r, -s); iceShape.lineTo(s - r, -s);
+    iceShape.quadraticCurveTo(s, -s, s, -s + r); iceShape.lineTo(s, s - r);
+    iceShape.quadraticCurveTo(s, s, s - r, s); iceShape.lineTo(-s + r, s);
+    iceShape.quadraticCurveTo(-s, s, -s, s - r); iceShape.lineTo(-s, -s + r);
+    iceShape.quadraticCurveTo(-s, -s, -s + r, -s);
+    const iceGeo = new THREE.ExtrudeGeometry(iceShape, {
+      depth: 0.19, bevelEnabled: true, bevelThickness: 0.032, bevelSize: 0.028, bevelSegments: 2
+    });
+    iceGeo.center();
+
+    const cubeCoords = [
+      [-0.36, 0.18, 0.16], [0.28, 0.21, 0.22], [-0.04, 0.25, -0.28],
+      [0.44, 0.24, -0.18], [-0.46, 0.26, -0.22], [0.02, 0.19, 0.38],
+      [-0.18, 0.34, 0.04], [0.22, 0.33, -0.02], [-0.02, 0.40, 0.14]
+    ];
+    cubeCoords.forEach(function (c, i) {
+      const m = new THREE.Mesh(iceGeo, iceMat);
+      m.position.set(c[0], c[1], c[2]);
+      m.rotation.set(0.35 + i * 0.5, i * 1.1, 0.25 + i * 0.35);
+      const sc = 0.85 + (i % 3) * 0.14;
+      m.scale.setScalar(sc);
+      m.renderOrder = 7;
+      dishPivot.add(m);
+      iceCubes.push({ mesh: m, baseScale: sc });
+    });
+
+    // ~62 glistening metallic purple-black needle-like I₂ crystals sprouting from dish underside!
+    const needleMat = new THREE.MeshPhysicalMaterial({
+      color: srgbCol(0x28133d),
+      emissive: srgbCol(0x1f0a33),
+      emissiveIntensity: 0.32,
+      roughness: 0.15,
+      metalness: 0.88,
+      clearcoat: 0.72,
+      clearcoatRoughness: 0.12,
+      envMapIntensity: 1.35
+    });
+    const needleGeo = new THREE.ConeGeometry(0.026, 1.0, 6);
+    // Shift pivot to base of cone pointing -Y so scaling Y elongates downward from underside!
+    needleGeo.rotateX(Math.PI);
+    needleGeo.translate(0, -0.5, 0);
+
+    const nCount = isLow ? 42 : 64;
+    for (let i = 0; i < nCount; i++) {
+      // Sample radius across cold dish underside inside beaker opening (r <= 0.72)
+      const u = Math.sqrt((i + 0.5) / nCount);
+      const rad = u * 0.70;
+      const ang = i * 2.399963; // golden angle spiral distribution!
+      const tNorm = Math.asin(Math.min(1, rad / 1.15)) / (Math.PI * 0.5);
+      const ySurf = -0.26 + Math.pow(tNorm, 1.85) * 0.68;
+
+      const nm = new THREE.Mesh(needleGeo, needleMat);
+      nm.position.set(Math.cos(ang) * rad, ySurf + 0.008, Math.sin(ang) * rad);
+      // Organic crystal cluster splay angles pointing downward/outward
+      const tilt = 0.18 + Math.random() * 0.52;
+      const yaw = ang + (Math.random() - 0.5) * 1.1;
+      nm.rotation.set(Math.sin(yaw) * tilt, yaw, Math.cos(yaw) * tilt);
+      nm.scale.set(0.001, 0.001, 0.001);
+      nm.visible = false;
+      nm.renderOrder = 6;
+      dishPivot.add(nm);
+
+      depositedNeedles.push({
+        mesh: nm,
+        maxLen: (0.16 + (1.0 - u * 0.55) * 0.26) * (0.75 + Math.random() * 0.55),
+        maxRad: 0.70 + Math.random() * 0.75,
+        startAt: u * 0.42 + Math.random() * 0.12
+      });
+    }
+
+    // Subtle dark-violet frost patch coating the underside where needles grow
+    const frostMat = new THREE.MeshStandardMaterial({
+      color: srgbCol(0x2a1240), roughness: 0.28, metalness: 0.72,
+      transparent: true, opacity: 0.0, side: THREE.DoubleSide
+    });
+    const frostCap = new THREE.Mesh(new THREE.SphereGeometry(0.76, 28, 12, 0, Math.PI * 2, Math.PI * 0.66, Math.PI * 0.34), frostMat);
+    frostCap.scale.set(1.0, 0.36, 1.0);
+    frostCap.position.y = 0.008;
+    dishPivot.add(frostCap);
+    dishPivot.userData.frostMat = frostMat;
+  })();
+
+  /* ==================== SUBLIMATION & DEPOSITION PHYSICS STATE ==================== */
+  let heaterOn = false;
+  let targetTemp = 25;   // 25 .. 130 °C
+  let tempC = 25;        // actual beaker bottom temp
+  let solidMass = 1.0;   // 0 .. 1
+  let vaporMass = 0.0;   // 0 .. 1
+  let depositMass = 0.0; // 0 .. 1 (solid + vapor + deposit === 1.0)
+  let inspectMode = false;
+  let inspectAnim = 0.0; // 0 = seated on beaker, 1 = lifted & tilted toward camera
+  let toastTimer = null;
+  let announcedSub = false;
+  let announcedDone = false;
+  let lastSparkleT = 0;
+
+  function showToast(msg) {
+    const el = $('toast');
+    el.innerHTML = msg;
+    el.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('on'); }, 3400);
+  }
+
+  function setHeater(on, temp) {
+    heaterOn = on;
+    if (typeof temp === 'number') targetTemp = temp;
+    else targetTemp = on ? Math.max(115, targetTemp) : 25;
+    if (targetTemp <= 30) heaterOn = false;
+    $('tempSlider').value = Math.round(targetTemp);
+    $('targetTempTxt').textContent = Math.round(targetTemp) + ' °C';
+    $('stoveStateTxt').textContent = heaterOn ? 'ĐANG ĐUN' : 'ĐANG TẮT';
+    $('stoveStateTxt').style.color = heaterOn ? '#fb923c' : '#94a3b8';
+    $('btnHeatOn').classList.toggle('on-heat', heaterOn);
+  }
+
+  function setInspect(on) {
+    inspectMode = on;
+    sfxPorcelain();
+    const btn = $('btnInspect');
+    btn.classList.toggle('inspect-on', on);
+    btn.textContent = on ? '⬇️ Đặt bát đá trở lại miệng cốc' : '🔎 Nhấc bát đá xem tinh thể I₂';
+    if (on) {
+      camDst.theta = 0.14; camDst.phi = 1.38; camDst.r = 4.6; camDst.ty = 3.25;
+      if (depositMass < 0.06) {
+        showToast('💡 Chưa có nhiều tinh thể ngưng tụ! Hãy đặt bát xuống, bật bếp đun nhẹ để I₂ thăng hoa trước nhé.');
+      } else {
+        showToast('💎 Quan sát các <b>tinh thể I₂ hình kim tím đen ánh kim</b> mọc tua tủa dưới đáy bát lạnh!');
+      }
+    } else {
+      camDst.theta = CAM_PRESETS.iso.theta;
+      camDst.phi = CAM_PRESETS.iso.phi;
+      camDst.r = CAM_PRESETS.iso.r;
+      camDst.ty = CAM_PRESETS.iso.ty;
+    }
+  }
+
+  function resetLab() {
+    setHeater(false, 25);
+    tempC = 25;
+    solidMass = 1.0;
+    vaporMass = 0.0;
+    depositMass = 0.0;
+    announcedSub = false;
+    announcedDone = false;
+    if (inspectMode) setInspect(false);
+    updateReadouts();
+    showToast('↺ Đã nạp lại tinh thể <b>I₂ rắn tím đen</b> mới vào đáy cốc.');
+  }
+
+  function updateReadouts() {
+    const tInt = Math.round(tempC);
+    $('tempHud').textContent = tInt + ' °C';
+    $('chipTemp').classList.toggle('hot', tempC >= 60);
+
+    const pS = Math.round(solidMass * 100);
+    const pV = Math.round(vaporMass * 100);
+    const pD = Math.max(0, 100 - pS - pV);
+    $('mSolidTxt').textContent = pS + '%';
+    $('mVaporTxt').textContent = pV + '%';
+    $('mDepTxt').textContent = pD + '%';
+    $('barSolid').style.width = pS + '%';
+    $('barVapor').style.width = pV + '%';
+    $('barDep').style.width = pD + '%';
+
+    $('lblBotSub').textContent = pS > 0 ? ('Tím đen ánh kim · Còn ' + pS + '%') : 'Đã thăng hoa hết (0% · không lỏng)';
+    $('lblDishSub').textContent = pD > 4 ? ('0 °C · Đã kết tinh ' + pD + '% I₂ kim') : '0 °C · Bề mặt lạnh ngưng tụ';
+
+    let phase = 'I₂ rắn ổn định';
+    if (solidMass > 0.02 && vaporMass > 0.06) phase = 'Đang thăng hoa & ngưng tụ';
+    else if (solidMass <= 0.02 && vaporMass > 0.06) phase = 'Hơi tím đang ngưng tụ dần';
+    else if (depositMass > 0.92 && vaporMass <= 0.06) phase = 'Hoàn tất: I₂ kết tinh đáy bát!';
+    $('phaseHud').textContent = phase;
+
+    const kq = $('kq');
+    if (depositMass > 0.88 && vaporMass < 0.08) {
+      kq.innerHTML = '🎉 <b>Hoàn tất chu trình thăng hoa – ngưng tụ!</b> Toàn bộ tinh thể I₂ ở đáy cốc đã biến mất (0%) mà không hề tạo vũng lỏng, hơi tím cũng tan sạch trả lại cốc trong suốt. Hãy bấm <b>"🔎 Nhấc bát đá xem tinh thể I₂"</b> để chiêm ngưỡng chùm tinh thể hình kim ánh kim bám dưới đáy bát!';
+    } else if (vaporMass > 0.14) {
+      kq.innerHTML = '🟣 Nhiệt độ đạt <b>' + tInt + ' °C</b>: tinh thể I₂ ở đáy đang <b>thăng hoa trực tiếp</b> thành đám <b>hơi tím khói dày đặc</b> bay lên chạm đáy bát đá lạnh (0 °C) và <b>mọc ngay thành tinh thể I₂ hình kim</b>. Thử tắt bếp làm nguội để hơi tím ngưng tụ sạch sẽ!';
+    } else {
+      kq.innerHTML = 'Ở điều kiện thường, <b>iodine (I₂)</b> là tinh thể màu tím đen có ánh kim. Hãy bật bếp đun nhẹ (~115 °C) để quan sát tinh thể ở đáy cốc <b>chuyển thẳng thành hơi màu tím</b> mà không qua pha lỏng!';
+    }
+  }
+
+  /* ==================== CAMERA CONTROLLER ==================== */
+  const CAM_PRESETS = {
+    iso:     { theta: 0.26, phi: 1.24, r: 6.2, ty: 1.88 },
+    vessel:  { theta: 0.15, phi: 1.38, r: 3.9, ty: 1.72 },
+    crystal: { theta: 0.14, phi: 1.44, r: 4.1, ty: 2.95 }
+  };
+  let camCur = { theta: 0.26, phi: 1.24, r: 6.2, ty: 1.88 };
+  let camDst = { theta: 0.26, phi: 1.24, r: 6.2, ty: 1.88 };
+
+  document.querySelectorAll('.cam-bar [data-cam]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const k = btn.getAttribute('data-cam');
+      const p = CAM_PRESETS[k];
+      if (!p) return;
+      camDst.theta = p.theta; camDst.phi = p.phi; camDst.r = p.r; camDst.ty = p.ty;
+      document.querySelectorAll('.cam-bar [data-cam]').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    });
+  });
+
+  /* ==================== POINTER ORBIT + CLICK HEATER KNOB ==================== */
+  const raycaster = new THREE.Raycaster();
+  const ptr = new THREE.Vector2();
+  let dragging = false, downX = 0, downY = 0, lastX = 0, lastY = 0;
+
+  function hitsKnob(clientX, clientY) {
+    const r = cv.getBoundingClientRect();
+    ptr.x = ((clientX - r.left) / r.width) * 2 - 1;
+    ptr.y = -((clientY - r.top) / r.height) * 2 + 1;
+    raycaster.setFromCamera(ptr, camera);
+    return raycaster.intersectObject(knobHit, false).length > 0;
+  }
+
+  cv.addEventListener('pointerdown', function (e) {
+    ensureAudio();
+    downX = lastX = e.clientX;
+    downY = lastY = e.clientY;
+    dragging = true;
+    cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener('pointermove', function (e) {
+    if (dragging) {
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      lastX = e.clientX; lastY = e.clientY;
+      camDst.theta -= dx * 0.0065;
+      camDst.phi = Math.max(0.45, Math.min(1.56, camDst.phi - dy * 0.0055));
+    } else {
+      cv.style.cursor = hitsKnob(e.clientX, e.clientY) ? 'pointer' : 'grab';
+    }
+  });
+  cv.addEventListener('pointerup', function (e) {
+    if (dragging && Math.hypot(e.clientX - downX, e.clientY - downY) <= 8 && hitsKnob(e.clientX, e.clientY)) {
+      const nextOn = !heaterOn;
+      sfxClick(nextOn);
+      setHeater(nextOn, nextOn ? 115 : 25);
+      showToast(nextOn ? '🔥 Đã xoay núm bật bếp gốm lên <b>115 °C</b>!' : '❄️ Đã tắt bếp điện — cốc đang nguội dần.');
+    }
+    dragging = false;
+  });
+  cv.addEventListener('pointercancel', function () { dragging = false; });
+  cv.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    camDst.r = Math.max(2.9, Math.min(9.5, camDst.r + e.deltaY * 0.0045));
+  }, { passive: false });
+
+  /* ==================== UI HANDLERS ==================== */
+  $('btnSound').addEventListener('click', function () {
+    soundOn = !soundOn;
+    this.classList.toggle('on', soundOn);
+    this.textContent = soundOn ? '🔊' : '🔇';
+    if (!soundOn && humGain) humGain.gain.value = 0;
+  });
+  $('btnHeatOn').addEventListener('click', function () {
+    ensureAudio(); sfxClick(true);
+    if (inspectMode) setInspect(false);
+    setHeater(true, 115);
+  });
+  $('btnHeatOff').addEventListener('click', function () {
+    ensureAudio(); sfxClick(false);
+    setHeater(false, 25);
+  });
+  $('tempSlider').addEventListener('input', function () {
+    ensureAudio();
+    const v = parseInt(this.value, 10);
+    setHeater(v > 32, v);
+  });
+  $('btnInspect').addEventListener('click', function () {
+    ensureAudio();
+    setInspect(!inspectMode);
+  });
+  $('btnReset').addEventListener('click', function () {
+    ensureAudio(); sfxClick(false);
+    resetLab();
+  });
+
+  /* ==================== RESIZE & VISIBILITY ==================== */
+  function onResize() {
+    const w = stage.clientWidth || 1, h = stage.clientHeight || 1;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  window.addEventListener('resize', onResize);
+  onResize();
+
+  let paused = false;
+  document.addEventListener('visibilitychange', function () {
+    paused = document.hidden;
+    if (paused && humGain) humGain.gain.value = 0;
+  });
+
+  /* ==================== MAIN ANIMATION LOOP ==================== */
+  const projV = new THREE.Vector3();
+  let lastT = performance.now();
+  let elapsed = 0;
+  let uiAccum = 0;
+
+  updateReadouts();
+
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (paused) { lastT = now; return; }
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+    elapsed += dt;
+
+    // 1. Temperature dynamics
+    const goalT = heaterOn ? targetTemp : 25;
+    const tRate = goalT > tempC ? 0.58 : 0.42;
+    tempC += (goalT - tempC) * Math.min(1, dt * tRate);
+
+    const heatNorm = Math.max(0, Math.min(1, (tempC - 35) / 95));
+    coilMat.emissiveIntensity = heatNorm * 2.1 * (0.94 + 0.06 * Math.sin(elapsed * 4.0));
+    coilLight.intensity = heatNorm * 1.45;
+    ledMat.emissiveIntensity = heaterOn ? 1.8 : 0.0;
+    if (heaterKnob) {
+      const targetRot = -((targetTemp - 25) / 105) * 2.4;
+      heaterKnob.rotation.z += (targetRot - heaterKnob.rotation.z) * Math.min(1, dt * 8);
+    }
+    if (humGain && soundOn) {
+      humGain.gain.value = heaterOn ? (0.008 + heatNorm * 0.014) : 0;
+    }
+
+    // 2. Real-time sublimation & deposition kinetics (exact conservation: solid + vapor + deposit = 1)
+    if (tempC > 55 && solidMass > 0) {
+      const subRate = ((tempC - 55) / 75) * 0.145 * dt;
+      const dSub = Math.min(solidMass, subRate);
+      solidMass -= dSub;
+      vaporMass += dSub;
+      if (solidMass < 0.002) {
+        vaporMass += solidMass;
+        solidMass = 0;
+      }
+      if (!announcedSub && vaporMass > 0.16) {
+        announcedSub = true;
+        showToast('🟣 <b>I₂ đang thăng hoa trực tiếp!</b> Hơi màu tím khói bốc lên và ngưng tụ ngay dưới đáy bát lạnh.');
+      }
+    }
+
+    // Deposition onto cold porcelain dish underside (faster when dish is seated & when cooling down!)
+    if (vaporMass > 0) {
+      const dishColdContact = 1.0 - inspectAnim * 0.85;
+      const coolBoost = tempC < 65 ? 0.24 : 0.068;
+      const depRate = vaporMass * coolBoost * dishColdContact * dt + (tempC < 55 ? 0.032 * dt * dishColdContact : 0);
+      const dDep = Math.min(vaporMass, depRate);
+      vaporMass -= dDep;
+      depositMass = Math.min(1.0, depositMass + dDep);
+      if (vaporMass < 0.003 && solidMass === 0 && tempC < 65) {
+        depositMass = 1.0;
+        vaporMass = 0;
+      }
+      if (dDep > 0.0018 && elapsed - lastSparkleT > 0.45) {
+        lastSparkleT = elapsed;
+        sfxSparkle();
+      }
+    }
+
+    if (!announcedDone && solidMass === 0 && depositMass > 0.92 && vaporMass < 0.05) {
+      announcedDone = true;
+      showToast('✨ Hơi tím đã lắng sạch! Bấm <b>"🔎 Nhấc bát đá xem tinh thể I₂"</b> để soi cận tinh thể hình kim!');
+    }
+
+    // 3. Update bottom solid crystals (shrink smoothly to 0!)
+    for (let i = 0; i < bottomCrystals.length; i++) {
+      const c = bottomCrystals[i];
+      const localFrac = Math.max(0, Math.min(1, (solidMass - c.threshold * 0.45) / (1.0 - c.threshold * 0.45)));
+      if (localFrac <= 0.004 || solidMass <= 0.001) {
+        c.mesh.visible = false;
+      } else {
+        c.mesh.visible = true;
+        const sc = Math.pow(localFrac, 0.55);
+        c.mesh.scale.set(c.baseScale.x * sc, c.baseScale.y * sc, c.baseScale.z * sc);
+        c.mesh.position.y = 0.015 + (c.baseY - 0.015) * sc;
+      }
+    }
+
+    // 4. Update volumetric violet I2 vapor & puffs
+    const concVis = Math.min(1.0, vaporMass * 1.65);
+    vaporMat.uniforms.uTime.value = elapsed;
+    vaporMat.uniforms.uConc.value = concVis;
+    vaporMat.uniforms.uHeatDrive.value = heatNorm;
+    beakerFrontMat.uniforms.uVaporTint.value = concVis;
+
+    for (let i = 0; i < vaporPuffs.length; i++) {
+      const p = vaporPuffs[i];
+      p.phase = (p.phase + dt * p.spd * (0.45 + heatNorm * 1.15)) % 1.0;
+      const y = 0.18 + p.phase * (BEAKER_H - 0.44);
+      const swirlA = p.ang + elapsed * 0.45 + p.phase * 2.2;
+      const rr = p.rad * (0.65 + 0.35 * Math.sin(p.phase * Math.PI));
+      p.sprite.position.set(Math.cos(swirlA) * rr, y, Math.sin(swirlA) * rr);
+      const sz = p.s0 * (0.75 + p.phase * 0.55);
+      p.sprite.scale.set(sz, sz, 1);
+      const env = Math.sin(p.phase * Math.PI);
+      p.mat.opacity = concVis * env * 0.52;
+      p.sprite.visible = p.mat.opacity > 0.008;
+    }
+
+    // 5. Update deposited metallic needle crystals on dish underside
+    for (let i = 0; i < depositedNeedles.length; i++) {
+      const n = depositedNeedles[i];
+      const grow = Math.max(0, Math.min(1, (depositMass - n.startAt) / (1.0 - n.startAt + 0.05)));
+      if (grow <= 0.006) {
+        n.mesh.visible = false;
+      } else {
+        n.mesh.visible = true;
+        const gEased = Math.pow(grow, 0.72);
+        n.mesh.scale.set(n.maxRad * (0.45 + 0.55 * gEased), n.maxLen * gEased, n.maxRad * (0.45 + 0.55 * gEased));
+      }
+    }
+    dishPivot.userData.frostMat.opacity = Math.min(0.86, depositMass * 1.15);
+
+    // Subtle gentle ice melt shimmer
+    const iceScaleFactor = 1.0 - Math.min(0.14, depositMass * 0.12);
+    for (let i = 0; i < iceCubes.length; i++) {
+      iceCubes[i].mesh.scale.setScalar(iceCubes[i].baseScale * iceScaleFactor);
+    }
+
+    // 6. Smooth dish lift & tilt animation for inspecting I2 needles up close!
+    const inspGoal = inspectMode ? 1.0 : 0.0;
+    inspectAnim += (inspGoal - inspectAnim) * Math.min(1, dt * 4.8);
+    const eInsp = inspectAnim * inspectAnim * (3 - 2 * inspectAnim);
+    dishPivot.position.set(0, DISH_REST_Y + eInsp * 0.92, eInsp * 0.45);
+    dishPivot.rotation.set(-eInsp * 1.18, eInsp * 0.22 * Math.sin(elapsed * 0.7), 0);
+    inspectLight.intensity = eInsp * 1.35;
+
+    // 7. Smooth camera
+    const ease = 1 - Math.exp(-dt * 7.2);
+    camCur.theta += (camDst.theta - camCur.theta) * ease;
+    camCur.phi += (camDst.phi - camCur.phi) * ease;
+    camCur.r += (camDst.r - camCur.r) * ease;
+    camCur.ty += (camDst.ty - camCur.ty) * ease;
+
+    camera.position.set(
+      camCur.r * Math.sin(camCur.phi) * Math.sin(camCur.theta),
+      camCur.ty + camCur.r * Math.cos(camCur.phi),
+      camCur.r * Math.sin(camCur.phi) * Math.cos(camCur.theta)
+    );
+    camera.lookAt(0, camCur.ty, 0);
+
+    // Project floating labels
+    const sw = stage.clientWidth, sh = stage.clientHeight;
+    projV.set(1.22, dishPivot.position.y + 0.35, dishPivot.position.z).project(camera);
+    const ld = $('lblDish');
+    if (projV.z < 1) {
+      ld.style.display = '';
+      ld.style.left = ((projV.x * 0.5 + 0.5) * sw) + 'px';
+      ld.style.top = ((-projV.y * 0.5 + 0.5) * sh) + 'px';
+    } else ld.style.display = 'none';
+
+    projV.set(-1.12, BEAKER_Y + 0.32, 0).project(camera);
+    const lb = $('lblBot');
+    if (projV.z < 1) {
+      lb.style.display = '';
+      lb.style.left = ((projV.x * 0.5 + 0.5) * sw) + 'px';
+      lb.style.top = ((-projV.y * 0.5 + 0.5) * sh) + 'px';
+    } else lb.style.display = 'none';
+
+    uiAccum += dt;
+    if (uiAccum >= 0.12) {
+      uiAccum = 0;
+      updateReadouts();
+    }
+
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>

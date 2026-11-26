@@ -1,0 +1,2774 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ống nghiệm Halide &amp; Chiết tách Halogen 3D — Hóa 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#07060e;
+    --the:#141024;
+    --vien:rgba(255,255,255,.12);
+    --chu:#f7f2fc;
+    --phu:#b6a6cc;
+    --tim:#a78bfa;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--nen);color:var(--chu);font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;overflow:hidden;user-select:none}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 368px;height:100dvh}
+  .stage{position:relative;min-height:0;touch-action:none;background:#07060e;overflow:hidden}
+  #cv{display:block;width:100%;height:100%;cursor:crosshair}
+
+  .hud{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;align-items:center;gap:8px;pointer-events:none;z-index:3}
+  .hud-left,.hud-right{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:rgba(12,9,24,.84);border:1px solid var(--vien);border-radius:99px;padding:6px 13px;font-size:12.3px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+  .chip b{color:#fde68a;font-weight:800}
+  .hud-btn{pointer-events:auto;cursor:pointer;min-height:35px;padding:6px 12px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(21,16,38,.88);border:1px solid var(--vien);color:var(--chu);transition:.15s}
+  .hud-btn:hover{border-color:rgba(255,255,255,.36);transform:translateY(-1px)}
+  .hud-btn.on{background:linear-gradient(90deg,#6d28d9,#db2777);border-color:#f9a8d4;color:#fff;box-shadow:0 0 16px rgba(168,85,247,.45)}
+
+  .hint-bar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(12,9,24,.80);border:1px solid var(--vien);border-radius:99px;padding:6px 16px;font-size:11.8px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
+  .hint-bar b{color:#f8fafc}
+
+  .toast{position:absolute;left:50%;bottom:54px;transform:translateX(-50%);background:rgba(14,10,28,.95);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:9px 16px;font-size:12.8px;font-weight:700;max-width:88%;text-align:center;opacity:0;transition:opacity .24s,transform .24s;pointer-events:none;z-index:4;box-shadow:0 12px 30px rgba(0,0,0,.55)}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+  .side{background:var(--the);border-left:1px solid var(--vien);padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:11px}
+  h1{font-size:16.5px;margin:0;line-height:1.3}
+  .tag{display:inline-block;background:rgba(224,69,107,.18);color:#ff8fa8;border-radius:99px;padding:2px 10px;font-size:11px;font-weight:800;margin-bottom:4px}
+
+  .mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:rgba(0,0,0,.32);padding:4px;border-radius:11px;border:1px solid var(--vien)}
+  .mode-tabs button{min-height:36px;padding:5px 7px;border:0;border-radius:8px;font-size:12px;background:transparent;color:var(--phu);line-height:1.2}
+  .mode-tabs button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);color:#fff;box-shadow:0 4px 12px rgba(109,40,217,.36)}
+
+  .box{background:rgba(255,255,255,.038);border:1px solid var(--vien);border-radius:13px;padding:11px 12px}
+  .box h3{margin:0 0 8px;font-size:11.3px;letter-spacing:.06em;text-transform:uppercase;color:var(--tim);display:flex;justify-content:space-between;align-items:center}
+
+  button{font:inherit;font-weight:700;font-size:12.5px;border:1px solid var(--vien);background:rgba(255,255,255,.06);color:var(--chu);border-radius:10px;padding:8px 10px;min-height:42px;cursor:pointer;transition:.15s}
+  button:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.28)}
+  button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);border-color:rgba(255,255,255,.35);color:#fff}
+
+  .reagents{display:grid;grid-template-columns:1fr;gap:6px}
+  .reagents.two{grid-template-columns:1fr 1fr}
+  .reag-btn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 11px;text-align:left;min-height:48px}
+  .reag-btn b{font-size:12.8px;display:flex;align-items:center;gap:7px}
+  .reag-btn small{font-size:10.6px;color:var(--phu);font-weight:600}
+  .reag-dot{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid rgba(255,255,255,.45)}
+
+  .hang{display:flex;gap:6px;margin-top:8px}
+  .hang button{flex:1}
+  .chinh{background:linear-gradient(90deg,#e0456b,#7c3aed);border:0;color:#fff;box-shadow:0 6px 16px rgba(224,69,107,.26)}
+  .chinh:hover{filter:brightness(1.08)}
+
+  .eq{font-size:13.5px;font-weight:800;color:#fde68a;line-height:1.48}
+  .kq{font-size:12.5px;line-height:1.56;color:#ecdef9}
+  .kq b{color:#fde68a}
+
+  table{width:100%;border-collapse:collapse;font-size:11.9px;margin-top:2px}
+  th,td{padding:5.5px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+  th{color:var(--phu);font-weight:700}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid rgba(255,255,255,.35)}
+
+  .guess-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:6px}
+  .guess-item{display:flex;flex-direction:column;gap:3px}
+  .guess-item label{font-size:11.2px;font-weight:800;color:#cbd5e1}
+  .guess-item select{background:#0f0b1d;color:#fff;border:1px solid var(--vien);border-radius:8px;padding:7px 8px;font:inherit;font-size:12.3px;font-weight:700}
+  .res-msg{padding:8px 10px;border-radius:9px;font-size:12.2px;font-weight:700;margin-top:7px;display:none}
+  .res-msg.ok{display:block;background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.5);color:#a7f3d0}
+  .res-msg.err{display:block;background:rgba(245,158,11,.16);border:1px solid rgba(245,158,11,.5);color:#fde68a}
+
+  .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--phu);background:var(--nen);z-index:10}
+
+  @media (max-width:860px){
+    html,body{overflow:auto}
+    .wrap{grid-template-columns:1fr;grid-template-rows:58dvh auto;height:auto}
+    .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
+    .hint-bar{font-size:10.8px;padding:5px 11px;max-width:94%;white-space:normal;text-align:center}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+
+    <div class="hud">
+      <div class="hud-left">
+        <span class="chip">💧 Pipet: <b id="hudReag">dd AgNO₃ 0,1M</b></span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn" id="btnUV" title="Thử tính nhạy sáng quang phân của AgCl, AgBr">☀️ Chiếu ánh sáng</button>
+        <button class="hud-btn" id="btnResetCam" title="Đặt lại góc máy chính diện">🎥 Góc chuẩn</button>
+        <button class="hud-btn on" id="btnSound">🔊</button>
+      </div>
+    </div>
+
+    <div class="hint-bar">🖱️ <b>Chạm ống</b>: nhỏ giọt · <b>Nhấn giữ</b>: bơm thành dòng (đầy 10 mL sẽ tràn!) · <b>Gạt ngang qua ống</b>: lắc ống</div>
+    <div class="toast" id="toast"></div>
+    <div class="fallback" id="fb">Thiết bị chưa bật WebGL nên không hiển thị được phòng thí nghiệm 3D.</div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <span class="tag">Bài 21, 22, 23 · Nhóm Halogen</span>
+      <h1>Ống nghiệm Halide &amp; Halogen 3D</h1>
+    </div>
+
+    <div class="mode-tabs" id="modeTabs">
+      <button class="on" data-mode="ag">1. Nhận biết Halide</button>
+      <button data-mode="disp">2. Thế &amp; Chiết 2 lớp</button>
+      <button data-mode="h2so4">3. Muối rắn + H₂SO₄</button>
+      <button data-mode="game">4. Giải mã 4 lọ</button>
+    </div>
+
+    <div class="box">
+      <h3><span>Thuốc thử trên Pipet</span> <span style="color:#86efac;text-transform:none">Rê chuột tới ống để nhỏ</span></h3>
+      <div class="reagents" id="reagGrid"></div>
+      <div class="hang">
+        <button class="chinh" id="btnAll">💧 Nhỏ cả dãy</button>
+        <button id="btnReset">🔄 Ống mới</button>
+      </div>
+    </div>
+
+    <div class="box" id="mysteryPanel" style="display:none">
+      <h3><span>🕵️ Kết luận 4 lọ mất nhãn</span> <span id="scoreBadge" style="color:#86efac">Điểm: 0</span></h3>
+      <div class="guess-grid" id="guessGrid">
+        <div class="guess-item"><label>Lọ X</label><select data-slot="0"><option value="">-- Chọn --</option><option value="NaF">NaF</option><option value="NaCl">NaCl</option><option value="NaBr">NaBr</option><option value="NaI">NaI</option></select></div>
+        <div class="guess-item"><label>Lọ Y</label><select data-slot="1"><option value="">-- Chọn --</option><option value="NaF">NaF</option><option value="NaCl">NaCl</option><option value="NaBr">NaBr</option><option value="NaI">NaI</option></select></div>
+        <div class="guess-item"><label>Lọ Z</label><select data-slot="2"><option value="">-- Chọn --</option><option value="NaF">NaF</option><option value="NaCl">NaCl</option><option value="NaBr">NaBr</option><option value="NaI">NaI</option></select></div>
+        <div class="guess-item"><label>Lọ T</label><select data-slot="3"><option value="">-- Chọn --</option><option value="NaF">NaF</option><option value="NaCl">NaCl</option><option value="NaBr">NaBr</option><option value="NaI">NaI</option></select></div>
+      </div>
+      <div class="hang">
+        <button class="chinh" id="btnCheckGame">✓ Chấm điểm</button>
+        <button id="btnShuffleGame">🔀 Đề mới</button>
+      </div>
+      <div class="res-msg" id="gameMsg"></div>
+    </div>
+
+    <div class="box">
+      <h3><span>Phương trình &amp; Hiện tượng</span></h3>
+      <div class="eq" id="eqTxt">dd AgNO₃ + NaX → AgX↓ + NaNO₃</div>
+      <div class="kq" id="phenomTxt" style="margin-top:6px">
+        Rê chuột qua từng ống nghiệm trên bàn 3D để nhỏ trực tiếp không độ trễ.
+      </div>
+    </div>
+
+    <div class="box" id="summaryBox"></div>
+  </aside>
+</div>
+
+<script>
+(function loadThreeAndBoot() {
+  var MIRRORS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+    'https://unpkg.com/three@0.128.0/build/three.min.js'
+  ];
+  var idx = 0;
+  function next() {
+    if (window.THREE && window.THREE.WebGLRenderer) { bootHalideApp(window.THREE); return; }
+    if (idx >= MIRRORS.length) { document.getElementById('fb').style.display = 'flex'; return; }
+    var s = document.createElement('script');
+    s.src = MIRRORS[idx++];
+    s.async = true;
+    s.onload = function () {
+      if (window.THREE && window.THREE.WebGLRenderer) bootHalideApp(window.THREE);
+      else next();
+    };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+
+function bootHalideApp(THREE) {
+  'use strict';
+  const $ = function (id) { return document.getElementById(id); };
+
+  /* ==================== THÔNG SỐ HÌNH HỌC ỐNG NGHIỆM ==================== */
+  const MAX_TUBE_ML = 10.0;
+  const TUBE_R = 0.345;             // Bán kính mặt ngoài ống kính
+  const LIQ_R = 0.314;              // Bán kính lòng trong ống kính
+  const TUBE_BOT_Y = 0.72;          // Tâm của bán cầu đáy (cực nam ngoài ống = 0.375)
+  const TUBE_CYL_H = 2.40;          // Miệng ống ở Y_MOUTH = 3.12
+  const Y_MOUTH = TUBE_BOT_Y + TUBE_CYL_H;
+  const Y_INNER_MIN = TUBE_BOT_Y - LIQ_R; // Cực nam lòng trong ống = 0.406
+  const FULL_LIQ_SPAN = Y_MOUTH - Y_INNER_MIN; // 2.714 cho đúng 10.0 mL
+
+  function mlToSpanH(ml) {
+    if (ml <= 0.0005) return 0;
+    if (ml < 1.15) return Math.pow(ml / 1.15, 0.62) * 0.44;
+    return 0.44 + ((ml - 1.15) / (MAX_TUBE_ML - 1.15)) * (FULL_LIQ_SPAN - 0.44);
+  }
+
+  // Bán kính lòng ống tại chiều cao h tính từ cực nam đáy trong (0 -> FULL_LIQ_SPAN)
+  function innerRadiusAtH(h) {
+    if (h <= 0) return 0.001;
+    if (h < LIQ_R) return Math.sqrt(Math.max(0.0004, 2 * LIQ_R * h - h * h));
+    return LIQ_R;
+  }
+
+  /* ==================== ÂM THANH VẬT LÝ REAL-TIME ==================== */
+  let soundOn = true, audioCtx = null, pourGain = null, fizzGain = null;
+  function getAC() {
+    if (!soundOn) return null;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audioCtx) {
+      audioCtx = new AC();
+      const len = audioCtx.sampleRate * 2.0;
+      const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * 0.32;
+
+      // Kênh 1: Tiếng dòng chất lỏng bơm liên tục
+      const sPour = audioCtx.createBufferSource();
+      sPour.buffer = buf; sPour.loop = true;
+      const fPour = audioCtx.createBiquadFilter();
+      fPour.type = 'bandpass'; fPour.frequency.value = 1050; fPour.Q.value = 1.4;
+      pourGain = audioCtx.createGain(); pourGain.gain.value = 0.0;
+      sPour.connect(fPour); fPour.connect(pourGain); pourGain.connect(audioCtx.destination);
+      sPour.start();
+
+      // Kênh 2: Tiếng sủi bọt khí liên tục theo tốc độ phản ứng dm/dt (tự lịm dần khi phản ứng hết!)
+      const sFizz = audioCtx.createBufferSource();
+      sFizz.buffer = buf; sFizz.loop = true;
+      const fFizz = audioCtx.createBiquadFilter();
+      fFizz.type = 'highpass'; fFizz.frequency.value = 2600;
+      fizzGain = audioCtx.createGain(); fizzGain.gain.value = 0.0;
+      sFizz.connect(fFizz); fFizz.connect(fizzGain); fizzGain.connect(audioCtx.destination);
+      sFizz.start();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function sfxDrop(pitch, vol) {
+    const ac = getAC(); if (!ac) return;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'sine';
+    const f = pitch || (520 + Math.random() * 140);
+    o.frequency.setValueAtTime(f, ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(f * 2.05, ac.currentTime + 0.068);
+    g.gain.setValueAtTime(vol || 0.052, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0008, ac.currentTime + 0.078);
+    o.connect(g); g.connect(ac.destination);
+    o.start(); o.stop(ac.currentTime + 0.082);
+  }
+
+  /* ==================== RENDERER, SCENE & STUDIO ENVMAP ==================== */
+  const stage = $('stage'), cv = $('cv');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' });
+  } catch (e) {
+    $('fb').style.display = 'flex';
+    return;
+  }
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.97;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const BG_HEX = 0x07060e;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(BG_HEX);
+
+  (function buildEnvMap() {
+    if (!THREE.PMREMGenerator) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const es = new THREE.Scene();
+    es.background = new THREE.Color(0x0c0a18);
+    const top = new THREE.Mesh(new THREE.PlaneGeometry(16, 6), new THREE.MeshBasicMaterial({ color: 0xdbe2ec, side: THREE.DoubleSide }));
+    top.position.set(0, 8.5, 3); top.lookAt(0, 0, 0); es.add(top);
+    const sL = new THREE.Mesh(new THREE.PlaneGeometry(6, 12), new THREE.MeshBasicMaterial({ color: 0xcbd5e1, side: THREE.DoubleSide }));
+    sL.position.set(-9, 3, 2); sL.lookAt(0, 0, 0); es.add(sL);
+    const sR = new THREE.Mesh(new THREE.PlaneGeometry(6, 12), new THREE.MeshBasicMaterial({ color: 0xe6dcc2, side: THREE.DoubleSide }));
+    sR.position.set(9, 3, 2); sR.lookAt(0, 0, 0); es.add(sR);
+    scene.environment = pmrem.fromScene(es, 0.05).texture;
+    pmrem.dispose();
+  })();
+
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+
+  scene.add(new THREE.HemisphereLight(0xf8fafc, 0x131022, 0.85));
+  const keyLight = new THREE.DirectionalLight(0xfffdf9, 1.05);
+  keyLight.position.set(4.5, 8.8, 6.5);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(1024, 1024);
+  const sB = 5.2;
+  keyLight.shadow.camera.left = -sB; keyLight.shadow.camera.right = sB;
+  keyLight.shadow.camera.top = sB; keyLight.shadow.camera.bottom = -sB;
+  scene.add(keyLight);
+
+  const backRim = new THREE.PointLight(0xe2e8f0, 0.95, 16);
+  backRim.position.set(0, 2.5, -3.2);
+  scene.add(backRim);
+
+  const uvSpot = new THREE.SpotLight(0x8b5cf6, 0, 15, 0.65, 0.5, 1.0);
+  uvSpot.position.set(0, 5.2, 2.6);
+  uvSpot.target.position.set(0, 1.3, 0);
+  scene.add(uvSpot);
+  scene.add(uvSpot.target);
+
+  /* ==================== TEXTURE PROCEDURAL ==================== */
+  function makeTex(w, h, fn) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    fn(c.getContext('2d'), w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  // SÀN STUDIO VÔ CỰC (Radial Vignette Bench — hòa tan 100% vào phông nền tối #07060e, KHÔNG CÒN ĐƯỜNG CHÂN TRỜI CẮT NGANG!)
+  const studioFloorMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uBgColor: { value: new THREE.Color(BG_HEX) }
+    },
+    vertexShader: `
+      varying vec3 vWorld;
+      void main() {
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorld = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uBgColor;
+      varying vec3 vWorld;
+      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      void main() {
+        // Khoảng cách elip quanh chân giá ống nghiệm: phía sau z < -0.9 tối chìm rất nhanh vào nền studio!
+        vec2 dVec = vec2(vWorld.x * 0.24, (vWorld.z - 0.15) * (vWorld.z < 0.0 ? 0.78 : 0.36));
+        float dist = length(dVec);
+        float fade = 1.0 - smoothstep(0.32, 1.08, dist);
+
+        // Vân mặt bàn đá granite đen mờ tinh tế dưới chân giá gỗ
+        float grain = (hash(floor(vWorld.xz * 85.0)) - 0.5) * 0.022;
+        vec2 grid = abs(fract(vWorld.xz * 0.8) - 0.5);
+        float line = (1.0 - smoothstep(0.0, 0.015, min(grid.x, grid.y))) * 0.025;
+        vec3 stoneCol = vec3(0.075, 0.068, 0.105) + grain + line;
+
+        // Bóng đổ tiếp xúc mềm dưới chân giá đỡ gỗ
+        float rackAO = 1.0 - (1.0 - smoothstep(0.0, 0.65, abs(vWorld.z))) * (1.0 - smoothstep(2.2, 3.2, abs(vWorld.x))) * 0.45;
+        stoneCol *= rackAO;
+
+        vec3 finalCol = mix(uBgColor, stoneCol, fade);
+        gl_FragColor = vec4(finalCol, 1.0);
+      }
+    `
+  });
+  const studioFloor = new THREE.Mesh(new THREE.PlaneGeometry(28, 22), studioFloorMat);
+  studioFloor.rotation.x = -Math.PI / 2;
+  studioFloor.position.y = 0.0;
+  scene.add(studioFloor);
+
+  // Quầng sáng ngược dịu sâu phía sau lưng ống nghiệm
+  const backdropGlowTex = makeTex(256, 256, function (g, w, h) {
+    const gr = g.createRadialGradient(w / 2, h / 2, 6, w / 2, h / 2, w / 2);
+    gr.addColorStop(0, 'rgba(148,163,184,0.16)');
+    gr.addColorStop(0.52, 'rgba(51,65,85,0.05)');
+    gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  });
+  const backdropGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: backdropGlowTex, transparent: true, depthWrite: false }));
+  backdropGlow.position.set(0, 1.72, -2.5);
+  backdropGlow.scale.set(9.2, 4.8, 1);
+  scene.add(backdropGlow);
+
+  const oakTex = makeTex(512, 256, function (g, w, h) {
+    const gr = g.createLinearGradient(0, 0, w, 0);
+    gr.addColorStop(0, '#4a2c18'); gr.addColorStop(0.5, '#5e3920'); gr.addColorStop(1, '#422614');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 95; i++) {
+      g.strokeStyle = 'rgba(20,8,2,' + (0.1 + Math.random() * 0.16) + ')';
+      g.lineWidth = 1 + Math.random() * 2;
+      const y = Math.random() * h;
+      g.beginPath(); g.moveTo(0, y);
+      g.bezierCurveTo(w * 0.35, y + 5, w * 0.65, y - 5, w, y);
+      g.stroke();
+    }
+  });
+
+  // Texture đám mây khói nhiễu hữu cơ (Organic FBM Smoke Puff) cho hệ hạt khói đối lưu mềm!
+  const smokeWispTex = makeTex(128, 128, function (g, w, h) {
+    g.clearRect(0, 0, w, h);
+    for (let k = 0; k < 11; k++) {
+      const ox = w * 0.5 + (Math.random() - 0.5) * 26;
+      const oy = h * 0.5 + (Math.random() - 0.5) * 26;
+      const rad = 26 + Math.random() * 26;
+      const gr = g.createRadialGradient(ox, oy, 2, ox, oy, rad);
+      gr.addColorStop(0, 'rgba(255,255,255,0.22)');
+      gr.addColorStop(0.5, 'rgba(255,255,255,0.09)');
+      gr.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = gr;
+      g.beginPath(); g.arc(ox, oy, rad, 0, Math.PI * 2); g.fill();
+    }
+  });
+
+  const bubbleTex = makeTex(64, 64, function (g) {
+    const gr = g.createRadialGradient(22, 20, 1.5, 32, 32, 28);
+    gr.addColorStop(0, 'rgba(255,255,255,0.96)');
+    gr.addColorStop(0.5, 'rgba(226,232,240,0.22)');
+    gr.addColorStop(0.86, 'rgba(255,255,255,0.80)');
+    gr.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = gr;
+    g.beginPath(); g.arc(32, 32, 28, 0, Math.PI * 2); g.fill();
+  });
+
+  const scaleTex = makeTex(256, 512, function (g, w, h) {
+    g.clearRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(255,255,255,0.46)';
+    g.fillStyle = 'rgba(255,255,255,0.68)';
+    g.lineWidth = 2;
+    g.font = '700 17px "Be Vietnam Pro",sans-serif';
+    for (let ml = 2; ml <= 10; ml += 2) {
+      const y = h - (ml / 10.3) * (h - 28) - 10;
+      g.beginPath(); g.moveTo(116, y); g.lineTo(138, y); g.stroke();
+      g.fillText(ml + 'mL', 143, y + 6);
+    }
+  });
+
+  /* ==================== HÌNH HỌC & SHADER KHỐI CHẤT RẮN / CẶN LẮNG ĐÁY TỪ CỰC ĐÁY ĐI LÊN ==================== */
+  // Không bao giờ scale quanh tâm cầu nữa -> 0% bay lơ lửng, 0% nở phình khi pha thêm nước, có nắp 3D nhìn từ trên xuống!
+  function buildBottomUpSolidGeo() {
+    // s param chạy từ 0 (cực nam trung tâm) -> 0.65 (thành bên) -> 1.0 (tâm mặt nắp trên!)
+    const SEG_R = 36, SEG_SIDE = 22, SEG_CAP = 12;
+    const positions = [];
+    const meta = []; // x = isCap (0 hoặc 1), y = param (tSide 0..1 hoặc rFrac 0..1)
+    const indices = [];
+
+    const totalRings = SEG_SIDE + 1 + SEG_CAP;
+    for (let r = 0; r < totalRings; r++) {
+      let isCap = 0, param = 0;
+      if (r <= SEG_SIDE) {
+        isCap = 0;
+        param = r / SEG_SIDE; // 0 tại cực đáy cầu -> 1 tại mép mặt trên
+      } else {
+        isCap = 1;
+        param = 1.0 - (r - SEG_SIDE) / SEG_CAP; // 1 tại mép ngoài nắp -> 0 tại tâm nắp trên
+      }
+      for (let c = 0; c <= SEG_R; c++) {
+        const ang = (c / SEG_R) * Math.PI * 2;
+        positions.push(Math.cos(ang), 0, Math.sin(ang));
+        meta.push(isCap, param);
+      }
+    }
+    const stride = SEG_R + 1;
+    for (let r = 0; r < totalRings - 1; r++) {
+      for (let c = 0; c < SEG_R; c++) {
+        const a = r * stride + c;
+        const b = a + stride;
+        indices.push(a, a + 1, b);
+        indices.push(a + 1, b + 1, b);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geo.setAttribute('aMeta', new THREE.Float32BufferAttribute(meta, 2));
+    geo.setIndex(indices);
+    return geo;
+  }
+  const BOTTOM_UP_GEO = buildBottomUpSolidGeo();
+
+  function makeBottomMassMat(isCrystallineSalt) {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uFillH: { value: 0.0 },           // Chiều cao thực tính từ cực nam đáy cầu (0 -> 0.9)
+        uRadius: { value: LIQ_R * 0.992 },
+        uSlosh: { value: 0.0 },
+        uColLight: { value: new THREE.Color(0xf8fafc) },
+        uColShadow: { value: new THREE.Color(0xcbd5e1) },
+        uCrater: { value: isCrystallineSalt ? 1.0 : 0.0 }, // Lõm nhẹ ở tâm khi acid ăn mòn hoặc tia NH3 xoáy vào!
+        uGrainScale: { value: isCrystallineSalt ? 38.0 : 14.0 },
+        uOpacity: { value: 1.0 }
+      },
+      vertexShader: `
+        attribute vec2 aMeta;
+        uniform float uFillH;
+        uniform float uRadius;
+        uniform float uSlosh;
+        uniform float uCrater;
+        varying vec3 vNormalL;
+        varying vec3 vLocalP;
+        varying float vIsCap;
+
+        float tubeR(float h, float R) {
+          if (h <= 0.0) return 0.0005;
+          if (h < R) return sqrt(max(0.0002, 2.0 * R * h - h * h));
+          return R;
+        }
+
+        void main() {
+          float isCap = aMeta.x;
+          float param = aMeta.y;
+          float H = max(0.001, uFillH);
+          vec2 dirXZ = position.xz;
+          vec3 p;
+          vec3 nL;
+
+          if (isCap < 0.5) {
+            // Thành bên ôm khít 100% biên dạng cầu-trụ của đáy ống nghiệm từ 0 lên tới H!
+            float y = param * H;
+            float r = tubeR(y, uRadius);
+            y += dirXZ.x * r * uSlosh * param * 0.55;
+            p = vec3(dirXZ.x * r, y, dirXZ.y * r);
+            if (y < uRadius) {
+              nL = normalize(vec3(p.x, y - uRadius, p.z));
+            } else {
+              nL = normalize(vec3(dirXZ.x, 0.0, dirXZ.y));
+            }
+          } else {
+            // Nắp mặt trên 3D nằm bên trong ống nghiệm (nhìn nghiêng thấy rõ bề mặt khối rắn/cặn lắng!)
+            float rTop = tubeR(H, uRadius) * param;
+            float x = dirXZ.x * rTop;
+            float z = dirXZ.y * rTop;
+            // Bột muối chưa phản ứng hơi vun nhẹ, khi đang bị ăn mòn/hòa tan thì lõm xoáy ở tâm; kết tủa gợn bông mềm!
+            float wave = sin(x * 26.0) * cos(z * 28.0) * 0.012;
+            float moundOrPit = mix(0.024, -0.038, uCrater) * (1.0 - param * param);
+            float y = max(0.002, H + moundOrPit + wave + x * uSlosh * 0.55);
+            p = vec3(x, y, z);
+            nL = normalize(vec3(-x * 0.35, 1.0, -z * 0.35));
+          }
+
+          vIsCap = isCap;
+          vLocalP = p;
+          vNormalL = normalize(mat3(modelMatrix) * nL);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColLight;
+        uniform vec3 uColShadow;
+        uniform float uGrainScale;
+        uniform float uOpacity;
+        varying vec3 vNormalL;
+        varying vec3 vLocalP;
+        varying float vIsCap;
+
+        float hash(vec3 p){
+          p = fract(p * 0.3183099 + 0.1);
+          p *= 17.0;
+          return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+        }
+        float noise3(vec3 x){
+          vec3 i = floor(x), f = fract(x);
+          f = f * f * (3.0 - 2.0 * f);
+          return mix(
+            mix(mix(hash(i), hash(i + vec3(1,0,0)), f.x),
+                mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
+            mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
+                mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y), f.z);
+        }
+
+        void main() {
+          if (uOpacity < 0.01) discard;
+          vec3 lightDir = normalize(vec3(0.45, 0.78, 0.62));
+          float diff = clamp(dot(normalize(vNormalL), lightDir) * 0.52 + 0.52, 0.0, 1.0);
+          float g1 = noise3(vLocalP * uGrainScale);
+          float g2 = noise3(vLocalP * (uGrainScale * 2.3) + 4.1);
+          float microTex = 0.84 + 0.26 * (g1 * 0.65 + g2 * 0.35);
+          // Mặt trên sáng rõ nhẹ để nhìn xuyên qua nước thấy rõ ranh giới mặt cặn lắng 3D!
+          float capBoost = vIsCap * 0.08;
+          vec3 col = mix(uColShadow, uColLight, clamp(diff * microTex + capBoost, 0.0, 1.05));
+          gl_FragColor = vec4(col, uOpacity);
+        }
+      `,
+      transparent: true,
+      depthWrite: true
+    });
+  }
+
+  /* ==================== SHADER DUNG DỊCH BEER-LAMBERT + NẤM MÂY XOÁY & BIÊN LẮNG ==================== */
+  function buildSeamlessLiquidGeo(radius) {
+    const pts = [];
+    for (let i = 0; i <= 18; i++) {
+      const a = -Math.PI / 2 + (i / 18) * (Math.PI / 2);
+      pts.push(new THREE.Vector2(Math.cos(a) * radius, radius + Math.sin(a) * radius));
+    }
+    for (let j = 1; j <= 28; j++) {
+      pts.push(new THREE.Vector2(radius, radius + (j / 28) * 1.0));
+    }
+    return new THREE.LatheGeometry(pts, 36);
+  }
+  const SEAMLESS_LIQ_GEO = buildSeamlessLiquidGeo(LIQ_R);
+
+  const opticalLiquidVert = `
+    uniform float uSpanH;
+    uniform float uRadius;
+    uniform float uSlosh;
+    varying vec3 vLocalP;
+    varying float vHNorm;
+    varying vec3 vNormalW;
+    varying vec3 vViewDir;
+
+    void main() {
+      vec3 p = position;
+      float totalSpan = max(0.02, uSpanH);
+      float yOut;
+      if (totalSpan <= uRadius) {
+        float k = totalSpan / uRadius;
+        yOut = (p.y <= uRadius) ? (p.y * k) : totalSpan;
+        p.xz *= sqrt(max(0.02, k * (2.0 - k)));
+      } else {
+        float cylSpan = totalSpan - uRadius;
+        yOut = (p.y <= uRadius) ? p.y : (uRadius + (p.y - uRadius) * cylSpan);
+      }
+      vHNorm = clamp(yOut / totalSpan, 0.0, 1.0);
+      yOut += p.x * uSlosh * smoothstep(0.16, 1.0, vHNorm);
+      p.y = yOut;
+
+      vLocalP = p;
+      vec4 wp = modelMatrix * vec4(p, 1.0);
+      vNormalW = normalize(mat3(modelMatrix) * normal);
+      vViewDir = normalize(cameraPosition - wp.xyz);
+      gl_Position = projectionMatrix * viewMatrix * wp;
+    }
+  `;
+
+  // Chú ý: Mây kết tủa trôi thực sự từ trên xuống (y + uTime * uFallSpeed) và có mặt biên lắng uCeiling hạ thấp dần!
+  const opticalLiquidFrag = `
+    uniform float uTime;
+    uniform vec3 uTintTop;
+    uniform vec3 uTintBot;
+    uniform float uOptDensTop;
+    uniform float uOptDensBot;
+    // Búi mây cuộn hình nấm ngược lúc giọt vừa rơi + Mặt biên lắng hạ thấp dần!
+    uniform float uMushroomProg;     // 0 -> 1 (búi mây cuộn từ mặt nước xuống đáy)
+    uniform float uMushroomAmp;      // Cường độ búi mây lúc mới nhỏ
+    uniform vec3 uJetColor;
+    uniform float uJetIsOpaque;
+    uniform vec3 uPrecipLight;
+    uniform vec3 uPrecipShadow;
+    uniform float uSuspendedAmt;     // Lượng bông mây còn đang lơ lửng chưa lắng hết
+    uniform float uSettlingCeiling;  // Mặt biên trên của vùng mây đang chìm (1.0 hạ dần xuống -> nước phía trên trong vắt ra!)
+    uniform float uMorphScale;
+
+    varying vec3 vLocalP;
+    varying float vHNorm;
+    varying vec3 vNormalW;
+    varying vec3 vViewDir;
+
+    float hash(vec3 p){
+      p = fract(p * 0.3183099 + 0.1);
+      p *= 17.0;
+      return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+    }
+    float noise3(vec3 x){
+      vec3 i = floor(x), f = fract(x);
+      f = f * f * (3.0 - 2.0 * f);
+      return mix(
+        mix(mix(hash(i), hash(i + vec3(1,0,0)), f.x),
+            mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
+        mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
+            mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y), f.z);
+    }
+    float fbm(vec3 p){
+      float v = 0.0, a = 0.52;
+      for(int i = 0; i < 4; i++){ v += a * noise3(p); p = p * 2.07 + vec3(1.7, -1.2, 0.9); a *= 0.5; }
+      return v;
+    }
+
+    void main() {
+      vec3 N = normalize(vNormalW);
+      vec3 V = normalize(vViewDir);
+      float ndv = abs(dot(N, V));
+      float pathLen = mix(0.32, 1.55, pow(ndv, 0.75));
+
+      float swirl = fbm(vec3(vLocalP.xz * 7.2, vLocalP.y * 4.5 + uTime * 0.35));
+      float gradMix = smoothstep(0.18, 0.78, vHNorm);
+      float noisyGrad = clamp(gradMix + (swirl - 0.5) * 0.28 * (1.0 - abs(gradMix * 2.0 - 1.0)), 0.0, 1.0);
+
+      vec3 tint = mix(uTintBot, uTintTop, noisyGrad);
+      float dens = mix(uOptDensBot, uOptDensTop, noisyGrad);
+
+      // Búi mây hình nấm ngược (Vortex Mushroom Plume): phình đầu nấm ở mũi rơi xuống!
+      float headH = 1.0 - uMushroomProg * 0.88;
+      float distFromHead = vHNorm - headH;
+      float capBell = exp(-pow(distFromHead * 5.2, 2.0)) * 0.14; // Đầu nấm phình rộng ra hai bên!
+      float rAllowed = 0.07 + capBell + (1.0 - vHNorm) * 0.09;
+      float rActual = length(vLocalP.xz) + (swirl - 0.5) * 0.15;
+      float mushCone = 1.0 - smoothstep(rAllowed * 0.45, rAllowed + 0.08, rActual);
+      float mushVert = smoothstep(headH - 0.10, headH + 0.06, vHNorm);
+      float mushMask = uMushroomAmp * mushCone * mushVert * smoothstep(0.22, 0.74, swirl);
+
+      if (uJetIsOpaque < 0.5 && mushMask > 0.01) {
+        tint = mix(tint, uJetColor, mushMask * 0.92);
+        dens += mushMask * 1.75;
+      }
+
+      vec3 absorb = pow(max(vec3(0.02), tint), vec3(0.55 + dens * pathLen * 0.95));
+      float fresnel = pow(1.0 - ndv, 3.2);
+      float clearRimAlpha = 0.042 + fresnel * 0.35;
+      float dyeAlpha = 1.0 - exp(-dens * pathLen * 1.48);
+      float liqAlpha = clamp(max(clearRimAlpha, dyeAlpha * 0.92), 0.0, 0.95);
+      vec3 liqColor = mix(absorb, vec3(0.88, 0.93, 0.98), fresnel * 0.38);
+
+      // Mây bông huyền phù TRÔI DỊCH CHUYỂN TỪ TRÊN XUỐNG (+ uTime * 0.32) và bị giới hạn bởi mặt biên lắng uSettlingCeiling!
+      vec3 advectCoord = vec3(vLocalP.x * uMorphScale, (vLocalP.y + uTime * 0.16) * (uMorphScale * 0.85), vLocalP.z * uMorphScale);
+      float fCloud = fbm(advectCoord);
+      float fFine = noise3(advectCoord * 2.3 + vec3(0.0, uTime * 0.28, 0.0));
+
+      float ceilingFade = 1.0 - smoothstep(uSettlingCeiling - 0.12, uSettlingCeiling + 0.08, vHNorm + (fCloud - 0.5) * 0.16);
+      float flocWisps = smoothstep(0.34, 0.76, fCloud * 0.74 + fFine * 0.36) * uSuspendedAmt * ceilingFade;
+      float opaqueMush = (uJetIsOpaque > 0.5) ? (mushMask * 1.25) : 0.0;
+
+      float cloudMask = clamp(max(opaqueMush, flocWisps), 0.0, 0.94);
+      vec3 lightDir = normalize(vec3(0.45, 0.72, 0.65));
+      float wrapDiff = clamp(dot(N, lightDir) * 0.5 + 0.55, 0.0, 1.0);
+      vec3 cloudCol = mix(uPrecipShadow, uPrecipLight, clamp(wrapDiff * (0.84 + 0.25 * fFine), 0.0, 1.05));
+
+      vec3 finalCol = mix(liqColor, cloudCol, cloudMask);
+      float finalAlpha = max(liqAlpha, cloudMask * 0.92);
+      gl_FragColor = vec4(finalCol, finalAlpha);
+    }
+  `;
+
+  /* ==================== SHADER MẶT KHUM LÕM / PHỒNG VÒM SỨC CĂNG BỀ MẶT & SÓNG NẢY 3D ==================== */
+  // Hỗ trợ cả: khum lõm bình thường, phồng vòm lồi căng trước khi tràn (uDome > 0), và lõm nảy sóng 3D khi giọt/tia đập vào (uImpact)!
+  function makeMeniscusMat() {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uTint: { value: new THREE.Color(0xffffff) },
+        uDens: { value: 0.0 },
+        uCloudAmt: { value: 0.0 },
+        uCloudCol: { value: new THREE.Color(0xffffff) },
+        uSlosh: { value: 0.0 },
+        uDome: { value: 0.0 },    // > 0 khi đầy sát 10 mL: phồng vòm sức căng bề mặt lên trên vành môi ống!
+        uImpact: { value: 0.0 }   // Độ nảy sóng tròn 3D ngay trên lưới mặt nước khi giọt rơi trúng!
+      },
+      vertexShader: `
+        uniform float uTime;
+        uniform float uSlosh;
+        uniform float uDome;
+        uniform float uImpact;
+        varying vec2 vPosXZ;
+        varying float vWaveH;
+        void main() {
+          vec3 p = position;
+          float rNorm = clamp(length(p.xy) / 0.314, 0.0, 1.0);
+          // Bình thường khum lõm (-0.022), khi đầy sát miệng 10 mL phồng vòm căng lên (+0.048)!
+          float concave = -0.020 * (1.0 - rNorm * rNorm) + 0.013 * pow(rNorm, 5.0);
+          float convexDome = 0.048 * (1.0 - rNorm * rNorm);
+          float baseCurve = mix(concave, convexDome, uDome);
+
+          // Sóng gợn tròn 3D thật sự chạy từ tâm ra mép khi giọt hoặc tia nước đập vào!
+          float ripple3D = sin(rNorm * 20.0 - uTime * 22.0) * exp(-rNorm * 2.2) * 0.026 * uImpact;
+          float y = baseCurve + ripple3D + p.x * uSlosh;
+
+          vWaveH = ripple3D;
+          vPosXZ = p.xy / 0.314;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p.x, y, -p.y, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uTint;
+        uniform float uDens;
+        uniform float uCloudAmt;
+        uniform vec3 uCloudCol;
+        uniform float uImpact;
+        varying vec2 vPosXZ;
+        varying float vWaveH;
+        void main() {
+          float r = length(vPosXZ);
+          if (r > 1.0) discard;
+          float wetRim = smoothstep(0.82, 0.995, r);
+          float waveHighlight = clamp(vWaveH * 28.0, 0.0, 0.55) * uImpact;
+          vec3 base = mix(vec3(0.92, 0.96, 1.0), pow(max(vec3(0.03), uTint), vec3(0.65)), clamp(uDens * 0.85, 0.0, 1.0));
+          base = mix(base, uCloudCol * 0.95, uCloudAmt * 0.6);
+          vec3 col = mix(base, vec3(1.0), clamp(wetRim * 0.72 + waveHighlight, 0.0, 0.92));
+          float a = 0.11 + clamp(uDens * 0.55, 0.0, 0.68) + uCloudAmt * 0.42 + wetRim * 0.65 + waveHighlight * 0.5;
+          gl_FragColor = vec4(col, clamp(a, 0.0, 0.95));
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+  }
+
+  /* ==================== SHADER VŨNG HÓA CHẤT LOANG BẤT ĐỐI XỨNG & TRONG SUỐT THẬT TRÊN BÀN ==================== */
+  function makeOrganicPuddleMat() {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uTint: { value: new THREE.Color(1, 1, 1) },
+        uColorStrength: { value: 0.0 }, // 0 = Nước/acid không màu trong suốt bóng loáng! >0 = Có màu/đục kết tủa
+        uRipple: { value: 0.0 },
+        uVisibleAmt: { value: 0.0 }
+      },
+      vertexShader: `
+        varying vec2 vUvCentered;
+        void main() {
+          vUvCentered = (uv - 0.5) * 2.0;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform vec3 uTint;
+        uniform float uColorStrength;
+        uniform float uRipple;
+        uniform float uVisibleAmt;
+        varying vec2 vUvCentered;
+        void main() {
+          if (uVisibleAmt < 0.01) discard;
+          float ang = atan(vUvCentered.y, vUvCentered.x);
+          float r = length(vUvCentered);
+          // Biên vũng nước méo tự nhiên bất đối xứng (không tròn cứng như đề-can!)
+          float edgeWarp = 0.78 + 0.11 * sin(ang * 3.0 + 0.8) + 0.07 * cos(ang * 5.0 - 1.4) + 0.04 * sin(ang * 7.0);
+          if (r > edgeWarp) discard;
+
+          float normR = r / edgeWarp;
+          // Vành sức căng bề mặt ướt lấp lánh ở sát mép vũng nước!
+          float meniscusEdge = smoothstep(0.80, 0.99, normR);
+          float specSpot = smoothstep(0.62, 0.92, normR) * max(0.0, sin(ang - 0.9));
+          float ringWave = sin(normR * 22.0 - uTime * 18.0) * exp(-normR * 2.0) * uRipple * 0.35;
+
+          // Nếu tràn dung dịch không màu (uColorStrength ~ 0): lòng vũng trong suốt thấy mặt bàn đen bên dưới, chỉ lấp lánh viền ướt!
+          vec3 clearWet = vec3(0.75, 0.82, 0.92) * (meniscusEdge * 0.65 + specSpot * 0.45 + abs(ringWave));
+          vec3 coloredLiq = mix(uTint * 0.85, vec3(0.96, 0.98, 1.0), meniscusEdge * 0.45 + specSpot * 0.35);
+
+          vec3 col = mix(clearWet, coloredLiq, uColorStrength);
+          float clearAlpha = 0.08 + meniscusEdge * 0.48 + specSpot * 0.28 + abs(ringWave) * 0.4;
+          float coloredAlpha = 0.55 + uColorStrength * 0.32 + meniscusEdge * 0.25;
+          float alpha = mix(clearAlpha, coloredAlpha, uColorStrength) * clamp(uVisibleAmt * 2.5, 0.0, 1.0);
+
+          gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.90));
+        }
+      `,
+      transparent: true,
+      depthWrite: false
+    });
+  }
+
+  /* ==================== SHADER TẦNG HEXANE & VỎ THỦY TINH (TÁCH RIÊNG ĐÁY KÍNH SẠCH 100%) ==================== */
+  function makeOrganicLayerMat() {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uTint: { value: new THREE.Color(1, 1, 1) },
+        uDens: { value: 0.0 },
+        uSlosh: { value: 0.0 },
+        uHeight: { value: 0.3 }
+      },
+      vertexShader: `
+        uniform float uSlosh;
+        uniform float uHeight;
+        varying vec3 vN;
+        varying vec3 vV;
+        void main() {
+          vec3 p = position;
+          p.y = p.y * uHeight + p.x * uSlosh;
+          vec4 wp = modelMatrix * vec4(p, 1.0);
+          vN = normalize(mat3(modelMatrix) * normal);
+          vV = normalize(cameraPosition - wp.xyz);
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uTint;
+        uniform float uDens;
+        varying vec3 vN;
+        varying vec3 vV;
+        void main() {
+          float ndv = abs(dot(normalize(vN), normalize(vV)));
+          float path = mix(0.35, 1.55, pow(ndv, 0.75));
+          float fres = pow(1.0 - ndv, 3.0);
+          vec3 col = pow(max(vec3(0.03), uTint), vec3(0.55 + uDens * path * 0.9));
+          float alpha = max(0.045 + fres * 0.36, (1.0 - exp(-uDens * path * 1.55)) * 0.90);
+          col = mix(col, vec3(0.95, 0.98, 1.0), fres * 0.35);
+          gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.94));
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+  }
+
+  function makeGlassShaderMat(allowFrost) {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uRimColor: { value: new THREE.Color(0xe2e8f0) },
+        uSteamAmt: { value: 0.0 },
+        uIodineFrost: { value: 0.0 },
+        uAllowFrost: { value: allowFrost ? 1.0 : 0.0 }
+      },
+      vertexShader: `
+        varying vec3 vN;
+        varying vec3 vV;
+        varying vec2 vUv;
+        varying vec3 vLocal;
+        void main() {
+          vUv = uv; vLocal = position;
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          vN = normalize(mat3(modelMatrix) * normal);
+          vV = normalize(cameraPosition - wp.xyz);
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uRimColor;
+        uniform float uSteamAmt;
+        uniform float uIodineFrost;
+        uniform float uAllowFrost;
+        varying vec3 vN;
+        varying vec3 vV;
+        varying vec2 vUv;
+        varying vec3 vLocal;
+        float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+        float noise(vec2 p){
+          vec2 i = floor(p), f = fract(p);
+          vec2 u = f * f * (3.0 - 2.0 * f);
+          return mix(mix(hash(i), hash(i + vec2(1.0,0.0)), u.x),
+                     mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x), u.y);
+        }
+        void main() {
+          float ndv = abs(dot(normalize(vN), normalize(vV)));
+          // Viền kính đôi (Double-wall glass rim) sắc sảo như ống nghiệm Borosilicate dày 1.5 mm!
+          float outerRim = pow(1.0 - ndv, 3.4);
+          float innerWallLine = exp(-pow((ndv - 0.42) * 14.0, 2.0)) * 0.16;
+          float h = vUv.y;
+
+          float steamBand = uAllowFrost * smoothstep(0.25, 0.52, h) * (1.0 - smoothstep(0.78, 0.96, h));
+          float steamAlpha = uSteamAmt * steamBand * 0.18;
+
+          // Chỉ ngưng kết vảy tinh thể I2 tím ánh kim trên vùng cổ ống mát (h = 0.40..0.82), KHÔNG BAO GIỜ DÍNH ĐÁY CẦU!
+          float frostBand = uAllowFrost * smoothstep(0.38, 0.54, h) * (1.0 - smoothstep(0.72, 0.88, h));
+          float nFrost = noise(vec2(atan(vLocal.z, vLocal.x) * 16.0, h * 38.0));
+          float sparkle = step(0.85, hash(floor(vec2(atan(vLocal.z, vLocal.x) * 42.0, h * 90.0))));
+          float frostMask = uIodineFrost * frostBand * smoothstep(0.42, 0.78, nFrost);
+
+          vec3 glassCol = uRimColor * (0.92 + outerRim * 0.55);
+          vec3 frostCol = mix(vec3(0.20, 0.08, 0.30), vec3(0.72, 0.56, 0.88), sparkle * 0.85 + outerRim * 0.35);
+
+          vec3 col = mix(mix(glassCol, vec3(0.95, 0.97, 1.0), steamAlpha * 1.4), frostCol, frostMask * 0.90);
+          float alpha = 0.016 + outerRim * 0.60 + innerWallLine + steamAlpha + frostMask * 0.78;
+          gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.92));
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.FrontSide
+    });
+  }
+
+  /* ==================== GIÁ ĐỠ GỖ SỒI ĐỤC LỖ THẬT ==================== */
+  const TUBE_X_4 = [-1.98, -0.66, 0.66, 1.98];
+  const TUBE_X_3 = [-1.56, 0.0, 1.56];
+  let rackGroup = new THREE.Group();
+  scene.add(rackGroup);
+
+  const woodMat = new THREE.MeshStandardMaterial({ map: oakTex, roughness: 0.44, metalness: 0.05 });
+  const brassMat = new THREE.MeshStandardMaterial({ color: 0xc99a32, roughness: 0.24, metalness: 0.86 });
+
+  function rebuildRack(xs) {
+    scene.remove(rackGroup);
+    rackGroup = new THREE.Group();
+    scene.add(rackGroup);
+    const halfW = (xs.length === 4 ? 2.96 : 2.52);
+
+    // Đế gỗ sồi bo vát cạnh mềm đồng bộ với tầng trên (không dùng khối hộp sắc cạnh)
+    const baseShape = new THREE.Shape();
+    const bZ = 0.58;
+    baseShape.moveTo(-halfW, -bZ); baseShape.lineTo(halfW, -bZ);
+    baseShape.lineTo(halfW, bZ); baseShape.lineTo(-halfW, bZ);
+    baseShape.closePath();
+    const baseGeo = new THREE.ExtrudeGeometry(baseShape, {
+      depth: 0.10, bevelEnabled: true, bevelThickness: 0.018, bevelSize: 0.018, bevelSegments: 2
+    });
+    baseGeo.rotateX(Math.PI / 2);
+    const basePlate = new THREE.Mesh(baseGeo, woodMat);
+    basePlate.position.y = 0.12;
+    basePlate.castShadow = true; basePlate.receiveShadow = true;
+    rackGroup.add(basePlate);
+
+    xs.forEach(function (x) {
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.030, 0.045, 0.26, 12), brassMat);
+      stem.position.set(x, 0.23, 0); rackGroup.add(stem);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.235, 0.017, 10, 24), brassMat);
+      ring.rotation.x = Math.PI / 2; ring.position.set(x, 0.395, 0); rackGroup.add(ring);
+    });
+
+    const deckShape = new THREE.Shape();
+    const dZ = 0.48;
+    deckShape.moveTo(-halfW, -dZ); deckShape.lineTo(halfW, -dZ);
+    deckShape.lineTo(halfW, dZ); deckShape.lineTo(-halfW, dZ);
+    deckShape.closePath();
+    xs.forEach(function (x) {
+      const hole = new THREE.Path();
+      hole.absarc(x, 0, 0.396, 0, Math.PI * 2, true);
+      deckShape.holes.push(hole);
+    });
+    const deckGeo = new THREE.ExtrudeGeometry(deckShape, {
+      depth: 0.11, bevelEnabled: true, bevelThickness: 0.016, bevelSize: 0.016, bevelSegments: 2, curveSegments: 28
+    });
+    deckGeo.rotateX(Math.PI / 2);
+    const topDeck = new THREE.Mesh(deckGeo, woodMat);
+    topDeck.position.y = 2.32;
+    topDeck.castShadow = true;
+    rackGroup.add(topDeck);
+
+    xs.forEach(function (x) {
+      const gr = new THREE.Mesh(new THREE.TorusGeometry(0.398, 0.017, 10, 32), brassMat);
+      gr.rotation.x = Math.PI / 2; gr.position.set(x, 2.33, 0); rackGroup.add(gr);
+    });
+
+    [-halfW + 0.22, halfW - 0.22].forEach(function (px) {
+      [-0.30, 0.30].forEach(function (pz) {
+        const post = new THREE.Mesh(new THREE.CylinderGeometry(0.050, 0.050, 2.22, 16), brassMat);
+        post.position.set(px, 1.19, pz); rackGroup.add(post);
+      });
+    });
+  }
+
+  /* ==================== HỆ GIỌT TRƯỜN DỌC THÀNH KÍNH NGOÀI (REAL OVERFLOW RIVULETS!) ==================== */
+  // Thay thế hoàn toàn dải trụ giả cũ: từng giọt nước dẹt bám dính và lăn dọc theo mặt cong ngoài ống kính rồi nhỏ xuống vũng nước!
+  const RIVULET_MAX = 36;
+  const rivuletPool = [];
+  const rivGeo = new THREE.SphereGeometry(0.032, 10, 10);
+  rivGeo.scale(0.65, 1.65, 0.55);
+  for (let i = 0; i < RIVULET_MAX; i++) {
+    const rm = new THREE.Mesh(rivGeo, new THREE.MeshStandardMaterial({
+      color: 0xffffff, roughness: 0.04, metalness: 0.15, transparent: true, opacity: 0.65
+    }));
+    rm.visible = false;
+    rm.renderOrder = 10;
+    scene.add(rm);
+    rivuletPool.push({ mesh: rm, active: false, tubeIdx: 0, ang: 0, y: 0, vy: 0, freeFall: false, vx: 0, vz: 0 });
+  }
+  let rivCursor = 0;
+
+  function spawnOverflowRivulet(t, colHex, isColored) {
+    const r = rivuletPool[rivCursor % RIVULET_MAX];
+    rivCursor++;
+    r.active = true;
+    r.tubeIdx = t.idx;
+    // Tràn ưu tiên phía trước/bên sườn ống để người xem nhìn thấy giọt nước lăn dọc thành kính cực rõ!
+    r.ang = 0.55 + (Math.random() - 0.5) * 1.1;
+    r.y = Y_MOUTH + t.root.position.y;
+    r.vy = 0.25 + Math.random() * 0.25;
+    r.freeFall = false;
+    r.mesh.material.color.setHex(isColored ? colHex : 0xf1f5f9);
+    r.mesh.material.opacity = isColored ? 0.85 : 0.52;
+    r.mesh.visible = true;
+  }
+
+  /* ==================== HỆ ĐÁM KHÓI MỀM ĐỐI LƯU (SOFT SWIRLING VOLUMETRIC BILLBOARDS!) ==================== */
+  // Không còn ống trụ cứng hay ống cong lơ lửng: từng búi khói sinh từ mặt bọt sôi, xoay tròn nở to và uốn rơi tự nhiên theo tỉ trọng khí!
+  const SMOKE_POOL_N = 96;
+  const smokePool = [];
+  for (let i = 0; i < SMOKE_POOL_N; i++) {
+    const smMat = new THREE.SpriteMaterial({
+      map: smokeWispTex, color: 0xffffff, transparent: true, opacity: 0, depthWrite: false
+    });
+    const sp = new THREE.Sprite(smMat);
+    sp.visible = false;
+    sp.renderOrder = 6;
+    scene.add(sp);
+    smokePool.push({
+      sprite: sp, mat: smMat, active: false, gasKind: 'Br2',
+      x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0,
+      rotSpd: 0, s0: 0.2, s1: 0.7, maxOp: 0.4, life: 0, maxLife: 1, tubeHomeX: 0
+    });
+  }
+  let smokeCursor = 0;
+
+  function spawnSmokePuff(t, gasKind, intensity) {
+    const p = smokePool[smokeCursor % SMOKE_POOL_N];
+    smokeCursor++;
+    p.active = true;
+    p.gasKind = gasKind;
+    p.tubeHomeX = t.root.position.x;
+    const surfY = Y_INNER_MIN + mlToSpanH(Math.max(0.4, t.aqML)) + t.root.position.y;
+    p.x = p.tubeHomeX + (Math.random() - 0.5) * 0.14;
+    p.y = surfY + 0.08;
+    p.z = (Math.random() - 0.5) * 0.14;
+    p.vx = (Math.random() - 0.5) * 0.08;
+    p.vz = (Math.random() - 0.5) * 0.08;
+    p.vy = 0.68 + Math.random() * 0.38;
+    p.rotSpd = (Math.random() - 0.5) * 1.8;
+    p.mat.rotation = Math.random() * Math.PI * 2;
+    p.maxLife = 3.2 + Math.random() * 1.2;
+    p.life = p.maxLife;
+    p.s0 = 0.24;
+    p.s1 = 0.56;
+
+    if (gasKind === 'HCl') {
+      p.mat.color.setHex(0xe2e8f0);
+      p.maxOp = 0.42 * intensity;
+      p.s1 = 0.68;
+    } else if (gasKind === 'Br2') {
+      p.mat.color.setHex(0x9a3412); // Nâu đỏ cánh gián ấm, không neon!
+      p.maxOp = 0.58 * intensity;
+      p.s1 = 0.62;
+    } else {
+      p.mat.color.setHex(0x6b21a8); // Tím khói thẫm sang trọng của hơi Iodine!
+      p.maxOp = 0.62 * intensity;
+      p.s1 = 0.60;
+    }
+    p.sprite.position.set(p.x, p.y, p.z);
+    p.sprite.visible = true;
+  }
+
+  /* ==================== DỰNG ỐNG NGHIỆM 3D ==================== */
+  let tubes = [];
+  let tubeHitMeshes = [];
+  const sideGlassShared = new THREE.CylinderGeometry(TUBE_R, TUBE_R, TUBE_CYL_H, 36, 12, true);
+  const botGlassShared = new THREE.SphereGeometry(TUBE_R, 36, 20, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2);
+  const emulsionSphereGeo = new THREE.SphereGeometry(0.022, 10, 10);
+
+  function createDynamicBadge(title, sub, accentHex) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 320; canvas.height = 124;
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.encoding = THREE.sRGBEncoding;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+    sp.scale.set(1.18, 0.45, 1);
+
+    function redraw(line2, bgHex, txtHex) {
+      const g = canvas.getContext('2d');
+      g.clearRect(0, 0, 320, 124);
+      g.fillStyle = 'rgba(11,9,22,0.94)';
+      g.strokeStyle = accentHex || '#94a3b8';
+      g.lineWidth = 3.5;
+      g.beginPath();
+      if (g.roundRect) g.roundRect(6, 6, 308, 112, 18); else g.rect(6, 6, 308, 112);
+      g.fill(); g.stroke();
+      g.fillStyle = '#ffffff';
+      g.font = '800 31px "Be Vietnam Pro",sans-serif';
+      g.textAlign = 'center';
+      g.fillText(title, 160, 45);
+      if (line2) {
+        g.fillStyle = bgHex || 'rgba(255,255,255,0.14)';
+        g.beginPath();
+        if (g.roundRect) g.roundRect(18, 58, 284, 44, 13); else g.rect(18, 58, 284, 44);
+        g.fill();
+        g.fillStyle = txtHex || '#fde68a';
+        g.font = '800 20px "Be Vietnam Pro",sans-serif';
+        g.fillText(line2, 160, 88);
+      } else {
+        g.fillStyle = '#cbd5e1';
+        g.font = '700 20px "Be Vietnam Pro",sans-serif';
+        g.fillText(sub || '', 160, 88);
+      }
+      tex.needsUpdate = true;
+    }
+    redraw(null);
+    return { sprite: sp, update: redraw };
+  }
+
+  function createTube(cfg, xPos, idx) {
+    const root = new THREE.Group();
+    root.position.set(xPos, 0, 0);
+    scene.add(root);
+
+    const pivot = new THREE.Group();
+    pivot.position.set(0, 2.25, 0);
+    root.add(pivot);
+
+    const body = new THREE.Group();
+    body.position.set(0, -2.25, 0);
+    pivot.add(body);
+
+    // 1. Vũng hóa chất loang bất đối xứng & trong suốt đúng bản chất ngay dưới chân ống!
+    const puddleMat = makeOrganicPuddleMat();
+    const puddleMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.35, 1.15), puddleMat);
+    puddleMesh.rotation.x = -Math.PI / 2;
+    puddleMesh.position.set(xPos, 0.004, 0.52);
+    puddleMesh.scale.setScalar(0.15);
+    scene.add(puddleMesh);
+
+    // 2. Khối Bột Muối Rắn HOẶC Khối Cặn Kết Tủa Đáy (cùng dùng kiến trúc Bottom-Up ôm khít cực đáy cầu 100%!)
+    const bottomMassMat = makeBottomMassMat(!!cfg.isSolid);
+    const bottomMassMesh = new THREE.Mesh(BOTTOM_UP_GEO, bottomMassMat);
+    bottomMassMesh.position.y = Y_INNER_MIN;
+    bottomMassMesh.visible = !!cfg.isSolid;
+    bottomMassMesh.renderOrder = 2;
+    body.add(bottomMassMesh);
+
+    // 3. Cột Dung dịch Tầng nước liền mạch (Beer-Lambert + Mushroom Plume + Settling Ceiling)
+    const liqUniforms = {
+      uTime: { value: 0 },
+      uSpanH: { value: cfg.isSolid ? 0.001 : mlToSpanH(2.2) },
+      uRadius: { value: LIQ_R },
+      uSlosh: { value: 0.0 },
+      uTintTop: { value: new THREE.Color(1, 1, 1) },
+      uTintBot: { value: new THREE.Color(1, 1, 1) },
+      uOptDensTop: { value: 0.0 },
+      uOptDensBot: { value: 0.0 },
+      uMushroomProg: { value: 0.0 },
+      uMushroomAmp: { value: 0.0 },
+      uJetColor: { value: new THREE.Color(1, 1, 1) },
+      uJetIsOpaque: { value: 1.0 },
+      uPrecipLight: { value: new THREE.Color(0xf8fafc) },
+      uPrecipShadow: { value: new THREE.Color(0xcbd5e1) },
+      uSuspendedAmt: { value: 0.0 },
+      uSettlingCeiling: { value: 1.0 },
+      uMorphScale: { value: 14.0 }
+    };
+    const liqMat = new THREE.ShaderMaterial({
+      uniforms: liqUniforms,
+      vertexShader: opticalLiquidVert,
+      fragmentShader: opticalLiquidFrag,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.FrontSide
+    });
+    const liqMesh = new THREE.Mesh(SEAMLESS_LIQ_GEO, liqMat);
+    liqMesh.position.y = Y_INNER_MIN;
+    liqMesh.visible = !cfg.isSolid;
+    liqMesh.renderOrder = 3;
+    body.add(liqMesh);
+
+    // Mặt khum tầng nước (hoặc biến thành Đĩa Mặt Phân Cách 3D khi có tầng Hexane ở trên!)
+    const aqMeniscusMat = makeMeniscusMat();
+    const aqMeniscusMesh = new THREE.Mesh(new THREE.CircleGeometry(LIQ_R, 36, 0, Math.PI * 2), aqMeniscusMat);
+    aqMeniscusMesh.visible = !cfg.isSolid;
+    aqMeniscusMesh.renderOrder = 5;
+    body.add(aqMeniscusMesh);
+
+    // 4. Tầng Hữu cơ Hexane phía trên + Mặt khum đỉnh Hexane + 36 hạt cầu Nhũ tương nổi ngược lên!
+    const orgMat = makeOrganicLayerMat();
+    const orgGeo = new THREE.CylinderGeometry(LIQ_R * 0.998, LIQ_R * 0.998, 1.0, 36, 8, true);
+    orgGeo.translate(0, 0.5, 0);
+    const orgMesh = new THREE.Mesh(orgGeo, orgMat);
+    orgMesh.visible = false;
+    orgMesh.renderOrder = 4;
+    body.add(orgMesh);
+
+    const orgTopMeniscusMat = makeMeniscusMat();
+    const orgTopMeniscus = new THREE.Mesh(new THREE.CircleGeometry(LIQ_R, 36), orgTopMeniscusMat);
+    orgTopMeniscus.visible = false;
+    orgTopMeniscus.renderOrder = 6;
+    body.add(orgTopMeniscus);
+
+    const emulMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff, roughness: 0.06, metalness: 0.1, transparent: true, opacity: 0.85, depthWrite: false
+    });
+    const emulGroup = new THREE.Group();
+    emulGroup.renderOrder = 5;
+    body.add(emulGroup);
+    const emulDrops = [];
+    for (let i = 0; i < 36; i++) {
+      const em = new THREE.Mesh(emulsionSphereGeo, emulMat);
+      em.visible = false;
+      emulGroup.add(em);
+      emulDrops.push({ mesh: em, active: false, x: 0, y: 0, z: 0, vy: 0 });
+    }
+
+    // 5. Hệ Vi Bọt Sôi Mịn & Vành Bọt Froth (BUB_N = 160 hạt bọt nhỏ tinh tế)
+    const BUB_N = 160;
+    const bubPos = new Float32Array(BUB_N * 3);
+    const bubVel = [];
+    for (let i = 0; i < BUB_N; i++) {
+      bubPos[i * 3 + 1] = -99;
+      bubVel.push({ vy: 0, life: 0, isFoam: false });
+    }
+    const bubGeo = new THREE.BufferGeometry();
+    bubGeo.setAttribute('position', new THREE.BufferAttribute(bubPos, 3));
+    const bubMat = new THREE.PointsMaterial({
+      map: bubbleTex, size: 0.036, color: 0xffffff, transparent: true, opacity: 0.90, depthWrite: false
+    });
+    const bubPoints = new THREE.Points(bubGeo, bubMat);
+    bubPoints.renderOrder = 6;
+    body.add(bubPoints);
+
+    // 6. Vỏ Thủy tinh: TÁCH RIÊNG thân ống (có thể đọng sương / tinh thể I2 ở cổ) và đáy cầu (luôn sạch trong 100%!)
+    const sideGlassMat = makeGlassShaderMat(true);
+    const botGlassMat = makeGlassShaderMat(false);
+
+    const glassFront = new THREE.Mesh(sideGlassShared, sideGlassMat);
+    glassFront.position.y = TUBE_BOT_Y + TUBE_CYL_H / 2;
+    glassFront.renderOrder = 8;
+    body.add(glassFront);
+
+    const botFront = new THREE.Mesh(botGlassShared, botGlassMat);
+    botFront.position.y = TUBE_BOT_Y;
+    botFront.renderOrder = 8;
+    body.add(botFront);
+
+    const scaleMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(TUBE_R + 0.002, TUBE_R + 0.002, TUBE_CYL_H * 0.94, 24, 1, true, -0.56, 1.12),
+      new THREE.MeshBasicMaterial({ map: scaleTex, transparent: true, depthWrite: false })
+    );
+    scaleMesh.position.y = TUBE_BOT_Y + TUBE_CYL_H * 0.48;
+    scaleMesh.renderOrder = 9;
+    body.add(scaleMesh);
+
+    const specLine = new THREE.Mesh(
+      new THREE.CylinderGeometry(TUBE_R + 0.004, TUBE_R + 0.004, TUBE_CYL_H * 0.92, 12, 1, true, -0.66, 0.08),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.32, depthWrite: false })
+    );
+    specLine.position.y = TUBE_BOT_Y + TUBE_CYL_H * 0.5;
+    specLine.renderOrder = 9;
+    body.add(specLine);
+
+    const lip = new THREE.Mesh(
+      new THREE.TorusGeometry(TUBE_R + 0.013, 0.022, 12, 36),
+      new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.12, metalness: 0.32, transparent: true, opacity: 0.72 })
+    );
+    lip.rotation.x = Math.PI / 2;
+    lip.position.y = Y_MOUTH;
+    lip.renderOrder = 9;
+    body.add(lip);
+
+    const badge = createDynamicBadge(cfg.label, cfg.sub, cfg.accent);
+    badge.sprite.position.set(0, 0.15, 0.78);
+    root.add(badge.sprite);
+
+    const hit = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.52, 0.52, 3.25, 14),
+      new THREE.MeshBasicMaterial({ visible: false })
+    );
+    hit.position.set(xPos, 1.72, 0);
+    hit.userData = { tubeIndex: idx };
+    scene.add(hit);
+    tubeHitMeshes.push(hit);
+
+    const initAqML = cfg.isSolid ? 0.0 : 2.2;
+    const initMmol = 0.22;
+    return {
+      idx: idx,
+      key: cfg.key,
+      label: cfg.label,
+      sub: cfg.sub,
+      homeX: xPos,
+      root: root,
+      pivot: pivot,
+      badge: badge,
+      isSolid: !!cfg.isSolid,
+      chem: {
+        F: (cfg.key === 'NaF') ? initMmol : 0,
+        Cl: (cfg.key === 'NaCl' || cfg.key === 'NaCl_aq') ? initMmol : 0,
+        Br: (cfg.key === 'NaBr' || cfg.key === 'NaBr_aq') ? initMmol : 0,
+        I: (cfg.key === 'NaI' || cfg.key === 'NaI_aq') ? initMmol : 0,
+        solidSalt: cfg.isSolid ? 0.36 : 0,  // mmol tinh thể rắn ban đầu (cao ~0.34m ôm khít đáy cầu!)
+        acidActive: 0,                      // Lượng H2SO4 đang hoạt động phản ứng liên tục dm/dt!
+        Ag: 0, HNO3: 0, NH3: 0, Cl2: 0, Br2: 0, I2: 0, Starch: 0,
+        // Tách riêng Kết tủa đang lơ lửng (suspended) và Kết tủa đã chạm đáy (settled) để nhân-quả chuẩn 100%!
+        suspAgCl: 0, suspAgBr: 0, suspAgI: 0,
+        setAgCl: 0, setAgBr: 0, setAgI: 0
+      },
+      aqML: initAqML,
+      orgML: 0.0,
+      puddleVol: 0.0,
+      puddleColorStrength: 0.0,
+      puddleRipple: 0.0,
+      rivuletAccum: 0.0,
+      steamAmt: 0.0,
+      mixProgress: 1.0,
+      extractProgress: 0.0,
+      emulsionTimer: 0.0,
+      mushroomProg: 0.0,
+      mushroomAmp: 0.0,
+      settlingCeiling: 1.0,
+      uvDarken: 0.0,
+      rxnRateNow: 0.0,         // Tốc độ sủi bọt & sinh khí tức thời dm/dt ở Tab 3!
+      smokeEmitAccum: 0.0,
+      gasType: null,
+      iodineFrost: 0.0,
+      sloshAngle: 0.0,
+      sloshVel: 0.0,
+      shakePos: 0.0,
+      shakeVel: 0.0,           // Lắc bằng vật lý lò xo tắt dần Damped Spring (mượt tự nhiên, không sin cứng!)
+      meniscusImpact: 0.0,
+      goalTintTop: new THREE.Color(1, 1, 1),
+      goalTintBot: new THREE.Color(1, 1, 1),
+      goalDensTop: 0.0,
+      goalDensBot: 0.0,
+      goalPrecipLight: new THREE.Color(0xf8fafc),
+      goalPrecipShadow: new THREE.Color(0xcbd5e1),
+      goalOrgTint: new THREE.Color(1, 1, 1),
+      goalOrgDens: 0.0,
+      sideGlassMat: sideGlassMat,
+      puddleMesh: puddleMesh, puddleMat: puddleMat,
+      bottomMassMesh: bottomMassMesh, bottomMassMat: bottomMassMat,
+      liqMesh: liqMesh, liqUniforms: liqUniforms,
+      aqMeniscusMesh: aqMeniscusMesh, aqMeniscusMat: aqMeniscusMat,
+      orgMesh: orgMesh, orgMat: orgMat,
+      orgTopMeniscus: orgTopMeniscus, orgTopMeniscusMat: orgTopMeniscusMat,
+      emulDrops: emulDrops, emulMat: emulMat,
+      bubGeo: bubGeo, bubPos: bubPos, bubVel: bubVel, bubMat: bubMat
+    };
+  }
+
+  /* ==================== PIPET CÓ GIỌT TREO ĐẦU VÒI & TIA BƠM THON DẦN (TAPERED JET) ==================== */
+  const pipette = new THREE.Group();
+  pipette.position.set(0, 3.58, 0);
+  scene.add(pipette);
+
+  const pipGlass = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.066, 0.066, 0.74, 18),
+    new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.45, roughness: 0.08 })
+  );
+  pipGlass.position.y = 0.48; pipette.add(pipGlass);
+
+  const pipTip = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.066, 0.016, 0.26, 16),
+    new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.55, roughness: 0.08 })
+  );
+  pipette.add(pipTip);
+
+  const pipLiqMat = new THREE.MeshBasicMaterial({ color: 0xf8fafc, transparent: true, opacity: 0.42 });
+  const pipLiq = new THREE.Mesh(new THREE.CylinderGeometry(0.050, 0.014, 0.60, 14), pipLiqMat);
+  pipLiq.position.y = 0.21; pipette.add(pipLiq);
+
+  // Giọt treo lấp lánh ở đầu mũi pipet phình lên trước khi đứt cuống rơi!
+  const pendantMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.05, transparent: true, opacity: 0.65 });
+  const pendantDrop = new THREE.Mesh(new THREE.SphereGeometry(0.032, 12, 12), pendantMat);
+  pendantDrop.position.y = -0.14;
+  pendantDrop.scale.setScalar(0.01);
+  pipette.add(pendantDrop);
+
+  const pipBulb = new THREE.Mesh(
+    new THREE.SphereGeometry(0.135, 18, 18),
+    new THREE.MeshStandardMaterial({ color: 0xbe123c, roughness: 0.44 })
+  );
+  pipBulb.scale.set(0.92, 1.52, 0.92);
+  pipBulb.position.y = 1.02; pipette.add(pipBulb);
+
+  // Tia nước thon nhỏ dần từ vòi xuống dưới (Tapered Jet: rTop = 0.019 -> rBot = 0.008!)
+  const streamMat = new THREE.MeshStandardMaterial({
+    color: 0xf8fafc, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.58
+  });
+  const streamGeo = new THREE.CylinderGeometry(0.019, 0.008, 1.0, 14);
+  streamGeo.translate(0, -0.5, 0);
+  const streamMesh = new THREE.Mesh(streamGeo, streamMat);
+  streamMesh.visible = false;
+  scene.add(streamMesh);
+
+  const drops = [];
+  const dropGeo = new THREE.SphereGeometry(0.042, 14, 14);
+  dropGeo.scale(0.82, 1.42, 0.82);
+  for (let i = 0; i < 24; i++) {
+    const dm = new THREE.Mesh(dropGeo, new THREE.MeshStandardMaterial({
+      color: 0xffffff, roughness: 0.04, metalness: 0.12, transparent: true, opacity: 0.70
+    }));
+    dm.visible = false;
+    scene.add(dm);
+    drops.push({ mesh: dm, active: false, x: 0, y: 0, vy: 0, grav: 16.5, targetY: 1, delay: 0, onHit: null });
+  }
+
+  /* ==================== CẤU HÌNH 4 CHẾ ĐỘ CHUẨN SÁCH GIÁO KHOA KNTT ==================== */
+  let curMode = 'ag';
+  let curReagent = 'AgNO3';
+  let uvOn = false;
+  let mysteryOrder = ['NaF', 'NaCl', 'NaBr', 'NaI'];
+  let gameScore = 0;
+
+  const MODES = {
+    ag: {
+      title: 'Nhận biết Ion Halide',
+      hasUV: true,
+      reagents: [
+        { key: 'AgNO3', name: 'dd AgNO₃ 0,1M', sub: 'Thuốc thử tạo kết tủa bạc halide', col: 'rgba(255,255,255,0.35)', hex: 0xf8fafc, dropOp: 0.36 },
+        { key: 'HNO3', name: 'dd HNO₃ loãng', sub: 'Kiểm tra kết tủa không tan & đông tụ keo', col: 'rgba(255,255,255,0.35)', hex: 0xf8fafc, dropOp: 0.36 },
+        { key: 'NH3', name: 'dd NH₃ 0,5M', sub: 'Hòa tan chọn lọc kết tủa trắng AgCl↓', col: 'rgba(255,255,255,0.35)', hex: 0xf8fafc, dropOp: 0.36 }
+      ],
+      tubes: [
+        { key: 'NaF', label: 'NaF', sub: 'Ion F⁻', accent: '#94a3b8' },
+        { key: 'NaCl', label: 'NaCl', sub: 'Ion Cl⁻', accent: '#f8fafc' },
+        { key: 'NaBr', label: 'NaBr', sub: 'Ion Br⁻', accent: '#fef3c7' },
+        { key: 'NaI', label: 'NaI', sub: 'Ion I⁻', accent: '#fef08a' }
+      ],
+      summaryHTML:
+        '<h3><span>Bảng nhận biết chuẩn SGK (Bài 22)</span></h3>' +
+        '<table>' +
+          '<tr><th>Mẫu</th><th>+ AgNO₃</th><th>+ HNO₃</th><th>+ NH₃ dư</th></tr>' +
+          '<tr><td><b>NaF</b></td><td><i class="sw" style="background:transparent"></i>Không tủa</td><td>—</td><td>—</td></tr>' +
+          '<tr><td><b>NaCl</b></td><td><i class="sw" style="background:#f8fafc"></i><b>AgCl↓ trắng</b></td><td>Ko tan</td><td>Tan hết</td></tr>' +
+          '<tr><td><b>NaBr</b></td><td><i class="sw" style="background:#fdf8d8"></i><b>AgBr↓ vàng nhạt</b></td><td>Ko tan</td><td>Ít tan</td></tr>' +
+          '<tr><td><b>NaI</b></td><td><i class="sw" style="background:#fef08a"></i><b>AgI↓ vàng</b></td><td>Ko tan</td><td>Ko tan</td></tr>' +
+        '</table>'
+    },
+    disp: {
+      title: 'Thế Halogen & Chiết 2 lớp',
+      hasUV: false,
+      reagents: [
+        { key: 'Cl2', name: 'Nước Cl₂', sub: 'Đẩy được Br₂ và I₂ khỏi muối', col: '#eef7d0', hex: 0xeef7d0, dropOp: 0.45 },
+        { key: 'Br2', name: 'Nước Br₂', sub: 'Chỉ đẩy được I₂ khỏi muối NaI', col: '#c2410c', hex: 0xc2410c, dropOp: 0.78 },
+        { key: 'Hexane', name: 'Hexane (C₆H₁₄)', sub: 'Chiết tách 2 lớp Đỏ cam / Tím hồng', col: 'rgba(255,255,255,0.3)', hex: 0xf8fafc, dropOp: 0.32 },
+        { key: 'Starch', name: 'Hồ tinh bột', sub: 'Nhận biết phân tử I₂ (xanh chàm đen)', col: 'rgba(255,255,255,0.5)', hex: 0xf8fafc, dropOp: 0.48 }
+      ],
+      tubes: [
+        { key: 'NaCl_aq', label: 'dd NaCl', sub: 'Ion Cl⁻', accent: '#94a3b8' },
+        { key: 'NaBr_aq', label: 'dd NaBr', sub: 'Ion Br⁻', accent: '#ea580c' },
+        { key: 'NaI_aq', label: 'dd NaI', sub: 'Ion I⁻', accent: '#c026d3' }
+      ],
+      summaryHTML:
+        '<h3><span>Quy luật thế Halogen (SGK Bài 21)</span></h3>' +
+        '<div class="kq">' +
+          '• Tính oxi hóa giảm dần: <b>F₂ &gt; Cl₂ &gt; Br₂ &gt; I₂</b>.<br>' +
+          '• Trong <b>Hexane</b>: <b>Br₂</b> cho tầng trên màu <b>đỏ cam hổ phách</b>; <b>I₂</b> chuyển từ nâu trà (dưới nước) sang <b>tím hồng thạch anh</b> (trên Hexane).' +
+        '</div>'
+    },
+    h2so4: {
+      title: 'Muối rắn + H₂SO₄ đặc',
+      hasUV: false,
+      reagents: [
+        { key: 'H2SO4', name: 'H₂SO₄ đặc 98%', sub: 'Sánh nhớt · Thử tính khử Cl⁻ < Br⁻ < I⁻', col: 'rgba(255,255,255,0.35)', hex: 0xf8fafc, dropOp: 0.42, viscous: true }
+      ],
+      tubes: [
+        { key: 'NaCl_s', label: 'NaCl (rắn)', sub: 'Tinh thể Cl⁻', accent: '#e2e8f0', isSolid: true },
+        { key: 'NaBr_s', label: 'NaBr (rắn)', sub: 'Tinh thể Br⁻', accent: '#ea580c', isSolid: true },
+        { key: 'NaI_s', label: 'NaI (rắn)', sub: 'Tinh thể I⁻', accent: '#a21caf', isSolid: true }
+      ],
+      summaryHTML:
+        '<h3><span>Tính khử: Cl⁻ &lt; Br⁻ &lt; I⁻ (SGK Bài 22)</span></h3>' +
+        '<div class="kq">' +
+          '• <b>NaCl</b>: trao đổi sinh khí <b>HCl↑</b> (tạo sương ẩm ở miệng ống).<br>' +
+          '• <b>NaBr</b>: khử S⁺⁶ → <b>SO₂↑</b> + hơi <b>Br₂↑ nâu đỏ</b> nặng rủ xuống.<br>' +
+          '• <b>NaI</b>: khử sâu S⁺⁶ → <b>H₂S↑</b> + khói <b>I₂↑ tím</b> bám tinh thể trên cổ ống.' +
+        '</div>'
+    },
+    game: {
+      title: 'Giải mã 4 lọ mất nhãn',
+      hasUV: true,
+      reagents: [
+        { key: 'AgNO3', name: 'dd AgNO₃ 0,1M', sub: 'Thuốc thử tạo kết tủa', col: 'rgba(255,255,255,0.35)', hex: 0xf8fafc, dropOp: 0.36 },
+        { key: 'NH3', name: 'dd NH₃ 0,5M', sub: 'Hòa tan chọn lọc AgCl↓', col: 'rgba(255,255,255,0.35)', hex: 0xf8fafc, dropOp: 0.36 }
+      ],
+      tubes: [],
+      summaryHTML:
+        '<h3><span>Mẹo giải mã chuẩn xác</span></h3>' +
+        '<div class="kq">Nhỏ <b>AgNO₃</b>: trong vắt là <b>NaF</b>, trắng sữa là <b>NaCl</b> (tan sạch khi thêm <b>NH₃</b>), trắng ngà kem bơ là <b>NaBr</b>, vàng chanh là <b>NaI</b>.</div>'
+    }
+  };
+
+  /* ==================== PHẢN ỨNG HÓA HỌC & VẬT LÝ TRÀN CHUẨN XÁC 100% ==================== */
+  let toastTimer = null;
+  function showToast(html) {
+    const el = $('toast');
+    el.innerHTML = html; el.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('on'); }, 2600);
+  }
+  function setReactionText(eq, desc) {
+    $('eqTxt').innerHTML = eq;
+    $('phenomTxt').innerHTML = desc;
+  }
+
+  function spawnMicroBubbles(t, count, isSurfaceFoam, hexCol) {
+    t.bubMat.color.setHex(hexCol || 0xffffff);
+    const surfY = Y_INNER_MIN + mlToSpanH(Math.max(0.35, t.aqML));
+    const saltTopY = Y_INNER_MIN + (t.isSolid ? (t.chem.solidSalt / 0.36) * 0.34 : 0.05);
+    let n = 0;
+    for (let i = 0; i < t.bubVel.length && n < count; i++) {
+      if (t.bubVel[i].life <= 0) {
+        const a = Math.random() * Math.PI * 2;
+        const r = isSurfaceFoam ? (LIQ_R * (0.35 + Math.random() * 0.58)) : (Math.random() * LIQ_R * 0.84);
+        t.bubPos[i * 3] = Math.cos(a) * r;
+        t.bubPos[i * 3 + 1] = isSurfaceFoam ? (surfY - 0.04 + Math.random() * 0.06) : (saltTopY + Math.random() * 0.12);
+        t.bubPos[i * 3 + 2] = Math.sin(a) * r;
+        t.bubVel[i].vy = isSurfaceFoam ? (0.05 + Math.random() * 0.10) : (0.55 + Math.random() * 0.75);
+        t.bubVel[i].life = isSurfaceFoam ? (1.1 + Math.random() * 1.0) : (0.55 + Math.random() * 0.50);
+        t.bubVel[i].isFoam = !!isSurfaceFoam;
+        n++;
+      }
+    }
+    t.bubGeo.attributes.position.needsUpdate = true;
+  }
+
+  function triggerMushroom(t, hexCol, isOpaque) {
+    t.mushroomProg = 0.02;
+    t.mushroomAmp = 1.0;
+    t.liqUniforms.uJetColor.value.setHex(hexCol);
+    t.liqUniforms.uJetIsOpaque.value = isOpaque ? 1.0 : 0.0;
+  }
+
+  function startEmulsionExtraction(t) {
+    t.shakeVel += (Math.random() > 0.5 ? 1 : -1) * 5.2;
+    t.sloshVel += 2.6;
+    t.emulsionTimer = 2.8;
+    const ch = t.chem;
+    const hasI2 = ch.I2 > 0.002, hasBr2 = ch.Br2 > 0.002;
+    const colHex = hasI2 ? 0xb81d98 : (hasBr2 ? 0xd9380f : 0xf8fafc);
+    t.emulMat.color.setHex(colHex);
+    t.emulMat.opacity = (hasI2 || hasBr2) ? 0.85 : 0.35;
+
+    const maxH = mlToSpanH(t.aqML);
+    for (let i = 0; i < t.emulDrops.length; i++) {
+      const ed = t.emulDrops[i];
+      ed.active = true;
+      const a = Math.random() * Math.PI * 2, r = Math.random() * (LIQ_R * 0.80);
+      ed.x = Math.cos(a) * r; ed.z = Math.sin(a) * r;
+      ed.y = Y_INNER_MIN + 0.08 + Math.random() * Math.max(0.15, maxH - 0.12);
+      ed.vy = 0.24 + Math.random() * 0.34;
+      ed.mesh.position.set(ed.x, ed.y, ed.z);
+      ed.mesh.visible = true;
+    }
+  }
+
+  function shakeTube(t, pwr) {
+    const p = pwr || 1.0;
+    // Lắc bằng xung lực lò xo Damped Spring: tự nhiên, không bị máy móc như hàm sin!
+    t.shakeVel += (Math.random() > 0.5 ? 1 : -1) * 6.5 * p;
+    t.sloshVel += (Math.random() > 0.5 ? 1 : -1) * 3.2 * p;
+    t.mixProgress = Math.min(1.0, t.mixProgress + 0.85 * p);
+
+    // Lắc mạnh khi ống đầy > 8.0 mL làm sóng sánh văng giọt trườn thành ống!
+    const tot = t.aqML + t.orgML;
+    if (tot > 8.0 && p > 0.6) {
+      const lost = Math.min(0.3, (tot - 7.8) * 0.15);
+      if (t.orgML > 0.2) t.orgML = Math.max(0, t.orgML - lost * 0.6);
+      else t.aqML = Math.max(0, t.aqML - lost);
+      const isCol = (t.goalDensTop > 0.25 || t.goalOrgDens > 0.25 || (t.chem.setAgCl + t.chem.setAgBr + t.chem.setAgI > 0.02));
+      const cHex = t.orgML > 0.1 ? t.goalOrgTint.getHex() : t.goalTintTop.getHex();
+      spawnOverflowRivulet(t, cHex, isCol);
+    }
+
+    // Lắc khuấy một phần kết tủa đáy bồng bềnh lên lại & giúp NH3 hòa tan hết AgCl!
+    const ch = t.chem;
+    if (ch.setAgCl > 0.005 && ch.NH3 > 0.005) {
+      const d = Math.min(ch.setAgCl, ch.NH3 * 0.5);
+      ch.setAgCl -= d; ch.NH3 -= d * 2;
+      if (ch.setAgCl + ch.suspAgCl < 0.01) {
+        ch.setAgCl = 0; ch.suspAgCl = 0;
+        t.badge.update('Tan trong vắt [Ag(NH₃)₂]⁺', 'rgba(148,163,184,0.25)', '#f8fafc');
+      }
+    }
+    if (ch.setAgCl + ch.setAgBr + ch.setAgI > 0.02) {
+      const kickCl = ch.setAgCl * 0.35, kickBr = ch.setAgBr * 0.35, kickI = ch.setAgI * 0.35;
+      ch.setAgCl -= kickCl; ch.suspAgCl += kickCl;
+      ch.setAgBr -= kickBr; ch.suspAgBr += kickBr;
+      ch.setAgI -= kickI; ch.suspAgI += kickI;
+      t.settlingCeiling = 1.0;
+    }
+
+    if (t.orgML > 0.12 && t.aqML > 0.3) startEmulsionExtraction(t);
+    if (!t.isSolid && t.aqML > 0.3) spawnMicroBubbles(t, 16, false, 0xffffff);
+    updateOpticalTargets(t);
+  }
+
+  function addChemicalVolume(t, rKey, dVol, quietSound) {
+    t.meniscusImpact = 1.0;
+    t.sloshVel += (Math.random() - 0.5) * 0.9;
+
+    // 1. Vật lý đầy 10.0 mL & Trườn giọt dọc thành kính ngoài (Overflow Rivulets)!
+    const curTotal = t.aqML + t.orgML;
+    if (curTotal + dVol > MAX_TUBE_ML) {
+      const room = Math.max(0, MAX_TUBE_ML - curTotal);
+      const spilled = dVol - room;
+      if (rKey === 'Hexane') t.orgML += room; else t.aqML += room;
+
+      t.rivuletAccum += spilled;
+      const totPrecip = t.chem.setAgCl + t.chem.suspAgCl + t.chem.setAgBr + t.chem.suspAgBr + t.chem.setAgI + t.chem.suspAgI;
+      const isCol = (t.goalDensTop > 0.22 || t.goalOrgDens > 0.22 || totPrecip > 0.03);
+      const spillHex = (t.orgML > 0.1 && t.goalOrgDens > 0.2)
+        ? t.goalOrgTint.getHex()
+        : (totPrecip > 0.03 ? t.goalPrecipLight.getHex() : t.goalTintTop.getHex());
+
+      t.puddleColorStrength = isCol ? Math.max(t.puddleColorStrength, 0.78) : t.puddleColorStrength * 0.95;
+      if (isCol) t.puddleMat.uniforms.uTint.value.setHex(spillHex);
+
+      while (t.rivuletAccum >= 0.08) {
+        t.rivuletAccum -= 0.08;
+        spawnOverflowRivulet(t, spillHex, isCol);
+      }
+    } else {
+      if (rKey === 'Hexane') t.orgML += dVol; else t.aqML += dVol;
+    }
+
+    if (rKey !== 'Hexane' && !t.isSolid && t.aqML > 0.8) {
+      t.mixProgress = Math.max(0.22, t.mixProgress - dVol * 0.72);
+    }
+
+    const ch = t.chem;
+    const isGame = (curMode === 'game');
+    const disp = isGame ? t.label : t.key;
+
+    // 2. Xử lý ĐẦY ĐỦ MỌI CẶP PHẢN ỨNG & MỌI THỨ TỰ NHỎ HÓA CHẤT!
+    if (rKey === 'AgNO3') {
+      if (!quietSound) sfxDrop(520);
+      ch.Ag += dVol * 0.12;
+
+      if (ch.I > 0 && ch.Ag > 0) {
+        const d = Math.min(ch.I, ch.Ag);
+        ch.I -= d; ch.Ag -= d;
+        ch.suspAgI += d;          // Đi vào mây lơ lửng trước -> chìm chạm đáy mới thành cặn!
+        t.settlingCeiling = 1.0;
+        triggerMushroom(t, 0xfef08a, true);
+        t.liqUniforms.uMorphScale.value = 17.5;
+        t.badge.update(isGame ? 'Kết tủa VÀNG ↓' : 'AgI↓ Vàng', 'rgba(250,204,21,0.92)', '#1e1b4b');
+        setReactionText(
+          (isGame ? 'X⁻' : 'NaI') + '(aq) + AgNO₃(aq) → AgI↓ (vàng) + NaNO₃(aq)',
+          'Ống <b>' + disp + '</b>: Búi mây kết tủa <b>AgI màu vàng chanh tươi</b> cuộn xoáy rồi sa lắng xuống đáy.'
+        );
+      } else if (ch.Br > 0 && ch.Ag > 0) {
+        const d = Math.min(ch.Br, ch.Ag);
+        ch.Br -= d; ch.Ag -= d;
+        ch.suspAgBr += d;
+        t.settlingCeiling = 1.0;
+        triggerMushroom(t, 0xfdf9dc, true);
+        t.liqUniforms.uMorphScale.value = 14.0;
+        t.badge.update(isGame ? 'Tủa VÀNG NHẠT ↓' : 'AgBr↓ Vàng nhạt', 'rgba(254,249,195,0.94)', '#713f12');
+        setReactionText(
+          (isGame ? 'X⁻' : 'NaBr') + '(aq) + AgNO₃(aq) → AgBr↓ (vàng nhạt) + NaNO₃(aq)',
+          'Ống <b>' + disp + '</b>: Đám mây kết tủa <b>AgBr màu trắng ngà / kem bơ dịu</b> cuộn mềm rồi lắng dần.'
+        );
+      } else if (ch.Cl > 0 && ch.Ag > 0) {
+        const d = Math.min(ch.Cl, ch.Ag);
+        ch.Cl -= d; ch.Ag -= d;
+
+        // XỬ LÝ NHỎ NGƯỢC THỨ TỰ: Nếu trong ống đã có sẵn NH3 dư, AgCl vừa lóe lên lập tức tạo phức tan ngay!
+        if (ch.NH3 >= d * 2.0) {
+          ch.NH3 -= d * 2.0;
+          triggerMushroom(t, 0xf8fafc, true);
+          t.mushroomAmp = 0.55;
+          t.badge.update('Tan ngay (có NH₃ sẵn!)', 'rgba(148,163,184,0.28)', '#f8fafc');
+          setReactionText(
+            'Ag⁺ + Cl⁻ + 2NH₃(dư) → [Ag(NH₃)₂]⁺ + Cl⁻ (phức tan trong suốt)',
+            'Vì trong ống đã có sẵn <b>NH₃ dư</b>, vệt mây trắng AgCl vừa sinh ra tại điểm giọt rơi lập tức <b>tan biến ngay</b> thành phức không màu!'
+          );
+        } else {
+          const dissolvedNow = ch.NH3 * 0.5;
+          ch.NH3 = 0;
+          ch.suspAgCl += (d - dissolvedNow);
+          t.settlingCeiling = 1.0;
+          triggerMushroom(t, 0xf8fafc, true);
+          t.liqUniforms.uMorphScale.value = 9.5;
+          t.badge.update(isGame ? 'Kết tủa TRẮNG ↓' : 'AgCl↓ Trắng', 'rgba(248,250,252,0.95)', '#0f172a');
+          setReactionText(
+            (isGame ? 'X⁻' : 'NaCl') + '(aq) + AgNO₃(aq) → AgCl↓ (trắng) + NaNO₃(aq)',
+            'Ống <b>' + disp + '</b>: Búi mây <b>AgCl trắng sữa vón bông</b> cuộn xuống và sa lắng tạo lớp cặn dưới đáy.'
+          );
+        }
+      } else if (ch.F > 0) {
+        t.badge.update('Không tủa (AgF tan)', 'rgba(148,163,184,0.22)', '#e2e8f0');
+        setReactionText(disp + ' + AgNO₃ → Không có kết tủa', 'Muối bạc fluoride (AgF) tan tốt trong nước nên dung dịch giữ nguyên <b>trong vắt</b>.');
+      } else {
+        setReactionText('Đã hết ion halide tự do (qua điểm tương đương)', 'Lượng kết tủa giữ nguyên thể tích thực dưới đáy; bơm thêm chỉ làm dâng lớp nước trong ở trên!');
+      }
+    }
+
+    else if (rKey === 'HNO3') {
+      if (!quietSound) sfxDrop(550);
+      ch.HNO3 += dVol * 0.5;
+      // Trung hòa NH3 nếu có; nếu phức bạc diamine gặp HNO3 dư sẽ tái kết tủa AgCl!
+      const totAgX = ch.suspAgCl + ch.setAgCl + ch.suspAgBr + ch.setAgBr + ch.suspAgI + ch.setAgI;
+      if (totAgX > 0.005) {
+        setReactionText(
+          'AgX(s) + HNO₃(loãng) → Không phản ứng (kết tủa không tan)',
+          'Cả 3 kết tủa <b>AgCl, AgBr, AgI</b> đều bền trong HNO₃ loãng; đồng thời chất điện li mạnh giúp đông tụ mây keo lắng nhanh gấp đôi!'
+        );
+      } else {
+        setReactionText('Nhỏ dd HNO₃ loãng vào ' + disp, 'Dung dịch trong suốt không đổi màu.');
+      }
+    }
+
+    else if (rKey === 'NH3') {
+      if (!quietSound) sfxDrop(580);
+      ch.NH3 += dVol * 0.70;
+      const totCl = ch.suspAgCl + ch.setAgCl;
+      if (totCl > 0.001) {
+        // NH3 hòa tan mây lơ lửng trước, sau đó xoáy mòn dần lớp cặn setAgCl ở đáy!
+        const disSusp = Math.min(ch.suspAgCl, ch.NH3 * 0.5);
+        ch.suspAgCl -= disSusp; ch.NH3 -= disSusp * 2;
+        const disSet = Math.min(ch.setAgCl, ch.NH3 * 0.5);
+        ch.setAgCl -= disSet; ch.NH3 -= disSet * 2;
+        t.bottomMassMat.uniforms.uCrater.value = 1.0; // Xoáy lõm mặt trên của lớp cặn trắng!
+        t.shakeVel += (Math.random() - 0.5) * 2.5;
+
+        if (ch.suspAgCl + ch.setAgCl < 0.010) {
+          ch.suspAgCl = 0; ch.setAgCl = 0;
+          t.badge.update('Tan trong vắt [Ag(NH₃)₂]⁺', 'rgba(148,163,184,0.25)', '#f8fafc');
+          setReactionText(
+            'AgCl(s) + 2NH₃(aq) → [Ag(NH₃)₂]Cl(aq) (tan hoàn toàn)',
+            'Lớp cặn trắng <b>AgCl bị dòng NH₃ xoáy tan hết</b> thành phức không màu trong vắt!'
+          );
+        } else {
+          const left = Math.round(((ch.suspAgCl + ch.setAgCl) / 0.22) * 100);
+          t.badge.update('Đang tan (còn ' + left + '%)', 'rgba(199,210,254,0.3)', '#e0e7ff');
+          setReactionText('AgCl đang tan dần (còn ' + left + '%) — Nhỏ thêm NH₃!', 'Dòng NH₃ đang xoáy mòn dần mặt trên của lớp cặn AgCl.');
+        }
+      } else if (ch.suspAgBr + ch.setAgBr > 0.005) {
+        setReactionText('AgBr + NH₃(0,5M) → Hầu như không tan', 'Kết tủa trắng ngà AgBr bền hơn nên giữ nguyên dưới đáy, phân biệt rõ với AgCl!');
+      } else if (ch.suspAgI + ch.setAgI > 0.005) {
+        setReactionText('AgI + NH₃ → Không tan', 'Kết tủa vàng chanh AgI không tan trong dung dịch NH₃.');
+      }
+    }
+
+    else if (rKey === 'Cl2') {
+      if (!quietSound) sfxDrop(510);
+      let addCl2 = dVol * 0.15;
+
+      if (ch.I > 0) {
+        const rx = Math.min(ch.I * 0.5, addCl2);
+        ch.I -= rx * 2; addCl2 -= rx; ch.I2 += rx;
+        // SỬA LỖI NHỎ STARCH TRƯỚC: Nếu đã có sẵn Hồ tinh bột, bùng ngay mây Xanh Chàm Đen!
+        if (ch.Starch > 0.002) {
+          triggerMushroom(t, 0x172554, false);
+          t.badge.update('Phức XANH CHÀM ĐEN', 'rgba(23,37,84,0.95)', '#e0e7ff');
+          setReactionText('Cl₂ + 2NaI → 2NaCl + I₂ · (I₂ gặp Hồ tinh bột có sẵn → Xanh tím!)', 'I₂ vừa được Cl₂ đẩy ra gặp ngay hồ tinh bột trong ống tạo vòi mây <b>xanh chàm đen</b>!');
+        } else {
+          triggerMushroom(t, 0x853a0e, false);
+          t.badge.update('Sinh I₂ (Nâu trà)', 'rgba(133,58,14,0.88)', '#fef3c7');
+          setReactionText('Cl₂(aq) + 2NaI(aq) → 2NaCl(aq) + I₂(aq)', 'Cl₂ đẩy I⁻ tạo <b>I₂ màu nâu trà trong suốt</b>!');
+        }
+      } else if (ch.I2 > 0.003 && addCl2 > 0.01 && t.orgML < 0.05) {
+        // CHI TIẾT THỰC NGHIỆM: Bơm quá dư Nước Cl2 vào dd I2 sẽ oxi hóa tiếp I2 -> HIO3 không màu!
+        const ox = Math.min(ch.I2, addCl2 * 0.22);
+        ch.I2 -= ox; addCl2 -= ox * 5;
+        if (ch.I2 < 0.005) {
+          t.badge.update('Nhạt màu (tạo HIO₃)', 'rgba(148,163,184,0.3)', '#f8fafc');
+          setReactionText('5Cl₂(dư) + I₂ + 6H₂O → 2HIO₃ + 10HCl', 'Khi bơm quá dư nước Cl₂, phân tử I₂ bị oxi hóa tiếp lên iodic acid (HIO₃) không màu làm dung dịch nhạt màu dần!');
+        }
+      } else if (ch.Br > 0) {
+        const rx = Math.min(ch.Br * 0.5, addCl2);
+        ch.Br -= rx * 2; addCl2 -= rx; ch.Br2 += rx;
+        triggerMushroom(t, 0xc2410c, false);
+        t.badge.update('Sinh Br₂ (Hổ phách)', 'rgba(194,65,12,0.88)', '#ffffff');
+        setReactionText('Cl₂(aq) + 2NaBr(aq) → 2NaCl(aq) + Br₂(aq)', 'Cl₂ đẩy Br⁻ tạo <b>Br₂ màu vàng mật ong → đỏ cognac trong vắt</b>!');
+      } else {
+        setReactionText('Cl₂ + NaCl → Không phản ứng', 'Ống NaCl chỉ phớt ánh vàng lục cực nhạt của nước Cl₂.');
+      }
+      ch.Cl2 += Math.max(0, addCl2);
+      // SỬA LỖI NHỎ HEXANE TRƯỚC: Nếu trên mặt đã có sẵn lớp Hexane, tự động trộn chiết lên tầng Hexane!
+      if (t.orgML > 0.12 && (ch.I2 > 0.002 || ch.Br2 > 0.002)) startEmulsionExtraction(t);
+    }
+
+    else if (rKey === 'Br2') {
+      if (!quietSound) sfxDrop(470);
+      let addBr2 = dVol * 0.15;
+      if (ch.I > 0) {
+        const rx = Math.min(ch.I * 0.5, addBr2);
+        ch.I -= rx * 2; addBr2 -= rx; ch.I2 += rx;
+        if (ch.Starch > 0.002) {
+          triggerMushroom(t, 0x172554, false);
+          t.badge.update('Phức XANH CHÀM ĐEN', 'rgba(23,37,84,0.95)', '#e0e7ff');
+          setReactionText('Br₂ + 2NaI → 2NaBr + I₂ (hóa xanh tím với Hồ tinh bột)', 'I₂ vừa sinh ra kết hợp ngay với hồ tinh bột có sẵn tạo màu xanh chàm đen!');
+        } else {
+          triggerMushroom(t, 0x853a0e, false);
+          t.badge.update('Br₂ đẩy ra I₂ nâu trà', 'rgba(133,58,14,0.88)', '#fef3c7');
+          setReactionText('Br₂(aq) + 2NaI(aq) → 2NaBr(aq) + I₂(aq)', 'Br₂ mạnh hơn I₂ nên oxi hóa I⁻ thành <b>I₂ màu nâu trà</b>.');
+        }
+      } else {
+        triggerMushroom(t, 0xc2410c, false);
+        setReactionText('Br₂ + ' + t.label + ' → Không có phản ứng thế', 'Br₂ yếu hơn Cl₂ nên không đẩy được Cl⁻; ống có màu cam hổ phách của nước Br₂.');
+      }
+      ch.Br2 += addBr2;
+      if (t.orgML > 0.12) startEmulsionExtraction(t);
+    }
+
+    else if (rKey === 'Hexane') {
+      if (!quietSound) sfxDrop(610);
+      startEmulsionExtraction(t);
+      spawnMicroBubbles(t, 20, false, 0xffffff);
+      if (ch.I2 > 0.002) {
+        setReactionText(
+          'Chiết I₂ sang Hexane → Các giọt nhũ tương nổi lên gom thành tầng Tím hồng thạch anh!',
+          'Quan sát các hạt cầu nhũ tương màu tím hồng nổi ngược từ tầng dưới vượt qua mặt phân cách nhập vào tầng <b>Hexane</b> phía trên!'
+        );
+      } else if (ch.Br2 > 0.002) {
+        setReactionText(
+          'Chiết Br₂ sang Hexane → Tầng trên chuyển màu Đỏ cam hổ phách!',
+          'Các giọt cầu hòa tan <b>Br₂</b> nổi lên gom thành lớp <b>đỏ cam rực rỡ</b> ở tầng trên, để lại tầng nước nhạt trong bên dưới!'
+        );
+      } else {
+        setReactionText('Hexane (nhẹ hơn nước) nổi thành tầng trong suốt ở trên', 'Giờ bạn có thể chọn <b>Nước Cl₂</b> nhỏ xuyên qua lớp Hexane này vào ống NaBr / NaI!');
+      }
+    }
+
+    else if (rKey === 'Starch') {
+      if (!quietSound) sfxDrop(520);
+      ch.Starch += dVol * 0.25;
+      if (ch.I2 > 0.002) {
+        triggerMushroom(t, 0x172554, false);
+        t.badge.update('Phức XANH CHÀM ĐEN', 'rgba(23,37,84,0.95)', '#e0e7ff');
+        setReactionText('I₂ + Hồ tinh bột → Hợp chất bọc màu xanh tím đậm', 'Búi mây <b>xanh chàm mực Cửu Long</b> cuộn xoáy nhận biết đặc trưng phân tử I₂!');
+      } else {
+        setReactionText('Chưa đổi màu (chưa có phân tử I₂ tự do)', 'Nếu đây là ống NaI, giờ hãy nhỏ thử 1 giọt <b>Nước Cl₂</b> vào để xem mây xanh tím bùng lên ngay!');
+      }
+    }
+
+    else if (rKey === 'H2SO4') {
+      if (!quietSound) sfxDrop(420);
+      // H2SO4 đi vào acidActive để chạy ĐỘNG HỌC LIÊN TỤC dm/dt mỗi khung hình (sôi bọt 6–9s rồi tự lịm dần khi hết!)
+      ch.acidActive += dVol * 0.42;
+      t.gasType = (t.key === 'NaCl_s') ? 'HCl' : (t.key === 'NaBr_s' ? 'Br2' : 'I2');
+      t.bottomMassMat.uniforms.uCrater.value = 0.85;
+
+      if (ch.solidSalt <= 0.003) {
+        setReactionText('Muối rắn dưới đáy đã phản ứng tan hết 100%!', 'Toàn bộ tinh thể muối khan đã tác dụng hết với H₂SO₄ đặc.');
+      } else if (t.key === 'NaCl_s') {
+        t.badge.update('Đang sủi HCl↑ (sương miệng)', 'rgba(226,232,240,0.9)', '#0f172a');
+        setReactionText(
+          'NaCl(s) + H₂SO₄(đặc) <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 3px;font-size:12px"><small style="font-size:10px;color:#fda4af;margin-bottom:-2px">t°</small>→</span> NaHSO₄ + HCl↑',
+          'Đang sủi bọt trắng mịn liên tục và ăn mòn thấp dần lớp tinh thể NaCl; khí <b>HCl</b> gặp ẩm ở miệng ống tạo chùm sương mờ trắng!'
+        );
+      } else if (t.key === 'NaBr_s') {
+        t.badge.update('Sủi SO₂↑ + Hơi Br₂ nâu đỏ', 'rgba(154,52,18,0.92)', '#ffffff');
+        setReactionText(
+          '2NaBr(s) + 2H₂SO₄(đặc) → Na₂SO₄ + Br₂↑ (nâu đỏ) + SO₂↑ + 2H₂O',
+          'Tinh thể NaBr thấm ướt hóa màu cognac và mòn thấp dần; các búi <b>hơi Br₂ nâu đỏ nặng</b> cuộn lên miệng ống rồi uốn rủ mềm xuống dưới!'
+        );
+      } else if (t.key === 'NaI_s') {
+        t.badge.update('Khói I₂↑ tím + H₂S↑', 'rgba(112,26,117,0.94)', '#ffffff');
+        setReactionText(
+          '8NaI(s) + 5H₂SO₄(đặc) → 4Na₂SO₄ + 4I₂↑ (khói tím) + H₂S↑ + 4H₂O',
+          'Phản ứng mãnh liệt nhất! Bột NaI sẫm đen tím, sủi bọt bốc <b>búi khói I₂ tím thẫm</b> và ngưng kết tinh thể ánh kim trên cổ ống lạnh!'
+        );
+      }
+    }
+
+    updateOpticalTargets(t);
+  }
+
+  function updateOpticalTargets(t) {
+    const ch = t.chem;
+    const totAgI = ch.suspAgI + ch.setAgI;
+    const totAgBr = ch.suspAgBr + ch.setAgBr;
+    const totAgCl = ch.suspAgCl + ch.setAgCl;
+
+    if (totAgI > 0.001) {
+      t.goalPrecipLight.setHex(0xe8d26b);
+      t.goalPrecipShadow.setHex(0xb59a28);
+    } else if (totAgBr > 0.001) {
+      t.goalPrecipLight.setHex(0xf3ebd0);
+      t.goalPrecipShadow.setHex(0xc6bc96);
+    } else {
+      t.goalPrecipLight.setHex(0xf1f5f9);
+      t.goalPrecipShadow.setHex(0xc2ccd8);
+    }
+
+    if (t.uvDarken > 0.01 && (totAgCl > 0 || totAgBr > 0)) {
+      t.goalPrecipLight.lerp(new THREE.Color(0x88819e), Math.min(1, t.uvDarken * 1.1));
+      t.goalPrecipShadow.lerp(new THREE.Color(0x475569), Math.min(1, t.uvDarken * 1.1));
+    }
+
+    let tint = new THREE.Color(1, 1, 1);
+    let optDens = 0.0;
+
+    if (curMode === 'h2so4' && t.gasType) {
+      if (t.gasType === 'HCl') {
+        // Dung dịch H2SO4 đặc + NaHSO4 trong trẻo nhưng có độ sánh khúc xạ nhẹ + bọt sủi rõ!
+        tint.setHex(0xf8fafc); optDens = 0.14;
+      } else if (t.gasType === 'Br2') {
+        const reacted = 1.0 - (ch.solidSalt / 0.36);
+        const w = Math.min(1, reacted * 2.4 + 0.15);
+        tint.setHex(0xfde68a).lerp(new THREE.Color(0xb43c0e), w);
+        optDens = 0.32 + 1.50 * w;
+      } else if (t.gasType === 'I2') {
+        tint.setHex(0x421445); optDens = 2.15;
+      }
+    } else {
+      const aqRemain = (t.orgML > 0.12) ? (1.0 - 0.88 * t.extractProgress) : 1.0;
+      const effI2 = ch.I2 * aqRemain;
+      const effBr2 = ch.Br2 * aqRemain;
+
+      if (effI2 > 0.0015 && ch.Starch > 0.002) {
+        // SỬA LỖI CÂN BẰNG: Khi I2 bị rút sang Hexane (effI2 giảm), độ đậm xanh chàm ở tầng nước giảm mượt tương ứng!
+        const sNorm = Math.min(1, effI2 / 0.045);
+        tint.setHex(0xdbeafe).lerp(new THREE.Color(0x172554), sNorm);
+        optDens = 0.25 + 2.45 * sNorm;
+      } else if (effI2 > 0.0015) {
+        const cNorm = Math.min(1, effI2 / 0.06);
+        tint.setHex(0xfde68a).lerp(new THREE.Color(0x853a0e), cNorm);
+        optDens = 0.28 + 1.55 * cNorm;
+      } else if (effBr2 > 0.0015) {
+        const cNorm = Math.min(1, effBr2 / 0.06);
+        tint.setHex(0xfef08a).lerp(new THREE.Color(0xc2410c), cNorm);
+        optDens = 0.26 + 1.45 * cNorm;
+      } else if (ch.Cl2 > 0.004) {
+        tint.setHex(0xeef7c8); optDens = 0.20;
+      }
+    }
+
+    t.goalTintTop.copy(tint);
+    t.goalDensTop = optDens;
+    t.goalTintBot.setHex(0xffffff).lerp(tint, t.mixProgress);
+    t.goalDensBot = optDens * t.mixProgress;
+
+    if (t.orgML > 0.02) {
+      if (ch.I2 > 0.002) {
+        const cNorm = Math.min(1, ch.I2 / 0.055) * t.extractProgress;
+        t.goalOrgTint.setHex(0xffffff).lerp(new THREE.Color(0x9c2a85), cNorm);
+        t.goalOrgDens = 1.78 * cNorm;
+        if (t.extractProgress > 0.6) t.badge.update('Hexane: TÍM HỒNG I₂', 'rgba(148,32,126,0.92)', '#ffffff');
+      } else if (ch.Br2 > 0.002) {
+        const cNorm = Math.min(1, ch.Br2 / 0.055) * t.extractProgress;
+        t.goalOrgTint.setHex(0xffffff).lerp(new THREE.Color(0xc24914), cNorm);
+        t.goalOrgDens = 1.72 * cNorm;
+        if (t.extractProgress > 0.6) t.badge.update('Hexane: ĐỎ CAM Br₂', 'rgba(180,68,20,0.92)', '#ffffff');
+      } else {
+        t.goalOrgTint.setHex(0xffffff);
+        t.goalOrgDens = 0.0;
+      }
+    }
+  }
+
+  /* ==================== KHỞI TẠO CHẾ ĐỘ ==================== */
+  function getActiveReagent() {
+    const list = MODES[curMode].reagents;
+    for (let i = 0; i < list.length; i++) if (list[i].key === curReagent) return list[i];
+    return list[0];
+  }
+
+  function syncReagUI() {
+    const r = getActiveReagent();
+    $('hudReag').textContent = r.name;
+    pipLiqMat.color.setHex(r.hex);
+    pipLiqMat.opacity = Math.max(0.32, r.dropOp || 0.45);
+    pendantMat.color.setHex(r.hex);
+    streamMat.color.setHex(r.hex);
+    streamMat.opacity = Math.max(0.38, r.dropOp || 0.48);
+  }
+
+  function clearEffectsPool() {
+    for (let i = 0; i < rivuletPool.length; i++) {
+      rivuletPool[i].active = false;
+      rivuletPool[i].mesh.visible = false;
+    }
+    for (let i = 0; i < smokePool.length; i++) {
+      smokePool[i].active = false;
+      smokePool[i].sprite.visible = false;
+    }
+  }
+
+  function setupMode(mKey, autoDemo) {
+    curMode = mKey;
+    pouringTubeIdx = -1;
+    clearEffectsPool();
+    tubes.forEach(function (t) { scene.remove(t.root); scene.remove(t.puddleMesh); });
+    tubeHitMeshes.forEach(function (h) { scene.remove(h); });
+    tubes = []; tubeHitMeshes = [];
+
+    const mCfg = MODES[mKey];
+    $('summaryBox').innerHTML = mCfg.summaryHTML;
+    $('mysteryPanel').style.display = (mKey === 'game') ? 'block' : 'none';
+    $('btnUV').style.display = mCfg.hasUV ? '' : 'none';
+    if (!mCfg.hasUV && uvOn) {
+      uvOn = false; uvSpot.intensity = 0; $('btnUV').classList.remove('on');
+    }
+
+    document.querySelectorAll('#modeTabs button').forEach(function (b) {
+      b.classList.toggle('on', b.getAttribute('data-mode') === mKey);
+    });
+
+    let defs = mCfg.tubes;
+    if (mKey === 'game') {
+      mysteryOrder = ['NaF', 'NaCl', 'NaBr', 'NaI'].sort(function () { return Math.random() - 0.5; });
+      const names = ['Lọ X', 'Lọ Y', 'Lọ Z', 'Lọ T'];
+      defs = mysteryOrder.map(function (k, i) { return { key: k, label: names[i], sub: 'Mất nhãn', accent: '#c084fc' }; });
+      $('gameMsg').className = 'res-msg';
+      document.querySelectorAll('#guessGrid select').forEach(function (s) { s.value = ''; });
+    }
+
+    const xs = defs.length === 4 ? TUBE_X_4 : TUBE_X_3;
+    rebuildRack(xs);
+    defs.forEach(function (d, i) {
+      const tb = createTube(d, xs[i], i);
+      if (d.isSolid) {
+        tb.bottomMassMat.uniforms.uFillH.value = 0.34;
+        tb.bottomMassMat.uniforms.uColLight.value.setHex(0xf8fafc);
+        tb.bottomMassMat.uniforms.uColShadow.value.setHex(0xcbd5e1);
+        tb.bottomMassMat.uniforms.uCrater.value = 0.0;
+      }
+      tubes.push(tb);
+    });
+
+    curReagent = mCfg.reagents[0].key;
+    const rg = $('reagGrid');
+    rg.className = 'reagents' + (mCfg.reagents.length === 4 ? ' two' : '');
+    rg.innerHTML = mCfg.reagents.map(function (r) {
+      return '<button class="reag-btn' + (r.key === curReagent ? ' on' : '') + '" data-r="' + r.key + '">' +
+        '<b><i class="reag-dot" style="background:' + r.col + '"></i>' + r.name + '</b>' +
+        '<small>' + r.sub + '</small></button>';
+    }).join('');
+    rg.querySelectorAll('.reag-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        curReagent = btn.getAttribute('data-r');
+        rg.querySelectorAll('.reag-btn').forEach(function (x) { x.classList.toggle('on', x === btn); });
+        syncReagUI();
+      });
+    });
+    syncReagUI();
+
+    setReactionText(mCfg.title, 'Rê chuột qua ống nghiệm: <b>chạm</b> để nhỏ giọt tức thì, <b>nhấn giữ</b> để bơm thành dòng, <b>gạt ngang</b> để lắc!');
+
+    if (autoDemo && mKey === 'ag') {
+      setTimeout(function () {
+        tubes.forEach(function (t, i) {
+          setTimeout(function () { fireDirectDrop(i, 0.95); }, i * 90);
+        });
+      }, 220);
+    }
+  }
+
+  /* ==================== ĐIỀU KHIỂN TRỰC TIẾP 0MS TRỄ ==================== */
+  let pipGoalX = 0.0, pipGoalY = 3.56;
+  let bulbSqueeze = 0.0, pendantGrow = 0.0;
+  let pouringTubeIdx = -1;
+
+  function fireDirectDrop(tubeIdx, customVol) {
+    const t = tubes[tubeIdx];
+    if (!t) return;
+    const r = getActiveReagent();
+    const tx = t.root.position.x;
+    pipGoalX = tx;
+    pipette.position.x = tx;
+    bulbSqueeze = 1.0;
+    pendantGrow = 1.0; // Giọt phình căng ở đầu vòi pipet trong 0.05s rồi bứt ra rơi!
+
+    // Nếu nhỏ dung dịch nước vào ống đang có lớp Hexane nổi ở trên -> giọt nước rơi XUYÊN QUA lớp Hexane xuống mặt nước dưới!
+    const targetSpan = (r.key !== 'Hexane' && t.orgML > 0.05)
+      ? mlToSpanH(t.aqML)
+      : mlToSpanH(t.aqML + t.orgML);
+    const hitY = Y_INNER_MIN + Math.max(0.18, targetSpan);
+    const rSnap = r.key;
+    const vSnap = customVol || 0.28;
+
+    for (let i = 0; i < drops.length; i++) {
+      const d = drops[i];
+      if (!d.active) {
+        d.active = true;
+        d.x = tx;
+        d.y = pipette.position.y - 0.14;
+        d.vy = r.viscous ? -0.9 : -1.9;
+        d.grav = r.viscous ? 9.0 : 18.5;
+        d.targetY = hitY;
+        d.delay = 0.045; // 45ms phình giọt ở mũi vòi rồi mới đứt cuống!
+        d.onHit = function () { addChemicalVolume(t, rSnap, vSnap, false); };
+        d.mesh.material.color.setHex(r.hex);
+        d.mesh.material.opacity = r.dropOp || 0.45;
+        d.mesh.scale.set(0.82, r.viscous ? 1.72 : 1.35, 0.82);
+        d.mesh.visible = false;
+        break;
+      }
+    }
+  }
+
+  const camTarget = new THREE.Vector3(0, 1.42, 0);
+  let sph = { theta: 0.02, phi: 1.38, radius: 5.60 };
+  let sphGoal = { theta: 0.02, phi: 1.38, radius: 5.60 };
+
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  const zPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+  const planePt = new THREE.Vector3();
+
+  function updateRayFromEvent(e) {
+    const rect = cv.getBoundingClientRect();
+    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+  }
+
+  function getHoveredTube(e) {
+    updateRayFromEvent(e);
+    const hits = raycaster.intersectObjects(tubeHitMeshes, false);
+    return hits.length > 0 ? hits[0].object.userData.tubeIndex : -1;
+  }
+
+  let isDown = false, downTube = -1, lastX = 0, lastY = 0, totalDrag = 0;
+  let holdPourTimer = null, swipeCooldown = 0;
+  let pinchStartDist = 0, pinchStartRadius = 5.60;
+
+  cv.addEventListener('pointerdown', function (e) {
+    getAC();
+    isDown = true;
+    lastX = e.clientX; lastY = e.clientY; totalDrag = 0;
+    downTube = getHoveredTube(e);
+
+    if (downTube >= 0) {
+      fireDirectDrop(downTube, 0.30);
+      clearTimeout(holdPourTimer);
+      holdPourTimer = setTimeout(function () {
+        if (isDown && totalDrag < 10) pouringTubeIdx = downTube;
+      }, 155);
+    }
+  });
+
+  window.addEventListener('pointermove', function (e) {
+    if (!isDown && e.clientX <= stage.getBoundingClientRect().right) {
+      const hIdx = getHoveredTube(e);
+      if (hIdx >= 0 && tubes[hIdx]) {
+        pipGoalX = tubes[hIdx].homeX;
+        pipGoalY = 3.52;
+      } else if (raycaster.ray.intersectPlane(zPlane, planePt)) {
+        pipGoalX = Math.max(-2.6, Math.min(2.6, planePt.x));
+        pipGoalY = 3.72;
+      }
+      return;
+    }
+
+    if (!isDown) return;
+    const dx = e.clientX - lastX, dy = e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    totalDrag += Math.hypot(dx, dy);
+
+    if (pouringTubeIdx >= 0) {
+      const over = getHoveredTube(e);
+      if (over >= 0) {
+        pouringTubeIdx = over;
+        pipGoalX = tubes[over].homeX;
+      }
+      return;
+    }
+
+    if (totalDrag > 9) clearTimeout(holdPourTimer);
+
+    if (downTube >= 0) {
+      const curHit = getHoveredTube(e);
+      const tIdx = curHit >= 0 ? curHit : downTube;
+      if (Math.abs(dx) > 8 && tubes[tIdx] && swipeCooldown <= 0) {
+        shakeTube(tubes[tIdx], Math.min(1.25, Math.abs(dx) / 16));
+        sfxDrop(360 + Math.random() * 120, 0.028);
+        swipeCooldown = 0.11;
+      }
+      return;
+    }
+
+    sphGoal.theta -= dx * 0.0075;
+    sphGoal.phi = Math.max(0.36, Math.min(1.53, sphGoal.phi - dy * 0.0068));
+  });
+
+  window.addEventListener('pointerup', function () {
+    isDown = false; downTube = -1;
+    clearTimeout(holdPourTimer);
+    pouringTubeIdx = -1;
+  });
+
+  cv.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    const factor = e.ctrlKey ? 0.034 : 0.0045;
+    sphGoal.radius = Math.max(2.1, Math.min(11.0, sphGoal.radius * Math.exp(e.deltaY * factor)));
+  }, { passive: false });
+
+  cv.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 2) {
+      clearTimeout(holdPourTimer); pouringTubeIdx = -1; downTube = -1;
+      pinchStartDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      pinchStartRadius = sphGoal.radius;
+    }
+  }, { passive: true });
+  cv.addEventListener('touchmove', function (e) {
+    if (e.touches.length === 2 && pinchStartDist > 8) {
+      const curDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      sphGoal.radius = Math.max(2.1, Math.min(11.0, pinchStartRadius * Math.pow(pinchStartDist / Math.max(12, curDist), 1.5)));
+    }
+  }, { passive: true });
+
+  /* ==================== NÚT BẤM TỐI GIẢN ==================== */
+  document.querySelectorAll('#modeTabs button').forEach(function (b) {
+    b.addEventListener('click', function () { setupMode(b.getAttribute('data-mode'), false); });
+  });
+
+  $('btnAll').addEventListener('click', function () {
+    getAC();
+    tubes.forEach(function (t, i) {
+      setTimeout(function () { fireDirectDrop(i, 1.05); }, i * 95);
+    });
+  });
+
+  $('btnReset').addEventListener('click', function () { setupMode(curMode, false); });
+
+  $('btnUV').addEventListener('click', function () {
+    uvOn = !uvOn;
+    this.classList.toggle('on', uvOn);
+    this.textContent = uvOn ? '☀️ Đang chiếu sáng' : '☀️ Chiếu ánh sáng';
+    uvSpot.intensity = uvOn ? 2.5 : 0;
+    if (uvOn) setReactionText('2AgCl(s, trắng) <span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 3px;font-size:12px"><small style="font-size:10px;color:#fde68a;margin-bottom:-2px">ánh sáng</small>→</span> 2Ag(s, tím xám) + Cl₂(g)', 'Bề mặt kết tủa AgCl chuyển dần sang màu tím xám bạc kèm vi bọt khí Cl₂ cực nhỏ.');
+  });
+
+  $('btnResetCam').addEventListener('click', function () {
+    sphGoal = { theta: 0.02, phi: 1.38, radius: 5.60 };
+  });
+
+  $('btnSound').addEventListener('click', function () {
+    soundOn = !soundOn;
+    this.classList.toggle('on', soundOn);
+    this.textContent = soundOn ? '🔊' : '🔇';
+    if (!soundOn && audioCtx) {
+      if (pourGain) pourGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
+      if (fizzGain) fizzGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
+    }
+  });
+
+  $('btnShuffleGame').addEventListener('click', function () { setupMode('game', false); });
+  $('btnCheckGame').addEventListener('click', function () {
+    let ok = 0;
+    document.querySelectorAll('#guessGrid select').forEach(function (sel) {
+      if (sel.value === mysteryOrder[Number(sel.getAttribute('data-slot'))]) ok++;
+    });
+    const m = $('gameMsg');
+    if (ok === 4) {
+      gameScore++;
+      $('scoreBadge').textContent = 'Điểm: ' + gameScore;
+      m.className = 'res-msg ok';
+      m.innerHTML = '🎉 <b>Chính xác 4/4!</b> X=' + mysteryOrder[0] + ', Y=' + mysteryOrder[1] + ', Z=' + mysteryOrder[2] + ', T=' + mysteryOrder[3] + '.';
+    } else {
+      m.className = 'res-msg err';
+      m.innerHTML = 'Đúng <b>' + ok + '/4</b> lọ. Nhớ nhỏ AgNO₃ rồi thử hòa tan AgCl bằng NH₃ nhé!';
+    }
+  });
+
+  /* ==================== VÒNG LẶP ĐỘNG HỌC & ANIMATION 60 FPS ==================== */
+  function resize() {
+    const w = stage.clientWidth || window.innerWidth;
+    const h = stage.clientHeight || window.innerHeight;
+    camera.aspect = w / Math.max(1, h);
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  setupMode('ag', true);
+
+  const clock = new THREE.Clock();
+
+  let tabVisible = true;
+  document.addEventListener('visibilitychange', function () {
+    tabVisible = !document.hidden;
+    if (tabVisible) { clock.getDelta(); requestAnimationFrame(animate); }
+  });
+
+  function animate() {
+    if (!tabVisible) return;
+    requestAnimationFrame(animate);
+    const dt = Math.min(0.05, clock.getDelta());
+    const tNow = clock.elapsedTime;
+    swipeCooldown = Math.max(0, swipeCooldown - dt);
+
+    // 1. Camera Orbit
+    const kCam = Math.min(1, dt * 15);
+    sph.theta += (sphGoal.theta - sph.theta) * kCam;
+    sph.phi += (sphGoal.phi - sph.phi) * kCam;
+    sph.radius += (sphGoal.radius - sph.radius) * kCam;
+
+    camera.position.set(
+      camTarget.x + sph.radius * Math.sin(sph.phi) * Math.sin(sph.theta),
+      camTarget.y + sph.radius * Math.cos(sph.phi),
+      camTarget.z + sph.radius * Math.sin(sph.phi) * Math.cos(sph.theta)
+    );
+    camera.lookAt(camTarget);
+
+    // 2. Pipet bám con trỏ + Giọt phình đầu vòi + Dòng tia thon nhỏ dần tạo bọt xoáy tại tâm đập!
+    pipette.position.x += (pipGoalX - pipette.position.x) * Math.min(1, dt * 22);
+    pipette.position.y += (pipGoalY - pipette.position.y) * Math.min(1, dt * 18);
+    pipette.rotation.z = (pipGoalX - pipette.position.x) * -0.18;
+
+    bulbSqueeze = Math.max(0, bulbSqueeze - dt * 6.5);
+    if (pendantGrow > 0) {
+      pendantGrow = Math.max(0, pendantGrow - dt * 18.0);
+      const pScale = Math.sin(pendantGrow * Math.PI) * 1.15;
+      pendantDrop.scale.setScalar(Math.max(0.01, pScale));
+      pendantDrop.visible = pScale > 0.05;
+    } else {
+      pendantDrop.visible = false;
+    }
+
+    if (pouringTubeIdx >= 0 && tubes[pouringTubeIdx]) {
+      const pt = tubes[pouringTubeIdx];
+      const r = getActiveReagent();
+      pipGoalX = pt.homeX;
+      pipGoalY = 3.50;
+      bulbSqueeze = 0.86 + 0.11 * Math.sin(tNow * 22);
+
+      const targetSpan = (r.key !== 'Hexane' && pt.orgML > 0.05) ? mlToSpanH(pt.aqML) : mlToSpanH(pt.aqML + pt.orgML);
+      const surfY = Y_INNER_MIN + targetSpan + pt.root.position.y;
+      const tipY = pipette.position.y - 0.13;
+      streamMesh.visible = true;
+      streamMesh.position.set(pipette.position.x, tipY, 0);
+      const jetWobble = 1.0 + Math.sin(tNow * 42) * 0.08;
+      streamMesh.scale.set(jetWobble, Math.max(0.1, tipY - Math.max(Y_INNER_MIN + 0.05, surfY)), jetWobble);
+
+      addChemicalVolume(pt, r.key, 3.4 * dt, true);
+      // Ngay điểm tia nước đập vào mặt thoáng sinh chùm bọt sủi nhỏ xoay tròn!
+      if (Math.random() < 0.65 && pt.aqML > 0.25) spawnMicroBubbles(pt, 2, true, 0xffffff);
+      if (pourGain && audioCtx && soundOn) pourGain.gain.setTargetAtTime(0.05, audioCtx.currentTime, 0.04);
+    } else {
+      streamMesh.visible = false;
+      if (pourGain && audioCtx) pourGain.gain.setTargetAtTime(0.0, audioCtx.currentTime, 0.05);
+    }
+
+    const sq = 1 - bulbSqueeze * 0.26;
+    pipBulb.scale.set(0.92 * sq, 1.52, 0.92 * sq);
+
+    // Hạt giọt rơi từ mũi pipet
+    for (let i = 0; i < drops.length; i++) {
+      const d = drops[i];
+      if (!d.active) continue;
+      if (d.delay > 0) {
+        d.delay -= dt;
+        if (d.delay <= 0) {
+          d.x = pipette.position.x;
+          d.y = pipette.position.y - 0.14;
+          d.mesh.position.set(d.x, d.y, 0);
+          d.mesh.visible = true;
+        }
+        continue;
+      }
+      d.vy -= d.grav * dt;
+      d.y += d.vy * dt;
+      if (d.y <= d.targetY) {
+        d.active = false; d.mesh.visible = false;
+        if (d.onHit) d.onHit();
+      } else {
+        d.mesh.position.set(d.x, d.y, 0);
+      }
+    }
+
+    // 3. Chuyển động Giọt trườn dọc mặt cong ngoài thành kính (Real Overflow Rivulets) -> rơi vào vũng nước!
+    for (let i = 0; i < rivuletPool.length; i++) {
+      const rv = rivuletPool[i];
+      if (!rv.active) continue;
+      const tb = tubes[rv.tubeIdx];
+      if (!tb) { rv.active = false; rv.mesh.visible = false; continue; }
+
+      const tubeBaseY = tb.root.position.y;
+      const botCenterY = TUBE_BOT_Y + tubeBaseY;
+      const southPoleY = botCenterY - TUBE_R;
+
+      if (!rv.freeFall) {
+        rv.vy = Math.min(1.65, rv.vy + 2.8 * dt);
+        rv.y -= rv.vy * dt;
+        let outR = TUBE_R + 0.012;
+        if (rv.y > botCenterY) {
+          // Đang trượt dọc theo thân ống đứng
+          rv.mesh.rotation.set(0, 0, 0);
+        } else if (rv.y > southPoleY + 0.04) {
+          // Ôm sát theo đường cong bán cầu đáy ống nghiệm!
+          const dy = botCenterY - rv.y;
+          outR = Math.sqrt(Math.max(0.001, (TUBE_R + 0.012) * (TUBE_R + 0.012) - dy * dy));
+        } else {
+          // Đứt giọt ở cực đáy ống rơi xuống mặt bàn!
+          rv.freeFall = true;
+          rv.vx = Math.sin(rv.ang) * 0.25;
+          rv.vz = Math.cos(rv.ang) * 0.55;
+        }
+        rv.mesh.position.set(
+          tb.root.position.x + Math.sin(rv.ang) * outR,
+          rv.y,
+          Math.cos(rv.ang) * outR
+        );
+      } else {
+        rv.vy = Math.min(4.5, rv.vy + 9.8 * dt);
+        rv.y -= rv.vy * dt;
+        rv.mesh.position.x += rv.vx * dt;
+        rv.mesh.position.z += rv.vz * dt;
+        if (rv.y <= 0.015) {
+          rv.active = false;
+          rv.mesh.visible = false;
+          // Chạm bàn: làm loang to vũng nước và gợn sóng trên vũng nước!
+          tb.puddleVol = Math.min(1.0, tb.puddleVol + 0.085);
+          tb.puddleRipple = 1.0;
+        }
+      }
+    }
+
+    // 4. Chuyển động các Đám khói mềm đối lưu (xoay tròn, nở to & rơi uốn cong theo tỉ trọng Br2 / I2 / HCl!)
+    for (let i = 0; i < smokePool.length; i++) {
+      const sp = smokePool[i];
+      if (!sp.active) continue;
+      sp.life -= dt;
+      if (sp.life <= 0) { sp.active = false; sp.sprite.visible = false; continue; }
+
+      const prog = 1.0 - (sp.life / sp.maxLife);
+      const aboveMouth = sp.y > (Y_MOUTH + 0.02);
+
+      if (sp.gasKind === 'Br2' && aboveMouth) {
+        // Hơi Br2 nặng gấp 5.5 lần không khí -> tràn qua vành miệng ống rồi uốn rủ mềm xuống dưới!
+        sp.vx += (0.28 - sp.vx) * dt * 2.5;
+        sp.vy -= 1.05 * dt; // Trọng lực kéo đám hơi nâu đỏ chìm là là xuống!
+      } else if (aboveMouth) {
+        sp.vx += Math.sin(tNow * 2.2 + i) * 0.18 * dt;
+        sp.vy = Math.max(0.22, sp.vy - 0.15 * dt);
+      } else {
+        // Xoắn ốc nhẹ bên trong lòng ống nghiệm
+        sp.vx = Math.cos(tNow * 3.2 + i) * 0.09;
+        sp.vz = Math.sin(tNow * 3.2 + i) * 0.09;
+      }
+
+      sp.x += sp.vx * dt;
+      sp.y += sp.vy * dt;
+      sp.z += sp.vz * dt;
+      // Giữ trong lòng ống khi chưa thoát ra miệng ống
+      if (!aboveMouth) {
+        const dx = sp.x - sp.tubeHomeX;
+        const distXZ = Math.hypot(dx, sp.z);
+        if (distXZ > LIQ_R * 0.52) {
+          const k = (LIQ_R * 0.52) / distXZ;
+          sp.x = sp.tubeHomeX + dx * k;
+          sp.z *= k;
+        }
+      }
+
+      sp.mat.rotation += sp.rotSpd * dt;
+      const sc = sp.s0 + (sp.s1 - sp.s0) * Math.pow(prog, 0.72) * (aboveMouth ? 1.35 : 1.0);
+      sp.sprite.scale.set(sc, sc, 1);
+      sp.sprite.position.set(sp.x, sp.y, sp.z);
+
+      let envOp = Math.sin(Math.min(1, prog * 1.15) * Math.PI);
+      if (sp.gasKind === 'HCl') {
+        // HCl trong lòng ống khô gần như trong suốt, ra tới miệng ống ẩm mới hiện sương mù trắng!
+        const mouthFade = Math.max(0.06, Math.min(1.0, (sp.y - (Y_MOUTH - 0.28)) / 0.35));
+        envOp *= mouthFade;
+      }
+      sp.mat.opacity = envOp * sp.maxOp;
+    }
+
+    // 5. Động học từng ống nghiệm (60 FPS Continuous Kinetics)
+    let totalFizzRate = 0;
+
+    for (let i = 0; i < tubes.length; i++) {
+      const tb = tubes[i];
+      const ch = tb.chem;
+
+      // A. Lắc lò xo tắt dần mượt tự nhiên (Damped Harmonic Oscillator)
+      tb.shakeVel += (-180.0 * tb.shakePos - 11.5 * tb.shakeVel) * dt;
+      tb.shakePos += tb.shakeVel * dt;
+      tb.pivot.rotation.z = Math.max(-0.42, Math.min(0.42, tb.shakePos * 0.065));
+      tb.root.position.y = Math.min(0.18, Math.abs(tb.shakePos) * 0.04);
+
+      tb.sloshVel += (-32.0 * tb.sloshAngle - 4.2 * tb.sloshVel) * dt;
+      tb.sloshAngle += tb.sloshVel * dt;
+      const slope = Math.max(-0.52, Math.min(0.52, -tb.pivot.rotation.z * 0.72 + tb.sloshAngle * 0.15));
+
+      if (tb.mixProgress < 1.0) tb.mixProgress = Math.min(1.0, tb.mixProgress + dt * 0.045);
+
+      // B. ĐỘNG HỌC LIÊN TỤC TAB 3 (Muối rắn + H2SO4 đặc ăn mòn liên tục dm/dt, sủi bọt & sinh khói theo tốc độ thực!)
+      if (tb.isSolid && ch.solidSalt > 0.001 && ch.acidActive > 0.001) {
+        const speedK = (tb.key === 'NaI_s') ? 0.52 : (tb.key === 'NaBr_s' ? 0.38 : 0.34);
+        const dm = Math.min(ch.solidSalt, Math.min(ch.acidActive, speedK * (0.08 + ch.solidSalt) * dt));
+        ch.solidSalt = Math.max(0, ch.solidSalt - dm);
+        ch.acidActive = Math.max(0, ch.acidActive - dm * 1.15);
+        tb.rxnRateNow = dm / Math.max(0.001, dt); // Tốc độ tức thời!
+        totalFizzRate += tb.rxnRateNow;
+
+        tb.steamAmt = Math.min(1.0, tb.steamAmt + dm * 2.2);
+        if (tb.gasType === 'I2') tb.iodineFrost = Math.min(1.0, tb.iodineFrost + dm * 2.4);
+
+        // Sủi lớp bọt trắng sôi liên tục tỉ lệ với tốc độ phản ứng
+        if (Math.random() < Math.min(0.92, tb.rxnRateNow * 14.0)) {
+          const bCol = tb.gasType === 'Br2' ? 0xfed7aa : (tb.gasType === 'I2' ? 0xfef08a : 0xffffff);
+          spawnMicroBubbles(tb, 3, true, bCol);
+          spawnMicroBubbles(tb, 2, false, 0xffffff);
+        }
+
+        // Sinh các đám khói mềm đối lưu tỉ lệ với tốc độ phản ứng (hết phản ứng tự ngừng sinh khói!)
+        tb.smokeEmitAccum += tb.rxnRateNow * 58.0 * dt;
+        while (tb.smokeEmitAccum >= 1.0) {
+          tb.smokeEmitAccum -= 1.0;
+          spawnSmokePuff(tb, tb.gasType, Math.min(1.0, 0.45 + tb.rxnRateNow * 6.0));
+        }
+
+        // Màu khối muối thấm ướt sẫm dần mượt mà
+        if (tb.key === 'NaBr_s') {
+          tb.bottomMassMat.uniforms.uColLight.value.lerp(new THREE.Color(0xd97706), dt * 2.5);
+          tb.bottomMassMat.uniforms.uColShadow.value.lerp(new THREE.Color(0x7c2d12), dt * 2.5);
+        } else if (tb.key === 'NaI_s') {
+          tb.bottomMassMat.uniforms.uColLight.value.lerp(new THREE.Color(0x3b0764), dt * 3.5);
+          tb.bottomMassMat.uniforms.uColShadow.value.lerp(new THREE.Color(0x1e0536), dt * 3.5);
+        }
+        updateOpticalTargets(tb);
+      } else {
+        tb.rxnRateNow *= 0.88;
+        tb.steamAmt = Math.max(0, tb.steamAmt - dt * 0.04);
+      }
+
+      tb.sideGlassMat.uniforms.uSteamAmt.value = tb.steamAmt;
+      tb.sideGlassMat.uniforms.uIodineFrost.value = tb.iodineFrost;
+
+      // C. CHUỖI NHÂN-QUẢ SA LẮNG KẾT TỦA (Búi nấm cuộn xuống -> chạm đáy mới tích tụ cặn + mặt biên lắng hạ thấp!)
+      if (tb.mushroomAmp > 0.005) {
+        tb.mushroomProg = Math.min(1.0, tb.mushroomProg + dt * 1.35);
+        tb.mushroomAmp = Math.max(0, tb.mushroomAmp - dt * 0.62);
+      }
+
+      const hno3Boost = ch.HNO3 > 0.01 ? 2.4 : 1.0;
+      // Chỉ bắt đầu chuyển từ mây lơ lửng sang lớp cặn đáy sau khi búi mây đã rơi qua nửa ống (mushroomProg > 0.42)!
+      if (tb.mushroomProg > 0.42 || tb.mushroomAmp < 0.05) {
+        if (ch.suspAgCl > 0.0002) {
+          const ds = ch.suspAgCl * Math.min(1, dt * 0.52 * hno3Boost);
+          ch.suspAgCl -= ds; ch.setAgCl += ds;
+        }
+        if (ch.suspAgBr > 0.0002) {
+          const ds = ch.suspAgBr * Math.min(1, dt * 0.28 * hno3Boost);
+          ch.suspAgBr -= ds; ch.setAgBr += ds;
+        }
+        if (ch.suspAgI > 0.0002) {
+          const ds = ch.suspAgI * Math.min(1, dt * 0.36 * hno3Boost);
+          ch.suspAgI -= ds; ch.setAgI += ds;
+        }
+      }
+
+      if (uvOn && (ch.setAgCl + ch.suspAgCl > 0.005 || ch.setAgBr + ch.suspAgBr > 0.005)) {
+        const rate = (ch.setAgCl + ch.suspAgCl > 0) ? 0.18 : 0.08;
+        tb.uvDarken = Math.min(0.95, tb.uvDarken + dt * rate);
+        if (Math.random() < 0.12) spawnMicroBubbles(tb, 1, false, 0xe2e8f0);
+        updateOpticalTargets(tb);
+      }
+
+      // Cập nhật Khối Chất Rắn (Tab 3) HOẶC Khối Cặn Kết Tủa Đáy (Tab 1 & 4) bằng chiều cao tuyệt đối từ cực đáy!
+      if (tb.isSolid) {
+        const targetSaltH = (ch.solidSalt / 0.36) * 0.34;
+        const curH = tb.bottomMassMat.uniforms.uFillH.value;
+        const nextH = curH + (targetSaltH - curH) * Math.min(1, dt * 8);
+        tb.bottomMassMesh.visible = nextH > 0.004;
+        tb.bottomMassMat.uniforms.uFillH.value = nextH;
+        tb.bottomMassMat.uniforms.uSlosh.value = slope * 0.4;
+      } else {
+        const totSettled = ch.setAgCl + ch.setAgBr + ch.setAgI;
+        // Chiều cao vật lý tuyệt đối theo số mmol đã lắng (0.22 mmol -> cao 0.34m, KHÔNG PHÌNH TO khi bơm thêm nước!)
+        const targetSedH = Math.min(0.46, (totSettled / 0.22) * 0.34);
+        const curSedH = tb.bottomMassMat.uniforms.uFillH.value;
+        const nextSedH = curSedH + (targetSedH - curSedH) * Math.min(1, dt * 6);
+        tb.bottomMassMesh.visible = nextSedH > 0.004;
+        tb.bottomMassMat.uniforms.uFillH.value = nextSedH;
+        tb.bottomMassMat.uniforms.uSlosh.value = slope * 0.65;
+        tb.bottomMassMat.uniforms.uColLight.value.lerp(tb.goalPrecipLight, Math.min(1, dt * 8));
+        tb.bottomMassMat.uniforms.uColShadow.value.lerp(tb.goalPrecipShadow, Math.min(1, dt * 8));
+        tb.bottomMassMat.uniforms.uCrater.value *= 0.94;
+      }
+
+      // D. Cập nhật Cột chất lỏng liền mạch & Mặt biên lắng hạ thấp dần từ trên xuống!
+      const aqSpan = mlToSpanH(tb.aqML);
+      const totalSpan = mlToSpanH(tb.aqML + tb.orgML);
+      const orgSpan = Math.max(0, totalSpan - aqSpan);
+      const aqTopY = Y_INNER_MIN + aqSpan;
+
+      tb.liqMesh.visible = tb.aqML > 0.015;
+      const u = tb.liqUniforms;
+      u.uTime.value = tNow;
+      u.uSpanH.value += (Math.max(0.02, aqSpan) - u.uSpanH.value) * Math.min(1, dt * 14);
+      u.uSlosh.value = slope;
+      u.uTintTop.value.lerp(tb.goalTintTop, Math.min(1, dt * 9));
+      u.uTintBot.value.lerp(tb.goalTintBot, Math.min(1, dt * 9));
+      u.uOptDensTop.value += (tb.goalDensTop - u.uOptDensTop.value) * Math.min(1, dt * 9);
+      u.uOptDensBot.value += (tb.goalDensBot - u.uOptDensBot.value) * Math.min(1, dt * 9);
+
+      u.uMushroomProg.value = tb.mushroomProg;
+      u.uMushroomAmp.value = tb.mushroomAmp;
+
+      const totSusp = ch.suspAgCl + ch.suspAgBr + ch.suspAgI;
+      const totPrecipAll = totSusp + ch.setAgCl + ch.setAgBr + ch.setAgI;
+      if (totPrecipAll > 0.002) {
+        const suspFrac = Math.min(1.0, totSusp / 0.16);
+        u.uSuspendedAmt.value += (suspFrac - u.uSuspendedAmt.value) * Math.min(1, dt * 8);
+        // Mặt biên lắng hạ thấp từ 1.0 xuống sát đỉnh lớp cặn -> phần nước phía trên trong vắt dần từ trên xuống!
+        const sedRatioInSpan = tb.bottomMassMat.uniforms.uFillH.value / Math.max(0.2, u.uSpanH.value);
+        const goalCeiling = Math.max(sedRatioInSpan + 0.05, sedRatioInSpan + suspFrac * (1.0 - sedRatioInSpan));
+        tb.settlingCeiling += (goalCeiling - tb.settlingCeiling) * Math.min(1, dt * 2.2);
+        u.uSettlingCeiling.value = tb.settlingCeiling;
+        u.uPrecipLight.value.copy(tb.bottomMassMat.uniforms.uColLight.value);
+        u.uPrecipShadow.value.copy(tb.bottomMassMat.uniforms.uColShadow.value);
+      } else {
+        u.uSuspendedAmt.value *= 0.82;
+      }
+
+      // E. Mặt khum tầng nước (biến thành Đĩa Mặt Phân Cách 3D khi có Hexane ở trên, hoặc phồng vòm khi đầy sát 10 mL!)
+      tb.meniscusImpact = Math.max(0, tb.meniscusImpact - dt * 2.2);
+      const fullnessDome = Math.max(0, Math.min(1, ((tb.aqML + tb.orgML) - 9.55) / 0.45));
+
+      tb.aqMeniscusMesh.visible = tb.aqML > 0.025;
+      tb.aqMeniscusMesh.position.y = Y_INNER_MIN + u.uSpanH.value;
+      // Ở chỏm đáy cầu nhỏ hơn 1.15 mL, co bán kính đĩa mặt khum vừa khít thành cầu!
+      const curTopR = innerRadiusAtH(u.uSpanH.value) / LIQ_R;
+      tb.aqMeniscusMesh.scale.set(curTopR, curTopR, 1);
+
+      tb.aqMeniscusMat.uniforms.uTime.value = tNow;
+      tb.aqMeniscusMat.uniforms.uTint.value.copy(u.uTintTop.value);
+      tb.aqMeniscusMat.uniforms.uDens.value = u.uOptDensTop.value;
+      tb.aqMeniscusMat.uniforms.uCloudAmt.value = Math.max(u.uMushroomAmp.value * u.uJetIsOpaque.value, u.uSuspendedAmt.value * 0.55);
+      tb.aqMeniscusMat.uniforms.uCloudCol.value.copy(u.uPrecipLight.value);
+      tb.aqMeniscusMat.uniforms.uSlosh.value = slope;
+      tb.aqMeniscusMat.uniforms.uDome.value = (orgSpan < 0.01) ? fullnessDome : 0.0;
+      tb.aqMeniscusMat.uniforms.uImpact.value = tb.meniscusImpact;
+
+      // F. Hạt cầu Nhũ tương nổi ngược lên & Tầng hữu cơ Hexane
+      if (tb.emulsionTimer > 0) {
+        tb.emulsionTimer = Math.max(0, tb.emulsionTimer - dt);
+        tb.extractProgress = Math.min(1.0, tb.extractProgress + dt * 0.45);
+        const interfaceY = Y_INNER_MIN + u.uSpanH.value;
+        for (let e = 0; e < tb.emulDrops.length; e++) {
+          const ed = tb.emulDrops[e];
+          if (!ed.active) continue;
+          ed.y += ed.vy * dt;
+          ed.mesh.position.set(ed.x + Math.sin(tNow * 7 + e) * 0.012, ed.y, ed.z);
+          if (ed.y >= interfaceY + orgSpan * 0.4 || tb.emulsionTimer <= 0.03) {
+            ed.active = false; ed.mesh.visible = false;
+          }
+        }
+        updateOpticalTargets(tb);
+      }
+
+      if (orgSpan > 0.010) {
+        tb.orgMesh.visible = true;
+        tb.orgMesh.position.y = Y_INNER_MIN + u.uSpanH.value;
+        tb.orgMat.uniforms.uTime.value = tNow;
+        tb.orgMat.uniforms.uHeight.value = orgSpan;
+        tb.orgMat.uniforms.uSlosh.value = slope;
+        tb.orgMat.uniforms.uTint.value.lerp(tb.goalOrgTint, Math.min(1, dt * 7));
+        tb.orgMat.uniforms.uDens.value += (tb.goalOrgDens - tb.orgMat.uniforms.uDens.value) * Math.min(1, dt * 7);
+
+        tb.orgTopMeniscus.visible = true;
+        tb.orgTopMeniscus.position.y = Y_INNER_MIN + u.uSpanH.value + orgSpan;
+        tb.orgTopMeniscusMat.uniforms.uTime.value = tNow;
+        tb.orgTopMeniscusMat.uniforms.uTint.value.copy(tb.orgMat.uniforms.uTint.value);
+        tb.orgTopMeniscusMat.uniforms.uDens.value = tb.orgMat.uniforms.uDens.value;
+        tb.orgTopMeniscusMat.uniforms.uSlosh.value = slope;
+        tb.orgTopMeniscusMat.uniforms.uDome.value = fullnessDome;
+        tb.orgTopMeniscusMat.uniforms.uImpact.value = tb.meniscusImpact;
+      } else {
+        tb.orgMesh.visible = false;
+        tb.orgTopMeniscus.visible = false;
+      }
+
+      // G. Vũng tràn bất đối xứng trên mặt bàn
+      tb.puddleRipple = Math.max(0, tb.puddleRipple - dt * 1.8);
+      tb.puddleMat.uniforms.uTime.value = tNow;
+      tb.puddleMat.uniforms.uRipple.value = tb.puddleRipple;
+      tb.puddleMat.uniforms.uColorStrength.value = tb.puddleColorStrength;
+      tb.puddleMat.uniforms.uVisibleAmt.value = tb.puddleVol;
+      if (tb.puddleVol > 0.002) {
+        const goalSc = 0.28 + tb.puddleVol * 0.95;
+        const curSc = tb.puddleMesh.scale.x;
+        tb.puddleMesh.scale.setScalar(curSc + (goalSc - curSc) * Math.min(1, dt * 5));
+      }
+
+      // H. Vi bọt khí sủi
+      let bubDirty = false;
+      const topLim = aqTopY + orgSpan;
+      for (let b = 0; b < tb.bubVel.length; b++) {
+        const bv = tb.bubVel[b];
+        if (bv.life > 0) {
+          bubDirty = true;
+          bv.life -= dt;
+          if (bv.isFoam) {
+            tb.bubPos[b * 3 + 1] = Math.min(topLim, tb.bubPos[b * 3 + 1] + bv.vy * dt * 0.3);
+          } else {
+            tb.bubPos[b * 3 + 1] += bv.vy * dt;
+          }
+          tb.bubPos[b * 3] += Math.sin(tNow * 10 + b) * 0.022 * dt;
+          if (bv.life <= 0 || (!bv.isFoam && tb.bubPos[b * 3 + 1] > Math.max(Y_INNER_MIN + 0.30, topLim))) {
+            bv.life = 0; tb.bubPos[b * 3 + 1] = -99;
+          }
+        }
+      }
+      if (bubDirty) tb.bubGeo.attributes.position.needsUpdate = true;
+    }
+
+    // Điều chỉnh âm lượng sủi bọt liên tục theo tổng tốc độ phản ứng dm/dt đang diễn ra!
+    if (fizzGain && audioCtx && soundOn) {
+      const targetFizzVol = Math.min(0.055, totalFizzRate * 0.45);
+      fizzGain.gain.setTargetAtTime(targetFizzVol, audioCtx.currentTime, 0.08);
+    }
+
+    renderer.render(scene, camera);
+  }
+  animate();
+}
+</script>
+</body>
+</html>

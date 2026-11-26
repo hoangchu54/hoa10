@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mạng tinh thể NaCl 3D (Rắn · Nóng chảy · Hòa tan) — Hóa 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#070b14;
+    --the:#101726;
+    --vien:rgba(148,163,184,.16);
+    --chu:#e8eef7;
+    --phu:#94a3b8;
+    --tim:#7aa2f7;
+    --na:#7c3aed;
+    --cl:#16a34a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--nen);color:var(--chu);font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;overflow:hidden;user-select:none}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 368px;height:100dvh}
+  .stage{position:relative;min-height:0;touch-action:none;background:radial-gradient(120% 90% at 50% 0%,#122038 0%,#0a111f 62%,#060a12 100%);overflow:hidden}
+  #cv{display:block;width:100%;height:100%;cursor:grab}
+  #cv:active{cursor:grabbing}
+
+  .hud{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;z-index:3}
+  .hud-left,.hud-right{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:rgba(12,9,24,.82);border:1px solid var(--vien);border-radius:99px;padding:6px 12px;font-size:12.1px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+  .chip i{display:inline-block;width:10px;height:10px;border-radius:50%}
+  .chip b{color:#fde68a;font-weight:800}
+  .chip.cond-on{border-color:rgba(250,204,21,.5);color:#fef08a}
+  .hud-btn{pointer-events:auto;cursor:pointer;min-height:34px;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(21,16,38,.86);border:1px solid var(--vien);color:var(--chu);transition:.15s}
+  .hud-btn:hover{border-color:rgba(255,255,255,.35);transform:translateY(-1px)}
+  .hud-btn.on{background:linear-gradient(90deg,#6d28d9,#db2777);border-color:#f9a8d4;color:#fff}
+
+  .cam-bar{position:absolute;left:14px;bottom:46px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+  .hint-bar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(12,9,24,.78);border:1px solid var(--vien);border-radius:99px;padding:6px 14px;font-size:11.6px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
+  .hint-bar b{color:#f8fafc}
+
+  .side{background:var(--the);border-left:1px solid var(--vien);padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:11px}
+  h1{font-size:16.5px;margin:0;line-height:1.3}
+  .tag{display:inline-block;background:rgba(224,69,107,.18);color:#ff8fa8;border-radius:99px;padding:2px 10px;font-size:11px;font-weight:800;margin-bottom:4px}
+
+  .mode-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;background:rgba(0,0,0,.3);padding:4px;border-radius:11px;border:1px solid var(--vien)}
+  .mode-tabs button{min-height:36px;padding:5px 4px;border:0;border-radius:8px;font-size:11.8px;background:transparent;color:var(--phu)}
+  .mode-tabs button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);color:#fff;box-shadow:0 4px 12px rgba(109,40,217,.36)}
+
+  .box{background:rgba(255,255,255,.038);border:1px solid var(--vien);border-radius:13px;padding:10px 12px}
+  .box h3{margin:0 0 8px;font-size:11.3px;letter-spacing:.06em;text-transform:uppercase;color:var(--tim);display:flex;justify-content:space-between;align-items:center}
+
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{flex:1}
+  button{font:inherit;font-weight:700;font-size:12.5px;border:1px solid var(--vien);background:rgba(255,255,255,.06);color:var(--chu);border-radius:10px;padding:8px 10px;min-height:40px;cursor:pointer;transition:.15s}
+  button:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.28)}
+  button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);border-color:rgba(255,255,255,.3);color:#fff}
+  .chinh{width:100%;background:linear-gradient(90deg,#e0456b,#7c3aed);border:0;color:#fff;font-size:13.6px;margin-top:8px;box-shadow:0 6px 16px rgba(224,69,107,.28)}
+  .chinh:hover{filter:brightness(1.08)}
+  .chinh.water{background:linear-gradient(90deg,#0284c7,#7c3aed)}
+  .chinh.fire{background:linear-gradient(90deg,#ea580c,#dc2626)}
+
+  label.row{display:flex;align-items:center;gap:8px;font-size:12.6px;margin:5px 0;cursor:pointer}
+  input[type=range]{width:100%;accent-color:var(--tim);cursor:pointer}
+  input[type=checkbox]{accent-color:var(--tim);width:17px;height:17px;cursor:pointer}
+
+  .prog{height:8px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;margin-top:7px}
+  .prog i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#38bdf8,#a78bfa);transition:width .2s}
+
+  .kq{font-size:12.6px;line-height:1.56;color:#cbd5e1}
+  .kq b{color:#bae6fd}
+  .kq .na{color:#a78bfa;font-weight:800}
+  .kq .cl{color:#4ade80;font-weight:800}
+  .q{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.35)}
+  .q h3{color:#86efac}
+  .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--phu);background:var(--nen);z-index:10}
+
+  @media (max-width:860px){
+    html,body{overflow:auto}
+    .wrap{grid-template-columns:1fr;grid-template-rows:58dvh auto;height:auto}
+    .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
+    .cam-bar{bottom:10px}
+    .hint-bar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="hud">
+      <div class="hud-left">
+        <span class="chip"><i style="background:var(--na);box-shadow:0 0 8px var(--na)"></i>Na⁺ (102 pm)</span>
+        <span class="chip"><i style="background:var(--cl);box-shadow:0 0 8px var(--cl)"></i>Cl⁻ (181 pm)</span>
+        <span class="chip" id="chipCond">⚡ Dẫn điện: <b id="condTxt">Không (rắn)</b></span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn on" id="btnSound" title="Bật/tắt âm thanh">🔊</button>
+      </div>
+    </div>
+
+    <div class="cam-bar">
+      <button class="hud-btn" data-cam="iso">🎥 Góc chéo</button>
+      <button class="hud-btn" data-cam="front">📐 Chính diện</button>
+      <button class="hud-btn" data-cam="corner">💎 Trục chéo lập phương</button>
+    </div>
+
+    <div class="hint-bar" id="hint">🖱️ Kéo để xoay 360° · Cuộn để zoom · <b>Chạm 1 ion</b> để hiện khối bát diện 6 ion bao quanh</div>
+    <div class="fallback" id="fb">Thiết bị chưa bật WebGL hoặc không nạp được Three.js nên không hiển thị được mô hình 3D.</div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <span class="tag">Bài 11 · Liên kết ion · Tinh thể &amp; Trạng thái</span>
+      <h1>Mạng tinh thể Sodium chloride (NaCl) 3D</h1>
+    </div>
+
+    <div class="mode-tabs" id="modeTabs">
+      <button class="on" data-mode="solid">💎 Mạng rắn</button>
+      <button data-mode="melt">🔥 Nóng chảy</button>
+      <button data-mode="dissolve">💧 Hòa tan H₂O</button>
+    </div>
+
+    <!-- Panel Chế độ 1: Mạng rắn -->
+    <div id="panelSolid">
+      <div class="box">
+        <h3>Kiểu hiển thị &amp; Kích thước</h3>
+        <div class="seg" id="kieu">
+          <button data-k="que" class="on">Quả cầu – thanh nối</button>
+          <button data-k="dac">Đặc khít (tỉ lệ thật)</button>
+        </div>
+        <div class="seg" id="co" style="margin-top:7px">
+          <button data-n="1">1 ô mạng</button>
+          <button data-n="2" class="on">2×2×2</button>
+          <button data-n="3">3×3×3</button>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:11px">
+        <h3>Tùy chọn quan sát</h3>
+        <label class="row"><input type="checkbox" id="oMang" checked> Hiện khung ô mạng cơ sở (a ≈ 564 pm)</label>
+        <label class="row"><input type="checkbox" id="tuXoay" checked> Tự xoay chậm</label>
+        <label class="row"><input type="checkbox" id="anNa"> Ẩn ion Na⁺</label>
+        <label class="row"><input type="checkbox" id="anCl"> Ẩn ion Cl⁻</label>
+        <div style="font-size:12.4px;margin-top:7px">Cắt lớp từ trên xuống: <b id="lopTxt">tất cả</b></div>
+        <input type="range" id="lop" min="1" max="5" value="5">
+      </div>
+    </div>
+
+    <!-- Panel Chế độ 2: Nóng chảy 801 °C -->
+    <div id="panelMelt" style="display:none">
+      <div class="box">
+        <h3><span>🔥 Nung nóng mạng tinh thể</span> <b id="tempTxt" style="color:#fda4af">25 °C</b></h3>
+        <input type="range" id="tempRange" min="25" max="1000" value="25" step="5">
+        <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--phu);margin-top:2px">
+          <span>25 °C (Rắn)</span><span style="color:#fbbf24">801 °C (t°<sub>nc</sub>)</span><span>1000 °C (Lỏng)</span>
+        </div>
+        <button class="chinh fire" id="btnAutoMelt">🔥 Nung vượt 801 °C (Phá vỡ mạng)</button>
+        <button style="width:100%;margin-top:6px" id="btnCoolSolid">❄️ Hạ nhiệt về 25 °C (Tái kết tinh)</button>
+      </div>
+    </div>
+
+    <!-- Panel Chế độ 3: Hòa tan trong nước -->
+    <div id="panelDissolve" style="display:none">
+      <div class="box">
+        <h3><span>💧 Hòa tan NaCl vào nước (H₂O)</span> <b id="dissPct" style="color:#7dd3fc">0%</b></h3>
+        <div class="kq">Phân tử <b>H₂O phân cực</b> (O<sup>δ−</sup> đỏ, H<sup>δ+</sup> trắng) tiến vào bóc tách từng ion Na⁺ và Cl⁻ từ lớp ngoài vào trong cho tới khi <b>tinh thể rắn tan biến hoàn toàn</b>!</div>
+        <div class="prog"><i id="dissBar"></i></div>
+        <button class="chinh water" id="btnStartDiss">💧 Thả tinh thể vào nước &amp; Hòa tan</button>
+        <button style="width:100%;margin-top:6px" id="btnResetDiss">↺ Kết tinh lại khối NaCl ban đầu</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>Kết quả quan sát real-time</h3>
+      <div class="kq" id="kq">Chạm vào một ion bất kỳ để thấy <b>6 ion trái dấu</b> xếp thành hình bát diện bao quanh.</div>
+    </div>
+
+    <div class="box kq">
+      <h3>Ghi nhớ chuẩn SGK Hóa 10</h3>
+      • Mỗi ion <span class="na">Na⁺</span> được bao quanh bởi <b>6</b> ion <span class="cl">Cl⁻</span> và ngược lại (số phối trí <b>6 : 6</b>, hình bát diện).<br>
+      • Trong 1 ô mạng cơ sở có <b>4 Na⁺</b> và <b>4 Cl⁻</b> → tỉ lệ 1 : 1, công thức <b>NaCl</b>.<br>
+      • Lực hút tĩnh điện bền vững → t°<sub>nc</sub> rất cao (<b>801 °C</b>).<br>
+      • <b>NaCl rắn</b> không dẫn điện (ion bị giữ chặt tại nút mạng), nhưng <b>NaCl nóng chảy</b> và <b>dung dịch NaCl</b> dẫn điện tốt vì các ion chuyển động tự do.
+    </div>
+
+    <div class="box q">
+      <h3>Câu hỏi tự kiểm tra</h3>
+      <div class="kq">1. Ở chế độ <b>Hòa tan H₂O</b>, đầu nào của phân tử nước (O đỏ hay H trắng) quay vào hút ion Na⁺? Đầu nào hút Cl⁻?<br>2. Vì sao tinh thể NaCl cứng, giòn và có nhiệt độ nóng chảy cao tới 801 °C?</div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function loadThreeAndBoot() {
+  var MIRRORS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+    'https://unpkg.com/three@0.128.0/build/three.min.js'
+  ];
+  var idx = 0;
+  function fail() { document.getElementById('fb').style.display = 'flex'; }
+  function next() {
+    if (window.THREE && window.THREE.WebGLRenderer) { bootNaClApp(window.THREE); return; }
+    if (idx >= MIRRORS.length) { fail(); return; }
+    var s = document.createElement('script');
+    s.src = MIRRORS[idx++];
+    s.async = true;
+    s.onload = function () {
+      if (window.THREE && window.THREE.WebGLRenderer) bootNaClApp(window.THREE);
+      else next();
+    };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+
+function bootNaClApp(THREE) {
+  'use strict';
+  const $ = function (id) { return document.getElementById(id); };
+  const stage = $('stage'), cv = $('cv');
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+  catch (e) { $('fb').style.display = 'flex'; return; }
+
+  const isLow = (window.innerWidth < 720) || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+  renderer.setPixelRatio(Math.min(isLow ? 1.5 : 2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.02;
+
+  const scene = new THREE.Scene();
+
+  /* ==================== STUDIO IBL TONE LẠNH DỊU MẮT ==================== */
+  (function buildEnvMap() {
+    if (!THREE.PMREMGenerator) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const es = new THREE.Scene();
+    es.background = new THREE.Color(0x0b1220);
+    const sTop = new THREE.Mesh(new THREE.PlaneGeometry(16, 8), new THREE.MeshBasicMaterial({ color: 0x94a3b8, side: THREE.DoubleSide }));
+    sTop.position.set(0, 9, 3); sTop.lookAt(0, 0, 0); es.add(sTop);
+    const sL = new THREE.Mesh(new THREE.PlaneGeometry(7, 12), new THREE.MeshBasicMaterial({ color: 0x7aa2d4, side: THREE.DoubleSide }));
+    sL.position.set(-10, 2, 2); sL.lookAt(0, 0, 0); es.add(sL);
+    const sR = new THREE.Mesh(new THREE.PlaneGeometry(7, 12), new THREE.MeshBasicMaterial({ color: 0x64a6a6, side: THREE.DoubleSide }));
+    sR.position.set(10, 2, 2); sR.lookAt(0, 0, 0); es.add(sR);
+    scene.environment = pmrem.fromScene(es, 0.06).texture;
+    pmrem.dispose();
+  })();
+
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
+  scene.add(new THREE.HemisphereLight(0xe2e8f0, 0x0f172a, 0.62));
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.05);
+  keyLight.position.set(7, 11, 9);
+  scene.add(keyLight);
+  const rimLight = new THREE.DirectionalLight(0x94a3b8, 0.36);
+  rimLight.position.set(-8, -5, -7);
+  scene.add(rimLight);
+  const heatGlowLight = new THREE.PointLight(0xd97706, 0, 14);
+  heatGlowLight.position.set(0, -3.5, 0);
+  scene.add(heatGlowLight);
+
+  /* ==================== WEB AUDIO (CHẠM TINH THỂ / TÁCH ION) ==================== */
+  let audioCtx = null, soundOn = true;
+  function ensureAudio() {
+    if (!soundOn) return null;
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      audioCtx = new AC();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function sfxChime(freq, vol) {
+    const ac = ensureAudio(); if (!ac) return;
+    const now = ac.currentTime;
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.18, now + 0.12);
+    g.gain.setValueAtTime(vol || 0.07, now);
+    g.gain.exponentialRampToValueAtTime(0.0008, now + 0.18);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(now); osc.stop(now + 0.2);
+  }
+
+  /* ==================== VẬT LIỆU TINH THỂ: TÍM ĐẬM (Na⁺) & XANH LÁ RÕ (Cl⁻) ==================== */
+  // Chuyển sRGB -> Linear đúng chuẩn renderer.outputEncoding = sRGBEncoding để màu sâu, đậm, không bị bạc/chói!
+  function srgbCol(hex) { return new THREE.Color(hex).convertSRGBToLinear(); }
+
+  const R_THAT = { na: 102 / 282, cl: 181 / 282 };
+  const R_QUE = { na: 0.18, cl: 0.28 };
+
+  const matNa = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0x6d28d9), roughness: 0.34, metalness: 0.08, clearcoat: 0.22, clearcoatRoughness: 0.25, envMapIntensity: 0.45
+  });
+  const matCl = new THREE.MeshPhysicalMaterial({
+    color: srgbCol(0x15803d), roughness: 0.36, metalness: 0.06, clearcoat: 0.20, clearcoatRoughness: 0.28, envMapIntensity: 0.45
+  });
+  const matSelect = new THREE.MeshStandardMaterial({
+    color: srgbCol(0xeab308), emissive: srgbCol(0x854d0e), emissiveIntensity: 0.45, roughness: 0.28
+  });
+  const matDimNa = new THREE.MeshStandardMaterial({ color: srgbCol(0x6d28d9), transparent: true, opacity: 0.14, roughness: 0.38, depthWrite: false });
+  const matDimCl = new THREE.MeshStandardMaterial({ color: srgbCol(0x15803d), transparent: true, opacity: 0.14, roughness: 0.40, depthWrite: false });
+  const matBond = new THREE.MeshStandardMaterial({ color: srgbCol(0x64748b), roughness: 0.52, metalness: 0.25, transparent: true, opacity: 0.72 });
+
+  const geoSphere = new THREE.SphereGeometry(1, isLow ? 22 : 34, isLow ? 16 : 24);
+  const geoBond = new THREE.CylinderGeometry(0.040, 0.040, 1, 12);
+
+  // Vật liệu phân tử H2O chữ V (O đỏ trầm delta-, 2 H xám trắng delta+)
+  const matO = new THREE.MeshStandardMaterial({ color: srgbCol(0xdc2626), roughness: 0.38, metalness: 0.05 });
+  const matH = new THREE.MeshStandardMaterial({ color: srgbCol(0xe2e8f0), roughness: 0.42, metalness: 0.04 });
+  const geoO = new THREE.SphereGeometry(0.145, 16, 12);
+  const geoH = new THREE.SphereGeometry(0.095, 14, 10);
+
+  function createWaterMolecule() {
+    const g = new THREE.Group();
+    const o = new THREE.Mesh(geoO, matO);
+    const ang = (104.5 * Math.PI / 180) / 2;
+    const d = 0.14;
+    const h1 = new THREE.Mesh(geoH, matH); h1.position.set(Math.sin(ang) * d, Math.cos(ang) * d, 0);
+    const h2 = new THREE.Mesh(geoH, matH); h2.position.set(-Math.sin(ang) * d, Math.cos(ang) * d, 0);
+    g.add(o, h1, h2);
+    return g;
+  }
+
+  /* ==================== BỂ NƯỚC TRONG SUỐT CHO CHẾ ĐỘ HÒA TAN ==================== */
+  const waterTankGroup = new THREE.Group();
+  const tankMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, side: THREE.DoubleSide,
+    uniforms: { uTime: { value: 0 } },
+    vertexShader: `
+      varying vec3 vN; varying vec3 vV; varying vec3 vLocal;
+      void main() {
+        vLocal = position;
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
+        gl_Position = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      varying vec3 vN; varying vec3 vV; varying vec3 vLocal;
+      void main() {
+        float ndv = abs(dot(normalize(vN), normalize(vV)));
+        float fr = pow(1.0 - ndv, 2.2);
+        float wave = 0.5 + 0.5 * sin(vLocal.y * 2.2 + uTime * 1.8 + vLocal.x * 1.5);
+        vec3 col = mix(vec3(0.08, 0.34, 0.56), vec3(0.42, 0.70, 0.86), fr * 0.65 + wave * 0.12);
+        gl_FragColor = vec4(col, clamp(0.07 + fr * 0.16, 0.06, 0.24));
+      }
+    `
+  });
+  const tankSphere = new THREE.Mesh(new THREE.SphereGeometry(5.6, 40, 28), tankMat);
+  tankSphere.renderOrder = 1;
+  waterTankGroup.add(tankSphere);
+  waterTankGroup.visible = false;
+  scene.add(waterTankGroup);
+
+  /* ==================== TRẠNG THÁI & XÂY DỰNG MẠNG TINH THỂ ==================== */
+  const rootGroup = new THREE.Group();
+  scene.add(rootGroup);
+
+  const st = {
+    mode: 'solid', // 'solid' | 'melt' | 'dissolve'
+    kieu: 'que',
+    n: 2,
+    oMang: true,
+    tuXoay: true,
+    anNa: false,
+    anCl: false,
+    lop: 99,
+    chon: null,
+    temp: 25,
+    tempGoal: 25,
+    dissolving: false
+  };
+
+  let ions = [], bonds = [], unitFrame = null, octaGroup = null;
+  const freeWaters = [];
+
+  function clearOcta() {
+    if (octaGroup) { rootGroup.remove(octaGroup); octaGroup = null; }
+  }
+
+  function buildLattice() {
+    while (rootGroup.children.length) rootGroup.remove(rootGroup.children[0]);
+    ions = []; bonds = []; st.chon = null; unitFrame = null; octaGroup = null;
+    freeWaters.length = 0;
+
+    // Ở chế độ nóng chảy / hòa tan dùng khối 1 ô mạng (3x3x3 = 27 ion) để quan sát rõ từng ion & phân tử H2O!
+    const effN = (st.mode === 'solid') ? st.n : 1;
+    const m = effN * 2;
+    const half = m / 2;
+
+    const lopEl = $('lop');
+    lopEl.max = String(m + 1);
+    if (st.lop > m + 1) st.lop = m + 1;
+    lopEl.value = String(st.lop);
+    $('lopTxt').textContent = st.lop > m ? 'tất cả' : (st.lop + ' lớp dưới');
+
+    for (let x = 0; x <= m; x++) {
+      for (let y = 0; y <= m; y++) {
+        for (let z = 0; z <= m; z++) {
+          const loai = (x + y + z) % 2 === 0 ? 'cl' : 'na';
+          if (st.mode === 'solid') {
+            if (y >= st.lop) continue;
+            if ((loai === 'na' && st.anNa) || (loai === 'cl' && st.anCl)) continue;
+          }
+          const r = (st.mode === 'solid' && st.kieu === 'dac') ? R_THAT[loai] : R_QUE[loai];
+          const mesh = new THREE.Mesh(geoSphere, loai === 'na' ? matNa : matCl);
+          mesh.scale.setScalar(r);
+          const home = new THREE.Vector3(x - half, y - half, z - half);
+          mesh.position.copy(home);
+          const distCenter = home.length();
+          mesh.userData = {
+            loai: loai, g: [x, y, z], home: home.clone(),
+            vel: new THREE.Vector3((Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.6),
+            phase: Math.random() * 6.28,
+            distCenter: distCenter,
+            detached: false,
+            detachOrder: (2.2 - distCenter) + Math.random() * 0.45, // lớp ngoài bóc trước, lõi trong cùng bóc cuối!
+            shellWaters: []
+          };
+          rootGroup.add(mesh);
+          ions.push(mesh);
+        }
+      }
+    }
+
+    // Thanh liên kết
+    if (st.mode !== 'solid' || st.kieu === 'que') {
+      const map = {};
+      ions.forEach(function (o) { map[o.userData.g.join(',')] = o; });
+      ions.forEach(function (o) {
+        const g = o.userData.g;
+        [[1, 0, 0], [0, 1, 0], [0, 0, 1]].forEach(function (d) {
+          const b = map[(g[0] + d[0]) + ',' + (g[1] + d[1]) + ',' + (g[2] + d[2])];
+          if (!b) return;
+          const t = new THREE.Mesh(geoBond, matBond);
+          t.position.copy(o.position).add(b.position).multiplyScalar(0.5);
+          if (d[0]) t.rotation.z = Math.PI / 2;
+          if (d[2]) t.rotation.x = Math.PI / 2;
+          t.userData = { a: o, b: b };
+          rootGroup.add(t);
+          bonds.push(t);
+        });
+      });
+    }
+
+    // Khung ô mạng cơ sở tone xanh băng dịu
+    const kg = new THREE.EdgesGeometry(new THREE.BoxGeometry(2, 2, 2));
+    unitFrame = new THREE.LineSegments(kg, new THREE.LineBasicMaterial({ color: 0x7dd3fc, transparent: true, opacity: 0.52 }));
+    unitFrame.position.set(1 - half, 1 - half, 1 - half);
+    unitFrame.visible = (st.mode === 'solid') && st.oMang;
+    rootGroup.add(unitFrame);
+
+    // Sinh sẵn các phân tử nước H2O tự do nếu đang ở chế độ Hòa tan
+    waterTankGroup.visible = (st.mode === 'dissolve');
+    if (st.mode === 'dissolve') {
+      const count = isLow ? 28 : 44;
+      for (let i = 0; i < count; i++) {
+        const wm = createWaterMolecule();
+        const th = Math.random() * Math.PI * 2;
+        const ph = Math.acos(2 * Math.random() - 1);
+        const rr = 2.6 + Math.random() * 2.4;
+        wm.position.set(rr * Math.sin(ph) * Math.cos(th), rr * Math.cos(ph), rr * Math.sin(ph) * Math.sin(th));
+        wm.rotation.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
+        wm.userData = {
+          vel: new THREE.Vector3((Math.random() - 0.5) * 0.9, (Math.random() - 0.5) * 0.9, (Math.random() - 0.5) * 0.9),
+          spin: new THREE.Vector3((Math.random() - 0.5) * 1.4, (Math.random() - 0.5) * 1.4, 0)
+        };
+        rootGroup.add(wm);
+        freeWaters.push(wm);
+      }
+      // Chuẩn bị lớp vỏ hiđrat 4 phân tử H2O cho mỗi ion (chỉ hiện & bay vào khi ion đó bị bóc tách!)
+      ions.forEach(function (ion) {
+        const isNa = ion.userData.loai === 'na';
+        const dirs = [
+          new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1, 0, 0),
+          new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -1, 0)
+        ];
+        dirs.forEach(function (dir) {
+          const wm = createWaterMolecule();
+          wm.visible = false;
+          const distShell = isNa ? 0.44 : 0.56;
+          wm.position.copy(dir).multiplyScalar(distShell);
+          // ĐÚNG HÓA HỌC:
+          // - Quanh Na+: đầu O (âm, gốc y=0) quay VÀO tâm Na+, 2 H (y > 0) chĩa RA ngoài!
+          // - Quanh Cl-: 2 đầu H (dương, y > 0) quay VÀO tâm Cl-, O quay RA ngoài!
+          const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), isNa ? dir : dir.clone().negate());
+          wm.quaternion.copy(q);
+          ion.add(wm);
+          ion.userData.shellWaters.push(wm);
+        });
+      });
+    }
+
+    sphGoal.r = effN * 3.8 + 4.2;
+    updateStatusCopy();
+  }
+
+  function selectIon(o) {
+    if (st.mode !== 'solid') return;
+    clearOcta();
+    ions.forEach(function (x) { x.material = x.userData.loai === 'na' ? matNa : matCl; });
+    bonds.forEach(function (t) { t.visible = true; });
+    if (!o) { st.chon = null; updateStatusCopy(); return; }
+    st.chon = o;
+    sfxChime(o.userData.loai === 'na' ? 680 : 520, 0.08);
+    const g = o.userData.g;
+    const neighbors = [];
+    ions.forEach(function (x) {
+      const h = x.userData.g;
+      const d = Math.abs(h[0] - g[0]) + Math.abs(h[1] - g[1]) + Math.abs(h[2] - g[2]);
+      if (x === o) x.material = matSelect;
+      else if (d === 1) neighbors.push(x);
+      else x.material = x.userData.loai === 'na' ? matDimNa : matDimCl;
+    });
+    bonds.forEach(function (t) { t.visible = (t.userData.a === o || t.userData.b === o); });
+
+    // Vẽ khung bát diện vàng nối các ion lân cận!
+    if (neighbors.length >= 3) {
+      octaGroup = new THREE.Group();
+      const linePts = [];
+      for (let i = 0; i < neighbors.length; i++) {
+        for (let j = i + 1; j < neighbors.length; j++) {
+          const dist = neighbors[i].position.distanceTo(neighbors[j].position);
+          if (dist < 1.55) {
+            linePts.push(neighbors[i].position.clone(), neighbors[j].position.clone());
+          }
+        }
+      }
+      const og = new THREE.BufferGeometry().setFromPoints(linePts);
+      octaGroup.add(new THREE.LineSegments(og, new THREE.LineBasicMaterial({ color: 0x7dd3fc, transparent: true, opacity: 0.82 })));
+      rootGroup.add(octaGroup);
+    }
+
+    const isNa = o.userData.loai === 'na';
+    const ten = isNa ? '<span class="na">Na⁺</span>' : '<span class="cl">Cl⁻</span>';
+    const doi = isNa ? '<span class="cl">Cl⁻</span>' : '<span class="na">Na⁺</span>';
+    $('kq').innerHTML = 'Ion ' + ten + ' đang chọn có <b>' + neighbors.length + '</b> ion ' + doi + ' ở gần nhất' +
+      (neighbors.length < 6 ? ' (ion ở mép khối; chọn ion bên trong để thấy đủ <b>6</b>)' : ', tạo thành <b>khối bát diện đều</b> màu xanh băng → số phối trí 6 : 6') + '.';
+  }
+
+  function updateStatusCopy() {
+    const condChip = $('chipCond');
+    if (st.mode === 'solid') {
+      condChip.classList.remove('cond-on');
+      $('condTxt').textContent = 'Không (rắn)';
+      $('kq').innerHTML = st.n === 1
+        ? '1 ô mạng cơ sở: Cl⁻ ở <b>8 đỉnh</b> (×1/8) + <b>6 tâm mặt</b> (×1/2) = <b>4 Cl⁻</b>; Na⁺ ở <b>12 cạnh</b> (×1/4) + <b>1 tâm khối</b> = <b>4 Na⁺</b> → tỉ lệ <b>1 : 1</b>.'
+        : 'Chạm vào một ion bất kỳ để thấy khối <b>bát diện 6 ion trái dấu</b> bao quanh.';
+    } else if (st.mode === 'melt') {
+      const melted = st.temp >= 801;
+      condChip.classList.toggle('cond-on', melted);
+      $('condTxt').textContent = melted ? 'MẠNH (ion nóng chảy)' : 'Không (rắn)';
+      $('kq').innerHTML = melted
+        ? '🔥 Đã vượt <b>801 °C</b>: lực hút tĩnh điện bị phá vỡ, mạng lập phương <b>tan rã hoàn toàn</b> thành các ion <span class="na">Na⁺</span> và <span class="cl">Cl⁻</span> tự do → <b>dẫn điện mạnh</b>!'
+        : 'Ở <b>' + Math.round(st.temp) + ' °C</b> (&lt; 801 °C): các ion dao động tại nút mạng nhưng chưa tách ra được → NaCl rắn <b>không dẫn điện</b>.';
+    } else {
+      const detachedCount = ions.filter(function (o) { return o.userData.detached; }).length;
+      const pct = ions.length ? Math.round((detachedCount / ions.length) * 100) : 0;
+      $('dissPct').textContent = pct + '%';
+      $('dissBar').style.width = pct + '%';
+      const cond = pct > 12;
+      condChip.classList.toggle('cond-on', cond);
+      $('condTxt').textContent = cond ? 'MẠNH (dung dịch ion)' : 'Chưa hòa tan';
+      if (pct === 0) {
+        $('kq').innerHTML = 'Bấm <b>“Thả tinh thể vào nước &amp; Hòa tan”</b> để xem phân tử H₂O phân cực bóc tách dần tinh thể NaCl rắn.';
+      } else if (pct < 100) {
+        $('kq').innerHTML = '💧 Phân tử <b>H₂O</b> đang bóc tách lớp ngoài tinh thể (<b>' + pct + '%</b> đã tan): đầu O<sup>δ−</sup> (đỏ) ôm <span class="na">Na⁺</span>, đầu H<sup>δ+</sup> (trắng) ôm <span class="cl">Cl⁻</span>.';
+      } else {
+        $('kq').innerHTML = '✅ <b>Tinh thể NaCl rắn đã tan biến hoàn toàn (100%)</b> thành dung dịch đồng nhất gồm các ion <span class="na">Na⁺</span> và <span class="cl">Cl⁻</span> hiđrat hóa tự do → <b>dẫn điện mạnh</b>!';
+      }
+    }
+  }
+
+  /* ==================== ĐIỀU KHIỂN UI ==================== */
+  $('modeTabs').addEventListener('click', function (e) {
+    const b = e.target.closest('button'); if (!b) return;
+    st.mode = b.dataset.mode;
+    $('modeTabs').querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    $('panelSolid').style.display = st.mode === 'solid' ? 'block' : 'none';
+    $('panelMelt').style.display = st.mode === 'melt' ? 'block' : 'none';
+    $('panelDissolve').style.display = st.mode === 'dissolve' ? 'block' : 'none';
+    st.dissolving = false;
+    st.temp = 25; st.tempGoal = 25;
+    $('tempRange').value = '25'; $('tempTxt').textContent = '25 °C';
+    dissolveTimer = 0;
+    buildLattice();
+  });
+
+  function bindSeg(id, cb) {
+    const el = $(id);
+    el.addEventListener('click', function (e) {
+      const b = e.target.closest('button'); if (!b) return;
+      el.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+      cb(b);
+    });
+  }
+  bindSeg('kieu', function (b) { st.kieu = b.dataset.k; buildLattice(); });
+  bindSeg('co', function (b) { st.n = Number(b.dataset.n); st.lop = 99; buildLattice(); });
+  $('oMang').onchange = function () { st.oMang = this.checked; if (unitFrame) unitFrame.visible = st.oMang; };
+  $('tuXoay').onchange = function () { st.tuXoay = this.checked; };
+  $('anNa').onchange = function () { st.anNa = this.checked; buildLattice(); };
+  $('anCl').onchange = function () { st.anCl = this.checked; buildLattice(); };
+  $('lop').oninput = function () { st.lop = Number(this.value); buildLattice(); };
+
+  $('tempRange').oninput = function () {
+    st.tempGoal = Number(this.value);
+    $('tempTxt').textContent = Math.round(st.tempGoal) + ' °C';
+  };
+  $('btnAutoMelt').onclick = function () {
+    ensureAudio(); sfxChime(320, 0.08);
+    st.tempGoal = 920;
+    $('tempRange').value = '920';
+    $('tempTxt').textContent = '920 °C';
+  };
+  $('btnCoolSolid').onclick = function () {
+    ensureAudio(); sfxChime(640, 0.07);
+    st.tempGoal = 25;
+    $('tempRange').value = '25';
+    $('tempTxt').textContent = '25 °C';
+  };
+
+  let dissolveTimer = 0;
+  $('btnStartDiss').onclick = function () {
+    ensureAudio(); sfxChime(520, 0.08);
+    st.dissolving = true;
+  };
+  $('btnResetDiss').onclick = function () {
+    st.dissolving = false;
+    dissolveTimer = 0;
+    buildLattice();
+  };
+
+  $('btnSound').onclick = function () {
+    soundOn = !soundOn;
+    this.classList.toggle('on', soundOn);
+    this.textContent = soundOn ? '🔊' : '🔇';
+  };
+
+  /* ==================== CAMERA MƯỢT + RAYCAST ==================== */
+  let sph = { theta: 0.68, phi: 1.16, r: 11.8 };
+  let sphGoal = { theta: 0.68, phi: 1.16, r: 11.8 };
+
+  document.querySelectorAll('[data-cam]').forEach(function (b) {
+    b.onclick = function () {
+      const c = b.dataset.cam;
+      if (c === 'iso') { sphGoal.theta = 0.68; sphGoal.phi = 1.16; }
+      else if (c === 'front') { sphGoal.theta = 0.0; sphGoal.phi = 1.57; }
+      else if (c === 'corner') { sphGoal.theta = Math.PI / 4; sphGoal.phi = 0.95; }
+    };
+  });
+
+  const ptrs = {}, ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+  let drag = null, pinch = null, moved = 0;
+
+  cv.addEventListener('pointerdown', function (e) {
+    cv.setPointerCapture(e.pointerId);
+    ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+    const ids = Object.keys(ptrs);
+    if (ids.length === 1) { drag = { x: e.clientX, y: e.clientY }; moved = 0; }
+    else if (ids.length === 2) {
+      const a = ptrs[ids[0]], b = ptrs[ids[1]];
+      pinch = Math.hypot(a.x - b.x, a.y - b.y); drag = null;
+    }
+  });
+  cv.addEventListener('pointermove', function (e) {
+    if (!ptrs[e.pointerId]) return;
+    ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+    const ids = Object.keys(ptrs);
+    if (ids.length === 2 && pinch) {
+      const a = ptrs[ids[0]], b = ptrs[ids[1]], d = Math.hypot(a.x - b.x, a.y - b.y);
+      sphGoal.r = Math.min(24, Math.max(4.5, sphGoal.r * pinch / d)); pinch = d;
+    } else if (drag) {
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      moved += Math.abs(dx) + Math.abs(dy);
+      sphGoal.theta -= dx * 0.007;
+      sphGoal.phi = Math.max(0.18, Math.min(2.96, sphGoal.phi - dy * 0.007));
+      drag = { x: e.clientX, y: e.clientY };
+    }
+  });
+  function onUp(e) {
+    const isClick = drag && moved < 6 && Object.keys(ptrs).length === 1;
+    delete ptrs[e.pointerId];
+    if (Object.keys(ptrs).length < 2) pinch = null;
+    drag = null;
+    if (isClick && st.mode === 'solid') {
+      const rect = cv.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      ray.setFromCamera(mouse, camera);
+      const hit = ray.intersectObjects(ions, false)[0];
+      selectIon(hit && hit.object !== st.chon ? hit.object : null);
+    }
+  }
+  cv.addEventListener('pointerup', onUp);
+  cv.addEventListener('pointercancel', function (e) { delete ptrs[e.pointerId]; drag = null; pinch = null; });
+  cv.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    sphGoal.r = Math.min(24, Math.max(4.5, sphGoal.r * (e.deltaY > 0 ? 1.08 : 0.92)));
+  }, { passive: false });
+
+  function onResize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / Math.max(1, h);
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', onResize);
+
+  /* ==================== VÒNG LẶP VẼ REAL-TIME ==================== */
+  let running = true, lastT = performance.now(), elapsed = 0, uiAccum = 0;
+  document.addEventListener('visibilitychange', function () {
+    running = !document.hidden;
+    if (running) { lastT = performance.now(); requestAnimationFrame(loop); }
+  });
+
+  function loop(now) {
+    if (!running) return;
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now; elapsed += dt; uiAccum += dt;
+
+    if (st.tuXoay && !drag && !st.chon) sphGoal.theta += dt * 0.22;
+    const kc = Math.min(1, dt * 7.5);
+    sph.theta += (sphGoal.theta - sph.theta) * kc;
+    sph.phi += (sphGoal.phi - sph.phi) * kc;
+    sph.r += (sphGoal.r - sph.r) * kc;
+    camera.position.set(
+      sph.r * Math.sin(sph.phi) * Math.sin(sph.theta),
+      sph.r * Math.cos(sph.phi),
+      sph.r * Math.sin(sph.phi) * Math.cos(sph.theta)
+    );
+    camera.lookAt(0, 0, 0);
+
+    /* --- CHẾ ĐỘ 2: NÓNG CHẢY REAL-TIME Ở 801 °C --- */
+    if (st.mode === 'melt') {
+      st.temp += (st.tempGoal - st.temp) * Math.min(1, dt * 2.4);
+      $('tempTxt').textContent = Math.round(st.temp) + ' °C';
+      const heatFrac = Math.max(0, (st.temp - 25) / 975);
+      heatGlowLight.intensity = heatFrac * 2.8;
+      const melted = st.temp >= 801;
+      const vibAmp = melted ? 0 : Math.pow(Math.min(1, (st.temp - 25) / 776), 1.6) * 0.16;
+
+      ions.forEach(function (ion) {
+        const u = ion.userData;
+        if (melted) {
+          // Chuyển động nhiệt tự do trong pha lỏng nóng chảy
+          u.vel.x += (Math.random() - 0.5) * 4.5 * dt;
+          u.vel.y += (Math.random() - 0.5) * 4.5 * dt;
+          u.vel.z += (Math.random() - 0.5) * 4.5 * dt;
+          const sp = u.vel.length();
+          if (sp > 2.2) u.vel.multiplyScalar(2.2 / sp);
+          ion.position.addScaledVector(u.vel, dt);
+          const dist = ion.position.length();
+          if (dist > 3.2) {
+            ion.position.multiplyScalar(3.2 / dist);
+            u.vel.negate().multiplyScalar(0.75);
+          }
+        } else {
+          // Hút trở lại nút mạng lập phương + dao động nhiệt tại chỗ
+          const tx = u.home.x + Math.sin(elapsed * 26 + u.phase) * vibAmp;
+          const ty = u.home.y + Math.cos(elapsed * 29 + u.phase * 1.3) * vibAmp;
+          const tz = u.home.z + Math.sin(elapsed * 24 + u.phase * 0.7) * vibAmp;
+          ion.position.x += (tx - ion.position.x) * Math.min(1, dt * 6.5);
+          ion.position.y += (ty - ion.position.y) * Math.min(1, dt * 6.5);
+          ion.position.z += (tz - ion.position.z) * Math.min(1, dt * 6.5);
+        }
+      });
+
+      // Thanh liên kết đứt tan biến khi nóng chảy!
+      const bondOp = melted ? 0 : Math.max(0, 1 - Math.max(0, (st.temp - 680) / 121));
+      matBond.opacity = bondOp * 0.85;
+      bonds.forEach(function (b) {
+        b.visible = bondOp > 0.02;
+        if (b.visible) {
+          b.position.copy(b.userData.a.position).add(b.userData.b.position).multiplyScalar(0.5);
+        }
+      });
+      if (uiAccum > 0.2) { uiAccum = 0; updateStatusCopy(); }
+    } else {
+      heatGlowLight.intensity = 0;
+      matBond.opacity = 0.85;
+    }
+
+    /* --- CHẾ ĐỘ 3: HÒA TAN TRONG NƯỚC REAL-TIME (TAN HẾT 100%) --- */
+    if (st.mode === 'dissolve') {
+      tankMat.uniforms.uTime.value = elapsed;
+      if (st.dissolving) {
+        dissolveTimer += dt * 0.34;
+        let newlyDetached = false;
+        ions.forEach(function (ion) {
+          const u = ion.userData;
+          if (!u.detached && dissolveTimer > u.detachOrder) {
+            u.detached = true;
+            newlyDetached = true;
+            // Đẩy ion thoát ra ngoài kèm lớp vỏ hiđrat 4 phân tử nước H2O bao quanh!
+            const dir = u.home.lengthSq() > 0.01 ? u.home.clone().normalize() : new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+            u.vel.copy(dir).multiplyScalar(1.1 + Math.random() * 0.5);
+            u.shellWaters.forEach(function (w) { w.visible = true; });
+          }
+        });
+        if (newlyDetached) sfxChime(460 + Math.random() * 240, 0.045);
+      }
+
+      ions.forEach(function (ion) {
+        const u = ion.userData;
+        if (u.detached) {
+          u.vel.x += (Math.random() - 0.5) * 1.4 * dt;
+          u.vel.y += (Math.random() - 0.5) * 1.4 * dt;
+          u.vel.z += (Math.random() - 0.5) * 1.4 * dt;
+          const sp = u.vel.length();
+          if (sp > 1.25) u.vel.multiplyScalar(1.25 / sp);
+          ion.position.addScaledVector(u.vel, dt);
+          ion.rotation.y += dt * 0.7;
+          ion.rotation.x += dt * 0.45;
+          const d = ion.position.length();
+          if (d > 4.6) { ion.position.multiplyScalar(4.6 / d); u.vel.negate().multiplyScalar(0.8); }
+        }
+      });
+
+      // Ẩn ngay các thanh liên kết gắn với ion đã bị bóc tách -> khối tinh thể rã dần và biến mất hoàn toàn!
+      bonds.forEach(function (b) {
+        b.visible = !b.userData.a.userData.detached && !b.userData.b.userData.detached;
+      });
+
+      // Các phân tử H2O tự do bơi lượn quanh tinh thể
+      freeWaters.forEach(function (wm) {
+        const u = wm.userData;
+        wm.position.addScaledVector(u.vel, dt);
+        wm.rotation.x += u.spin.x * dt;
+        wm.rotation.y += u.spin.y * dt;
+        const d = wm.position.length();
+        if (d > 5.0 || d < (st.dissolving ? 0.6 : 2.1)) {
+          u.vel.negate();
+          if (d > 5.0) wm.position.multiplyScalar(4.95 / d);
+        }
+      });
+
+      if (uiAccum > 0.2) { uiAccum = 0; updateStatusCopy(); }
+    }
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  }
+
+  buildLattice();
+  onResize();
+  requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>

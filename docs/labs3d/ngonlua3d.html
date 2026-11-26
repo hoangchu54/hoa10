@@ -1,0 +1,1882 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thử màu ngọn lửa Ion Kim loại 3D — Hóa 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#0b0714;
+    --the:#171129;
+    --vien:rgba(255,255,255,.12);
+    --chu:#f6effb;
+    --phu:#b8a8cc;
+    --tim:#a78bfa;
+    --do:#e0456b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--nen);color:var(--chu);font-family:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;overflow:hidden}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 375px;height:100dvh}
+  .stage{position:relative;min-height:0;touch-action:none;background:radial-gradient(circle at 50% 42%,#1d1333 0%,#090612 78%);overflow:hidden}
+  #cv{display:block;width:100%;height:100%;cursor:grab}
+  #cv:active{cursor:grabbing}
+
+  .hud{position:absolute;left:14px;top:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;z-index:3}
+  .hud-left,.hud-right{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .chip{background:rgba(13,9,24,.78);border:1px solid var(--vien);border-radius:99px;padding:6px 12px;font-size:12.5px;font-weight:700;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  .chip b{color:#fde68a;font-weight:800}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:0 0 10px currentColor}
+  .hud-btn{pointer-events:auto;cursor:pointer;min-height:34px;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(23,17,41,.82);border:1px solid var(--vien);color:var(--chu);transition:.18s}
+  .hud-btn:hover{border-color:rgba(255,255,255,.32);transform:translateY(-1px)}
+  .hud-btn.on{background:linear-gradient(90deg,#1d4ed8,#4338ca);border-color:#60a5fa;color:#fff;box-shadow:0 0 16px rgba(59,130,246,.45)}
+
+  .cam-bar{position:absolute;left:14px;bottom:14px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+  .hint-bar{position:absolute;right:14px;bottom:14px;background:rgba(13,9,24,.72);border:1px solid var(--vien);border-radius:10px;padding:6px 10px;font-size:11.5px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px)}
+
+  .toast{position:absolute;left:50%;bottom:58px;transform:translateX(-50%);background:rgba(15,10,28,.9);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:9px 16px;font-size:13px;font-weight:700;max-width:90%;text-align:center;opacity:0;transition:opacity .28s,transform .28s;pointer-events:none;z-index:4;box-shadow:0 10px 28px rgba(0,0,0,.5)}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+  /* Kính lọc Cobalt phủ góc nhìn khi bật chế độ nhìn xuyên kính */
+  .cobalt-badge{position:absolute;left:50%;top:62px;transform:translateX(-50%);background:rgba(30,64,175,.85);border:1px solid #93c5fd;color:#eff6ff;padding:5px 14px;border-radius:99px;font-size:12px;font-weight:800;pointer-events:none;opacity:0;transition:.25s;z-index:3;box-shadow:0 0 22px rgba(37,99,235,.6)}
+  .cobalt-badge.on{opacity:1}
+
+  .side{background:var(--the);border-left:1px solid var(--vien);padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:11px}
+  h1{font-size:16.5px;margin:0;line-height:1.3}
+  .tag{display:inline-block;background:rgba(224,69,107,.18);color:#ff8fa8;border-radius:99px;padding:2px 10px;font-size:11px;font-weight:800;margin-bottom:5px}
+
+  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:rgba(0,0,0,.25);padding:4px;border-radius:11px;border:1px solid var(--vien)}
+  .tabs button{min-height:36px;padding:6px 8px;border:0;border-radius:8px;font-size:12.5px;background:transparent;color:var(--phu)}
+  .tabs button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);color:#fff;box-shadow:0 4px 12px rgba(109,40,217,.35)}
+
+  .box{background:rgba(255,255,255,.035);border:1px solid var(--vien);border-radius:13px;padding:10px 12px}
+  .box h3{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--tim);display:flex;justify-content:space-between;align-items:center}
+
+  .salts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .salt-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:7px 4px;min-height:56px;border-radius:11px;position:relative;overflow:hidden;transition:.16s}
+  .salt-btn:hover{border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
+  .salt-btn b{font-size:14.5px;display:flex;align-items:center;gap:5px}
+  .salt-btn small{font-size:10.5px;color:var(--phu);font-weight:600}
+  .salt-btn .sw{width:9px;height:9px;border-radius:50%;display:inline-block;box-shadow:0 0 8px currentColor}
+  .salt-btn.mix{grid-column:span 3;flex-direction:row;justify-content:space-between;min-height:44px;padding:7px 12px}
+
+  button{font:inherit;font-weight:700;font-size:12.8px;border:1px solid var(--vien);background:rgba(255,255,255,.06);color:var(--chu);border-radius:10px;padding:8px 11px;min-height:42px;cursor:pointer;transition:.16s}
+  button:hover{background:rgba(255,255,255,.1)}
+  button.on{background:linear-gradient(90deg,#7A2230,#6D28D9);border-color:rgba(255,255,255,.28);color:#fff}
+  button.cobalt-on{background:linear-gradient(90deg,#1e40af,#3730a3);border-color:#60a5fa;color:#fff}
+
+  .hang{display:flex;gap:6px;margin-top:7px}
+  .hang button{flex:1}
+  .chinh{width:100%;background:linear-gradient(90deg,#e0456b,#7c3aed);border:0;color:#fff;font-size:13.8px;box-shadow:0 6px 18px rgba(224,69,107,.28)}
+  .chinh:hover{filter:brightness(1.08)}
+
+  .slider-row{display:flex;align-items:center;gap:10px;margin-top:4px}
+  .slider-row input[type=range]{flex:1;accent-color:#a78bfa;cursor:pointer}
+  .air-val{font-size:12px;font-weight:800;color:#93c5fd;min-width:86px;text-align:right}
+
+  .spec-wrap{margin-top:6px}
+  #specCv{width:100%;height:46px;border-radius:8px;border:1px solid rgba(255,255,255,.14);display:block;background:#07050c}
+  .spec-scale{display:flex;justify-content:space-between;font-size:10px;color:var(--phu);margin-top:3px;font-weight:600}
+
+  .eq{font-size:13.5px;font-weight:800;color:#fde68a;line-height:1.45}
+  .kq{font-size:12.6px;line-height:1.55;color:#e9def6}
+  .kq b{color:#fde68a}
+
+  .mystery-box{display:none;flex-direction:column;gap:8px}
+  .mystery-box.on{display:flex}
+  .guess-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .res-msg{padding:8px 10px;border-radius:9px;font-size:12.5px;font-weight:700;display:none}
+  .res-msg.ok{display:block;background:rgba(16,185,129,.16);border:1px solid rgba(16,185,129,.45);color:#a7f3d0}
+  .res-msg.err{display:block;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.45);color:#fde68a}
+
+  .dirty-warn{font-size:11.5px;color:#fda4af;background:rgba(225,29,72,.14);border:1px solid rgba(225,29,72,.35);padding:6px 9px;border-radius:8px;margin-top:6px;display:none}
+  .dirty-warn.on{display:block}
+
+  .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--phu);background:var(--nen);z-index:10}
+
+  @media (max-width:860px){
+    html,body{overflow:auto}
+    .wrap{grid-template-columns:1fr;grid-template-rows:58dvh auto;height:auto}
+    .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
+    .hint-bar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+
+    <div class="hud">
+      <div class="hud-left">
+        <span class="chip"><i class="dot" id="hudDot" style="color:#38bdf8;background:#38bdf8"></i> <span id="hudIon">Ngọn lửa Bunsen chuẩn</span></span>
+        <span class="chip">🌡️ Đầu dây Pt: <b id="hudTemp">28 °C</b></span>
+        <span class="chip">🌀 Lỗ gió: <b id="hudAir">100%</b></span>
+      </div>
+      <div class="hud-right">
+        <button class="hud-btn" id="btnCobaltTop" title="Đặt kính xanh Cobalt trước ngọn lửa để lọc ánh vàng Na⁺">🟦 Kính Cobalt: Tắt</button>
+        <button class="hud-btn on" id="btnSound" title="Bật/tắt âm thanh đèn khò">🔊 Âm thanh</button>
+      </div>
+    </div>
+
+    <div class="cobalt-badge" id="cobaltBadge">🟦 Đang nhìn xuyên qua kính lọc Cobalt (hấp thụ vạch vàng 589 nm của Na⁺)</div>
+
+    <div class="cam-bar">
+      <button class="hud-btn" data-cam="front">🎥 Chính diện</button>
+      <button class="hud-btn" data-cam="close">🔥 Cận ngọn lửa</button>
+      <button class="hud-btn" data-cam="bench">🧪 Toàn bàn muối</button>
+      <button class="hud-btn" data-cam="top">📐 Góc cao</button>
+    </div>
+
+    <div class="hint-bar">🖱️ Kéo để xoay 360° · Cuộn để zoom · Click thẳng vào đĩa muối hoặc cốc HCl trên bàn 3D</div>
+    <div class="toast" id="toast"></div>
+    <div class="fallback" id="fb">Trình duyệt hoặc thiết bị chưa bật WebGL nên không khởi tạo được phòng thí nghiệm 3D.</div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <span class="tag">Bài 3, 4 · Quang phổ &amp; Cấu tạo vỏ nguyên tử</span>
+      <h1>Thử màu ngọn lửa Ion Kim loại 3D</h1>
+    </div>
+
+    <div class="tabs">
+      <button class="on" id="tabFree">🔬 Thực hành tự do</button>
+      <button id="tabGame">🕵️ Đoán muối bí ẩn X</button>
+    </div>
+
+    <!-- Chế độ 1: Thực hành tự do -->
+    <div class="box" id="freeBox">
+      <h3><span>1. Chọn mẫu muối (hoặc click đĩa 3D)</span></h3>
+      <div class="salts" id="saltGrid">
+        <button class="salt-btn" data-k="LiCl">
+          <b><i class="sw" style="color:#ff1e56;background:#ff1e56"></i>LiCl</b>
+          <small>Li⁺ · Đỏ tía</small>
+        </button>
+        <button class="salt-btn" data-k="NaCl">
+          <b><i class="sw" style="color:#facc15;background:#facc15"></i>NaCl</b>
+          <small>Na⁺ · Vàng tươi</small>
+        </button>
+        <button class="salt-btn" data-k="KCl">
+          <b><i class="sw" style="color:#c084fc;background:#c084fc"></i>KCl</b>
+          <small>K⁺ · Tím hoa cà</small>
+        </button>
+        <button class="salt-btn" data-k="CaCl2">
+          <b><i class="sw" style="color:#fb923c;background:#fb923c"></i>CaCl₂</b>
+          <small>Ca²⁺ · Đỏ cam</small>
+        </button>
+        <button class="salt-btn" data-k="BaCl2">
+          <b><i class="sw" style="color:#a3e635;background:#a3e635"></i>BaCl₂</b>
+          <small>Ba²⁺ · Lục vàng</small>
+        </button>
+        <button class="salt-btn" data-k="CuCl2">
+          <b><i class="sw" style="color:#10b981;background:#10b981"></i>CuCl₂</b>
+          <small>Cu²⁺ · Xanh lục</small>
+        </button>
+        <button class="salt-btn mix" data-k="MixNaK">
+          <b><i class="sw" style="color:#f59e0b;background:linear-gradient(90deg,#facc15,#c084fc)"></i>KCl lẫn vết Na⁺</b>
+          <small>Thử với kính Cobalt! →</small>
+        </button>
+      </div>
+
+      <div class="dirty-warn" id="dirtyWarn">⚠️ Dây Pt đang dính muối cũ! Hãy bấm <b>Rửa dây Pt (HCl)</b> trước khi lấy mẫu mới để không bị lẫn màu.</div>
+
+      <div class="hang">
+        <button id="btnClean">🧼 Rửa dây Pt (HCl)</button>
+        <button id="btnReburn">🔥 Đưa lại vào lửa</button>
+      </div>
+    </div>
+
+    <!-- Chế độ 2: Đoán muối bí ẩn X -->
+    <div class="box mystery-box" id="gameBox">
+      <h3><span>🕵️ Thử thách nhận biết cation bí ẩn</span> <span id="scoreTxt" style="color:#86efac">Điểm: 0</span></h3>
+      <div class="kq">Lọ <b>Mẫu X</b> ở giữa bàn chứa 1 trong 6 muối chloride. Hãy đốt thử (kết hợp rửa HCl &amp; soi kính Cobalt nếu cần) rồi kết luận:</div>
+      <div class="hang">
+        <button class="chinh" id="btnBurnMystery">🔥 Chấm đốt Mẫu X</button>
+        <button id="btnNewMystery">🔀 Đổi mẫu X mới</button>
+      </div>
+      <div class="guess-grid" id="guessGrid">
+        <button data-g="LiCl">Li⁺ (LiCl)</button>
+        <button data-g="NaCl">Na⁺ (NaCl)</button>
+        <button data-g="KCl">K⁺ (KCl)</button>
+        <button data-g="CaCl2">Ca²⁺ (CaCl₂)</button>
+        <button data-g="BaCl2">Ba²⁺ (BaCl₂)</button>
+        <button data-g="CuCl2">Cu²⁺ (CuCl₂)</button>
+      </div>
+      <div class="res-msg" id="gameRes"></div>
+    </div>
+
+    <!-- Điều khiển Đèn Bunsen & Kính Cobalt -->
+    <div class="box">
+      <h3><span>2. Đèn khí Bunsen &amp; Kính lọc</span></h3>
+      <div class="slider-row">
+        <span style="font-size:12px;font-weight:700">🌀 Vòng lỗ gió:</span>
+        <input type="range" id="airRange" min="0" max="100" value="100">
+        <span class="air-val" id="airLabel">Mở 100%</span>
+      </div>
+      <div class="hang">
+        <button id="btnGas" class="on">🔥 Van gas: Đang bật</button>
+        <button id="btnCobalt">🟦 Soi kính Cobalt</button>
+      </div>
+    </div>
+
+    <!-- Quang phổ phát xạ vạch -->
+    <div class="box">
+      <h3><span>3. Quang phổ vạch phát xạ</span> <span id="lamTxt" style="color:#fde68a;text-transform:none">Chưa có mẫu</span></h3>
+      <div class="spec-wrap">
+        <canvas id="specCv" width="320" height="46"></canvas>
+        <div class="spec-scale">
+          <span>400 nm (Tím)</span>
+          <span>500</span>
+          <span>589</span>
+          <span>650</span>
+          <span>750 nm (Đỏ)</span>
+        </div>
+      </div>
+      <div class="kq" id="explainTxt" style="margin-top:8px">
+        Mở <b>100% lỗ gió</b> để ngọn lửa xanh trong (~1500 °C, không phát sáng vàng lấn át), sau đó chọn một muối để quan sát màu phát xạ đặc trưng của cation kim loại.
+      </div>
+    </div>
+
+    <div class="box kq">
+      <h3><span>Ghi nhớ bản chất (SGK Hóa 10)</span></h3>
+      • Khi nung nóng, electron vỏ nguyên tử hấp thụ năng lượng nhảy lên mức kích thích <b>E<sub>cao</sub></b> không bền, rồi trở về mức cơ bản <b>E<sub>thấp</sub></b> và phát ra photon ánh sáng có bước sóng đặc trưng: <b>ΔE = hc / λ</b>.<br>
+      • Rửa dây <b>Platinum (Pt)</b> bằng <b>HCl đặc</b> vì muối chloride dễ bay hơi khi nung và Pt trơ hóa học, không tự phát màu.<br>
+      • <b>Kính xanh Cobalt</b> hấp thụ mạnh ánh sáng vàng (589 nm) của vết tạp <b>Na⁺</b>, giúp nhìn rõ màu tím hồng của <b>K⁺</b>.
+    </div>
+  </aside>
+</div>
+
+<script>
+(function loadThreeAndBoot() {
+  var MIRRORS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+    'https://unpkg.com/three@0.128.0/build/three.min.js'
+  ];
+  var idx = 0;
+  function next() {
+    if (window.THREE && window.THREE.WebGLRenderer) { bootFlameApp(window.THREE); return; }
+    if (idx >= MIRRORS.length) { document.getElementById('fb').style.display = 'flex'; return; }
+    var s = document.createElement('script');
+    s.src = MIRRORS[idx++];
+    s.async = true;
+    s.onload = function () {
+      if (window.THREE && window.THREE.WebGLRenderer) bootFlameApp(window.THREE);
+      else next();
+    };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+
+function bootFlameApp(THREE) {
+  'use strict';
+  const $ = function (id) { return document.getElementById(id); };
+
+  /* ==================== DỮ LIỆU HÓA HỌC CHUẨN SGK HÓA 10 ==================== */
+  const SALTS = {
+    LiCl: {
+      key: 'LiCl', ion: 'Li⁺', formula: 'LiCl', name: 'Lithium chloride',
+      colorName: 'Đỏ tía (Crimson red)',
+      rgb: [1.0, 0.10, 0.32], coreRgb: [1.0, 0.68, 0.80], hex: '#ff1e56',
+      crystalHex: 0xf4f6fb,
+      lam: '671 nm (chính) · 610 nm',
+      lines: [{ wl: 671, w: 1.0 }, { wl: 610, w: 0.45 }, { wl: 460, w: 0.18 }],
+      desc: 'Ion <b>Li⁺</b> nhận nhiệt kích thích electron lớp ngoài (2s¹ → 2p¹), khi nhảy về phát bức xạ <b>671 nm</b> cho ngọn lửa màu <b>đỏ tía</b> rực rỡ.'
+    },
+    NaCl: {
+      key: 'NaCl', ion: 'Na⁺', formula: 'NaCl', name: 'Sodium chloride',
+      colorName: 'Vàng tươi rực rỡ',
+      rgb: [1.0, 0.78, 0.06], coreRgb: [1.0, 0.96, 0.65], hex: '#facc15',
+      crystalHex: 0xf8fafc,
+      lam: '589,0 & 589,6 nm (vạch kép D)',
+      lines: [{ wl: 589, w: 1.0 }, { wl: 589.6, w: 0.95 }],
+      cobaltAbsorb: 0.94,
+      desc: 'Bước nhảy <b>3p → 3s</b> của nguyên tử Na phát ra vạch kép D ở <b>589 nm</b> cực mạnh. Chỉ một vết nhỏ Na⁺ cũng đủ nhuộm vàng cả ngọn lửa!'
+    },
+    KCl: {
+      key: 'KCl', ion: 'K⁺', formula: 'KCl', name: 'Potassium chloride',
+      colorName: 'Tím hoa cà (Lilac)',
+      rgb: [0.80, 0.56, 0.96], coreRgb: [0.96, 0.88, 0.98], hex: '#c084fc',
+      crystalHex: 0xf3f4f6,
+      lam: '404 nm (tím) & 766 nm (đỏ xa)',
+      lines: [{ wl: 404.4, w: 0.95 }, { wl: 404.7, w: 0.8 }, { wl: 742, w: 0.75 }],
+      cobaltBoost: true,
+      desc: 'Ion <b>K⁺</b> phát đồng thời vạch tím <b>404 nm</b> và đỏ xa <b>766 nm</b>, mắt người tổng hợp thành màu <b>tím hoa cà</b> dịu.'
+    },
+    CaCl2: {
+      key: 'CaCl2', ion: 'Ca²⁺', formula: 'CaCl₂', name: 'Calcium chloride',
+      colorName: 'Đỏ cam (Brick-red)',
+      rgb: [1.0, 0.36, 0.08], coreRgb: [1.0, 0.80, 0.55], hex: '#fb923c',
+      crystalHex: 0xf1f5f9,
+      lam: '622 nm (cam đỏ) · 553 nm · 423 nm',
+      lines: [{ wl: 622, w: 1.0 }, { wl: 553, w: 0.5 }, { wl: 422.7, w: 0.45 }],
+      desc: 'Muối <b>Ca²⁺</b> dễ bay hơi trong HCl tạo bức xạ đặc trưng vùng <b>616–622 nm</b>, nhuộm ngọn lửa màu <b>đỏ cam (đỏ gạch)</b>.'
+    },
+    BaCl2: {
+      key: 'BaCl2', ion: 'Ba²⁺', formula: 'BaCl₂', name: 'Barium chloride',
+      colorName: 'Lục vàng (Apple green)',
+      rgb: [0.52, 0.94, 0.14], coreRgb: [0.88, 1.0, 0.68], hex: '#a3e635',
+      crystalHex: 0xf8fafc,
+      lam: '524 nm · 514 nm · 553 nm',
+      lines: [{ wl: 524, w: 1.0 }, { wl: 514, w: 0.75 }, { wl: 553.5, w: 0.65 }, { wl: 455, w: 0.25 }],
+      desc: 'Các dải phát xạ phân tử BaCl* và nguyên tử Ba quanh <b>514–553 nm</b> tạo màu <b>lục hơi vàng (xanh táo)</b> đặc trưng dùng làm pháo hoa xanh.'
+    },
+    CuCl2: {
+      key: 'CuCl2', ion: 'Cu²⁺', formula: 'CuCl₂', name: 'Copper(II) chloride',
+      colorName: 'Xanh lam – lục (Emerald)',
+      rgb: [0.05, 0.88, 0.62], coreRgb: [0.68, 1.0, 0.90], hex: '#10b981',
+      crystalHex: 0x2dd4bf,
+      lam: '510 nm (lục) & 450–490 nm (lam)',
+      lines: [{ wl: 510, w: 1.0 }, { wl: 522, w: 0.8 }, { wl: 465, w: 0.7 }, { wl: 448, w: 0.5 }],
+      desc: 'Tinh thể <b>CuCl₂</b> màu xanh ngọc khi đốt tạo hơi CuCl kích thích phát bức xạ vùng <b>lam – lục (450–522 nm)</b> cực kỳ bắt mắt.'
+    },
+    MixNaK: {
+      key: 'MixNaK', ion: 'K⁺ + vết Na⁺', formula: 'KCl + Na⁺', name: 'KCl lẫn tạp NaCl',
+      colorName: 'Vàng cam (che lấp K⁺!)',
+      rgb: [1.0, 0.72, 0.10], coreRgb: [1.0, 0.93, 0.65], hex: '#f59e0b',
+      cobaltRgb: [0.86, 0.30, 0.96], cobaltCore: [0.98, 0.80, 1.0],
+      crystalHex: 0xf3f4f6,
+      lam: '589 nm (Na⁺ lấn át) + 404/766 nm (K⁺)',
+      lines: [{ wl: 589, w: 1.0 }, { wl: 404.4, w: 0.78 }, { wl: 742, w: 0.65 }],
+      isMix: true,
+      desc: 'Mắt thường chỉ thấy màu <b>vàng chói của Na⁺</b>! Hãy bấm <b>🟦 Soi kính Cobalt</b>: kính sẽ lọc sạch tia vàng 589 nm để lộ màu <b>tím hồng của K⁺</b>!'
+    }
+  };
+  const DISH_ORDER = ['LiCl', 'NaCl', 'KCl', 'CaCl2', 'BaCl2', 'CuCl2'];
+  const PURE_KEYS = ['LiCl', 'NaCl', 'KCl', 'CaCl2', 'BaCl2', 'CuCl2'];
+
+  /* ==================== ÂM THANH NHẸ WEB AUDIO ==================== */
+  let soundOn = true, audioCtx = null, roarGain = null, roarFilter = null;
+  function ensureAudio() {
+    if (!soundOn) return null;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audioCtx) {
+      audioCtx = new AC();
+      // Tạo tiếng gió đèn khò Bunsen mềm từ Brown/Pink noise lọc thông thấp
+      const len = audioCtx.sampleRate * 2;
+      const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+      const data = buf.getChannelData(0);
+      let last = 0;
+      for (let i = 0; i < len; i++) {
+        const w = Math.random() * 2 - 1;
+        last = (last + 0.04 * w) / 1.04;
+        data[i] = last * 2.4;
+      }
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      src.loop = true;
+      roarFilter = audioCtx.createBiquadFilter();
+      roarFilter.type = 'bandpass';
+      roarFilter.frequency.value = 180;
+      roarFilter.Q.value = 0.8;
+      roarGain = audioCtx.createGain();
+      roarGain.gain.value = 0.0;
+      src.connect(roarFilter);
+      roarFilter.connect(roarGain);
+      roarGain.connect(audioCtx.destination);
+      src.start();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function sfxWhoosh(freq, dur, vol) {
+    const ac = ensureAudio();
+    if (!ac) return;
+    const osc = ac.createOscillator();
+    const g = ac.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq || 320, ac.currentTime);
+    osc.frequency.exponentialRampToValueAtTime((freq || 320) * 1.55, ac.currentTime + (dur || 0.14));
+    g.gain.setValueAtTime(vol || 0.06, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0008, ac.currentTime + (dur || 0.14));
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(); osc.stop(ac.currentTime + (dur || 0.14));
+  }
+
+  function sfxSizzle() {
+    const ac = ensureAudio();
+    if (!ac) return;
+    const len = Math.floor(ac.sampleRate * 0.28);
+    const b = ac.createBuffer(1, len, ac.sampleRate);
+    const d = b.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (len * 0.35));
+    const s = ac.createBufferSource(); s.buffer = b;
+    const f = ac.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 1800;
+    const g = ac.createGain(); g.gain.value = 0.08;
+    s.connect(f); f.connect(g); g.connect(ac.destination);
+    s.start();
+  }
+
+  /* ==================== KHỞI TẠO THREE.JS SCENE ==================== */
+  const stage = $('stage'), cv = $('cv');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' });
+  } catch (e) {
+    $('fb').style.display = 'flex';
+    return;
+  }
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.98;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0b0714);
+  scene.fog = new THREE.FogExp2(0x0b0714, 0.036);
+
+  // Studio IBL dịu phản chiếu thật lên đồng thau, chrome, thủy tinh HCl và dây Pt (không chói)
+  (function buildEnvMap() {
+    if (!THREE.PMREMGenerator) return;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const es = new THREE.Scene();
+    es.background = new THREE.Color(0x0e091a);
+    const sTop = new THREE.Mesh(new THREE.PlaneGeometry(14, 5), new THREE.MeshBasicMaterial({ color: 0xb8c2d1, side: THREE.DoubleSide }));
+    sTop.position.set(0, 8, 2); sTop.lookAt(0, 0, 0); es.add(sTop);
+    const sL = new THREE.Mesh(new THREE.PlaneGeometry(5, 10), new THREE.MeshBasicMaterial({ color: 0x9db4cc, side: THREE.DoubleSide }));
+    sL.position.set(-9, 3, 2); sL.lookAt(0, 0, 0); es.add(sL);
+    const sR = new THREE.Mesh(new THREE.PlaneGeometry(5, 10), new THREE.MeshBasicMaterial({ color: 0xc9bfa3, side: THREE.DoubleSide }));
+    sR.position.set(9, 3, 2); sR.lookAt(0, 0, 0); es.add(sR);
+    scene.environment = pmrem.fromScene(es, 0.06).texture;
+    pmrem.dispose();
+  })();
+
+  // Làn hơi trắng HCl bốc lên nhẹ rồi tan biến khi nhúng dây Pt nóng vào cốc HCl đặc
+  const hclSteamTex = (function () {
+    const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+    const g = c.getContext('2d');
+    const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, 'rgba(241,245,249,0.85)');
+    gr.addColorStop(0.5, 'rgba(226,232,240,0.32)');
+    gr.addColorStop(1, 'rgba(226,232,240,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+    const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; return t;
+  })();
+  const hclSteams = [];
+  for (let i = 0; i < 24; i++) {
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: hclSteamTex, color: 0xe2e8f0, transparent: true, opacity: 0, depthWrite: false
+    }));
+    sp.visible = false; sp.renderOrder = 10;
+    scene.add(sp);
+    hclSteams.push({ sp: sp, life: 0, maxLife: 1, vx: 0, vy: 0, vz: 0 });
+  }
+  function spawnHclSteam(origin) {
+    for (let i = 0; i < 10; i++) {
+      const s = hclSteams.find(function (o) { return o.life <= 0; });
+      if (!s) break;
+      s.maxLife = 0.8 + Math.random() * 0.7;
+      s.life = s.maxLife;
+      s.vx = (Math.random() - 0.5) * 0.25;
+      s.vy = 0.55 + Math.random() * 0.45;
+      s.vz = (Math.random() - 0.5) * 0.25;
+      s.sp.position.set(origin.x + (Math.random() - 0.5) * 0.16, origin.y + 0.25, origin.z + (Math.random() - 0.5) * 0.16);
+      s.sp.visible = true;
+    }
+  }
+
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+
+  /* ==================== ÁNH SÁNG PHÒNG LAB TỐI ==================== */
+  const hemi = new THREE.HemisphereLight(0xb8c4ff, 0x1e132b, 0.42);
+  scene.add(hemi);
+
+  const keyLight = new THREE.DirectionalLight(0xfff5ea, 0.58);
+  keyLight.position.set(5.5, 9.5, 6.2);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(1024, 1024);
+  keyLight.shadow.camera.near = 2;
+  keyLight.shadow.camera.far = 24;
+  const dCam = 5.5;
+  keyLight.shadow.camera.left = -dCam; keyLight.shadow.camera.right = dCam;
+  keyLight.shadow.camera.top = dCam; keyLight.shadow.camera.bottom = -dCam;
+  scene.add(keyLight);
+
+  const rimLight = new THREE.PointLight(0x7c3aed, 0.55, 18);
+  rimLight.position.set(-5.5, 4.2, -4.5);
+  scene.add(rimLight);
+
+  // Ánh sáng động của chính ngọn lửa Bunsen chiếu lên mặt bàn và dụng cụ!
+  const flameLight = new THREE.PointLight(0x38bdf8, 1.8, 11, 1.6);
+  flameLight.position.set(0, 3.05, 0);
+  scene.add(flameLight);
+
+  /* ==================== TEXTURE CANVAS TIỆN ÍCH ==================== */
+  function makeCanvasTex(w, h, drawFn) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    drawFn(c.getContext('2d'), w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  // Mặt bàn đá tối bóng của phòng thí nghiệm Hóa học
+  const benchTex = makeCanvasTex(512, 512, function (g, w, h) {
+    g.fillStyle = '#181424';
+    g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 1600; i++) {
+      const x = Math.random() * w, y = Math.random() * h, r = 0.6 + Math.random() * 1.8;
+      g.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.14)';
+      g.fillRect(x, y, r, r);
+    }
+    g.strokeStyle = 'rgba(167,139,250,0.06)';
+    g.lineWidth = 1;
+    for (let i = 0; i <= w; i += 64) {
+      g.beginPath(); g.moveTo(i, 0); g.lineTo(i, h); g.stroke();
+      g.beginPath(); g.moveTo(0, i); g.lineTo(w, i); g.stroke();
+    }
+  });
+  benchTex.wrapS = benchTex.wrapT = THREE.RepeatWrapping;
+  benchTex.repeat.set(4, 3);
+
+  const benchMat = new THREE.MeshStandardMaterial({
+    map: benchTex, roughness: 0.28, metalness: 0.18
+  });
+  const bench = new THREE.Mesh(new THREE.BoxGeometry(16, 0.5, 11), benchMat);
+  bench.position.set(0, -0.25, 0.3);
+  bench.receiveShadow = true;
+  scene.add(bench);
+
+  // Gờ viền bàn phía trước
+  const trim = new THREE.Mesh(
+    new THREE.BoxGeometry(16.05, 0.12, 0.15),
+    new THREE.MeshStandardMaterial({ color: 0x2f2546, roughness: 0.4, metalness: 0.4 })
+  );
+  trim.position.set(0, -0.02, 5.82);
+  scene.add(trim);
+
+  // Tường gạch mờ phía sau phòng lab
+  const wallTex = makeCanvasTex(512, 256, function (g, w, h) {
+    const gr = g.createLinearGradient(0, 0, 0, h);
+    gr.addColorStop(0, '#140e24');
+    gr.addColorStop(1, '#0c0817');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(255,255,255,0.035)';
+    g.lineWidth = 2;
+    for (let y = 0; y < h; y += 32) {
+      g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke();
+      const off = ((y / 32) % 2) * 32;
+      for (let x = off; x < w; x += 64) {
+        g.beginPath(); g.moveTo(x, y); g.lineTo(x, y + 32); g.stroke();
+      }
+    }
+  });
+  wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
+  wallTex.repeat.set(3, 2);
+  const backWall = new THREE.Mesh(
+    new THREE.PlaneGeometry(24, 12),
+    new THREE.MeshStandardMaterial({ map: wallTex, roughness: 0.85 })
+  );
+  backWall.position.set(0, 5.2, -5.2);
+  scene.add(backWall);
+
+  /* ==================== ĐÈN KHÍ BUNSEN 3D CHI TIẾT ==================== */
+  const bunsenGroup = new THREE.Group();
+  scene.add(bunsenGroup);
+
+  const castIronMat = new THREE.MeshStandardMaterial({ color: 0x262936, roughness: 0.48, metalness: 0.65 });
+  const chromeMat = new THREE.MeshStandardMaterial({ color: 0xd8dee9, roughness: 0.18, metalness: 0.88 });
+  const brassMat = new THREE.MeshStandardMaterial({ color: 0xd4a237, roughness: 0.25, metalness: 0.85 });
+  const darkHoleMat = new THREE.MeshBasicMaterial({ color: 0x060609 });
+  const hotRimMat = new THREE.MeshStandardMaterial({
+    color: 0x8a7968, roughness: 0.35, metalness: 0.75,
+    emissive: new THREE.Color(0xff4500), emissiveIntensity: 0.25
+  });
+
+  // Đế đèn Bunsen bậc tròn
+  const base1 = new THREE.Mesh(new THREE.CylinderGeometry(0.92, 1.06, 0.16, 40), castIronMat);
+  base1.position.y = 0.08; base1.castShadow = true; base1.receiveShadow = true;
+  bunsenGroup.add(base1);
+
+  const base2 = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.88, 0.18, 36), castIronMat);
+  base2.position.y = 0.24; base2.castShadow = true;
+  bunsenGroup.add(base2);
+
+  const baseNut = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.22, 6), brassMat);
+  baseNut.position.y = 0.42;
+  bunsenGroup.add(baseNut);
+
+  // Ống nhánh dẫn gas + ống cao su mềm nối ra mép bàn sau
+  const gasArm = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.58, 16), brassMat);
+  gasArm.rotation.z = Math.PI / 2;
+  gasArm.position.set(-0.38, 0.42, 0);
+  bunsenGroup.add(gasArm);
+
+  const hoseCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.66, 0.42, 0),
+    new THREE.Vector3(-1.25, 0.26, -0.35),
+    new THREE.Vector3(-1.95, 0.09, -1.25),
+    new THREE.Vector3(-2.45, 0.09, -2.8),
+    new THREE.Vector3(-2.30, 0.09, -4.6)
+  ]);
+  const hoseMesh = new THREE.Mesh(
+    new THREE.TubeGeometry(hoseCurve, 36, 0.085, 14, false),
+    new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.68, metalness: 0.05 })
+  );
+  hoseMesh.castShadow = true;
+  bunsenGroup.add(hoseMesh);
+
+  // Lõi tối bên trong lỗ gió
+  const innerCore = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.45, 20), darkHoleMat);
+  innerCore.position.y = 0.68;
+  bunsenGroup.add(innerCore);
+
+  // Kim phun gas bằng đồng nhìn xuyên qua lỗ gió
+  const jetNozzle = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.16, 12), brassMat);
+  jetNozzle.position.y = 0.62;
+  bunsenGroup.add(jetNozzle);
+
+  // Vòng xoay chỉnh lỗ gió (Air Collar) xoay thực tế theo thanh trượt!
+  const collarGroup = new THREE.Group();
+  collarGroup.position.y = 0.68;
+  bunsenGroup.add(collarGroup);
+
+  const collarSleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.245, 0.245, 0.34, 28, 1, true), brassMat);
+  collarSleeve.material.side = THREE.DoubleSide;
+  collarGroup.add(collarSleeve);
+
+  const collarRingTop = new THREE.Mesh(new THREE.TorusGeometry(0.245, 0.022, 10, 28), brassMat);
+  collarRingTop.rotation.x = Math.PI / 2; collarRingTop.position.y = 0.17;
+  collarGroup.add(collarRingTop);
+
+  const collarRingBot = collarRingTop.clone();
+  collarRingBot.position.y = -0.17;
+  collarGroup.add(collarRingBot);
+
+  // Tay gạt nhỏ gắn trên vòng chỉnh gió để học sinh thấy rõ vòng đang xoay
+  const airHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.18, 10), brassMat);
+  airHandle.rotation.x = Math.PI / 2;
+  airHandle.position.set(0, 0, 0.31);
+  collarGroup.add(airHandle);
+  const airKnob = new THREE.Mesh(new THREE.SphereGeometry(0.045, 12, 12), brassMat);
+  airKnob.position.set(0, 0, 0.40);
+  collarGroup.add(airKnob);
+
+  // Cửa sổ lỗ gió hiển thị độ mở trực quan trên cổ đèn
+  const airWindowMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.249, 0.249, 0.18, 20, 1, true, -0.42, 0.84),
+    darkHoleMat
+  );
+  airWindowMesh.position.y = 0.68;
+  bunsenGroup.add(airWindowMesh);
+
+  // Thân ống đốt mạ crôm (Chimney / Barrel)
+  const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.195, 0.205, 1.48, 32), chromeMat);
+  barrel.position.y = 1.56; barrel.castShadow = true;
+  bunsenGroup.add(barrel);
+
+  // Đầu miệng khò trên đỉnh ống đốt (Y = 2.34)
+  const BURNER_TOP_Y = 2.35;
+  const topCrown = new THREE.Mesh(new THREE.CylinderGeometry(0.225, 0.20, 0.11, 32), hotRimMat);
+  topCrown.position.y = BURNER_TOP_Y - 0.03;
+  bunsenGroup.add(topCrown);
+
+  const burnerMouth = new THREE.Mesh(new THREE.CircleGeometry(0.17, 24), darkHoleMat);
+  burnerMouth.rotation.x = -Math.PI / 2;
+  burnerMouth.position.y = BURNER_TOP_Y + 0.026;
+  bunsenGroup.add(burnerMouth);
+
+  /* ==================== NGỌN LỬA 3D VOLUMETRIC GLSL SHADER ==================== */
+  const flameUniforms = {
+    uTime: { value: 0 },
+    uGasOn: { value: 1.0 },
+    uAir: { value: 1.0 },          // 1 = lửa xanh chuẩn, 0 = lửa vàng thiếu O2
+    uIonMix: { value: 0.0 },       // Cường độ màu muối kim loại (0 -> 1)
+    uIonColor: { value: new THREE.Color(1.0, 0.12, 0.32) },
+    uIonCore: { value: new THREE.Color(1.0, 0.72, 0.82) },
+    uWireTip: { value: new THREE.Vector3(0, 3.05, 0) }
+  };
+
+  const flameVert = `
+    uniform float uTime;
+    uniform float uAir;
+    uniform float uIonMix;
+    varying vec2 vUv;
+    varying vec3 vNormalW;
+    varying vec3 vViewDir;
+    varying vec3 vLocalPos;
+
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+    float noise(vec2 p){
+      vec2 i = floor(p), f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(mix(hash(i), hash(i + vec2(1.0,0.0)), u.x),
+                 mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x), u.y);
+    }
+
+    void main() {
+      vUv = uv;
+      vec3 pos = position;
+      float h = clamp(uv.y, 0.0, 1.0);
+
+      // Tạo dáng giọt lửa 3D phình nhẹ ở bụng và vuốt nhọn mượt ở ngọn
+      float profile = sin(pow(h, 0.62) * 3.14159265);
+      float baseTight = mix(0.52, 1.0, smoothstep(0.0, 0.22, h));
+      float radiusScale = mix(profile * 1.38, baseTight * (1.0 - pow(h, 1.45)), 0.45);
+      // Khi đóng lỗ gió lửa phình to và cao lắc lư hơn; khi có muối ngọn lửa bùng cao hơn
+      float airSwell = mix(1.28, 0.95, uAir) + uIonMix * 0.16 * smoothstep(0.18, 0.85, h);
+      pos.xz *= max(0.015, radiusScale * airSwell);
+      pos.y *= mix(1.22, 1.0, uAir) + uIonMix * 0.14;
+
+      // Dao động xoáy 3D tự nhiên của luồng khí nóng đối lưu
+      float spd = mix(4.2, 8.5, uAir);
+      float n1 = noise(vec2(pos.y * 2.8 - uTime * spd, atan(pos.z, pos.x) * 1.5)) - 0.5;
+      float n2 = noise(vec2(pos.y * 5.2 - uTime * (spd * 1.35) + 11.3, pos.x * 3.0)) - 0.5;
+      float swayAmp = pow(h, 1.55) * mix(0.20, 0.075, uAir) * (1.0 + uIonMix * 0.45);
+      pos.x += (n1 * 1.2 + n2 * 0.5) * swayAmp;
+      pos.z += (n2 * 1.2 - n1 * 0.5) * swayAmp;
+
+      vLocalPos = pos;
+      vec4 worldPos = modelMatrix * vec4(pos, 1.0);
+      vNormalW = normalize(mat3(modelMatrix) * normal);
+      vViewDir = normalize(cameraPosition - worldPos.xyz);
+      gl_Position = projectionMatrix * viewMatrix * worldPos;
+    }
+  `;
+
+  const flameFrag = `
+    uniform float uTime;
+    uniform float uGasOn;
+    uniform float uAir;
+    uniform float uIonMix;
+    uniform vec3 uIonColor;
+    uniform vec3 uIonCore;
+    varying vec2 vUv;
+    varying vec3 vNormalW;
+    varying vec3 vViewDir;
+    varying vec3 vLocalPos;
+
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+    float noise(vec2 p){
+      vec2 i = floor(p), f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(mix(hash(i), hash(i + vec2(1.0,0.0)), u.x),
+                 mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x), u.y);
+    }
+    float fbm(vec2 p){
+      float v = 0.0, a = 0.5;
+      for(int i = 0; i < 4; i++){
+        v += a * noise(p);
+        p *= 2.05;
+        a *= 0.5;
+      }
+      return v;
+    }
+
+    void main() {
+      if (uGasOn < 0.01) discard;
+      float h = clamp(vUv.y, 0.0, 1.0);
+
+      // Độ dày khối 3D mềm theo góc nhìn để xoay 360 độ không bao giờ lộ viền cứng
+      float ndv = abs(dot(normalize(vNormalW), normalize(vViewDir)));
+      float edgeSoft = pow(ndv, 0.85);
+
+      float angle = atan(vLocalPos.z, vLocalPos.x);
+      float turb = fbm(vec2(angle * 1.6, h * 4.5 - uTime * mix(3.8, 7.2, uAir)));
+      float wisps = fbm(vec2(angle * 3.0 + 4.2, h * 7.5 - uTime * 9.5));
+
+      // 1. Màu lửa Bunsen gốc: Xanh lam trong suốt (đủ O2) vs Vàng cam sáng (thiếu O2)
+      vec3 cleanBase = mix(vec3(0.05, 0.36, 0.98), vec3(0.18, 0.68, 1.0), smoothstep(0.0, 0.45, h));
+      cleanBase = mix(cleanBase, vec3(0.32, 0.45, 0.95), smoothstep(0.5, 1.0, h));
+
+      vec3 sootFlame = mix(vec3(0.12, 0.35, 0.95), vec3(1.0, 0.58, 0.06), smoothstep(0.08, 0.34, h));
+      sootFlame = mix(sootFlame, vec3(1.0, 0.86, 0.28), smoothstep(0.35, 0.78, h));
+
+      vec3 baseCol = mix(sootFlame, cleanBase, uAir);
+      float baseAlpha = mix(0.72, 0.30, uAir);
+
+      // 2. Vùng phát xạ màu của Ion kim loại (bắt đầu từ vùng nóng ~h=0.22 bùng lên đỉnh ngọn lửa!)
+      float ionZone = smoothstep(0.16, 0.38, h) * (0.68 + 0.55 * wisps);
+      float ionStrength = clamp(uIonMix * ionZone * 1.35, 0.0, 1.0);
+
+      vec3 ionFull = mix(uIonColor, uIonCore, pow(edgeSoft, 1.8) * 0.62 + wisps * 0.22);
+      vec3 col = mix(baseCol, ionFull, ionStrength);
+
+      // 3. Độ mờ đục biến thiên mềm mại ở chân và ngọn lưỡi lửa
+      float topFade = 1.0 - smoothstep(0.55, 1.0, h + (turb - 0.5) * 0.26);
+      float botFade = smoothstep(0.0, 0.09, h);
+      float alpha = edgeSoft * topFade * botFade * mix(baseAlpha, 0.86, ionStrength) * uGasOn;
+
+      gl_FragColor = vec4(col * (1.15 + ionStrength * 0.55), clamp(alpha, 0.0, 0.95));
+    }
+  `;
+
+  const flameGroup = new THREE.Group();
+  flameGroup.position.set(0, BURNER_TOP_Y + 0.01, 0);
+  scene.add(flameGroup);
+
+  // Lớp vỏ ngoài & lớp thể tích bên trong để khối lửa dày dặn từ mọi góc quay 3D
+  function makeFlameShell(radius, height, scaleXZ, mat) {
+    const geo = new THREE.CylinderGeometry(0.02, radius, height, 36, 42, true);
+    geo.translate(0, height * 0.5, 0);
+    const m = new THREE.Mesh(geo, mat);
+    m.scale.set(scaleXZ, 1, scaleXZ);
+    return m;
+  }
+
+  const outerFlameMat = new THREE.ShaderMaterial({
+    uniforms: flameUniforms,
+    vertexShader: flameVert,
+    fragmentShader: flameFrag,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide
+  });
+
+  const outerShell1 = makeFlameShell(0.24, 1.85, 1.0, outerFlameMat);
+  const outerShell2 = makeFlameShell(0.18, 1.62, 0.78, outerFlameMat);
+  outerShell2.rotation.y = 1.1;
+  flameGroup.add(outerShell1, outerShell2);
+
+  // Nón khử xanh cyan sắc nét bên trong (Inner Blue Cone — vùng ngay dưới điểm nóng nhất!)
+  const innerConeUniforms = {
+    uTime: flameUniforms.uTime,
+    uAir: flameUniforms.uAir,
+    uGasOn: flameUniforms.uGasOn
+  };
+  const innerConeMat = new THREE.ShaderMaterial({
+    uniforms: innerConeUniforms,
+    vertexShader: `
+      uniform float uTime;
+      uniform float uAir;
+      varying vec2 vUv;
+      varying vec3 vN;
+      varying vec3 vV;
+      void main(){
+        vUv = uv;
+        vec3 p = position;
+        float h = uv.y;
+        p.y *= mix(0.45, 1.0, uAir);
+        p.xz *= (1.0 - pow(h, 1.15)) * mix(0.7, 1.0, uAir);
+        p.x += sin(uTime * 14.0 + h * 6.0) * 0.008 * h;
+        vec4 wp = modelMatrix * vec4(p, 1.0);
+        vN = normalize(mat3(modelMatrix) * normal);
+        vV = normalize(cameraPosition - wp.xyz);
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: `
+      uniform float uAir;
+      uniform float uGasOn;
+      varying vec2 vUv;
+      varying vec3 vN;
+      varying vec3 vV;
+      void main(){
+        if (uGasOn < 0.01) discard;
+        float h = vUv.y;
+        float rim = pow(abs(dot(vN, vV)), 0.7);
+        vec3 cyanCol = mix(vec3(0.08, 0.85, 1.0), vec3(0.65, 0.98, 1.0), smoothstep(0.2, 0.92, h));
+        float a = rim * (1.0 - smoothstep(0.78, 1.0, h)) * smoothstep(0.0, 0.12, h) * (0.18 + 0.72 * uAir) * uGasOn;
+        gl_FragColor = vec4(cyanCol * 1.3, a);
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide
+  });
+  const innerCone = makeFlameShell(0.165, 0.68, 1.0, innerConeMat);
+  flameGroup.add(innerCone);
+
+  // Hào quang bloom mềm bao quanh ngọn lửa
+  const glowTex = makeCanvasTex(128, 128, function (g, w, h) {
+    const gr = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+    gr.addColorStop(0, 'rgba(255,255,255,0.85)');
+    gr.addColorStop(0.32, 'rgba(255,255,255,0.28)');
+    gr.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  });
+  const glowMat = new THREE.SpriteMaterial({
+    map: glowTex, color: 0x38bdf8, transparent: true, opacity: 0.35,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  });
+  const flameGlow = new THREE.Sprite(glowMat);
+  flameGlow.position.set(0, BURNER_TOP_Y + 0.92, 0);
+  flameGlow.scale.set(2.2, 2.8, 1);
+  scene.add(flameGlow);
+
+  /* ==================== HỆ HẠT TIA LỬA MUỐI 3D (SPARK PARTICLES) ==================== */
+  const SPARK_COUNT = 75;
+  const sparkPos = new Float32Array(SPARK_COUNT * 3);
+  const sparkVel = [];
+  const sparkLife = new Float32Array(SPARK_COUNT);
+  for (let i = 0; i < SPARK_COUNT; i++) {
+    sparkPos[i * 3 + 1] = -99;
+    sparkVel.push({ vx: 0, vy: 1, vz: 0, max: 1 });
+    sparkLife[i] = 0;
+  }
+  const sparkGeo = new THREE.BufferGeometry();
+  sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+  const sparkMat = new THREE.PointsMaterial({
+    map: glowTex, size: 0.13, color: 0xff1e56,
+    transparent: true, opacity: 0.9,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  });
+  const sparkPoints = new THREE.Points(sparkGeo, sparkMat);
+  scene.add(sparkPoints);
+
+  /* ==================== CỐC THỦY TINH HCl ĐẶC BÊN TRÁI ==================== */
+  const HCL_POS = new THREE.Vector3(-2.35, 0, 0.55);
+  const beakerGroup = new THREE.Group();
+  beakerGroup.position.copy(HCL_POS);
+  scene.add(beakerGroup);
+
+  const glassMat = new THREE.MeshPhysicalMaterial({
+    color: 0xdbeafe, transparent: true, opacity: 0.32,
+    roughness: 0.08, metalness: 0.05, transmission: 0.55, side: THREE.DoubleSide
+  });
+
+  // Thân cốc thủy tinh có vạch chia mL
+  const scaleTex = makeCanvasTex(256, 128, function (g, w, h) {
+    g.clearRect(0, 0, w, h);
+    g.fillStyle = 'rgba(15,23,42,0.78)';
+    g.roundRect ? (g.beginPath(), g.roundRect(18, 30, 96, 56, 8), g.fill()) : g.fillRect(18, 30, 96, 56);
+    g.strokeStyle = '#fbbf24'; g.lineWidth = 2;
+    g.strokeRect(20, 32, 92, 52);
+    g.fillStyle = '#fef08a'; g.font = '800 20px "Be Vietnam Pro",sans-serif';
+    g.textAlign = 'center'; g.fillText('HCl đặc', 66, 58);
+    g.fillStyle = '#cbd5e1'; g.font = '600 12px sans-serif';
+    g.fillText('Rửa dây Pt', 66, 76);
+
+    // Vạch chia thể tích bên đối diện
+    g.strokeStyle = 'rgba(255,255,255,0.65)'; g.lineWidth = 2;
+    g.fillStyle = 'rgba(255,255,255,0.75)'; g.font = '700 11px sans-serif';
+    [25, 50, 75, 100].forEach(function (ml, idx) {
+      const y = h - 18 - idx * 22;
+      g.beginPath(); g.moveTo(165, y); g.lineTo(188, y); g.stroke();
+      g.fillText(ml + '', 206, y + 4);
+    });
+  });
+
+  const beakerWall = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.54, 1.28, 32, 1, true), glassMat);
+  beakerWall.position.y = 0.65;
+  beakerGroup.add(beakerWall);
+
+  const beakerLabel = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.565, 0.545, 1.05, 32, 1, true),
+    new THREE.MeshBasicMaterial({ map: scaleTex, transparent: true, depthWrite: false })
+  );
+  beakerLabel.position.y = 0.64;
+  beakerLabel.rotation.y = 0.8;
+  beakerGroup.add(beakerLabel);
+
+  const beakerBottom = new THREE.Mesh(new THREE.CylinderGeometry(0.54, 0.54, 0.05, 32), glassMat);
+  beakerBottom.position.y = 0.025;
+  beakerGroup.add(beakerBottom);
+
+  const beakerLip = new THREE.Mesh(new THREE.TorusGeometry(0.56, 0.024, 10, 32), glassMat);
+  beakerLip.rotation.x = Math.PI / 2; beakerLip.position.y = 1.29;
+  beakerGroup.add(beakerLip);
+
+  // Dung dịch HCl đặc trong cốc
+  const hclLiquid = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.515, 0.505, 0.78, 28),
+    new THREE.MeshPhysicalMaterial({
+      color: 0xfef9c3, transparent: true, opacity: 0.42, roughness: 0.12
+    })
+  );
+  hclLiquid.position.y = 0.42;
+  beakerGroup.add(hclLiquid);
+
+  // Vùng click ẩn cho cốc HCl
+  const hclHit = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.65, 0.65, 1.35, 16),
+    new THREE.MeshBasicMaterial({ visible: false })
+  );
+  hclHit.position.copy(HCL_POS).setY(0.68);
+  hclHit.userData = { action: 'clean' };
+  scene.add(hclHit);
+
+  /* ==================== KHAY 6 ĐĨA MẶT KÍNH ĐỒNG HỒ + LỌ BÍ ẨN X ==================== */
+  const interactables = [hclHit];
+  const dishPositions = {};
+  const dishGroups = {};
+
+  function makeLabelSprite(title, sub, accentHex) {
+    const tex = makeCanvasTex(256, 96, function (g, w, h) {
+      g.fillStyle = 'rgba(14,10,26,0.84)';
+      g.strokeStyle = accentHex || 'rgba(255,255,255,0.28)';
+      g.lineWidth = 3;
+      g.beginPath();
+      if (g.roundRect) g.roundRect(8, 8, w - 16, h - 16, 18);
+      else g.rect(8, 8, w - 16, h - 16);
+      g.fill(); g.stroke();
+      g.fillStyle = '#ffffff';
+      g.font = '800 30px "Be Vietnam Pro",sans-serif';
+      g.textAlign = 'center';
+      g.fillText(title, w / 2, 46);
+      g.fillStyle = '#cbd5e1';
+      g.font = '700 20px "Be Vietnam Pro",sans-serif';
+      g.fillText(sub, w / 2, 74);
+    });
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+    sp.scale.set(1.08, 0.40, 1);
+    return sp;
+  }
+
+  // Tạo gò tinh thể muối lấp lánh trên mặt kính đồng hồ
+  function createWatchGlass(key, x, z, customTitle, customSub, accent) {
+    const info = SALTS[key] || SALTS.LiCl;
+    const grp = new THREE.Group();
+    grp.position.set(x, 0, z);
+    scene.add(grp);
+
+    // Mặt kính đồng hồ lõm nhẹ
+    const dish = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.54, 0.34, 0.08, 28),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xe2e8f0, transparent: true, opacity: 0.45, roughness: 0.12, metalness: 0.05
+      })
+    );
+    dish.position.y = 0.045;
+    dish.receiveShadow = true;
+    grp.add(dish);
+
+    const rim = new THREE.Mesh(
+      new THREE.TorusGeometry(0.54, 0.018, 8, 28),
+      new THREE.MeshStandardMaterial({ color: 0xcbd5e1, roughness: 0.2 })
+    );
+    rim.rotation.x = Math.PI / 2; rim.position.y = 0.085;
+    grp.add(rim);
+
+    // Đống tinh thể muối đa diện nhỏ
+    const crystalMat = new THREE.MeshStandardMaterial({
+      color: customTitle ? 0xf8fafc : info.crystalHex,
+      roughness: 0.32, metalness: 0.08
+    });
+    const mound = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.17, 14), crystalMat);
+    mound.position.y = 0.12;
+    grp.add(mound);
+
+    const grainGeo = new THREE.DodecahedronGeometry(0.055, 0);
+    for (let i = 0; i < 18; i++) {
+      const gr = new THREE.Mesh(grainGeo, crystalMat);
+      const ang = (i / 18) * Math.PI * 2 + (i % 3) * 0.2;
+      const rad = 0.05 + (i % 4) * 0.065;
+      gr.position.set(Math.cos(ang) * rad, 0.10 + (1 - rad / 0.32) * 0.09, Math.sin(ang) * rad);
+      gr.rotation.set(i * 0.7, i * 1.1, i * 0.4);
+      gr.scale.setScalar(0.65 + (i % 3) * 0.25);
+      grp.add(gr);
+    }
+
+    const lbl = makeLabelSprite(
+      customTitle || info.formula,
+      customSub || info.ion,
+      accent || info.hex
+    );
+    lbl.position.set(0, 0.48, 0.36);
+    grp.add(lbl);
+
+    const hit = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.60, 0.60, 0.55, 14),
+      new THREE.MeshBasicMaterial({ visible: false })
+    );
+    hit.position.set(x, 0.26, z);
+    hit.userData = { action: customTitle ? 'mystery' : 'salt', key: key };
+    scene.add(hit);
+    interactables.push(hit);
+
+    dishPositions[customTitle ? 'MYSTERY' : key] = new THREE.Vector3(x, 0.19, z);
+    dishGroups[customTitle ? 'MYSTERY' : key] = grp;
+    return grp;
+  }
+
+  // Xếp 6 đĩa muối theo hình cánh cung phía trước và bên phải bàn thực hành
+  DISH_ORDER.forEach(function (k, idx) {
+    const col = idx % 3, row = Math.floor(idx / 3);
+    const x = 1.65 + col * 1.28;
+    const z = 0.65 + row * 1.42;
+    createWatchGlass(k, x, z);
+  });
+
+  // Đĩa KCl + vết Na+ ở phía trước bên trái
+  createWatchGlass('MixNaK', -1.15, 2.35, 'KCl + Na⁺', 'Tạp vết Na⁺', '#f59e0b');
+  dishPositions.MixNaK = new THREE.Vector3(-1.15, 0.19, 2.35);
+  interactables[interactables.length - 1].userData = { action: 'salt', key: 'MixNaK' };
+
+  // Lọ Mẫu bí ẩn X (hiện khi sang chế độ Đoán muối bí ẩn)
+  const mysteryDish = createWatchGlass('LiCl', 0.25, 2.55, 'Mẫu X ?', 'Bí ẩn', '#38bdf8');
+  mysteryDish.visible = false;
+
+  /* ==================== QUE DÂY PLATINUM GẮN CÁN THỦY TINH 3D ==================== */
+  // Gốc group đặt đúng tại tâm vòng khuyên đầu dây Pt (0,0,0) để điều khiển tọa độ mũi cực chuẩn!
+  const wandGroup = new THREE.Group();
+  const REST_POS = new THREE.Vector3(1.55, 2.15, 1.35);
+  const FLAME_TEST_POS = new THREE.Vector3(0.0, BURNER_TOP_Y + 0.66, 0.0); // Đỉnh nón khử nóng nhất (~1500°C)!
+  wandGroup.position.copy(REST_POS);
+  wandGroup.rotation.z = -0.16;
+  wandGroup.rotation.y = -0.28;
+  scene.add(wandGroup);
+
+  const ptWireMat = new THREE.MeshStandardMaterial({
+    color: 0xe5e7eb, roughness: 0.22, metalness: 0.92,
+    emissive: new THREE.Color(0xff4d00), emissiveIntensity: 0.0
+  });
+
+  // Khuyên tròn nhỏ ở mũi dây Pt (bán kính 0.055)
+  const ptLoop = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.013, 10, 24), ptWireMat);
+  wandGroup.add(ptLoop);
+
+  // Đoạn dây Pt dài 0.72 nối từ khuyên sang đũa thủy tinh (hướng về +X)
+  const ptWire = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.72, 10), ptWireMat);
+  ptWire.rotation.z = Math.PI / 2;
+  ptWire.position.x = 0.41;
+  wandGroup.add(ptWire);
+
+  // Hạt muối kết tinh bám trong lòng khuyên dây Pt
+  const saltBeadMat = new THREE.MeshStandardMaterial({
+    color: 0xffffff, roughness: 0.35,
+    emissive: new THREE.Color(0xff1e56), emissiveIntensity: 0.0
+  });
+  const saltBead = new THREE.Mesh(new THREE.SphereGeometry(0.048, 14, 14), saltBeadMat);
+  saltBead.scale.set(1.1, 0.85, 0.75);
+  saltBead.visible = false;
+  wandGroup.add(saltBead);
+
+  // Khớp nung chảy đầu đũa thủy tinh bọc dây Pt + cán thủy tinh cầm tay
+  const rodSeal = new THREE.Mesh(
+    new THREE.SphereGeometry(0.055, 14, 14),
+    new THREE.MeshPhysicalMaterial({ color: 0x93c5fd, transparent: true, opacity: 0.65, roughness: 0.1 })
+  );
+  rodSeal.position.x = 0.77;
+  wandGroup.add(rodSeal);
+
+  const glassRod = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.052, 0.058, 1.85, 18),
+    new THREE.MeshPhysicalMaterial({ color: 0xbfdbfe, transparent: true, opacity: 0.52, roughness: 0.08 })
+  );
+  glassRod.rotation.z = Math.PI / 2;
+  glassRod.position.x = 1.68;
+  wandGroup.add(glassRod);
+
+  const handleGrip = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.072, 0.072, 0.68, 18),
+    new THREE.MeshStandardMaterial({ color: 0x7a2230, roughness: 0.45 })
+  );
+  handleGrip.rotation.z = Math.PI / 2;
+  handleGrip.position.x = 2.42;
+  wandGroup.add(handleGrip);
+
+  /* ==================== TẤM KÍNH LỌC COBALT XANH 3D ==================== */
+  // Dựng ngay trước ngọn lửa và luôn hướng nhẹ về phía camera khi bật!
+  const cobaltGroup = new THREE.Group();
+  cobaltGroup.position.set(0, BURNER_TOP_Y + 0.88, 1.45);
+  cobaltGroup.visible = false;
+  scene.add(cobaltGroup);
+
+  const cobaltFrame = new THREE.Mesh(new THREE.TorusGeometry(0.86, 0.042, 14, 48), brassMat);
+  cobaltGroup.add(cobaltFrame);
+
+  const cobaltPane = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.85, 0.85, 0.035, 48),
+    new THREE.MeshPhysicalMaterial({
+      color: 0x1d4ed8, transparent: true, opacity: 0.62,
+      roughness: 0.06, metalness: 0.05
+    })
+  );
+  cobaltPane.rotation.x = Math.PI / 2;
+  cobaltGroup.add(cobaltPane);
+
+  const cobaltHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.045, 0.95, 14), brassMat);
+  cobaltHandle.position.set(-0.72, -0.82, 0);
+  cobaltHandle.rotation.z = -0.58;
+  cobaltGroup.add(cobaltHandle);
+
+  /* ==================== CAMERA ORBIT XOAY 360° & PRESETS ==================== */
+  const camTarget = new THREE.Vector3(0.1, 2.25, 0.35);
+  const camGoalTarget = camTarget.clone();
+  let sph = { theta: 0.18, phi: 1.24, radius: 7.4 };
+  let sphGoal = { theta: 0.18, phi: 1.24, radius: 7.4 };
+
+  function setCamPreset(name) {
+    if (name === 'front') {
+      sphGoal = { theta: 0.08, phi: 1.30, radius: 7.1 };
+      camGoalTarget.set(0.0, 2.35, 0.25);
+    } else if (name === 'close') {
+      sphGoal = { theta: 0.04, phi: 1.36, radius: 4.15 };
+      camGoalTarget.set(0, 3.15, 0);
+    } else if (name === 'bench') {
+      sphGoal = { theta: 0.32, phi: 1.02, radius: 8.8 };
+      camGoalTarget.set(0.45, 1.45, 0.95);
+    } else if (name === 'top') {
+      sphGoal = { theta: 0.05, phi: 0.62, radius: 7.8 };
+      camGoalTarget.set(0.15, 1.8, 0.55);
+    }
+  }
+
+  // Kéo xoay & zoom chuột / cảm ứng
+  let dragging = false, downX = 0, downY = 0, movedDist = 0, pinchDist = 0;
+  cv.addEventListener('pointerdown', function (e) {
+    ensureAudio();
+    dragging = true;
+    downX = e.clientX; downY = e.clientY;
+    movedDist = 0;
+  });
+  window.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    const dx = e.clientX - downX, dy = e.clientY - downY;
+    downX = e.clientX; downY = e.clientY;
+    movedDist += Math.hypot(dx, dy);
+    sphGoal.theta -= dx * 0.0065;
+    sphGoal.phi = Math.max(0.38, Math.min(1.50, sphGoal.phi - dy * 0.0055));
+  });
+  window.addEventListener('pointerup', function (e) {
+    if (!dragging) return;
+    dragging = false;
+    if (movedDist < 6) handleCanvasClick(e);
+  });
+  cv.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    sphGoal.radius = Math.max(3.1, Math.min(12.5, sphGoal.radius + e.deltaY * 0.005));
+  }, { passive: false });
+
+  cv.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 2) {
+      pinchDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+    }
+  }, { passive: true });
+  cv.addEventListener('touchmove', function (e) {
+    if (e.touches.length === 2 && pinchDist > 0) {
+      const d = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      sphGoal.radius = Math.max(3.1, Math.min(12.5, sphGoal.radius - (d - pinchDist) * 0.02));
+      pinchDist = d;
+    }
+  }, { passive: true });
+
+  /* ==================== TRẠNG THÁI THÍ NGHIỆM & KỊCH BẢN QUE Pt ==================== */
+  let mode = 'free'; // 'free' | 'game'
+  let gasOn = true;
+  let airRatio = 1.0;
+  let cobaltOn = false;
+
+  let wireSaltKey = null;       // Muối hiện tại đang bám trên dây Pt
+  let wireAmount = 0;           // Lượng muối còn trên khuyên (0..1)
+  let wireDirty = false;        // Đã đốt muối trước đó chưa rửa HCl
+  let mysteryKey = 'LiCl';
+  let score = 0;
+
+  // Hệ keyframe di chuyển mượt mà cho que Pt trong không gian 3D
+  let wandKeyframes = [];
+  let wandTargetPos = REST_POS.clone();
+  let inFlame = false;
+
+  function queueWandSequence(steps) {
+    wandKeyframes = steps.slice();
+  }
+
+  let toastTimer = null;
+  function showToast(msg) {
+    const t = $('toast');
+    t.innerHTML = msg;
+    t.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('on'); }, 2900);
+  }
+
+  /* ==================== VẼ DẢI QUANG PHỔ PHÁT XẠ VẠCH ==================== */
+  const specCv = $('specCv');
+  const specCtx = specCv.getContext('2d');
+
+  function wlToRgb(wl) {
+    let r = 0, g = 0, b = 0;
+    if (wl >= 380 && wl < 440) { r = -(wl - 440) / 60; b = 1; }
+    else if (wl >= 440 && wl < 490) { g = (wl - 440) / 50; b = 1; }
+    else if (wl >= 490 && wl < 510) { g = 1; b = -(wl - 510) / 20; }
+    else if (wl >= 510 && wl < 580) { r = (wl - 510) / 70; g = 1; }
+    else if (wl >= 580 && wl < 645) { r = 1; g = -(wl - 645) / 65; }
+    else if (wl >= 645 && wl <= 780) { r = 1; }
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
+
+  function drawSpectrum(saltInfo) {
+    const w = specCv.width, h = specCv.height;
+    specCtx.fillStyle = '#07050e';
+    specCtx.fillRect(0, 0, w, h);
+
+    // Nền dải quang phổ liên tục mờ để đối chiếu bước sóng
+    const bg = specCtx.createLinearGradient(0, 0, w, 0);
+    bg.addColorStop(0.00, 'rgba(124,58,237,0.13)');
+    bg.addColorStop(0.22, 'rgba(37,99,235,0.13)');
+    bg.addColorStop(0.38, 'rgba(16,185,129,0.13)');
+    bg.addColorStop(0.55, 'rgba(250,204,21,0.13)');
+    bg.addColorStop(0.75, 'rgba(249,115,22,0.13)');
+    bg.addColorStop(1.00, 'rgba(225,29,72,0.13)');
+    specCtx.fillStyle = bg;
+    specCtx.fillRect(0, 0, w, h);
+
+    if (!saltInfo) {
+      specCtx.fillStyle = 'rgba(184,168,204,0.55)';
+      specCtx.font = '600 11.5px "Be Vietnam Pro",sans-serif';
+      specCtx.textAlign = 'center';
+      specCtx.fillText('Đưa mẫu muối vào ngọn lửa để ghi nhận các vạch bức xạ', w / 2, h / 2 + 4);
+      return;
+    }
+
+    saltInfo.lines.forEach(function (ln) {
+      let strength = ln.w;
+      // Nếu bật kính Cobalt thì vạch vàng 589 nm bị hấp thụ mờ đi rõ rệt!
+      if (cobaltOn && Math.abs(ln.wl - 589) < 8) strength *= 0.08;
+
+      const x = ((ln.wl - 400) / 350) * (w - 16) + 8;
+      const c = wlToRgb(ln.wl);
+      const rgbStr = c[0] + ',' + c[1] + ',' + c[2];
+
+      const glow = specCtx.createLinearGradient(x - 12, 0, x + 12, 0);
+      glow.addColorStop(0, 'rgba(' + rgbStr + ',0)');
+      glow.addColorStop(0.5, 'rgba(' + rgbStr + ',' + (0.55 * strength) + ')');
+      glow.addColorStop(1, 'rgba(' + rgbStr + ',0)');
+      specCtx.fillStyle = glow;
+      specCtx.fillRect(x - 12, 0, 24, h);
+
+      specCtx.fillStyle = 'rgba(255,255,255,' + (0.92 * strength) + ')';
+      specCtx.fillRect(x - 1.1, 3, 2.2, h - 6);
+      specCtx.fillStyle = 'rgba(' + rgbStr + ',' + Math.min(1, strength + 0.15) + ')';
+      specCtx.fillRect(x - 2.2, 2, 4.4, h - 4);
+    });
+  }
+  drawSpectrum(null);
+
+  /* ==================== CẬP NHẬT GIAO DIỆN THEO MẪU ==================== */
+  function syncSaltButtons() {
+    document.querySelectorAll('#saltGrid .salt-btn').forEach(function (b) {
+      b.classList.toggle('on', mode === 'free' && b.getAttribute('data-k') === wireSaltKey);
+    });
+    $('dirtyWarn').classList.toggle('on', wireDirty && mode === 'free');
+  }
+
+  function updateInfoPanel() {
+    if (!gasOn) {
+      $('hudIon').textContent = 'Van gas đang khóa';
+      $('hudDot').style.color = '#64748b'; $('hudDot').style.background = '#64748b';
+      $('lamTxt').textContent = 'Đèn tắt';
+      drawSpectrum(null);
+      return;
+    }
+
+    const activeSalt = (inFlame && wireSaltKey && wireAmount > 0.03) ? SALTS[wireSaltKey] : null;
+
+    if (!activeSalt) {
+      const cleanTxt = airRatio > 0.45 ? 'Ngọn lửa Bunsen chuẩn (xanh)' : 'Lửa vàng thiếu O₂ (nhiều muội)';
+      const col = airRatio > 0.45 ? '#38bdf8' : '#f59e0b';
+      $('hudIon').textContent = cleanTxt;
+      $('hudDot').style.color = col; $('hudDot').style.background = col;
+      if (!wireSaltKey) {
+        $('lamTxt').textContent = 'Chưa có mẫu';
+        drawSpectrum(null);
+      }
+      return;
+    }
+
+    if (mode === 'game') {
+      $('hudIon').textContent = cobaltOn ? 'Đang đốt Mẫu X (qua kính Cobalt)' : 'Đang đốt Mẫu X bí ẩn';
+      const showHex = (cobaltOn && activeSalt.key === 'NaCl') ? '#38bdf8' : activeSalt.hex;
+      $('hudDot').style.color = showHex; $('hudDot').style.background = showHex;
+      $('lamTxt').textContent = 'Quang phổ Mẫu X';
+      $('explainTxt').innerHTML = 'Quan sát màu ngọn lửa 3D và vị trí vạch phát xạ bên trên để nhận diện cation trong <b>Mẫu X</b>!';
+      drawSpectrum(activeSalt);
+      return;
+    }
+
+    let dispColorName = activeSalt.colorName;
+    let dispHex = activeSalt.hex;
+    if (cobaltOn) {
+      if (activeSalt.isMix) {
+        dispColorName = 'Tím hồng (K⁺ lộ rõ sau lọc!)';
+        dispHex = '#d946ef';
+      } else if (activeSalt.cobaltAbsorb) {
+        dispColorName = 'Tối xanh (tia vàng 589 nm bị chặn!)';
+        dispHex = '#3b82f6';
+      }
+    }
+
+    $('hudIon').textContent = activeSalt.ion + ' · ' + dispColorName;
+    $('hudDot').style.color = dispHex; $('hudDot').style.background = dispHex;
+    $('lamTxt').textContent = activeSalt.lam;
+    $('explainTxt').innerHTML = activeSalt.desc;
+    drawSpectrum(activeSalt);
+  }
+
+  /* ==================== THAO TÁC THÍ NGHIỆM: CHỌN MUỐI & RỬA DÂY Pt ==================== */
+  let lastSaltKey = null;
+  function pickAndBurnSalt(key, isMysteryDish) {
+    ensureAudio();
+    lastSaltKey = key;
+    const posKey = isMysteryDish ? 'MYSTERY' : key;
+    const dishPos = dishPositions[posKey] || new THREE.Vector3(1.8, 0.2, 1.0);
+    const sInfo = SALTS[key];
+
+    // Nếu dây đang bẩn từ muối khác và chưa rửa HCl thì báo nhắc sư phạm (nhưng vẫn cho chạy mượt)
+    if (wireSaltKey && wireSaltKey !== key && wireAmount > 0.08) {
+      wireDirty = true;
+    }
+
+    queueWandSequence([
+      { pos: new THREE.Vector3(dishPos.x, 1.35, dishPos.z), dur: 0.28 },
+      {
+        pos: new THREE.Vector3(dishPos.x, dishPos.y + 0.04, dishPos.z), dur: 0.25,
+        onReach: function () {
+          wireSaltKey = key;
+          wireAmount = 1.0;
+          saltBead.visible = true;
+          saltBeadMat.color.setHex(isMysteryDish ? 0xf8fafc : sInfo.crystalHex);
+          saltBeadMat.emissive.setRGB(sInfo.rgb[0], sInfo.rgb[1], sInfo.rgb[2]);
+          sfxWhoosh(260, 0.1, 0.04);
+          syncSaltButtons();
+        }
+      },
+      { pos: new THREE.Vector3(dishPos.x * 0.5, BURNER_TOP_Y + 0.95, dishPos.z * 0.5), dur: 0.30 },
+      {
+        pos: FLAME_TEST_POS.clone(), dur: 0.28,
+        onReach: function () {
+          if (gasOn) {
+            sfxWhoosh(220, 0.24, 0.09);
+            if (airRatio < 0.35) {
+              showToast('⚠️ Lỗ gió đang đóng nên lửa vàng lấn át màu ion! Hãy mở lỗ gió lên 80–100%.');
+            } else if (isMysteryDish) {
+              showToast('🔥 Đang đốt <b>Mẫu X</b> ở vùng nóng nhất (~1500 °C)!');
+            } else {
+              showToast('🔥 <b>' + sInfo.formula + '</b> (' + sInfo.ion + ') → Ngọn lửa <b>' + sInfo.colorName + '</b>');
+            }
+          } else {
+            showToast('Van gas đang tắt! Bấm "Van gas" để châm đèn Bunsen.');
+          }
+        }
+      }
+    ]);
+    syncSaltButtons();
+  }
+
+  function cleanWireWithHCl() {
+    ensureAudio();
+    queueWandSequence([
+      { pos: new THREE.Vector3(HCL_POS.x, 1.72, HCL_POS.z), dur: 0.28 },
+      {
+        pos: new THREE.Vector3(HCL_POS.x, 0.45, HCL_POS.z), dur: 0.30,
+        onReach: function () {
+          sfxSizzle();
+          spawnHclSteam(HCL_POS);
+          wireSaltKey = null;
+          wireAmount = 0;
+          wireDirty = false;
+          saltBead.visible = false;
+          syncSaltButtons();
+          showToast('🧼 Đã nhúng rửa dây Pt trong dung dịch <b>HCl đặc</b> (bốc làn hơi nhẹ)...');
+        }
+      },
+      { pos: new THREE.Vector3(HCL_POS.x, 1.75, HCL_POS.z), dur: 0.26 },
+      {
+        pos: FLAME_TEST_POS.clone(), dur: 0.34,
+        onReach: function () {
+          sfxWhoosh(300, 0.16, 0.05);
+          updateInfoPanel();
+          showToast('✨ Đốt kiểm tra trên ngọn lửa: không còn màu lạ → Dây Pt sạch hoàn toàn!');
+        }
+      },
+      { pos: FLAME_TEST_POS.clone(), dur: 0.55 },
+      { pos: REST_POS.clone(), dur: 0.40 }
+    ]);
+  }
+
+  /* ==================== CLICK TRỰC TIẾP VÀO VẬT THỂ 3D ==================== */
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+
+  function handleCanvasClick(e) {
+    const rect = cv.getBoundingClientRect();
+    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(interactables, false);
+    if (!hits.length) return;
+    const ud = hits[0].object.userData;
+    if (ud.action === 'clean') {
+      cleanWireWithHCl();
+    } else if (ud.action === 'salt' && mode === 'free') {
+      pickAndBurnSalt(ud.key, false);
+    } else if (ud.action === 'mystery' && mode === 'game') {
+      pickAndBurnSalt(mysteryKey, true);
+    }
+  }
+
+  /* ==================== SỰ KIỆN NÚT BẤM UI ==================== */
+  document.querySelectorAll('#saltGrid .salt-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      pickAndBurnSalt(btn.getAttribute('data-k'), false);
+    });
+  });
+
+  $('btnClean').addEventListener('click', cleanWireWithHCl);
+
+  $('btnReburn').addEventListener('click', function () {
+    ensureAudio();
+    if (!wireSaltKey) {
+      if (lastSaltKey && mode === 'free') {
+        pickAndBurnSalt(lastSaltKey, false);
+        return;
+      }
+      showToast('Chưa có muối trên dây Pt! Hãy chọn một đĩa muối trước.');
+      return;
+    }
+    wireAmount = 1.0;
+    saltBead.visible = true;
+    queueWandSequence([{ pos: FLAME_TEST_POS.clone(), dur: 0.32 }]);
+    sfxWhoosh(240, 0.2, 0.07);
+  });
+
+  $('airRange').addEventListener('input', function (e) {
+    airRatio = Number(e.target.value) / 100;
+    const pct = Math.round(airRatio * 100);
+    $('hudAir').textContent = pct + '%';
+    $('airLabel').textContent = pct === 0 ? 'Đóng kín' : ('Mở ' + pct + '%');
+    // Xoay vòng đồng chỉnh gió trên cổ đèn Bunsen!
+    collarGroup.rotation.y = (1 - airRatio) * 1.15;
+    airWindowMesh.scale.x = Math.max(0.06, airRatio);
+    updateInfoPanel();
+  });
+
+  $('btnGas').addEventListener('click', function () {
+    ensureAudio();
+    gasOn = !gasOn;
+    this.classList.toggle('on', gasOn);
+    this.textContent = gasOn ? '🔥 Van gas: Đang bật' : '⚪ Van gas: Đã khóa';
+    if (gasOn) sfxWhoosh(190, 0.22, 0.08);
+    updateInfoPanel();
+  });
+
+  function toggleCobalt() {
+    cobaltOn = !cobaltOn;
+    cobaltGroup.visible = cobaltOn;
+    $('cobaltBadge').classList.toggle('on', cobaltOn);
+    $('btnCobalt').classList.toggle('cobalt-on', cobaltOn);
+    $('btnCobalt').textContent = cobaltOn ? '🟦 Đang soi kính Cobalt' : '🟦 Soi kính Cobalt';
+    $('btnCobaltTop').classList.toggle('on', cobaltOn);
+    $('btnCobaltTop').textContent = cobaltOn ? '🟦 Kính Cobalt: BẬT' : '🟦 Kính Cobalt: Tắt';
+    if (cobaltOn) {
+      setCamPreset('front');
+      showToast('🟦 Đã đặt <b>Kính lọc xanh Cobalt</b> trước ngọn lửa! Hãy thử đốt <b>NaCl</b> và <b>KCl lẫn vết Na⁺</b>.');
+    }
+    updateInfoPanel();
+  }
+  $('btnCobalt').addEventListener('click', toggleCobalt);
+  $('btnCobaltTop').addEventListener('click', toggleCobalt);
+
+  $('btnSound').addEventListener('click', function () {
+    soundOn = !soundOn;
+    this.classList.toggle('on', soundOn);
+    this.textContent = soundOn ? '🔊 Âm thanh' : '🔇 Tắt tiếng';
+    if (!soundOn && roarGain && audioCtx) roarGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.08);
+  });
+
+  document.querySelectorAll('[data-cam]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      setCamPreset(b.getAttribute('data-cam'));
+    });
+  });
+
+  /* ==================== CHẾ ĐỘ ĐOÁN MUỐI BÍ ẨN X ==================== */
+  function rollNewMystery() {
+    let next = PURE_KEYS[Math.floor(Math.random() * PURE_KEYS.length)];
+    if (next === mysteryKey) next = PURE_KEYS[(PURE_KEYS.indexOf(next) + 1) % PURE_KEYS.length];
+    mysteryKey = next;
+    $('gameRes').className = 'res-msg';
+    $('gameRes').textContent = '';
+    wireDirty = false;
+  }
+
+  function switchMode(nextMode) {
+    mode = nextMode;
+    $('tabFree').classList.toggle('on', mode === 'free');
+    $('tabGame').classList.toggle('on', mode === 'game');
+    $('freeBox').style.display = mode === 'free' ? 'block' : 'none';
+    $('gameBox').classList.toggle('on', mode === 'game');
+
+    DISH_ORDER.forEach(function (k) { dishGroups[k].visible = (mode === 'free'); });
+    dishGroups.MixNaK.visible = (mode === 'free');
+    mysteryDish.visible = (mode === 'game');
+
+    wireSaltKey = null; wireAmount = 0; saltBead.visible = false;
+    queueWandSequence([{ pos: REST_POS.clone(), dur: 0.3 }]);
+    if (mode === 'game') {
+      rollNewMystery();
+      showToast('🕵️ Hãy bấm <b>Chấm đốt Mẫu X</b> (hoặc click đĩa Mẫu X trên bàn 3D) để nhận biết!');
+    }
+    syncSaltButtons();
+    updateInfoPanel();
+  }
+
+  $('tabFree').addEventListener('click', function () { switchMode('free'); });
+  $('tabGame').addEventListener('click', function () { switchMode('game'); });
+
+  $('btnBurnMystery').addEventListener('click', function () {
+    pickAndBurnSalt(mysteryKey, true);
+  });
+  $('btnNewMystery').addEventListener('click', function () {
+    rollNewMystery();
+    pickAndBurnSalt(mysteryKey, true);
+  });
+
+  document.querySelectorAll('#guessGrid button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const g = btn.getAttribute('data-g');
+      const res = $('gameRes');
+      const ans = SALTS[mysteryKey];
+      if (g === mysteryKey) {
+        score++;
+        $('scoreTxt').textContent = 'Điểm: ' + score;
+        res.className = 'res-msg ok';
+        res.innerHTML = '🎉 <b>Chính xác!</b> Mẫu X là <b>' + ans.formula + ' (' + ans.ion + ')</b> với ngọn lửa màu <b>' + ans.colorName + '</b> (' + ans.lam + ').';
+        sfxWhoosh(520, 0.22, 0.08);
+      } else {
+        res.className = 'res-msg err';
+        res.innerHTML = 'Chưa đúng! Hãy mở 100% lỗ gió, bấm <b>Chấm đốt Mẫu X</b> và đối chiếu kỹ vạch quang phổ nhé.';
+      }
+    });
+  });
+
+  /* ==================== RESIZE & VÒNG LẶP DỰNG HÌNH 60 FPS ==================== */
+  function resize() {
+    const w = stage.clientWidth || window.innerWidth;
+    const h = stage.clientHeight || window.innerHeight;
+    camera.aspect = w / Math.max(1, h);
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const clock = new THREE.Clock();
+  let curTemp = 28;
+  let stepTimer = 0, stepDur = 0.25, stepStartPos = REST_POS.clone();
+  let curIonMix = 0;
+  const targetIonCol = new THREE.Color(1, 0.1, 0.3);
+  const targetCoreCol = new THREE.Color(1, 0.7, 0.8);
+  let sparkCursor = 0;
+
+  function spawnSpark(origin, colRGB) {
+    const i = sparkCursor % SPARK_COUNT;
+    sparkCursor++;
+    sparkPos[i * 3] = origin.x + (Math.random() - 0.5) * 0.12;
+    sparkPos[i * 3 + 1] = origin.y + (Math.random() - 0.2) * 0.10;
+    sparkPos[i * 3 + 2] = origin.z + (Math.random() - 0.5) * 0.12;
+    sparkVel[i].vx = (Math.random() - 0.5) * 0.45;
+    sparkVel[i].vy = 1.25 + Math.random() * 1.45;
+    sparkVel[i].vz = (Math.random() - 0.5) * 0.45;
+    sparkVel[i].max = 0.45 + Math.random() * 0.45;
+    sparkLife[i] = sparkVel[i].max;
+    sparkMat.color.setRGB(colRGB[0], colRGB[1], colRGB[2]);
+  }
+
+  // Khởi động đốt sẵn mẫu LiCl sau 0.4s để Hoàng mở file lên thấy ngay lửa màu 3D rực rỡ!
+  setTimeout(function () {
+    pickAndBurnSalt('LiCl', false);
+  }, 350);
+
+  let tabVisible = true;
+  document.addEventListener('visibilitychange', function () {
+    tabVisible = !document.hidden;
+    if (tabVisible) { clock.getDelta(); requestAnimationFrame(animate); }
+  });
+
+  function animate() {
+    if (!tabVisible) return;
+    requestAnimationFrame(animate);
+    const dt = Math.min(0.05, clock.getDelta());
+    const elapsed = clock.elapsedTime;
+
+    // 1. Mượt camera Orbit
+    sph.theta += (sphGoal.theta - sph.theta) * Math.min(1, dt * 8);
+    sph.phi += (sphGoal.phi - sph.phi) * Math.min(1, dt * 8);
+    sph.radius += (sphGoal.radius - sph.radius) * Math.min(1, dt * 8);
+    camTarget.lerp(camGoalTarget, Math.min(1, dt * 8));
+
+    camera.position.set(
+      camTarget.x + sph.radius * Math.sin(sph.phi) * Math.sin(sph.theta),
+      camTarget.y + sph.radius * Math.cos(sph.phi),
+      camTarget.z + sph.radius * Math.sin(sph.phi) * Math.cos(sph.theta)
+    );
+    camera.lookAt(camTarget);
+
+    // Giữ kính Cobalt vuông góc hướng nhìn giữa camera và ngọn lửa khi bật
+    if (cobaltOn) {
+      const dirXZ = new THREE.Vector2(camera.position.x, camera.position.z);
+      if (dirXZ.lengthSq() > 0.001) {
+        dirXZ.normalize();
+        cobaltGroup.position.set(dirXZ.x * 1.45, BURNER_TOP_Y + 0.88, dirXZ.y * 1.45);
+        cobaltGroup.lookAt(camera.position.x, BURNER_TOP_Y + 0.88, camera.position.z);
+      }
+    }
+
+    // 2. Di chuyển que thử Platinum theo hàng đợi keyframe 3D
+    if (wandKeyframes.length > 0) {
+      const curStep = wandKeyframes[0];
+      if (stepTimer === 0) {
+        stepStartPos.copy(wandGroup.position);
+        stepDur = Math.max(0.08, curStep.dur || 0.28);
+      }
+      stepTimer += dt;
+      const u = Math.min(1, stepTimer / stepDur);
+      const ease = u * u * (3 - 2 * u);
+      wandGroup.position.lerpVectors(stepStartPos, curStep.pos, ease);
+      if (u >= 1) {
+        if (curStep.onReach) curStep.onReach();
+        wandKeyframes.shift();
+        stepTimer = 0;
+      }
+    } else {
+      wandTargetPos.copy(wandGroup.position);
+    }
+
+    // 3. Kiểm tra xem khuyên dây Pt có đang nằm trong vùng ngọn lửa không
+    const tip = wandGroup.position;
+    const radialDist = Math.hypot(tip.x, tip.z);
+    const flameH = tip.y - BURNER_TOP_Y;
+    const nowInFlame = gasOn && radialDist < 0.28 && flameH > 0.08 && flameH < 1.85;
+    if (nowInFlame !== inFlame) {
+      inFlame = nowInFlame;
+      updateInfoPanel();
+    }
+
+    // Nhiệt độ đầu dây Pt & độ nung đỏ kim loại
+    const maxFlameTemp = gasOn ? (880 + airRatio * 640) : 28; // ~880°C (đóng gió) -> ~1520°C (mở 100%)
+    const targetTemp = nowInFlame ? maxFlameTemp : 28;
+    curTemp += (targetTemp - curTemp) * Math.min(1, dt * (nowInFlame ? 3.8 : 1.6));
+    $('hudTemp').textContent = Math.round(curTemp) + ' °C';
+
+    const redGlow = Math.max(0, (curTemp - 520) / 1000);
+    ptWireMat.emissiveIntensity = redGlow * 0.95;
+    hotRimMat.emissiveIntensity = gasOn ? (0.15 + airRatio * 0.22) : 0.0;
+
+    // 4. Tính toán màu phát xạ của ngọn lửa (bao gồm hiệu ứng lọc qua kính Cobalt!)
+    let desiredMix = 0;
+    let activeRGB = [0.22, 0.72, 1.0];
+
+    if (nowInFlame && wireSaltKey && wireAmount > 0.0) {
+      const s = SALTS[wireSaltKey];
+      // Muối bay hơi real-time dần về 0 hoàn toàn (~19 giây) -> biến mất hẳn và lửa trở lại xanh Bunsen!
+      wireAmount = Math.max(0.0, wireAmount - dt * 0.052);
+      if (wireAmount <= 0.005) {
+        wireAmount = 0;
+        saltBead.visible = false;
+        const doneName = mode === 'game' ? 'Mẫu X' : s.formula;
+        wireSaltKey = null;
+        wireDirty = false;
+        syncSaltButtons();
+        updateInfoPanel();
+        showToast('✨ Hạt muối <b>' + doneName + '</b> đã bay hơi hoàn toàn — ngọn lửa trở về màu xanh Bunsen! Bấm "Đốt lại" hoặc chọn đĩa muối khác.');
+      } else {
+        saltBead.scale.setScalar(Math.max(0.06, Math.cbrt(wireAmount)));
+        saltBeadMat.emissiveIntensity = 0.75 * Math.min(1, wireAmount * 2.0);
+
+        let rgb = s.rgb, core = s.coreRgb;
+        let mixFactor = Math.min(1, wireAmount * 1.45) * (0.32 + 0.68 * airRatio);
+
+        if (cobaltOn) {
+          if (s.isMix) {
+            // Kính Cobalt chặn vạch vàng Na+, làm lộ màu tím hồng của K+!
+            rgb = s.cobaltRgb;
+            core = s.cobaltCore;
+            mixFactor = Math.min(1, wireAmount * 1.45) * (0.45 + 0.55 * airRatio);
+          } else if (s.cobaltAbsorb) {
+            // NaCl tinh khiết nhìn qua kính Cobalt gần như mất hẳn lửa vàng!
+            mixFactor *= 0.06;
+          }
+        }
+
+        targetIonCol.setRGB(rgb[0], rgb[1], rgb[2]);
+        targetCoreCol.setRGB(core[0], core[1], core[2]);
+        desiredMix = mixFactor;
+        activeRGB = rgb;
+
+        // Sinh các tia hạt muối nóng sáng bay xoắn lên cao
+        if (Math.random() < (0.45 + 0.4 * desiredMix) && desiredMix > 0.15) {
+          spawnSpark(tip, rgb);
+        }
+      }
+    } else {
+      saltBeadMat.emissiveIntensity = 0.05;
+    }
+
+    curIonMix += (desiredMix - curIonMix) * Math.min(1, dt * 6.5);
+    flameUniforms.uTime.value = elapsed;
+    flameUniforms.uGasOn.value += ((gasOn ? 1 : 0) - flameUniforms.uGasOn.value) * Math.min(1, dt * 10);
+    flameUniforms.uAir.value += (airRatio - flameUniforms.uAir.value) * Math.min(1, dt * 8);
+    flameUniforms.uIonMix.value = curIonMix;
+    flameUniforms.uIonColor.value.lerp(targetIonCol, Math.min(1, dt * 8));
+    flameUniforms.uIonCore.value.lerp(targetCoreCol, Math.min(1, dt * 8));
+
+    // 5. Cập nhật PointLight & hào quang chiếu lên mặt bàn đá và dụng cụ thủy tinh
+    const flicker = 0.92 + 0.08 * Math.sin(elapsed * 23.0) * Math.cos(elapsed * 13.0);
+    if (!gasOn) {
+      flameLight.intensity = 0;
+      glowMat.opacity = 0;
+    } else {
+      const baseFlameCol = new THREE.Color().lerpColors(
+        new THREE.Color(0xff9822),
+        new THREE.Color(0x2ea8ff),
+        airRatio
+      );
+      const finalLightCol = baseFlameCol.lerp(flameUniforms.uIonColor.value, curIonMix * 0.92);
+      flameLight.color.copy(finalLightCol);
+      flameLight.intensity = (1.35 + (1 - airRatio) * 0.9 + curIonMix * 1.85) * flicker;
+      glowMat.color.copy(finalLightCol);
+      glowMat.opacity = (0.16 + (1 - airRatio) * 0.22 + curIonMix * 0.34) * flicker;
+    }
+
+    // Cập nhật âm lượng tiếng gió đèn khò Bunsen
+    if (audioCtx && roarGain && soundOn) {
+      const gTarget = gasOn ? (0.018 + airRatio * 0.025 + curIonMix * 0.03) : 0;
+      roarGain.gain.setTargetAtTime(gTarget, audioCtx.currentTime, 0.08);
+      roarFilter.frequency.setTargetAtTime(140 + airRatio * 180 + curIonMix * 90, audioCtx.currentTime, 0.08);
+    }
+
+    // 6. Cập nhật chuyển động xoắn ốc của hệ hạt tia lửa 3D
+    let anyAlive = false;
+    for (let i = 0; i < SPARK_COUNT; i++) {
+      if (sparkLife[i] > 0) {
+        anyAlive = true;
+        sparkLife[i] -= dt;
+        const idx = i * 3;
+        sparkPos[idx] += (sparkVel[i].vx + Math.sin(elapsed * 9 + i) * 0.18) * dt;
+        sparkPos[idx + 1] += sparkVel[i].vy * dt;
+        sparkPos[idx + 2] += (sparkVel[i].vz + Math.cos(elapsed * 9 + i) * 0.18) * dt;
+        if (sparkLife[i] <= 0) sparkPos[idx + 1] = -99;
+      }
+    }
+    if (anyAlive) sparkGeo.attributes.position.needsUpdate = true;
+
+    // Cập nhật làn hơi trắng HCl khi nhúng rửa dây Pt nóng
+    hclSteams.forEach(function (st) {
+      if (st.life <= 0) return;
+      st.life -= dt;
+      const prog = 1 - Math.max(0, st.life / st.maxLife);
+      st.sp.position.x += st.vx * dt;
+      st.sp.position.y += st.vy * dt;
+      st.sp.position.z += st.vz * dt;
+      const sc = 0.22 + prog * 0.52;
+      st.sp.scale.set(sc, sc, 1);
+      st.sp.material.opacity = 0.34 * Math.sin(prog * Math.PI);
+      if (st.life <= 0) st.sp.visible = false;
+    });
+
+    renderer.render(scene, camera);
+  }
+  animate();
+}
+</script>
+</body>
+</html>
