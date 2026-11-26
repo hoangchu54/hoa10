@@ -21,42 +21,77 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=5ecf67950d">
+<link rel="stylesheet" href="assets/h10.css?v=fba761b5df">
 <style>
   .lab3d-frame-wrap{
     display:flex;
     flex-direction:column;
-    height:calc(100dvh - 62px);
+    height:calc(100dvh - 60px);
     background:#080610;
+    position:relative;
+  }
+  .lab3d-frame-wrap.is-fs{
+    position:fixed;
+    inset:0;
+    z-index:99;
+    height:100vh;
+    height:100dvh;
+    width:100vw;
+  }
+  .lab3d-frame-wrap.is-fs .lab3d-bar{display:none!important}
+  .lab3d-fs-exit{
+    display:none;
+    position:absolute;
+    top:8px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:20;
+    padding:5px 12px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.28);
+    background:rgba(15,10,28,.86);
+    color:#fff;
+    font:inherit;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+    backdrop-filter:blur(8px);
+    box-shadow:0 6px 18px rgba(0,0,0,.45);
+  }
+  .lab3d-frame-wrap.is-fs .lab3d-fs-exit{display:inline-flex;align-items:center;gap:5px}
+  body.lab-viewing .mob-dock,
+  body.lab-viewing .btn-casio-fab,
+  body.lab-viewing .btn-top{
+    display:none !important;
   }
   .lab3d-bar{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:8px;
-    padding:8px 14px;
+    gap:6px;
+    padding:6px 12px;
     background:var(--the);
     border-bottom:1px solid var(--vien);
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
   }
   .lab3d-bar-l{
     display:flex;
     align-items:center;
-    gap:8px;
-    flex:1 1 260px;
+    gap:6px;
+    flex:1 1 auto;
     min-width:0;
   }
   .lab3d-bar select{
-    flex:1 1 200px;
+    flex:1 1 auto;
     max-width:440px;
     min-width:0;
-    padding:7px 11px;
+    padding:6px 9px;
     border-radius:10px;
     border:1px solid var(--vien);
     background:var(--nen-phu, var(--nen));
     color:var(--chu);
     font:inherit;
-    font-size:13px;
+    font-size:12.5px;
     font-weight:700;
   }
   .lab3d-iframe{
@@ -137,8 +172,9 @@
     margin-top:2px;
   }
   @media (max-width:640px){
-    .lab3d-frame-wrap{ height:calc(100dvh - 56px); }
-    .lab3d-bar{ padding:6px 10px; }
+    .lab3d-frame-wrap{ height:calc(100dvh - 54px); }
+    .lab3d-bar{ padding:5px 8px; }
+    .lab3d-bar .fs-lbl{ display:none; }
     .hub3d-grid{ grid-template-columns:1fr; }
   }
 </style>
@@ -304,16 +340,53 @@
     ve();
   }
 
+  let isHubFs = false;
+
+  function setHubFs(on, fromChild) {
+    isHubFs = !!on;
+    const wrap = document.getElementById('lab3d-wrap');
+    if (wrap) wrap.classList.toggle('is-fs', isHubFs);
+    if (isHubFs && wrap) {
+      const req = wrap.requestFullscreen || wrap.webkitRequestFullscreen;
+      if (req) { try { req.call(wrap); } catch (_) {} }
+    } else {
+      const ex = document.exitFullscreen || document.webkitExitFullscreen;
+      if (ex && (document.fullscreenElement || document.webkitFullscreenElement)) {
+        try { ex.call(document); } catch (_) {}
+      }
+    }
+    const frame = document.getElementById('lab3d-iframe');
+    if (!fromChild && frame && frame.contentWindow) {
+      try { frame.contentWindow.postMessage({ type: 'h10-lab-fs-state', on: isHubFs }, '*'); } catch (_) {}
+    }
+  }
+
+  window.addEventListener('message', function (ev) {
+    if (!ev || !ev.data || ev.data.type !== 'h10-lab-fs') return;
+    setHubFs(ev.data.on, true);
+  });
+  document.addEventListener('fullscreenchange', function () {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement && isHubFs) {
+      setHubFs(false, false);
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && isHubFs) setHubFs(false, false);
+  });
+
   function ve() {
     const app = document.getElementById('app');
     if (curLab) {
+      isHubFs = false;
+      document.body.classList.add('lab-viewing');
       const src = urlFile3D(curLab.file);
       app.className = '';
       app.innerHTML =
-        '<div class="lab3d-frame-wrap">' +
+        '<div class="lab3d-frame-wrap" id="lab3d-wrap">' +
+          '<button type="button" class="lab3d-fs-exit" id="btn-exit-fs">✕ Thu nhỏ</button>' +
           '<div class="lab3d-bar">' +
             '<div class="lab3d-bar-l">' +
-              '<button type="button" class="nut nho" id="btn-back-hub">← Sảnh 14 Lab 3D</button>' +
+              '<button type="button" class="nut nho" id="btn-back-hub">← Sảnh</button>' +
               '<select id="sel-lab3d" aria-label="Chuyển nhanh phòng lab 3D">' +
                 LABS_3D.map(function (lb, idx) {
                   return '<option value="' + esc(lb.id) + '"' + (lb.id === curLab.id ? ' selected' : '') + '>' +
@@ -321,19 +394,25 @@
                 }).join('') +
               '</select>' +
             '</div>' +
-            '<div class="hang-nut">' +
-              '<a class="nut nho chinh" href="' + esc(src) + '" target="h10_ngoai" rel="noopener">↗ Toàn màn hình</a>' +
+            '<div class="hang-nut" style="gap:5px;flex-shrink:0">' +
+              '<button type="button" class="nut nho chinh" id="btn-hub-fs" title="Mở toàn màn hình tại chỗ">⛶ <span class="fs-lbl">Toàn màn hình</span></button>' +
             '</div>' +
           '</div>' +
-          '<iframe class="lab3d-iframe" src="' + esc(src) + '" title="' + esc(curLab.ten) + '" allowfullscreen allow="fullscreen; autoplay"></iframe>' +
+          '<iframe class="lab3d-iframe" id="lab3d-iframe" src="' + esc(src) + '" title="' + esc(curLab.ten) + '" allowfullscreen allow="fullscreen; autoplay"></iframe>' +
         '</div>';
       document.title = curLab.ten + ' – Hóa 10';
       const backBtn = document.getElementById('btn-back-hub');
       if (backBtn) backBtn.onclick = veSanh;
       const sel = document.getElementById('sel-lab3d');
       if (sel) sel.onchange = function () { moLab(this.value); };
+      const fsBtn = document.getElementById('btn-hub-fs');
+      if (fsBtn) fsBtn.onclick = function () { setHubFs(!isHubFs, false); };
+      const exitBtn = document.getElementById('btn-exit-fs');
+      if (exitBtn) exitBtn.onclick = function () { setHubFs(false, false); };
       return;
     }
+
+    document.body.classList.remove('lab-viewing');
 
     document.title = '14 Phòng Lab 3D Hóa 10 – Thầy Hoàng';
     app.className = 'khung-chinh';

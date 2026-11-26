@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=5ecf67950d">
+<link rel="stylesheet" href="assets/h10.css?v=fba761b5df">
 </head>
 <body class="embed-ok">
 <div class="app">
@@ -1192,6 +1192,7 @@
         : '<div class="phu" style="font-size:11.8px;line-height:1.45">📌 Nếu màn hình mô phỏng bên cạnh chưa hiện hoặc bị chặn bởi trình duyệt của trường, em bấm nút <b>↗ Mở cửa sổ riêng</b> ở thanh trên cùng nhé.</div>');
 
     hop.innerHTML = '<div class="lab-shell">' +
+      '<button type="button" class="lab-fs-exit" data-x="exit-fs">✕ Thu nhỏ</button>' +
       '<div class="lab-bar">' +
         '<div class="lab-bar-title">' +
           '<span class="chip ' + (laTuLam ? 'chinh' : 'sky') + '">' + (baiObj.bai === 'MD' ? 'Mở đầu' : 'Bài ' + esc(baiObj.bai)) + '</span>' +
@@ -1199,8 +1200,8 @@
         '</div>' +
         '<div class="hang-nut">' +
           (coNhung && !laTuLam ? '<button type="button" class="nut nho tim top-extra" data-x="tog-hd">📖 Ẩn/Hiện hướng dẫn Tiếng Việt</button>' : '') +
-          '<a class="nut nho vien" href="' + esc(extUrl) + '" target="h10_ngoai" rel="noopener">↗ Toàn màn hình</a>' +
-          '<button type="button" class="nut nho chinh" data-x="dong">✕ Đóng</button>' +
+          (coNhung ? '<button type="button" class="nut nho vien" data-x="fs" title="Mở rộng toàn màn hình ngay tại đây">⛶ <span class="fs-lbl">Toàn màn hình</span></button>' : '<a class="nut nho vien" href="' + esc(extUrl) + '" target="h10_ngoai" rel="noopener">↗ Mở cửa sổ riêng</a>') +
+          '<button type="button" class="nut nho chinh" data-x="dong">✕ <span class="fs-lbl">Đóng</span></button>' +
         '</div>' +
       '</div>' +
       (coNhung && !laTuLam ? '<div class="lab-mob-tabs">' +
@@ -1219,12 +1220,61 @@
       '</div>' +
     '</div>';
 
+    document.body.classList.add('lab-open');
     document.body.appendChild(hop);
-    const dong = function () { hop.remove(); document.removeEventListener('keydown', onEsc); };
-    const onEsc = function (e) { if (e.key === 'Escape') dong(); };
+    const frameEl = hop.querySelector('iframe');
+    let isFs = false;
+
+    const setFs = function (on, fromChild) {
+      isFs = !!on;
+      hop.classList.toggle('is-fs', isFs);
+      if (isFs) {
+        const req = hop.requestFullscreen || hop.webkitRequestFullscreen;
+        if (req) { try { req.call(hop); } catch (_) {} }
+      } else {
+        const ex = document.exitFullscreen || document.webkitExitFullscreen;
+        if (ex && (document.fullscreenElement || document.webkitFullscreenElement)) {
+          try { ex.call(document); } catch (_) {}
+        }
+      }
+      if (!fromChild && frameEl && frameEl.contentWindow) {
+        try { frameEl.contentWindow.postMessage({ type: 'h10-lab-fs-state', on: isFs }, '*'); } catch (_) {}
+      }
+    };
+
+    const onMsg = function (ev) {
+      if (!ev || !ev.data || ev.data.type !== 'h10-lab-fs') return;
+      if (frameEl && ev.source && ev.source !== frameEl.contentWindow) return;
+      setFs(ev.data.on, true);
+    };
+    const onFsChange = function () {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement && isFs) {
+        setFs(false, false);
+      }
+    };
+    const dong = function () {
+      if (isFs) setFs(false, false);
+      document.body.classList.remove('lab-open');
+      hop.remove();
+      document.removeEventListener('keydown', onEsc);
+      document.removeEventListener('fullscreenchange', onFsChange);
+      window.removeEventListener('message', onMsg);
+    };
+    const onEsc = function (e) {
+      if (e.key === 'Escape') {
+        if (isFs) setFs(false, false);
+        else dong();
+      }
+    };
     document.addEventListener('keydown', onEsc);
+    document.addEventListener('fullscreenchange', onFsChange);
+    window.addEventListener('message', onMsg);
     hop.onclick = function (e) { if (e.target === hop) dong(); };
     hop.querySelector('[data-x="dong"]').onclick = dong;
+    const fsBtn = hop.querySelector('[data-x="fs"]');
+    if (fsBtn) fsBtn.onclick = function () { setFs(!isFs, false); };
+    const exitFsBtn = hop.querySelector('[data-x="exit-fs"]');
+    if (exitFsBtn) exitFsBtn.onclick = function () { setFs(false, false); };
     const bodyEl = hop.querySelector('[data-x="body"]');
     const tog = hop.querySelector('[data-x="tog-hd"]');
     if (tog) tog.onclick = function () {

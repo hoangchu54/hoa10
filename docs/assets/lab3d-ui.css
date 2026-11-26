@@ -1,0 +1,219 @@
+/* Shared Desktop + Mobile Responsive & Fullscreen Enhancer for 14 Hóa 10 3D Labs */
+.h10-ui-btn{
+  pointer-events:auto;
+  cursor:pointer;
+  min-height:32px;
+  padding:4px 10px;
+  border-radius:99px;
+  font:inherit;
+  font-size:11.8px;
+  font-weight:700;
+  background:rgba(15,12,28,.86);
+  border:1px solid rgba(255,255,255,.2);
+  color:#f8fafc;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  white-space:nowrap;
+  transition:background .15s,border-color .15s,transform .12s;
+  backdrop-filter:blur(8px);
+}
+.h10-ui-btn:hover{border-color:rgba(255,255,255,.45);background:rgba(36,28,62,.92)}
+.h10-ui-btn.on{background:linear-gradient(90deg,#6d28d9,#db2777);border-color:#f9a8d4;color:#fff}
+
+/* Desktop: cho phép ẩn cột phải để soi 3D 100% rộng */
+@media (min-width:861px){
+  body.h10-desk-wide .wrap{
+    grid-template-columns:minmax(0,1fr) 0 !important;
+  }
+  body.h10-desk-wide .side{
+    display:none !important;
+  }
+}
+
+/* Thanh gạt 3 chế độ trên điện thoại (ẩn trên PC) */
+.h10-mob-sheet-bar{display:none}
+.h10-mob-restore{display:none}
+.h10-cam-toggle{display:none}
+
+/* Mobile & Tablet dọc (<= 860px): Khóa 100dvh, 3D cố định nửa trên, điều khiển cuộn nửa dưới */
+@media (max-width:860px){
+  html,body{
+    height:100dvh !important;
+    max-height:100dvh !important;
+    overflow:hidden !important;
+  }
+  .wrap{
+    display:flex !important;
+    flex-direction:column !important;
+    height:100dvh !important;
+    width:100vw !important;
+    overflow:hidden !important;
+  }
+  .stage{
+    flex:1 1 auto !important;
+    min-height:0 !important;
+    height:auto !important;
+    width:100% !important;
+  }
+  /* HUD 1 hàng gọn gàng, không bọc nhiều dòng che thí nghiệm */
+  .hud{
+    left:8px !important;
+    right:8px !important;
+    top:8px !important;
+    gap:5px !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+  }
+  .hud-left{
+    flex:1 1 auto !important;
+    min-width:0 !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    scrollbar-width:none;
+    gap:4px !important;
+    pointer-events:auto !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  .hud-left::-webkit-scrollbar{display:none}
+  .hud-right{
+    flex:0 0 auto !important;
+    flex-wrap:nowrap !important;
+    gap:4px !important;
+  }
+  .chip{
+    padding:4px 8px !important;
+    font-size:10.8px !important;
+    white-space:nowrap !important;
+    flex-shrink:0 !important;
+  }
+  .ph-bar{width:54px !important}
+  .hud-btn,.h10-ui-btn{
+    min-height:30px !important;
+    padding:4px 8px !important;
+    font-size:11px !important;
+  }
+  .hint-bar{display:none !important}
+  .toast{
+    top:44px !important;
+    bottom:auto !important;
+    font-size:11.6px !important;
+    padding:6px 12px !important;
+    max-width:92% !important;
+  }
+  /* Gộp cam-bar vào 1 nút 🎥 gọn gàng góc trái dưới */
+  .h10-cam-toggle{
+    display:inline-flex !important;
+    position:absolute;
+    left:8px;
+    bottom:8px;
+    z-index:5;
+  }
+  .cam-bar{
+    left:8px !important;
+    bottom:44px !important;
+    max-width:calc(100% - 16px) !important;
+    background:rgba(12,9,24,.94);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;
+    padding:6px;
+    display:none !important;
+    flex-wrap:wrap !important;
+    gap:5px !important;
+    box-shadow:0 10px 26px rgba(0,0,0,.55);
+    z-index:6;
+  }
+  .cam-bar.h10-cam-open{display:flex !important}
+
+  /* Ngăn kéo điều khiển phía dưới */
+  .side{
+    flex:0 0 43dvh !important;
+    max-height:43dvh !important;
+    height:43dvh !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    -webkit-overflow-scrolling:touch;
+    padding:0 10px calc(14px + env(safe-area-inset-bottom)) !important;
+    gap:8px !important;
+    border-left:0 !important;
+    border-top:1px solid rgba(255,255,255,.16) !important;
+  }
+  .side h1{font-size:14.2px !important;line-height:1.25 !important}
+  .side .tag{font-size:10.2px !important;margin-bottom:2px !important}
+  .side .box{padding:8px 10px !important;border-radius:11px !important}
+  .side .box h3{font-size:10.6px !important;margin-bottom:6px !important}
+  .side button{min-height:36px !important;padding:6px 8px !important;font-size:12px !important}
+  .side .kq{font-size:12px !important;line-height:1.48 !important}
+
+  .h10-mob-sheet-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:6px;
+    position:sticky;
+    top:0;
+    z-index:8;
+    margin:0 -10px 2px;
+    padding:6px 10px;
+    background:rgba(18,14,34,.96);
+    border-bottom:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(8px);
+  }
+  .h10-mob-pill-group{
+    display:flex;
+    gap:4px;
+    flex:1;
+  }
+  .h10-mob-pill-group button{
+    flex:1;
+    min-height:30px !important;
+    padding:4px 6px !important;
+    font-size:11px !important;
+    border-radius:99px !important;
+    border:1px solid rgba(255,255,255,.16) !important;
+    background:rgba(255,255,255,.06) !important;
+    color:#e2e8f0 !important;
+  }
+  .h10-mob-pill-group button.on{
+    background:linear-gradient(90deg,#7A2230,#6D28D9) !important;
+    border-color:transparent !important;
+    color:#fff !important;
+  }
+
+  /* Chế độ Rộng 3D (95-100% màn hình cho sân khấu 3D!) */
+  body.h10-mob-max .side{
+    display:none !important;
+  }
+  body.h10-mob-max .h10-mob-restore{
+    display:inline-flex !important;
+    position:absolute;
+    right:8px;
+    bottom:calc(8px + env(safe-area-inset-bottom));
+    z-index:6;
+    background:linear-gradient(90deg,#7A2230,#6D28D9);
+    border-color:rgba(255,255,255,.35);
+    color:#fff;
+    box-shadow:0 6px 20px rgba(0,0,0,.5);
+  }
+
+  /* Chế độ Đọc giải thích rộng hơn */
+  body.h10-mob-tall .side{
+    flex:0 0 66dvh !important;
+    max-height:66dvh !important;
+    height:66dvh !important;
+  }
+}
+
+/* Điện thoại xoay ngang (landscape ngắn): chuyển về 2 cột với cột điều khiển gọn 265px */
+@media (max-width:860px) and (orientation:landscape) and (max-height:520px){
+  .wrap{
+    flex-direction:row !important;
+  }
+  .side{
+    flex:0 0 265px !important;
+    max-height:100dvh !important;
+    height:100dvh !important;
+    border-top:0 !important;
+    border-left:1px solid rgba(255,255,255,.16) !important;
+  }
+}
