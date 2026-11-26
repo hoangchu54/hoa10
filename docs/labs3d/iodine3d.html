@@ -90,7 +90,7 @@
     .hint-bar{display:none}
   }
 </style>
-<link rel="stylesheet" href="../assets/lab3d-ui.css?v=42d9838cb8">
+<link rel="stylesheet" href="../assets/lab3d-ui.css?v=64a873cb2d">
 </head>
 <body>
 <div class="wrap">
@@ -99,7 +99,7 @@
     <div class="hud">
       <div class="hud-left">
         <span class="chip" id="chipTemp">🌡️ Đáy cốc: <b id="tempHud">25 °C</b></span>
-        <span class="chip iod">❄️ Đáy bát đá: <b>~0 °C</b></span>
+        <span class="chip iod">❄️ Đáy bát đá: <b>0 °C</b></span>
         <span class="chip" id="chipPhase">Trạng thái: <b id="phaseHud">I₂ rắn tinh thể</b></span>
       </div>
       <div class="hud-right">
@@ -970,7 +970,8 @@ function bootApp(THREE) {
   }
 
   function updateReadouts() {
-    const tInt = Math.round(tempC);
+    const tRaw = Math.abs(tempC) < 0.05 ? 0 : Math.round(tempC);
+    const tInt = Object.is(tRaw, -0) ? 0 : tRaw;
     $('tempHud').textContent = tInt + ' °C';
     $('chipTemp').classList.toggle('hot', tempC >= 60);
 

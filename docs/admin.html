@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=0e9b13a5ac">
+<link rel="stylesheet" href="assets/h10.css?v=9e903f57fc">
 <style>
 /* ===== Admin Mobile UX, Sticky Dock, HS Cards & Multi-page A4 Print ===== */
 .dock-sticky{top:calc(var(--admin-top-h,60px) + 4px)}
@@ -53,6 +53,8 @@
 @media (max-width:640px){
   .nav-links button{min-height:40px;padding:0 13px;font-size:13px}
   .topbar .top-pill,.top-more-menu .top-pill{min-height:40px}
+  #btn-theme-dn .theme-ten{display:none}
+  #btn-theme-dn{padding:0 10px;min-width:38px;justify-content:center}
   .cay-tm button{min-height:40px!important;padding:0 12px!important}
   .rp-quick-row{flex-wrap:nowrap!important;overflow-x:auto;padding-bottom:2px}
   .rp-quick-row .nut{min-height:40px;flex-shrink:0}
@@ -152,7 +154,7 @@
   </div>
 </div>
 
-<script src="assets/h10.js?v=2416061e55"></script>
+<script src="assets/h10.js?v=abe638fbec"></script>
 <script>
 (function () {
   const { esc, md, api: rawApi, laGAS, getLocation, linkTrang, skelCards, laDienThoai, ICONS, ganNutTheme, toast, ganNutLenDau, tenDep } = window.H10;
@@ -293,16 +295,44 @@
     window.addEventListener('resize', capNhatTopbarH_);
   })();
 
+  function linkTrangChuDn_() {
+    return linkTrang('home', {
+      webUrl: (info && info.webUrl) || window.H10.GAS_EXEC_URL || '',
+      laFull: laFull
+    });
+  }
+
+  function attrLinkDn_(l) {
+    return 'href="' + esc(l.href) + '" target="' + esc(l.target) + '"' + (l.rel ? ' rel="' + esc(l.rel) + '"' : '');
+  }
+
   getLocation(function (loc) {
     laFull = !!(loc && loc.parameter && loc.parameter.full);
-    if (info) veKhung();
+    if (info) {
+      veKhung();
+    } else {
+      const lHome = linkTrangChuDn_();
+      ['brand-home-dn', 'btn-home-dn'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.href = lHome.href;
+        el.target = lHome.target;
+        if (lHome.rel) el.rel = lHome.rel;
+        else el.removeAttribute('rel');
+      });
+    }
   });
 
   // ================= đăng nhập =================
   function veDangNhap(loi) {
+    const lHome = linkTrangChuDn_();
+    const attrHome = attrLinkDn_(lHome);
     $('#goc').innerHTML = '<div class="app"><header class="topbar"><div class="topbar-in">' +
-      '<div class="brand"><div class="brand-mark">' + ICONS.binh + '</div><div class="brand-txt"><div class="nho">HÓA HỌC 10 · KNTT</div><div class="ten">Quản lý Giáo viên</div></div></div>' +
-      '<div class="top-right"><button type="button" class="top-pill" id="btn-theme-dn"></button></div>' +
+      '<a class="brand brand-link" id="brand-home-dn" title="Về Trang chủ Hóa 10" ' + attrHome + '><div class="brand-mark">' + ICONS.binh + '</div><div class="brand-txt"><div class="nho">HÓA HỌC 10 · KNTT</div><div class="ten">Quản lý Giáo viên</div></div></a>' +
+      '<div class="top-right">' +
+        '<a class="top-pill" id="btn-home-dn" ' + attrHome + '>← Trang chủ</a>' +
+        '<button type="button" class="top-pill" id="btn-theme-dn"></button>' +
+      '</div>' +
     '</div></header>' +
     '<main class="khung-hep" style="max-width:440px;padding-top:44px">' +
       '<form class="the" id="f-dn">' +

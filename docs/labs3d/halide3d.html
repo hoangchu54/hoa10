@@ -28,7 +28,7 @@
   .hud-btn:hover{border-color:rgba(255,255,255,.36);transform:translateY(-1px)}
   .hud-btn.on{background:linear-gradient(90deg,#6d28d9,#db2777);border-color:#f9a8d4;color:#fff;box-shadow:0 0 16px rgba(168,85,247,.45)}
 
-  .hint-bar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(12,9,24,.80);border:1px solid var(--vien);border-radius:99px;padding:6px 16px;font-size:11.8px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
+  .hint-bar{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:rgba(12,9,24,.80);border:1px solid var(--vien);border-radius:99px;padding:5px 14px;font-size:11.2px;color:var(--phu);pointer-events:none;backdrop-filter:blur(6px);white-space:nowrap;z-index:3}
   .hint-bar b{color:#f8fafc}
 
   .toast{position:absolute;left:50%;bottom:54px;transform:translateX(-50%);background:rgba(14,10,28,.95);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:9px 16px;font-size:12.8px;font-weight:700;max-width:88%;text-align:center;opacity:0;transition:opacity .24s,transform .24s;pointer-events:none;z-index:4;box-shadow:0 12px 30px rgba(0,0,0,.55)}
@@ -87,7 +87,7 @@
     .hint-bar{font-size:10.8px;padding:5px 11px;max-width:94%;white-space:normal;text-align:center}
   }
 </style>
-<link rel="stylesheet" href="../assets/lab3d-ui.css?v=42d9838cb8">
+<link rel="stylesheet" href="../assets/lab3d-ui.css?v=64a873cb2d">
 </head>
 <body>
 <div class="wrap">
@@ -1147,7 +1147,7 @@ function bootHalideApp(THREE) {
       g.fillStyle = '#ffffff';
       g.font = '800 31px "Be Vietnam Pro",sans-serif';
       g.textAlign = 'center';
-      g.fillText(title, 160, 45);
+      g.fillText(title, 160, 45, 292);
       if (line2) {
         g.fillStyle = bgHex || 'rgba(255,255,255,0.14)';
         g.beginPath();
@@ -1155,11 +1155,11 @@ function bootHalideApp(THREE) {
         g.fill();
         g.fillStyle = txtHex || '#fde68a';
         g.font = '800 20px "Be Vietnam Pro",sans-serif';
-        g.fillText(line2, 160, 88);
+        g.fillText(line2, 160, 88, 272);
       } else {
         g.fillStyle = '#cbd5e1';
         g.font = '700 20px "Be Vietnam Pro",sans-serif';
-        g.fillText(sub || '', 160, 88);
+        g.fillText(sub || '', 160, 88, 272);
       }
       tex.needsUpdate = true;
     }
@@ -1323,7 +1323,7 @@ function bootHalideApp(THREE) {
     body.add(lip);
 
     const badge = createDynamicBadge(cfg.label, cfg.sub, cfg.accent);
-    badge.sprite.position.set(0, 0.15, 0.78);
+    badge.sprite.position.set(0, 0.24, 0.78);
     root.add(badge.sprite);
 
     const hit = new THREE.Mesh(
@@ -2148,9 +2148,19 @@ function bootHalideApp(THREE) {
     }
   }
 
-  const camTarget = new THREE.Vector3(0, 1.42, 0);
-  let sph = { theta: 0.02, phi: 1.38, radius: 5.60 };
-  let sphGoal = { theta: 0.02, phi: 1.38, radius: 5.60 };
+  function getDefaultCamRadius(asp) {
+    const a = Math.max(0.55, asp || camera.aspect || 1.3);
+    const halfTan = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5));
+    // Đủ khoảng lùi để trọn 4 ống nghiệm + nhãn (x = ±2.62 tại z = 0.78) không bị cắt mép trên cả PC & Mobile dọc
+    const needed = 0.78 + 2.76 / (halfTan * a);
+    return Math.max(6.85, Math.min(13.6, needed));
+  }
+
+  const camTarget = new THREE.Vector3(0, 1.30, 0);
+  let sph = { theta: 0.0, phi: 1.38, radius: 7.20 };
+  let sphGoal = { theta: 0.0, phi: 1.38, radius: 7.20 };
+  let userZoomed = false;
+  let camInited = false;
 
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
@@ -2241,8 +2251,9 @@ function bootHalideApp(THREE) {
 
   cv.addEventListener('wheel', function (e) {
     e.preventDefault();
+    userZoomed = true;
     const factor = e.ctrlKey ? 0.034 : 0.0045;
-    sphGoal.radius = Math.max(2.1, Math.min(11.0, sphGoal.radius * Math.exp(e.deltaY * factor)));
+    sphGoal.radius = Math.max(2.1, Math.min(15.5, sphGoal.radius * Math.exp(e.deltaY * factor)));
   }, { passive: false });
 
   cv.addEventListener('touchstart', function (e) {
@@ -2254,8 +2265,9 @@ function bootHalideApp(THREE) {
   }, { passive: true });
   cv.addEventListener('touchmove', function (e) {
     if (e.touches.length === 2 && pinchStartDist > 8) {
+      userZoomed = true;
       const curDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-      sphGoal.radius = Math.max(2.1, Math.min(11.0, pinchStartRadius * Math.pow(pinchStartDist / Math.max(12, curDist), 1.5)));
+      sphGoal.radius = Math.max(2.1, Math.min(15.5, pinchStartRadius * Math.pow(pinchStartDist / Math.max(12, curDist), 1.5)));
     }
   }, { passive: true });
 
@@ -2282,7 +2294,8 @@ function bootHalideApp(THREE) {
   });
 
   $('btnResetCam').addEventListener('click', function () {
-    sphGoal = { theta: 0.02, phi: 1.38, radius: 5.60 };
+    userZoomed = false;
+    sphGoal = { theta: 0.0, phi: 1.38, radius: getDefaultCamRadius(camera.aspect) };
   });
 
   $('btnSound').addEventListener('click', function () {
@@ -2320,6 +2333,14 @@ function bootHalideApp(THREE) {
     camera.aspect = w / Math.max(1, h);
     camera.updateProjectionMatrix();
     renderer.setSize(w, h, false);
+    if (!userZoomed) {
+      const rDef = getDefaultCamRadius(camera.aspect);
+      sphGoal.radius = rDef;
+      if (!camInited) {
+        sph.radius = rDef;
+        camInited = true;
+      }
+    }
   }
   window.addEventListener('resize', resize);
   resize();

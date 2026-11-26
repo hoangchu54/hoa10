@@ -413,6 +413,20 @@ window.H10 = (function () {
   }
 
   let daTaiAnimMascot = false;
+  let dangTaiAnimMascot = false;
+  function doiSangAnim_(im, animSrc) {
+    if (!im || !im.isConnected) return;
+    const swap = function () {
+      if (!im.isConnected || !im.hasAttribute('data-mascot-anim')) return;
+      im.removeAttribute('data-mascot-anim');
+      im.src = animSrc;
+    };
+    if (im.complete) swap();
+    else {
+      im.addEventListener('load', swap, { once: true });
+      im.addEventListener('error', swap, { once: true });
+    }
+  }
   function kichHoatMascot(root) {
     const scope = root || document;
     const imgs = scope.querySelectorAll('img[data-mascot-anim]');
@@ -421,16 +435,21 @@ window.H10 = (function () {
     if (tietKiemTaiNguyen_(true)) return;
     const animSrc = mascotUrl('mascot-main.webp');
     if (daTaiAnimMascot) {
-      imgs.forEach(function (im) { im.src = animSrc; im.removeAttribute('data-mascot-anim'); });
+      imgs.forEach(function (im) { doiSangAnim_(im, animSrc); });
       return;
     }
+    if (dangTaiAnimMascot) return;
+    dangTaiAnimMascot = true;
     const pre = new Image();
     pre.onload = function () {
       daTaiAnimMascot = true;
+      dangTaiAnimMascot = false;
       document.querySelectorAll('img[data-mascot-anim]').forEach(function (im) {
-        im.src = animSrc;
-        im.removeAttribute('data-mascot-anim');
+        doiSangAnim_(im, animSrc);
       });
+    };
+    pre.onerror = function () {
+      dangTaiAnimMascot = false;
     };
     pre.src = animSrc;
   }
@@ -440,8 +459,10 @@ window.H10 = (function () {
     const cls = opts.cls || 'hm-mascot-img';
     const alt = opts.alt || 'Thầy Hoàng Hóa 10';
     const tinh = !!opts.tinh;
-    return '<img class="' + esc(cls) + '" src="' + esc(mascotUrl('mascot-poster.webp')) + '"' +
-      (tinh ? '' : ' data-mascot-anim="1"') +
+    const dungAnimNgay = !tinh && daTaiAnimMascot && !tietKiemTaiNguyen_(true);
+    const src = mascotUrl(dungAnimNgay ? 'mascot-main.webp' : 'mascot-poster.webp');
+    return '<img class="' + esc(cls) + '" src="' + esc(src) + '"' +
+      ((tinh || dungAnimNgay) ? '' : ' data-mascot-anim="1"') +
       ' alt="' + esc(alt) + '" decoding="async" onerror="this.style.display=\'none\'">';
   }
 
@@ -679,7 +700,9 @@ window.H10 = (function () {
 
   function capNhatKhoaCuon_() {
     const coModal = !!document.querySelector('.h10-zoom-lb, .hopdn:not(.half-sheet)');
+    const coHalf = !!document.querySelector('#h10-ref-modal.half-sheet');
     document.body.classList.toggle('modal-open', coModal);
+    document.body.classList.toggle('h10-casio-half', coHalf);
   }
 
   // ---- Global Lightbox Pinch-to-Zoom (1x–4x), Double-Tap (2.2x), Pan & Swipe-Down-to-Close ----
@@ -939,10 +962,10 @@ window.H10 = (function () {
     const hop = document.createElement('div');
     hop.className = 'hopdn';
     hop.innerHTML = '<div class="the vua" style="padding:0;overflow:hidden">' +
-      '<div class="gal-art" data-x="art" style="height:185px;background:' + item.nen + ';cursor:zoom-in;touch-action:manipulation" title="Chạm đúp hoặc bấm nút để phóng to hình">' +
+      '<div class="gal-art gal-art-lb" data-x="art" style="background:' + item.nen + ';cursor:zoom-in;touch-action:manipulation" title="Chạm đúp hoặc bấm nút để phóng to hình">' +
         '<span class="gal-tag">' + esc(item.tag) + '</span>' +
+        '<button type="button" class="gal-zoom" data-x="zoom">🔍 Phóng to</button>' +
         item.svg +
-        '<button type="button" class="gal-zoom" data-x="zoom" style="border:0;cursor:pointer">🔍 Phóng to hình</button>' +
       '</div>' +
       '<div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">' +
         '<h2 style="margin:0;font-size:18px;font-weight:800">' + md(item.ten) + '</h2>' +
@@ -992,8 +1015,8 @@ window.H10 = (function () {
       h += '<button type="button" class="gal-card" data-gal="' + esc(g.id) + '">' +
         '<div class="gal-art" style="background:' + g.nen + '">' +
           '<span class="gal-tag">' + esc(g.tag) + '</span>' +
+          '<span class="gal-zoom">🔍 Chi tiết</span>' +
           g.svg +
-          '<span class="gal-zoom">🔍 Xem chi tiết</span>' +
         '</div>' +
         '<div class="gal-body">' +
           '<b>' + md(g.ten) + '</b>' +
@@ -1765,24 +1788,26 @@ window.H10 = (function () {
       }
     }
 
-    hop.innerHTML = '<div class="the rong" data-x="sheet-the" style="max-width:860px;display:flex;flex-direction:column;gap:12px">' +
+    hop.innerHTML = '<div class="the rong casio-sheet" data-x="sheet-the">' +
       '<div class="sheet-drag-bar" data-x="drag-bar" title="Chạm để đổi chế độ nửa màn hình · Vuốt xuống để đóng"><span class="sheet-handle"></span></div>' +
-      '<div data-x="sheet-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">' +
-        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
-          '<b style="font-size:16.5px">⚛️ Casio &amp; Sổ tay Hóa 10</b>' +
-          '<div class="seg" style="flex-wrap:wrap">' +
+      '<div class="casio-head" data-x="sheet-head">' +
+        '<div class="casio-head-top">' +
+          '<b class="casio-head-title">⚛️ Casio &amp; Sổ tay Hóa 10</b>' +
+          '<div class="casio-head-act">' +
+            '<button type="button" class="nut nho vien" data-x="half" title="Thu xuống nửa dưới màn hình để vừa nhìn đề vừa bấm Casio">' + (thuNho ? '⛶ Mở rộng' : '⬓ Vừa nhìn đề') + '</button>' +
+            '<button type="button" class="nut nho chinh" data-x="dong">Đóng<span class="casio-esc-hint"> (Esc)</span></button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="casio-head-tabs">' +
+          '<div class="seg">' +
             '<button type="button" data-rt="casio" class="' + (tabRef === 'casio' ? 'on' : '') + '">🧮 Casio &amp; M</button>' +
             '<button type="button" data-rt="nt" class="' + (tabRef === 'nt' ? 'on' : '') + '">⚛️ Nguyên tố</button>' +
             '<button type="button" data-rt="iupac" class="' + (tabRef === 'iupac' ? 'on' : '') + '">🔤 Danh pháp IUPAC</button>' +
             '<button type="button" data-rt="ct" class="' + (tabRef === 'ct' ? 'on' : '') + '">📐 Công thức</button>' +
           '</div>' +
         '</div>' +
-        '<div class="hang-nut" style="gap:6px">' +
-          '<button type="button" class="nut nho vien" data-x="half" title="Thu xuống nửa dưới màn hình để vừa nhìn đề vừa bấm Casio">' + (thuNho ? '⛶ Mở rộng' : '⬓ Vừa nhìn đề') + '</button>' +
-          '<button type="button" class="nut nho chinh" data-x="dong">Đóng (Esc)</button>' +
-        '</div>' +
       '</div>' +
-      '<div data-x="body"></div>' +
+      '<div class="casio-sheet-body" data-x="body"></div>' +
     '</div>';
 
     document.body.appendChild(hop);
@@ -1878,9 +1903,66 @@ window.H10 = (function () {
     });
   }
 
-  // ---- Thanh Dock dưới đáy cho Điện thoại + Nút Tra cứu Casio trên Topbar + Brand về Trang chủ ----
+  // ---- Hệ thống Topbar 5 mục chuẩn & Mobile Bottom Dock 5 mục đồng nhất ----
+  const NAV_ITEMS_HS = [
+    { id: 'home',      btnId: 'btn-home',    ic: '🏠', ten: 'Trang chủ' },
+    { id: 'btvn',      btnId: 'btn-btvn',    ic: '📝', ten: 'BTVN' },
+    { id: 'tailieu',   btnId: 'btn-tailieu', ic: '📚', ten: 'Tài liệu' },
+    { id: 'thinghiem', btnId: 'btn-lab',     ic: '🔬', ten: 'Thí nghiệm' },
+    { id: 'trochoi',   btnId: 'btn-game',    ic: '🎮', ten: 'Trò chơi' }
+  ];
+
+  function chuanActiveNav_(activePage) {
+    return activePage === 'lab' ? 'thinghiem' : String(activePage || '');
+  }
+
+  /** Vẽ/đồng bộ đúng 5 mục chuẩn trên Topbar (.topbar .top-right) cho tất cả các trang học sinh. */
+  function veThanhDieuHuongTop(activePage, opts) {
+    opts = opts || {};
+    const tr = opts.container || document.querySelector('.topbar .top-right');
+    if (!tr) return null;
+    const curNav = chuanActiveNav_(activePage);
+
+    // Dọn các nút điều hướng tĩnh cũ (kể cả nút thứ 6 Lab 3D nếu còn) mà vẫn giữ #btn-full, #btn-quick-ref, #btn-theme, [data-keep-top]
+    Array.prototype.slice.call(tr.children).forEach(function (ch) {
+      if (ch.id === 'h10-top-nav' || ch.id === 'btn-full' || ch.id === 'btn-quick-ref' || ch.id === 'btn-theme' || ch.hasAttribute('data-keep-top')) return;
+      if (ch.classList.contains('top-pill') || ch.classList.contains('top-nav-link')) {
+        ch.remove();
+      }
+    });
+
+    let nav = tr.querySelector('#h10-top-nav');
+    if (!nav) {
+      nav = document.createElement('nav');
+      nav.id = 'h10-top-nav';
+      nav.className = 'top-nav';
+      nav.setAttribute('aria-label', 'Điều hướng chính');
+    }
+    if (nav.parentNode !== tr || tr.firstChild !== nav) {
+      tr.insertBefore(nav, tr.firstChild);
+    }
+
+    nav.innerHTML = NAV_ITEMS_HS.map(function (it) {
+      const isCur = it.id === curNav;
+      // Ở trang phụ lab.html vẫn sáng mục Thí nghiệm nhưng giữ dạng <a> để bấm quay lại thinghiem.html
+      const laLink = !isCur || activePage === 'lab';
+      const nhan = '<span class="top-nav-ic" aria-hidden="true">' + it.ic + '</span><span>' + esc(it.ten) + '</span>';
+      if (!laLink) {
+        return '<span id="' + it.btnId + '" class="top-pill top-nav-link on" aria-current="page">' + nhan + '</span>';
+      }
+      const l = linkTrang(it.id, opts);
+      const rel = l.rel ? ' rel="' + esc(l.rel) + '"' : '';
+      return '<a id="' + it.btnId + '" class="top-pill top-nav-link' + (isCur ? ' on' : '') + '"' +
+        (isCur ? ' aria-current="page"' : '') +
+        ' href="' + esc(l.href) + '" target="' + esc(l.target) + '"' + rel + '>' + nhan + '</a>';
+    }).join('');
+    return nav;
+  }
+
+  // ---- Thanh Dock dưới đáy cho Điện thoại + Topbar 5 mục chuẩn + Nút Casio + Brand về Trang chủ ----
   function ganThanhDieuHuongHS(activePage, opts) {
     opts = opts || {};
+    const curNav = chuanActiveNav_(activePage);
     prefetchPages();
     document.body.classList.add('has-mob-dock');
 
@@ -1904,7 +1986,7 @@ window.H10 = (function () {
 
     // Cho phép bấm vào .brand ở các trang con để về Trang chủ
     const brand = document.querySelector('.topbar .brand');
-    if (brand && activePage !== 'home') {
+    if (brand && curNav !== 'home') {
       brand.classList.add('brand-link');
       brand.title = 'Về Trang chủ Hóa 10';
       brand.setAttribute('role', 'link');
@@ -1920,43 +2002,42 @@ window.H10 = (function () {
       brand.onkeydown = function (e) { if (e.key === 'Enter') veHome(); };
     }
 
-    // Thêm nút "🧮 Casio" vào .top-right nếu chưa có
-    const tr = document.querySelector('.topbar .top-right');
-    if (tr && !document.getElementById('btn-quick-ref')) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.id = 'btn-quick-ref';
-      b.className = 'top-pill';
-      b.title = 'Mở Máy tính Casio Hóa học, Danh pháp IUPAC & Công thức (Phím tắt: Alt + P)';
-      b.innerHTML = '🧮 <span>Casio</span>';
-      b.onclick = function () { moBangTraCuu('casio'); };
-      const themeBtn = document.getElementById('btn-theme');
-      if (themeBtn) tr.insertBefore(b, themeBtn);
-      else tr.appendChild(b);
+    // Vẽ thanh Topbar 5 mục chuẩn (trừ khi trang chủ động tắt qua opts.khongVeTop)
+    if (!opts.khongVeTop) {
+      veThanhDieuHuongTop(activePage, opts);
     }
 
-    // Nút tròn nổi Casio ở góc dưới bên phải (trượt theo khi cuộn trang)
+    // Thêm nút "🧮 Casio" tương phản cao vào .top-right nếu chưa có
+    const tr = document.querySelector('.topbar .top-right');
+    let btnCasio = document.getElementById('btn-quick-ref');
+    if (tr && !btnCasio) {
+      btnCasio = document.createElement('button');
+      btnCasio.type = 'button';
+      btnCasio.id = 'btn-quick-ref';
+      btnCasio.className = 'top-pill top-casio';
+      btnCasio.title = 'Mở Máy tính Casio Hóa học, Danh pháp IUPAC & Công thức (Phím tắt: Alt + P)';
+      btnCasio.innerHTML = '🧮 <span class="casio-lbl">Casio</span>';
+      btnCasio.onclick = function () { moBangTraCuu('casio'); };
+      const themeBtn = document.getElementById('btn-theme');
+      if (themeBtn) tr.insertBefore(btnCasio, themeBtn);
+      else tr.appendChild(btnCasio);
+    } else if (btnCasio) {
+      btnCasio.classList.add('top-casio');
+    }
+
+    // Nút tròn nổi Casio ở góc dưới bên phải (ẩn tự động trên Desktop/Tablet >= 641px & khi đã có Topbar/Exam bar)
     if (!document.getElementById('h10-casio-fab')) {
       const fab = document.createElement('button');
       fab.type = 'button';
       fab.id = 'h10-casio-fab';
       fab.className = 'btn-casio-fab';
       fab.title = 'Mở Máy tính Casio & Danh pháp IUPAC Hóa 10 (Alt + P)';
-      fab.innerHTML = '🧮 <span>Casio</span>';
+      fab.innerHTML = '🧮 <span class="fab-lbl">Casio</span>';
       fab.onclick = function () { moBangTraCuu('casio'); };
       document.body.appendChild(fab);
     }
 
-    // Gắn class .top-nav-link cho các nút chuyển trang trên topbar để tự ẩn ở <=640px (nhường chỗ cho Bottom Dock)
-    ['btn-home', 'btn-btvn', 'btn-tailieu', 'btn-lab', 'btn-game'].forEach(function (id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('top-nav-link');
-    });
-    if (tr) {
-      tr.querySelectorAll('.top-pill.on').forEach(function (el) { el.classList.add('top-nav-link'); });
-    }
-
-    // Tạo hoặc cập nhật Mobile Bottom Dock
+    // Tạo hoặc cập nhật Mobile Bottom Dock 5 mục đồng nhất với Topbar
     let dock = document.getElementById('h10-mob-dock');
     if (!dock) {
       dock = document.createElement('nav');
@@ -1965,18 +2046,11 @@ window.H10 = (function () {
       dock.setAttribute('aria-label', 'Điều hướng nhanh');
       document.body.appendChild(dock);
     }
-    const items = [
-      { id: 'home', ic: '🏠', ten: 'Trang chủ' },
-      { id: 'btvn', ic: '📝', ten: 'Làm BTVN' },
-      { id: 'tailieu', ic: '📚', ten: 'Tài liệu' },
-      { id: 'thinghiem', ic: '🔬', ten: 'Thí nghiệm' },
-      { id: 'trochoi', ic: '🎮', ten: 'Trò chơi' }
-    ];
-    dock.innerHTML = items.map(function (it) {
+    dock.innerHTML = NAV_ITEMS_HS.map(function (it) {
       const l = linkTrang(it.id, opts);
-      const isCur = it.id === activePage;
-      const rel = (l.target && l.target !== '_self' && l.target !== '_top') ? ' rel="noopener noreferrer"' : '';
-      return '<a href="' + esc(l.href) + '" target="' + l.target + '"' + rel + ' class="' + (isCur ? 'on' : '') + '"' + (isCur ? ' aria-current="page"' : '') + '>' +
+      const isCur = it.id === curNav;
+      const rel = l.rel ? ' rel="' + esc(l.rel) + '"' : '';
+      return '<a href="' + esc(l.href) + '" target="' + esc(l.target) + '"' + rel + ' class="' + (isCur ? 'on' : '') + '"' + (isCur ? ' aria-current="page"' : '') + '>' +
         '<i aria-hidden="true">' + it.ic + '</i><span>' + esc(it.ten) + '</span></a>';
     }).join('');
   }
@@ -2019,6 +2093,8 @@ window.H10 = (function () {
     renderGalleryHoa10: renderGalleryHoa10,
     GALLERY_HOA10: GALLERY_HOA10,
     moBangTraCuu: moBangTraCuu,
+    NAV_ITEMS_HS: NAV_ITEMS_HS,
+    veThanhDieuHuongTop: veThanhDieuHuongTop,
     ganThanhDieuHuongHS: ganThanhDieuHuongHS,
     docCacheUI: docCacheUI,
     ghiCacheUI: ghiCacheUI,

@@ -81,15 +81,21 @@ button,.nut,.top-pill,.mob-dock a,.lua-chon,.lc,.ds-btn,.o-so,.sym-btn,.weak-chi
 .nav-links button[aria-current="page"]::after{content:"";position:absolute;left:12px;right:12px;bottom:2px;height:2.5px;border-radius:999px;background:var(--grad)}
 
 .top-right{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap}
+.top-nav{display:inline-flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.top-nav-ic{line-height:1}
 .top-pill{display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 12px;border-radius:10px;background:var(--nen2);border:1px solid var(--vien);color:var(--chu);font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;transition:border-color .14s,background-color .14s,color .14s,transform .12s}
 .top-pill:hover{border-color:var(--tim-v);color:var(--tim);background:var(--tim-n);text-decoration:none;transform:translateY(-1px)}
 .top-pill.on{background:linear-gradient(135deg,var(--do-n),var(--tim-n));border-color:var(--do-v);color:var(--do);font-weight:700;box-shadow:0 2px 6px rgba(122,34,48,.09)}
+#btn-quick-ref.top-casio{background:var(--tim-n);border-color:var(--tim-v);color:var(--tim2);font-weight:700}
+#btn-quick-ref.top-casio:hover{background:var(--tim);border-color:var(--tim);color:#fff}
+html[data-theme="dark"] #btn-quick-ref.top-casio{background:rgba(139,92,246,.24);border-color:rgba(196,181,253,.48);color:#F5F3FF}
+html[data-theme="dark"] #btn-quick-ref.top-casio:hover{background:#7C3AED;border-color:#C4B5FD;color:#fff}
 .theme-dots{display:inline-flex;gap:3px;align-items:center}
 .theme-dots i{width:7px;height:7px;border-radius:999px;display:block}
 
 /* Containers */
-.khung-chinh{flex:1;width:100%;max-width:1280px;margin:0 auto;padding:18px 16px calc(56px + env(safe-area-inset-bottom))}
-.khung-hep{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:18px 16px calc(56px + env(safe-area-inset-bottom))}
+.khung-chinh{flex:1;width:100%;max-width:1280px;margin:0 auto;padding:18px 16px calc(76px + env(safe-area-inset-bottom))}
+.khung-hep{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:18px 16px calc(76px + env(safe-area-inset-bottom))}
 body.dang-lam .khung-hep{max-width:1160px}
 .phu{font-size:13px;color:var(--mo)}
 .nhan-muc{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mo);margin:18px 2px 10px;display:flex;align-items:center;gap:8px}
@@ -128,6 +134,14 @@ h2.tieu-khoi{margin:0;font-size:16.5px;font-weight:700;display:flex;align-items:
 .nut.xanh:hover:not(:disabled){opacity:.92;color:#fff}
 .nut.vien{background:var(--the);border:1.5px solid var(--do);color:var(--do)}
 .nut.vien:hover:not(:disabled){background:var(--do-n)}
+.nut.vien-tim{background:var(--the);border:1.5px solid var(--tim-v);color:var(--tim)}
+.nut.vien-tim:hover:not(:disabled){background:var(--tim-n);border-color:var(--tim)}
+.nut.nhe{background:var(--nen2);border:1px solid var(--vien);color:var(--chu)}
+.nut.nhe:hover:not(:disabled){border-color:var(--tim-v);background:var(--tim-n);color:var(--tim)}
+html[data-theme="dark"] .nut.chinh{background:linear-gradient(135deg,#B83349,#8F1D32);border-color:#D4475E;color:#fff}
+html[data-theme="dark"] .nut.tim{background:linear-gradient(135deg,#7C3AED,#5B21B6);border-color:#8B5CF6;color:#fff}
+html[data-theme="dark"] .nut.xanh{background:#0F766E;border-color:#14B8A6;color:#fff}
+html[data-theme="dark"] .nut.vien{border-color:var(--do2);color:#F9A8B8}
 .nut.xoa{color:var(--loi);border-color:var(--loi-v);background:var(--the)}
 .nut.xoa:hover:not(:disabled){background:var(--loi-n)}
 .nut:disabled{opacity:.52;cursor:not-allowed;box-shadow:none}
@@ -469,34 +483,45 @@ body.dang-lam .topbar{position:static}
 .sec-head h2{margin:0;font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:-.01em}
 .sec-head .phu{font-size:12.5px}
 
-/* Poster 7 Chuong SGK */
+/* Poster 7 Chuong SGK: nen diu mat hai hoa theme, nhan bang vach mau manh & badge chuong */
 .ch-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
 @media (max-width:1180px){.ch-strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.ch-card{position:relative;overflow:hidden;border-radius:16px;padding:13px 14px;color:#fff;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;min-height:112px;box-shadow:0 6px 18px rgba(24,18,40,.14);border:1px solid rgba(255,255,255,.22);transition:transform .16s,box-shadow .16s}
-.ch-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(24,18,40,.22);text-decoration:none;color:#fff}
-.ch-card::after{content:"";position:absolute;right:-14px;bottom:-14px;width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
-.ch-card .ch-num{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.92;display:inline-flex;align-items:center;gap:5px}
-.ch-card .ch-ic{font-size:22px;line-height:1}
-.ch-card b{font-size:14.5px;font-weight:800;line-height:1.25;margin-top:6px;text-shadow:0 1px 4px rgba(0,0,0,.18)}
-.ch-card .ch-sub{font-size:11.5px;opacity:.9;margin-top:4px;font-weight:600}
-/* 7 màu chương: giữ màu nhận diện nhưng hạ độ chói cho hợp tông Burgundy–Tím */
-.ch-c1{background:linear-gradient(135deg,#6B1D2A 0%,#A6384B 100%)}
-.ch-c2{background:linear-gradient(135deg,#4C1D95 0%,#7C3AED 100%)}
-.ch-c3{background:linear-gradient(135deg,#134E4A 0%,#0F8A80 100%)}
-.ch-c4{background:linear-gradient(135deg,#8A3B0C 0%,#C9760A 100%)}
-.ch-c5{background:linear-gradient(135deg,#881337 0%,#D2335A 100%)}
-.ch-c6{background:linear-gradient(135deg,#0C4A6E 0%,#0B7FBF 100%)}
-.ch-c7{background:linear-gradient(135deg,#3730A3 0%,#9D2A7A 100%)}
+.ch-card{--ch-accent:var(--do);--ch-soft:var(--do-n);position:relative;overflow:hidden;border-radius:15px;padding:13px 13px 12px;background:var(--the);color:var(--chu);text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;min-height:112px;box-shadow:var(--shadow);border:1px solid var(--vien);border-top:3.5px solid var(--ch-accent);transition:transform .16s,box-shadow .16s,border-color .16s,background-color .16s}
+.ch-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--ch-accent);background:linear-gradient(180deg,var(--ch-soft) 0%,var(--the) 56%);text-decoration:none;color:var(--chu)}
+.ch-card::after{content:"";position:absolute;right:-16px;bottom:-16px;width:58px;height:58px;border-radius:50%;background:var(--ch-soft);opacity:.85;pointer-events:none}
+.ch-card .ch-num{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ch-accent);background:var(--ch-soft);padding:2.5px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;width:fit-content}
+.ch-card .ch-ic{font-size:20px;line-height:1;width:32px;height:32px;border-radius:10px;background:var(--ch-soft);display:grid;place-items:center;flex-shrink:0}
+.ch-card b{font-size:14px;font-weight:800;line-height:1.28;margin-top:7px;color:var(--chu)}
+.ch-card .ch-sub{font-size:11.5px;color:var(--mo);margin-top:5px;font-weight:600;line-height:1.35}
+.ch-card:hover .ch-sub{color:var(--ch-accent)}
+/* 7 màu nhấn chương dịu mắt trên cả 3 theme */
+.ch-c1{--ch-accent:#9F2D40;--ch-soft:rgba(159,45,64,.10)}
+.ch-c2{--ch-accent:#6D28D9;--ch-soft:rgba(109,40,217,.10)}
+.ch-c3{--ch-accent:#0F766E;--ch-soft:rgba(15,118,110,.10)}
+.ch-c4{--ch-accent:#B45309;--ch-soft:rgba(180,83,9,.10)}
+.ch-c5{--ch-accent:#BE185D;--ch-soft:rgba(190,24,93,.10)}
+.ch-c6{--ch-accent:#0369A1;--ch-soft:rgba(3,105,161,.10)}
+.ch-c7{--ch-accent:#4338CA;--ch-soft:rgba(67,56,202,.10)}
+html[data-theme="dark"] .ch-c1{--ch-accent:#F4728A;--ch-soft:rgba(244,114,138,.16)}
+html[data-theme="dark"] .ch-c2{--ch-accent:#C4B5FD;--ch-soft:rgba(196,181,253,.16)}
+html[data-theme="dark"] .ch-c3{--ch-accent:#5EEAD4;--ch-soft:rgba(94,234,212,.15)}
+html[data-theme="dark"] .ch-c4{--ch-accent:#FBBF24;--ch-soft:rgba(251,191,36,.15)}
+html[data-theme="dark"] .ch-c5{--ch-accent:#F472B6;--ch-soft:rgba(244,114,182,.15)}
+html[data-theme="dark"] .ch-c6{--ch-accent:#38BDF8;--ch-soft:rgba(56,189,248,.16)}
+html[data-theme="dark"] .ch-c7{--ch-accent:#A5B4FC;--ch-soft:rgba(165,180,252,.16)}
 
 /* Visual Gallery Sac Mau Hoa Hoc 10 */
 .gal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 @media (max-width:1080px){.gal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .gal-card{background:var(--the);border:1px solid var(--vien);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;transition:transform .16s,box-shadow .16s,border-color .16s;text-align:left;padding:0}
 .gal-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--tim-v)}
-.gal-art{position:relative;height:132px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:12px}
-.gal-art svg{width:100%;height:100%;max-height:112px;overflow:visible}
-.gal-tag{position:absolute;top:9px;left:10px;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(15,18,30,.66);color:#fff;backdrop-filter:blur(4px);letter-spacing:.03em}
-.gal-zoom{position:absolute;bottom:8px;right:9px;font-size:11px;font-weight:700;padding:2.5px 8px;border-radius:8px;background:rgba(255,255,255,.88);color:#1E1B24;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.gal-art{position:relative;height:148px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:34px 12px 10px}
+.gal-art.gal-art-lb{height:198px;padding:38px 14px 12px}
+.gal-art svg{width:100%;height:100%;max-height:106px;overflow:visible}
+.gal-art.gal-art-lb svg{max-height:148px}
+.gal-tag{position:absolute;top:8px;left:9px;max-width:calc(100% - 100px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(15,18,30,.72);color:#fff;backdrop-filter:blur(4px);letter-spacing:.03em;z-index:2}
+.gal-zoom{position:absolute;top:8px;right:9px;border:0;cursor:pointer;font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.92);color:#1E1B24;box-shadow:0 2px 6px rgba(0,0,0,.18);white-space:nowrap;z-index:2;transition:transform .12s,background-color .12s}
+.gal-zoom:hover{background:#fff;transform:translateY(-1px)}
 .gal-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
 .gal-body b{font-size:14.5px;font-weight:800;color:var(--chu);line-height:1.3}
 .gal-body .phu{font-size:12.5px;line-height:1.45}
@@ -590,9 +615,20 @@ body.dang-lam .mob-dock{display:none!important}
 .kbd-hint kbd{padding:1px 6px;border-radius:5px;border:1px solid var(--vien);background:var(--nen2);font-size:11px;font-weight:700;font-family:inherit}
 @media (max-width:760px){.kbd-hint{display:none}}
 
-/* Casio fx-580 Hoa Hoc Mini */
+/* Casio fx-580 Hoa Hoc Mini & Modal Header */
+.casio-sheet{max-width:860px!important;display:flex;flex-direction:column;gap:10px;overflow:hidden!important}
+.casio-head{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.casio-head-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:nowrap}
+.casio-head-title{font-size:16px;font-weight:800;line-height:1.25;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.casio-head-act{display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+.casio-head-act .nut{white-space:nowrap}
+.casio-head-tabs{display:flex;align-items:center;min-width:0}
+.casio-head-tabs .seg{width:100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.casio-head-tabs .seg::-webkit-scrollbar{display:none}
+.casio-sheet-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .casio-layout{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:14px;align-items:start}
 @media (max-width:680px){.casio-layout{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){.casio-esc-hint{display:none}}
 .casio-body{background:linear-gradient(165deg,#252836 0%,#181A24 100%);border:2px solid #3B4058;border-radius:20px;padding:13px;box-shadow:0 12px 28px rgba(10,10,20,.36),inset 0 1px 0 rgba(255,255,255,.15);color:#fff;user-select:none}
 .casio-brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;padding:0 3px}
 .casio-brand b{font-size:11.5px;letter-spacing:.12em;color:#E2E8F0;font-weight:800}
@@ -655,9 +691,13 @@ body.dang-lam .mob-dock{display:none!important}
 .btn-top{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;width:42px;height:42px;border-radius:999px;border:1px solid var(--vien);background:var(--the);color:var(--do);box-shadow:var(--shadow-lg);display:grid;place-items:center;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .18s,transform .18s,background-color .14s,color .14s}
 .btn-top.hien{opacity:1;pointer-events:auto;transform:translateY(0)}
 .btn-top:hover{background:var(--do);color:#fff;border-color:var(--do)}
-.btn-casio-fab{position:fixed;right:16px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:41;height:42px;min-width:42px;padding:0 12px;border-radius:999px;border:1.5px solid var(--tim-v);background:linear-gradient(135deg,var(--do),var(--tim));color:#fff;box-shadow:0 6px 18px rgba(109,40,217,.32);display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:800;cursor:pointer;transition:transform .14s,box-shadow .14s}
-.btn-casio-fab:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(109,40,217,.42)}
+.btn-casio-fab{position:fixed;right:16px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:41;height:42px;min-width:42px;padding:0 12px;border-radius:999px;border:1.5px solid rgba(255,255,255,.32);background:linear-gradient(135deg,#6D28D9,#4C1D95);color:#fff;box-shadow:0 6px 18px rgba(76,29,149,.36);display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:800;cursor:pointer;transition:transform .14s,box-shadow .14s}
+.btn-casio-fab:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(76,29,149,.46);color:#fff}
 .btn-casio-fab:active{transform:scale(.96)}
+@media (min-width:641px){
+  /* Desktop/Tablet đã có sẵn nút Casio cố định trên Topbar (và panel làm bài) → ẩn nút nổi góc dưới-phải */
+  body.has-mob-dock .btn-casio-fab{display:none!important}
+}
 
 /* Floating Exam Quick Pill (trượt theo dưới đáy khi cuộn làm bài trên Mobile/Tablet) */
 .exam-fab-bar{display:none;position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:44;background:rgba(23,26,40,.94);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 7px;box-shadow:0 10px 28px rgba(0,0,0,.38);align-items:center;gap:6px;white-space:nowrap;max-width:96vw}
@@ -665,13 +705,14 @@ body.dang-lam .mob-dock{display:none!important}
 .exam-fab-btn:hover{background:rgba(255,255,255,.2)}
 .exam-fab-btn:active{transform:scale(.96)}
 .exam-fab-btn.chinh{background:linear-gradient(135deg,var(--do),var(--tim));color:#fff;font-weight:800}
-.exam-fab-btn.casio{background:linear-gradient(135deg,#6D28D9,#4C1D95);color:#FFD166}
+.exam-fab-btn.casio{background:linear-gradient(135deg,#6D28D9,#4C1D95);color:#fff;border:1px solid rgba(255,209,102,.45)}
 .exam-fab-drawer{position:fixed;left:10px;right:10px;bottom:calc(64px + env(safe-area-inset-bottom));z-index:45;background:var(--the);color:var(--chu);border:1.5px solid var(--tim-v);border-radius:18px;padding:14px;box-shadow:0 14px 36px rgba(0,0,0,.35);max-height:66dvh;overflow-y:auto;animation:modalIn .14s ease}
 @media (max-width:960px){
   body.dang-lam .exam-fab-bar{display:inline-flex}
   body.dang-lam .btn-casio-fab{display:none!important}
-  body.dang-lam .btn-top{bottom:calc(64px + env(safe-area-inset-bottom));right:10px;width:36px;height:36px}
-  body.dang-lam .khung-hep,body.has-mob-dock.dang-lam .khung-hep{padding-bottom:calc(86px + env(safe-area-inset-bottom))!important}
+  body.dang-lam .btn-top{bottom:calc(78px + env(safe-area-inset-bottom));right:12px;width:36px;height:36px}
+  body.dang-lam .khung-hep,body.has-mob-dock.dang-lam .khung-hep{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important}
+  .exam-mobile-foot{padding-bottom:16px}
 }
 @media (max-width:400px){
   .exam-fab-bar{gap:4px;padding:4px 5px;max-width:98vw}
@@ -679,20 +720,37 @@ body.dang-lam .mob-dock{display:none!important}
 }
 
 /* Chế độ thu nửa màn hình dưới (Split-View Bottom Sheet) cho Casio để vừa nhìn đề vừa bấm */
-.sheet-drag-bar{display:none;width:100%;padding:2px 0 6px;margin:-4px 0 2px;cursor:grab;touch-action:none;justify-content:center;align-items:center;flex-shrink:0}
+.sheet-drag-bar{display:none;width:100%;padding:2px 0 4px;margin:-2px 0 0;cursor:grab;touch-action:none;justify-content:center;align-items:center;flex-shrink:0}
 .sheet-handle{width:42px;height:4.5px;border-radius:999px;background:var(--vien);transition:background-color .15s,width .15s}
 .sheet-drag-bar:hover .sheet-handle,.sheet-drag-bar:active .sheet-handle{background:var(--tim);width:54px}
+body.h10-casio-half{padding-bottom:calc(60dvh + env(safe-area-inset-bottom))!important}
+body.h10-casio-half .exam-fab-bar,
+body.h10-casio-half .mob-dock,
+body.h10-casio-half .btn-top,
+body.h10-casio-half .btn-casio-fab{display:none!important}
 .hopdn.half-sheet{background:rgba(16,14,26,.18);align-items:flex-end;padding:0;pointer-events:none}
-.hopdn.half-sheet > .the{pointer-events:auto;max-width:680px;width:100%;max-height:58dvh;border-radius:20px 20px 0 0;border:2px solid var(--tim-v);box-shadow:0 -10px 34px rgba(0,0,0,.35);padding:8px 12px calc(10px + env(safe-area-inset-bottom))}
+.hopdn.half-sheet > .the{pointer-events:auto;max-width:680px;width:100%;max-height:58dvh;border-radius:20px 20px 0 0;border:2px solid var(--tim-v);box-shadow:0 -10px 34px rgba(0,0,0,.35);padding:6px 11px calc(8px + env(safe-area-inset-bottom));gap:6px}
 .hopdn.half-sheet .sheet-drag-bar{display:flex}
+.hopdn.half-sheet .casio-head{gap:5px}
+.hopdn.half-sheet .casio-head-title{font-size:13.5px}
+.hopdn.half-sheet .casio-head-act .nut.nho{min-height:28px;padding:0 9px;font-size:11.5px}
+.hopdn.half-sheet .casio-head-tabs .seg{padding:2.5px}
+.hopdn.half-sheet .casio-head-tabs .seg button{padding:4px 9px;font-size:11.5px}
 .hopdn.half-sheet .casio-layout{grid-template-columns:minmax(0,1fr);gap:8px}
-.hopdn.half-sheet .casio-lcd{min-height:54px;padding:6px 8px;margin-bottom:7px}
-.hopdn.half-sheet .casio-res{font-size:18px}
-.hopdn.half-sheet .ck{min-height:31px;font-size:13px}
+.hopdn.half-sheet .casio-body{padding:8px 9px;border-radius:14px}
+.hopdn.half-sheet .casio-brand{display:none}
+.hopdn.half-sheet .casio-lcd{min-height:44px;padding:4px 8px;margin-bottom:6px;border-width:2px}
+.hopdn.half-sheet .casio-exp{font-size:11px;min-height:14px}
+.hopdn.half-sheet .casio-res{font-size:17px}
+.hopdn.half-sheet .casio-chem-row{gap:4px;margin-bottom:4px}
+.hopdn.half-sheet .casio-chem-row .ck{min-height:26px;font-size:11px}
+.hopdn.half-sheet .casio-keys{gap:4px}
+.hopdn.half-sheet .ck{min-height:29px;font-size:13px;border-bottom-width:2px;border-radius:7px}
+.hopdn.half-sheet .casio-round{margin-top:5px;padding-top:5px;font-size:10.5px}
 @media (max-width:680px){
   #h10-ref-modal{align-items:flex-end;padding:0}
-  #h10-ref-modal > .the{max-width:none;width:100%;max-height:90dvh;border-radius:20px 20px 0 0;padding:8px 13px calc(12px + env(safe-area-inset-bottom));animation:sheetUp .2s cubic-bezier(.2,.85,.3,1)}
-  #h10-ref-modal.half-sheet > .the{max-height:58dvh}
+  #h10-ref-modal > .the{max-width:none;width:100%;max-height:90dvh;border-radius:20px 20px 0 0;padding:8px 12px calc(10px + env(safe-area-inset-bottom));animation:sheetUp .2s cubic-bezier(.2,.85,.3,1)}
+  #h10-ref-modal.half-sheet > .the{max-height:58dvh;padding:6px 10px calc(8px + env(safe-area-inset-bottom))}
   #h10-ref-modal .sheet-drag-bar{display:flex}
 }
 @keyframes sheetUp{from{transform:translateY(36px);opacity:.65}to{transform:translateY(0);opacity:1}}
@@ -738,7 +796,7 @@ html.in-iframe,html.in-iframe body.embed-ok{background:transparent!important;bac
 html.in-iframe body.embed-ok .topbar{border-radius:14px;border:1px solid var(--vien);overflow:hidden}
 html.in-iframe body.embed-ok .topbar-in{max-width:100%;padding:7px 14px}
 html.in-iframe body.embed-ok .khung-chinh{max-width:100%;padding:10px 0 14px}
-body.embed-ok .khung-chinh{max-width:1280px;padding:14px 14px 24px}
+body.embed-ok .khung-chinh{max-width:1280px;padding:14px 14px calc(76px + env(safe-area-inset-bottom))}
 body.embed-ok .topbar-in{max-width:1280px}
 .fx-e{position:fixed;z-index:99;pointer-events:none;font-size:24px;line-height:1;will-change:transform,opacity;transition:transform .85s cubic-bezier(.15,.8,.3,1),opacity .85s ease-in}
 .fx-t{position:fixed;z-index:100;pointer-events:none;font:800 17px 'Be Vietnam Pro',system-ui,sans-serif;color:#fff;white-space:nowrap;padding:5px 14px;border-radius:999px;background:linear-gradient(90deg,var(--do),var(--tim));border:1px solid rgba(255,255,255,.25);box-shadow:0 4px 14px rgba(0,0,0,.3);transform:translate(-50%,-50%) scale(.35);opacity:0;transition:transform .32s cubic-bezier(.3,1.5,.5,1),opacity .28s}
@@ -846,6 +904,24 @@ body.embed-ok .topbar-in{max-width:1280px}
   .seg{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .seg::-webkit-scrollbar{display:none}
 }
+/* Tablet (641px-1024px): Topbar 5 mục chuẩn luôn nằm gọn trên 1 hàng, không rớt dòng ở 768px */
+@media (max-width:1024px) and (min-width:641px){
+  body.has-mob-dock .topbar-in{padding:7px 12px;gap:6px;flex-wrap:nowrap}
+  body.has-mob-dock .brand{gap:7px;flex-shrink:1;min-width:0}
+  body.has-mob-dock .brand-mark{width:34px;height:34px;border-radius:10px}
+  body.has-mob-dock .brand-txt .nho{font-size:9px;letter-spacing:.08em}
+  body.has-mob-dock .brand-txt .ten{font-size:13px;max-width:142px}
+  body.has-mob-dock .top-right{gap:4px;flex-wrap:nowrap;flex-shrink:0;overflow:visible}
+  body.has-mob-dock .top-nav{gap:4px}
+  body.has-mob-dock .top-pill{padding:0 8px;font-size:12px;min-height:32px;gap:4px}
+  body.has-mob-dock #btn-theme .theme-ten{display:none}
+  body.has-mob-dock #btn-theme{padding:0 9px;min-width:36px;justify-content:center}
+}
+@media (max-width:820px) and (min-width:641px){
+  body.has-mob-dock .brand-txt .ten{max-width:110px;font-size:12.5px}
+  body.has-mob-dock .top-pill{padding:0 7px;font-size:11.5px;gap:3px}
+  body.has-mob-dock .top-nav{gap:3px}
+}
 @media (max-width:640px){
   .de-grid{grid-template-columns:minmax(0,1fr)}
   .feat-cta{width:100%}
@@ -857,6 +933,9 @@ body.embed-ok .topbar-in{max-width:1280px}
   .feat-body .kpi-ic{display:none}
   .hero-mascot .hm-star{display:none}
   .hero-mascot .hm-kicker{letter-spacing:.08em}
+  /* Mobile làm bài: dải ký hiệu tự xuống hàng để hiện đủ ⇌ và °C */
+  body.dang-lam .sym-bar,.sym-bar{flex-wrap:wrap;overflow-x:visible;gap:6px}
+  .sym-btn{min-height:32px;padding:4px 10px}
   /* Admin mobile: gom menu topbar, kho đề trượt ngang, chấm lịch, thẻ điểm */
   .top-extra{display:none!important}
   .top-more-wrap{display:inline-block}
@@ -871,17 +950,18 @@ body.embed-ok .topbar-in{max-width:1280px}
   .th-cards{display:flex}
   .dock-sticky{top:96px;padding:8px 10px}
   /* Nút đổi giao diện & nút Casio trên Topbar gọn ở mobile */
-  #btn-theme .theme-ten,#btn-quick-ref span{display:none}
+  #btn-theme .theme-ten,#btn-quick-ref .casio-lbl{display:none}
   #btn-theme,#btn-quick-ref{padding:0 10px;min-width:38px;justify-content:center}
   /* Mobile Bottom Dock cho trang Học sinh */
   body.has-mob-dock .mob-dock{display:flex}
   body.has-mob-dock .khung-chinh,body.has-mob-dock .khung-hep{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
   body.has-mob-dock .btn-top{bottom:calc(70px + env(safe-area-inset-bottom))}
+  body.has-mob-dock.dang-lam .btn-top{bottom:calc(78px + env(safe-area-inset-bottom));right:12px}
   body.has-mob-dock .btn-casio-fab{bottom:calc(118px + env(safe-area-inset-bottom));right:12px;padding:0 11px;height:38px}
-  body.has-mob-dock .btn-casio-fab span{display:none}
+  body.has-mob-dock .btn-casio-fab .fab-lbl{display:none}
   /* Topbar đã có nút Casio (#btn-quick-ref) → ẩn nút tròn nổi để không che nội dung */
   body.has-mob-dock:not(.dang-lam) .btn-casio-fab{display:none!important}
-  body.has-mob-dock .topbar .top-nav-link{display:none!important}
+  body.has-mob-dock .topbar .top-nav,body.has-mob-dock .topbar .top-nav-link{display:none!important}
   /* Kho tài liệu: gập bộ lọc chi tiết */
   .tl-loc-nut{display:inline-flex}
   .tl-loc-chi-tiet{display:none!important}
@@ -1016,3 +1096,37 @@ body.embed-ok .topbar-in{max-width:1280px}
 @media (max-width:760px){
   .prog-grid{grid-template-columns:minmax(0,1fr)}
 }
+
+/* ==== SHARED WAVE-2 COMPONENTS: TABS (.h10-tabs) & ACCORDION (.h10-acc) ==== */
+.h10-tabs{display:inline-flex;align-items:center;gap:4px;padding:4px;border-radius:13px;background:var(--nen2);border:1px solid var(--vien);max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-bottom:14px}
+.h10-tabs::-webkit-scrollbar{display:none}
+.h10-tabs.full{display:flex;width:100%}
+.h10-tabs.full .h10-tab-btn{flex:1;justify-content:center}
+.h10-tab-btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:0 15px;border-radius:9px;font-size:13.5px;font-weight:700;color:var(--mo);white-space:nowrap;border:1px solid transparent;transition:background-color .15s,color .15s,border-color .15s,box-shadow .15s;touch-action:manipulation}
+.h10-tab-btn:hover{color:var(--chu);background:var(--the)}
+.h10-tab-btn.on,.h10-tab-btn[aria-selected="true"]{background:var(--the);color:var(--do);border-color:var(--do-v);box-shadow:0 2px 8px rgba(122,34,48,.12)}
+.h10-tab-btn .h10-tab-cnt{font-size:11px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--vien2);color:var(--mo)}
+.h10-tab-btn.on .h10-tab-cnt,.h10-tab-btn[aria-selected="true"] .h10-tab-cnt{background:var(--do-n);color:var(--do)}
+@media (max-width:640px){
+  .h10-tabs{display:flex;width:100%}
+  .h10-tab-btn{flex:1;padding:0 11px;font-size:13px;min-height:38px}
+}
+@media (max-width:480px){
+  .h10-tabs{max-width:100%;overflow:hidden}
+  .h10-tab-btn{flex:1 1 0;min-width:0;padding:8px 8px;font-size:12.5px;gap:4px;overflow:hidden;text-overflow:ellipsis}
+  .h10-tab-btn .h10-tab-cnt{padding:1px 5px;font-size:10.5px;flex-shrink:0}
+}
+
+.h10-acc-list{display:flex;flex-direction:column;gap:10px}
+.h10-acc{background:var(--the);border:1px solid var(--vien);border-radius:15px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.h10-acc[open],.h10-acc.mo{border-color:var(--tim-v);box-shadow:var(--shadow-lg)}
+.h10-acc-head{width:100%;box-sizing:border-box;margin:0;border:0;background:transparent;padding:13px 16px;min-height:50px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none;text-align:left;font-size:14.5px;font-weight:800;color:var(--chu);transition:background-color .14s;touch-action:manipulation}
+.h10-acc-head::-webkit-details-marker{display:none}
+.h10-acc-head:hover{background:var(--nen2)}
+.h10-acc[open] > .h10-acc-head,.h10-acc.mo > .h10-acc-head{background:linear-gradient(135deg,var(--tim-n) 0%,var(--the) 75%);border-bottom:1px solid var(--vien2);color:var(--do)}
+.h10-acc-title{display:flex;align-items:center;gap:9px;min-width:0;flex:1;flex-wrap:wrap}
+.h10-acc-meta{display:inline-flex;align-items:center;gap:7px;flex-shrink:0;font-size:12px;font-weight:700;color:var(--mo)}
+.h10-acc-chev{width:24px;height:24px;border-radius:8px;background:var(--nen2);border:1px solid var(--vien);display:grid;place-items:center;font-size:11px;color:var(--mo);flex-shrink:0;transition:transform .2s ease,background-color .15s,color .15s}
+.h10-acc[open] > .h10-acc-head .h10-acc-chev,.h10-acc.mo > .h10-acc-head .h10-acc-chev{transform:rotate(180deg);background:var(--do-n);border-color:var(--do-v);color:var(--do)}
+.h10-acc-body{padding:12px 14px 14px;background:var(--nen2)}
+div.h10-acc:not(.mo) > .h10-acc-body{display:none}

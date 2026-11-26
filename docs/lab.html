@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=0e9b13a5ac">
+<link rel="stylesheet" href="assets/h10.css?v=9e903f57fc">
 <style>
   body.lab-viewing {
     overflow: hidden;
@@ -130,18 +130,28 @@
   .lab3d-loader{
     position:absolute;
     inset:0;
-    z-index:5;
+    z-index:8;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:10px;
-    background:rgba(8,6,16,.88);
-    color:#E2E8F0;
+    gap:12px;
+    background:rgba(8,6,16,.92);
+    color:#F8FAFC;
     font-size:13.5px;
-    font-weight:600;
+    font-weight:700;
     transition:opacity .25s ease, visibility .25s ease;
     pointer-events:none;
+  }
+  .lab3d-loader .lab3d-spinner{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:3px solid rgba(255,255,255,.22);
+    border-top-color:#C4B5FD;
+    border-right-color:#A78BFA;
+    animation:q .75s linear infinite;
+    box-shadow:0 0 16px rgba(167,139,250,.35);
   }
   .lab3d-loader.xong{
     opacity:0;
@@ -188,7 +198,7 @@
   }
   .hub3d-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(310px, 1fr));
+    grid-template-columns:repeat(3, minmax(0, 1fr));
     gap:12px;
     margin-bottom:18px;
   }
@@ -196,17 +206,18 @@
     background:var(--the);
     border:1px solid var(--vien);
     border-left:4px solid var(--do);
-    border-radius:16px;
-    padding:14px 15px;
+    border-radius:15px;
+    padding:13px 14px;
     display:flex;
     flex-direction:column;
     gap:8px;
     box-shadow:var(--shadow);
-    transition:transform .16s ease, border-color .16s ease;
+    transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease;
   }
   .hub3d-card:hover{
     transform:translateY(-2px);
-    border-color:var(--tim);
+    border-color:var(--tim-v);
+    box-shadow:var(--shadow-lg);
   }
   .hub3d-top{
     display:flex;
@@ -214,14 +225,15 @@
     gap:10px;
   }
   .hub3d-ic{
-    width:42px;
-    height:42px;
-    border-radius:12px;
+    width:40px;
+    height:40px;
+    border-radius:11px;
     background:linear-gradient(135deg, var(--do-n), var(--tim-n));
+    border:1px solid var(--do-v);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:20px;
+    font-size:19px;
     flex-shrink:0;
   }
   .hub3d-meta{
@@ -232,12 +244,12 @@
     flex:1;
   }
   .hub3d-meta b{
-    font-size:14.5px;
+    font-size:14px;
     line-height:1.3;
   }
   .hub3d-desc{
-    font-size:12.8px;
-    line-height:1.52;
+    font-size:12.6px;
+    line-height:1.5;
     color:var(--mo);
     flex:1;
   }
@@ -245,6 +257,9 @@
     display:flex;
     gap:6px;
     margin-top:2px;
+  }
+  @media (max-width:1024px){
+    .hub3d-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width:760px){
     .hub3d-chips{
@@ -273,16 +288,11 @@
         <div class="brand-mark" id="brand-ic"></div>
         <div class="brand-txt">
           <div class="nho">HÓA HỌC 10 · KNTT</div>
-          <div class="ten">14 Phòng Lab 3D Tương tác</div>
+          <div class="ten">14 Phòng Lab 3D</div>
         </div>
       </div>
       <div class="top-right">
-        <a class="top-pill top-nav-link an" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
-        <a class="top-pill top-nav-link an" id="btn-btvn" href="#" target="_top">📝 Làm BTVN</a>
-        <a class="top-pill top-nav-link an" id="btn-tailieu" href="#" target="_self">📚 Tài liệu</a>
-        <a class="top-pill top-nav-link an" id="btn-tn" href="#" target="_self">🔬 Thí nghiệm</a>
-        <span class="top-pill top-nav-link on">🧊 Lab 3D</span>
-        <a class="top-pill top-nav-link an" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
+        <a class="top-pill an" id="btn-full" href="#" target="_top"></a>
         <button type="button" class="top-pill" id="btn-theme"></button>
       </div>
     </div>
@@ -291,7 +301,7 @@
   <main id="app" aria-live="polite"></main>
 </div>
 
-<script src="assets/h10.js?v=2416061e55"></script>
+<script src="assets/h10.js?v=abe638fbec"></script>
 <script>
 (function () {
   const { esc, md, api, laGAS, getLocation, linkTrang, ICONS, ganNutTheme, renderSlogan, ganThanhDieuHuongHS, ganNutLenDau } = window.H10;
@@ -409,27 +419,44 @@
     curLab = timLab(id, sub);
   }
 
-  function veTopLinks() {
-    const opt = {
+  function layOptNav() {
+    return {
       cfg: caiDatTrang,
       webUrl: laGAS ? (webUrl || window.H10.GAS_EXEC_URL || '') : '',
       laFull: laFull
     };
-    ganThanhDieuHuongHS('thinghiem', opt);
-    const map = [
-      ['btn-home', linkTrang('home', opt)],
-      ['btn-btvn', linkTrang('btvn', opt)],
-      ['btn-tailieu', linkTrang('tailieu', opt)],
-      ['btn-tn', linkTrang('thinghiem', opt)],
-      ['btn-game', linkTrang('trochoi', opt)]
-    ];
-    map.forEach(function (pair) {
-      const el = document.getElementById(pair[0]);
-      if (!el) return;
-      el.href = pair[1].href;
-      el.target = pair[1].target;
-      el.classList.remove('an');
+  }
+
+  function capNhatLinkSgk() {
+    const a = document.getElementById('lab-link-sgk');
+    if (!a) return;
+    const opt = layOptNav();
+    const lSgk = linkTrang('thinghiem', {
+      cfg: opt.cfg,
+      webUrl: opt.webUrl,
+      laFull: opt.laFull,
+      query: '?tab=sgk'
     });
+    a.href = lSgk.href;
+    a.target = lSgk.target;
+    if (lSgk.rel) a.rel = lSgk.rel;
+  }
+
+  function veTopLinks() {
+    const opt = layOptNav();
+    ganThanhDieuHuongHS('lab', opt);
+    const bf = document.getElementById('btn-full');
+    if (bf) {
+      if (!laGAS || laFull) {
+        bf.classList.add('an');
+      } else {
+        bf.classList.remove('an');
+        bf.href = (webUrl || window.H10.GAS_EXEC_URL || '') + '?page=lab&full=1';
+        bf.target = '_top';
+        bf.innerHTML = ICONS.full + '<span>Toàn màn hình</span>';
+      }
+    }
+    capNhatLinkSgk();
   }
 
   let isHubFs = false;
@@ -520,7 +547,9 @@
     if (xoaBtn) xoaBtn.classList.toggle('an', !(curCh || qRaw));
 
     document.querySelectorAll('[data-ch]').forEach(function (b) {
-      b.classList.toggle('chinh', b.getAttribute('data-ch') === curCh);
+      const on = b.getAttribute('data-ch') === curCh;
+      b.classList.toggle('chinh', on);
+      b.classList.toggle('nhe', !on);
     });
 
     const ds = LABS_3D.filter(function (x) {
@@ -536,19 +565,17 @@
 
     gridWrap.innerHTML = '<div class="hub3d-grid">' +
       ds.map(function (lb) {
-        const src = urlFile3D(lb.file);
         return '<article class="hub3d-card">' +
           '<div class="hub3d-top">' +
             '<div class="hub3d-ic" aria-hidden="true">' + lb.ic + '</div>' +
             '<div class="hub3d-meta">' +
               '<b>' + esc(lb.ten) + '</b>' +
-              '<span class="phu" style="font-size:12px">🧊 3D Real-time · ' + esc(lb.bai) + '</span>' +
+              '<span class="phu" style="font-size:12px">' + esc(lb.ch) + ' · ' + esc(lb.bai) + ' · Tiếng Việt</span>' +
             '</div>' +
           '</div>' +
           '<div class="hub3d-desc">' + md(lb.moTa) + '</div>' +
           '<div class="hub3d-actions">' +
-            '<button type="button" class="nut nho chinh" style="flex:1" data-open="' + esc(lb.id) + '">▶ Mở Phòng Lab 3D</button>' +
-            '<a class="nut nho" href="' + esc(src) + '" target="h10_ngoai" rel="noopener" title="Mở riêng trên tab mới">↗</a>' +
+            '<button type="button" class="nut nho chinh rong" data-open="' + esc(lb.id) + '">▶ Mở Lab 3D</button>' +
           '</div>' +
         '</article>';
       }).join('') +
@@ -583,7 +610,7 @@
             '</div>' +
           '</div>' +
           '<div class="lab3d-stage">' +
-            '<div class="lab3d-loader" id="lab3d-loader" aria-hidden="true"><span class="cho" style="width:24px;height:24px;border-width:2.5px;color:#A78BFA"></span><span>Đang nạp không gian 3D...</span></div>' +
+            '<div class="lab3d-loader" id="lab3d-loader" aria-hidden="true"><span class="lab3d-spinner"></span><span>Đang nạp không gian 3D...</span></div>' +
             '<iframe class="lab3d-iframe" id="lab3d-iframe" src="' + esc(src) + '" title="' + esc(curLab.ten) + '" allowfullscreen allow="fullscreen; autoplay"></iframe>' +
           '</div>' +
         '</div>';
@@ -591,7 +618,7 @@
       const loaderEl = document.getElementById('lab3d-loader');
       const frameEl = document.getElementById('lab3d-iframe');
       const anLoader = function () { if (loaderEl) loaderEl.classList.add('xong'); };
-      loaderTimer = setTimeout(anLoader, 3500);
+      loaderTimer = setTimeout(anLoader, 4000);
       if (frameEl) frameEl.addEventListener('load', anLoader);
 
       const backBtn = document.getElementById('btn-back-hub');
@@ -607,12 +634,22 @@
 
     document.body.classList.remove('lab-viewing');
     document.title = '14 Phòng Lab 3D Hóa 10 – Thầy Hoàng';
+    const optNav = layOptNav();
+    const lSgk = linkTrang('thinghiem', {
+      cfg: optNav.cfg,
+      webUrl: optNav.webUrl,
+      laFull: optNav.laFull,
+      query: '?tab=sgk'
+    });
     app.className = 'khung-chinh';
     app.innerHTML =
-      '<div class="hero-box art-flask" style="margin-bottom:14px">' +
-        '<span class="chip chinh">🧊 14 PHÒNG THÍ NGHIỆM 3D REAL-TIME · TIẾNG VIỆT</span>' +
-        '<h1>Sảnh Phòng Lab 3D Hóa Học 10</h1>' +
-        '<p class="phu" style="margin:0">Xoay 360°, trực tiếp nhỏ giọt, gắp hóa chất, bật bếp, chiếu sáng và quan sát hiện tượng chuẩn SGK Kết nối tri thức.</p>' +
+      '<div class="hero-box art-flask has-right" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px">' +
+        '<div style="flex:1 1 260px;min-width:0">' +
+          '<span class="chip chinh">🧊 14 PHÒNG THÍ NGHIỆM 3D REAL-TIME · TIẾNG VIỆT</span>' +
+          '<h1>Sảnh Phòng Lab 3D Hóa Học 10</h1>' +
+          '<p class="phu" style="margin:0">Xoay 360°, trực tiếp nhỏ giọt, gắp hóa chất, bật bếp, chiếu sáng và quan sát hiện tượng chuẩn SGK Kết nối tri thức.</p>' +
+        '</div>' +
+        '<a class="nut nho nhe" id="lab-link-sgk" href="' + esc(lSgk.href) + '" target="' + esc(lSgk.target) + '"' + (lSgk.rel ? ' rel="' + esc(lSgk.rel) + '"' : '') + '>📖 Xem thêm mô phỏng PhET 23 bài SGK →</a>' +
       '</div>' +
       '<div class="hub3d-toolbar">' +
         '<div class="hub3d-search-row">' +
@@ -621,7 +658,7 @@
         '</div>' +
         '<div class="hub3d-chips chip-scroll">' +
           CHUONGS.map(function (c) {
-            return '<button type="button" class="nut nho ' + (curCh === c.id ? 'chinh' : '') + '" data-ch="' + esc(c.id) + '">' + esc(c.ten) + '</button>';
+            return '<button type="button" class="nut nho ' + (curCh === c.id ? 'chinh' : 'nhe') + '" data-ch="' + esc(c.id) + '">' + esc(c.ten) + '</button>';
           }).join('') +
         '</div>' +
       '</div>' +

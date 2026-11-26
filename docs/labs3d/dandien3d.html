@@ -113,9 +113,11 @@
     .side{border-left:0;border-top:1px solid var(--vien);overflow:visible}
     .cam-bar{bottom:10px}
     .hint-bar{display:none}
+    .nhan3d{padding:2px 6px;font-size:10px;border-radius:7px}
+    .nhan3d small{font-size:9px}
   }
 </style>
-<link rel="stylesheet" href="../assets/lab3d-ui.css?v=42d9838cb8">
+<link rel="stylesheet" href="../assets/lab3d-ui.css?v=64a873cb2d">
 </head>
 <body>
 <div class="wrap">
@@ -1959,22 +1961,35 @@ function bootConductivityLab(THREE) {
 
   /* ==================== 9. SMOOTH INERTIAL CAMERA + 3 PRESETS + RAYCAST SWITCH ==================== */
   const CAM_PRESETS = {
-    overview: { theta: 0.14, phi: 1.15, dist: 10.6, tx: 0.12, ty: 1.28, tz: 0.08 },
-    beaker:   { theta: 0.08, phi: 1.24, dist: 5.0,  tx: 0.0,  ty: 1.32, tz: 0.22 },
-    meter:    { theta: -0.26, phi: 1.18, dist: 5.8, tx: 2.65, ty: 1.16, tz: 0.18 }
+    overview: { theta: 0.04, phi: 1.16, dist: 12.2, tx: -0.18, ty: 1.24, tz: 0.08 },
+    beaker:   { theta: 0.08, phi: 1.24, dist: 5.0,  tx: 0.0,   ty: 1.32, tz: 0.22 },
+    meter:    { theta: -0.26, phi: 1.18, dist: 5.8, tx: 2.65,  ty: 1.16, tz: 0.18 }
   };
 
-  let camTheta = 0.14, camPhi = 1.15, camDist = 10.6;
-  let tarTheta = 0.14, tarPhi = 1.15, tarDist = 10.6;
-  const camTarget = new THREE.Vector3(0.12, 1.28, 0.08);
-  const tarTarget = new THREE.Vector3(0.12, 1.28, 0.08);
+  let curPreset = 'overview';
+  let userZoomed = false;
+  let camInited = false;
+  function getOverviewDist(asp) {
+    const a = Math.max(0.55, asp || camera.aspect || 1.25);
+    const halfTan = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5));
+    // Bảo đảm trọn bộ nguồn DC 6,0 V bên trái (x ≈ -4.24) tới ampe kế bên phải (x ≈ +3.85) trên cả PC & Mobile dọc
+    const needed = 4.65 / (halfTan * a);
+    return Math.max(CAM_PRESETS.overview.dist, Math.min(20.0, needed));
+  }
+
+  let camTheta = 0.04, camPhi = 1.16, camDist = 12.2;
+  let tarTheta = 0.04, tarPhi = 1.16, tarDist = 12.2;
+  const camTarget = new THREE.Vector3(-0.18, 1.24, 0.08);
+  const tarTarget = new THREE.Vector3(-0.18, 1.24, 0.08);
 
   function setCamPreset(name) {
     const p = CAM_PRESETS[name];
     if (!p) return;
+    curPreset = name;
+    userZoomed = false;
     tarTheta = p.theta;
     tarPhi = p.phi;
-    tarDist = p.dist;
+    tarDist = name === 'overview' ? getOverviewDist(camera.aspect) : p.dist;
     tarTarget.set(p.tx, p.ty, p.tz);
     document.querySelectorAll('.cam-bar .hud-btn').forEach(function (b) {
       b.classList.toggle('on', b.dataset.cam === name);
@@ -2024,7 +2039,8 @@ function bootConductivityLab(THREE) {
       const pts = Array.from(activePointers.values());
       const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
       if (lastPinchDist > 0) {
-        tarDist = Math.max(3.6, Math.min(16.5, tarDist - (d - lastPinchDist) * 0.025));
+        userZoomed = true;
+        tarDist = Math.max(3.6, Math.min(22.0, tarDist - (d - lastPinchDist) * 0.025));
       }
       lastPinchDist = d;
       return;
@@ -2066,21 +2082,56 @@ function bootConductivityLab(THREE) {
 
   cv.addEventListener('wheel', function (e) {
     e.preventDefault();
-    tarDist = Math.max(3.6, Math.min(16.5, tarDist + e.deltaY * 0.006));
+    userZoomed = true;
+    tarDist = Math.max(3.6, Math.min(22.0, tarDist + e.deltaY * 0.006));
   }, { passive: false });
 
   /* ==================== 10. 3D LABEL PROJECTION ==================== */
   const projVec = new THREE.Vector3();
+  const hudBoxEl = stage.querySelector('.hud');
   function placeLabel(el, worldPos, visible) {
     if (!visible) { el.style.opacity = '0'; return; }
     projVec.copy(worldPos).project(camera);
     if (projVec.z > 1) { el.style.opacity = '0'; return; }
     const w = stage.clientWidth, h = stage.clientHeight;
-    const x = (projVec.x * 0.5 + 0.5) * w;
-    const y = (-projVec.y * 0.5 + 0.5) * h;
+    const rawX = (projVec.x * 0.5 + 0.5) * w;
+    const rawY = (-projVec.y * 0.5 + 0.5) * h;
+    const hw = (el.offsetWidth || 84) * 0.5 + 6;
+    const eh = el.offsetHeight || 30;
+    const hudBottom = hudBoxEl ? (hudBoxEl.offsetTop + hudBoxEl.offsetHeight + 8) : (w <= 860 ? 66 : 54);
+    const x = Math.max(hw, Math.min(w - hw, rawX));
+    const y = Math.max(hudBottom + eh, Math.min(h - 12, rawY));
     el.style.left = x + 'px';
     el.style.top = y + 'px';
     el.style.opacity = '1';
+  }
+
+  function separatePairLabels(elL, elR) {
+    if (elL.style.opacity === '0' || elR.style.opacity === '0') return;
+    const w = stage.clientWidth;
+    const xL = parseFloat(elL.style.left) || 0;
+    const xR = parseFloat(elR.style.left) || 0;
+    const yL = parseFloat(elL.style.top) || 0;
+    const yR = parseFloat(elR.style.top) || 0;
+    const wL = elL.offsetWidth || 80;
+    const wR = elR.offsetWidth || 80;
+    const hL = elL.offsetHeight || 28;
+    if (Math.abs(yL - yR) < hL + 6) {
+      const leftIsL = xL <= xR;
+      const a = leftIsL ? elL : elR, b = leftIsL ? elR : elL;
+      const wa = leftIsL ? wL : wR, wb = leftIsL ? wR : wL;
+      const xa = leftIsL ? xL : xR, xb = leftIsL ? xR : xL;
+      const minGap = (wa + wb) * 0.5 + 8;
+      if (xb - xa < minGap) {
+        const mid = (xa + xb) * 0.5;
+        let na = mid - minGap * 0.5;
+        let nb = mid + minGap * 0.5;
+        if (na < wa * 0.5 + 6) { const sh = (wa * 0.5 + 6) - na; na += sh; nb += sh; }
+        if (nb > w - wb * 0.5 - 6) { const sh = nb - (w - wb * 0.5 - 6); na -= sh; nb -= sh; }
+        a.style.left = na + 'px';
+        b.style.left = nb + 'px';
+      }
+    }
   }
 
   /* ==================== 11. RESIZE & VISIBILITY PAUSE ==================== */
@@ -2088,8 +2139,17 @@ function bootConductivityLab(THREE) {
     const w = stage.clientWidth, h = stage.clientHeight;
     if (w <= 0 || h <= 0) return;
     camera.aspect = w / h;
+    camera.fov = camera.aspect < 1 ? 46 : 36;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h, false);
+    if (!userZoomed && curPreset === 'overview') {
+      const d = getOverviewDist(camera.aspect);
+      tarDist = d;
+      if (!camInited) {
+        camDist = d;
+        camInited = true;
+      }
+    }
   }
   window.addEventListener('resize', resize);
   resize();
@@ -2117,9 +2177,9 @@ function bootConductivityLab(THREE) {
   const colLedOffEm = srgbCol(0x280c12);
   const tmpCol = new THREE.Color();
 
-  const lblPosAnode = worldPt(anodeElectrode, 0, H_B + 0.64, 0);
-  const lblPosCathode = worldPt(cathodeElectrode, 0, H_B + 0.64, 0);
-  const lblPosSwitch = worldPt(swBase, 0, 0.42, 0.25);
+  const lblPosAnode = worldPt(anodeElectrode, -0.34, H_B + 0.68, 0);
+  const lblPosCathode = worldPt(cathodeElectrode, 0.34, H_B + 0.68, 0);
+  const lblPosSwitch = worldPt(swBase, 0.12, 0.42, 0.25);
 
   function animate(now) {
     requestAnimationFrame(animate);
@@ -2333,6 +2393,7 @@ function bootConductivityLab(THREE) {
     // 8. Floating 3D Polarity & Switch Labels
     placeLabel($('lblAnode'), lblPosAnode, microOn || powerOn);
     placeLabel($('lblCathode'), lblPosCathode, microOn || powerOn);
+    separatePairLabels($('lblAnode'), $('lblCathode'));
     placeLabel($('lblSwitch'), lblPosSwitch, true);
 
     renderer.render(scene, camera);

@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=0e9b13a5ac">
+<link rel="stylesheet" href="assets/h10.css?v=9e903f57fc">
 <style>
 /* Student.html mobile & UX refinements */
 body.khoa-cuon{overflow:hidden!important}
@@ -55,19 +55,34 @@ html[data-theme="dark"] .md-tbl-wrap{
   background-size:28px 100%,28px 100%,12px 100%,12px 100%;
   background-attachment:local,local,scroll,scroll;
 }
-@media (max-width:960px){
-  body.dang-lam .khung-hep{padding-bottom:calc(94px + env(safe-area-inset-bottom))!important}
-  .exam-mobile-foot{padding-bottom:12px}
-}
+body.dang-lam:not(.dang-luyen) #btn-quick-ref{display:none!important}
+body.dang-luyen .topbar{position:sticky;top:0}
+.hs-top-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:11px 15px;margin-bottom:10px;border-radius:15px;background:linear-gradient(135deg,var(--the) 0%,var(--do-n) 100%);border:1px solid var(--do-v);box-shadow:var(--shadow)}
+.hs-top-id{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 200px}
+.hs-top-id h1{margin:0;font-size:clamp(17px,2.2vw,21px);font-weight:800;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hs-top-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px}
+.hs-top-act{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.kpi-strip.kpi-slim{gap:8px;margin-bottom:10px}
+.kpi-strip.kpi-slim .kpi-card{padding:9px 12px;border-radius:13px;gap:8px}
+.kpi-strip.kpi-slim .kpi-card .n{font-size:10.5px}
+.kpi-strip.kpi-slim .kpi-card .g{font-size:18px;white-space:nowrap}
+.kpi-strip.kpi-slim .kpi-ic{width:32px;height:32px;border-radius:9px;font-size:14px}
+.kpi-strip.kpi-slim .ring-wrap,.kpi-strip.kpi-slim .ring-svg{width:42px;height:42px}
+.kpi-strip.kpi-slim .ring-pct{font-size:10.5px}
 @media (max-width:640px){
+  .hs-top-bar{padding:10px 12px}
+  .kpi-strip.kpi-slim{grid-template-columns:repeat(auto-fit,minmax(102px,1fr));gap:7px}
+  .kpi-strip.kpi-slim .kpi-card{padding:8px 9px;gap:6px}
+  .kpi-strip.kpi-slim .kpi-card .n{font-size:9.8px}
+  .kpi-strip.kpi-slim .kpi-card .g{font-size:15.5px}
+  .kpi-strip.kpi-slim .kpi-ic{display:none}
+  .kpi-strip.kpi-slim .ring-wrap,.kpi-strip.kpi-slim .ring-svg{width:34px;height:34px}
+  .kpi-strip.kpi-slim .ring-pct{font-size:9.5px}
   .loc-de-bar > input[type="search"]{flex:1 1 100%;max-width:none}
   .loc-de-chips{width:100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
   .loc-de-chips::-webkit-scrollbar{display:none}
   .loc-de-chips > *{flex-shrink:0}
   .loc-de-chips .seg{flex-wrap:nowrap}
-  .sym-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px;max-width:100%}
-  .sym-bar::-webkit-scrollbar{display:none}
-  .sym-bar > *{flex-shrink:0;white-space:nowrap}
 }
 @media (max-width:390px){
   .exam-fab-bar{gap:4px;padding:4px 6px;max-width:calc(100vw - 12px)}
@@ -88,11 +103,6 @@ html[data-theme="dark"] .md-tbl-wrap{
         </div>
       </div>
       <div class="top-right" id="top-right">
-        <a class="top-pill an" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
-        <span class="top-pill on">📝 Làm BTVN</span>
-        <a class="top-pill an" id="btn-tailieu" href="#" target="_self">📚 Tài liệu</a>
-        <a class="top-pill an" id="btn-lab" href="#" target="_self">🔬 Thí nghiệm</a>
-        <a class="top-pill an" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
         <a class="top-pill an" id="btn-full" href="#" target="_top"></a>
         <button type="button" class="top-pill" id="btn-theme"></button>
       </div>
@@ -112,10 +122,10 @@ html[data-theme="dark"] .md-tbl-wrap{
   </div>
 </div>
 
-<script src="assets/h10.js?v=2416061e55"></script>
+<script src="assets/h10.js?v=abe638fbec"></script>
 <script>
 (function () {
-  const { esc, md, api, laGAS, getLocation, linkTrang: buildLinkTrang, skelCards, ICONS, ganNutTheme, toast, renderSlogan, ganThanhDieuHuongHS, moBangTraCuu, docCacheUI, ghiCacheUI, ganNutLenDau, veMascot, kichHoatMascot, phaoGiay } = window.H10;
+  const { esc, md, api, laGAS, getLocation, skelCards, ICONS, ganNutTheme, toast, renderSlogan, ganThanhDieuHuongHS, moBangTraCuu, docCacheUI, ghiCacheUI, ganNutLenDau, veMascot, kichHoatMascot, phaoGiay } = window.H10;
   const boDau = window.H10.boDau || function (s) {
     return String(s === null || s === undefined ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').toLowerCase();
   };
@@ -156,7 +166,7 @@ html[data-theme="dark"] .md-tbl-wrap{
   let hs = kho.lay(KHOA_HS);
   let lam = null, demGio = null, henLuu = null, dangNop = false, kbdCauIdx = -1;
   let manHienTai = (hs && hs.khoa) ? 'danhSach' : 'chonHS'; // 'chonHS' | 'danhSach' | 'lamBai' | 'ketQua' | 'xemDapAn' | 'xemBaiCu' | 'luyenTap'
-  let locDe = { tk: '', tt: 'tat_ca', bai: '' }, dsDeCache = null;
+  let locDe = { tk: '', tt: 'tat_ca', bai: '' }, dsDeCache = null, dsTab = 'btvn';
   let deTuUrl = '';
   let locCauThi = 'tat_ca'; // 'tat_ca' | 'chua_xong'
 
@@ -202,14 +212,6 @@ html[data-theme="dark"] .md-tbl-wrap{
     const opt = { cfg: cfg, webUrl: (linkTrang && linkTrang.webUrl) || '', laFull: laFull };
     ganThanhDieuHuongHS('btvn', opt);
     if (!linkTrang) return;
-    const hm = $('#btn-home');
-    if (hm) { const l = buildLinkTrang('home', opt); hm.href = l.href; hm.target = l.target; hm.classList.remove('an'); }
-    const tl = $('#btn-tailieu');
-    if (tl) { const l = buildLinkTrang('tailieu', opt); tl.href = l.href; tl.target = l.target; tl.classList.remove('an'); }
-    const lb = $('#btn-lab');
-    if (lb) { const l = buildLinkTrang('thinghiem', opt); lb.href = l.href; lb.target = l.target; lb.classList.remove('an'); }
-    const gm = $('#btn-game');
-    if (gm) { const l = buildLinkTrang('trochoi', opt); gm.href = l.href; gm.target = l.target; gm.classList.remove('an'); }
     const bf = $('#btn-full');
     if (bf) {
       if (!laGAS) { bf.classList.add('an'); return; }
@@ -252,7 +254,7 @@ html[data-theme="dark"] .md-tbl-wrap{
   function cuon() { try { window.scrollTo(0, 0); } catch (e) {} }
   function dungDongHo() {
     if (demGio) { clearInterval(demGio); demGio = null; }
-    document.body.classList.remove('dang-lam');
+    document.body.classList.remove('dang-lam', 'dang-luyen');
     const hop = $('#hop-xn'); if (hop) hop.classList.add('an');
     document.body.classList.remove('khoa-cuon');
   }
@@ -409,7 +411,7 @@ html[data-theme="dark"] .md-tbl-wrap{
     if (!ls || !ls.length) {
       return '<div class="phu" style="font-size:13px;padding:12px 0">Khi em hoàn thành các đề BTVN, biểu đồ đường tiến bộ điểm số sẽ tự động hiển thị tại đây.</div>';
     }
-    const W = 360, H = 122, pL = 26, pR = 16, pT = 22, pB = 24;
+    const W = 360, H = 134, axisX = 28, pL = 54, pR = 18, pT = 28, pB = 24;
     const gW = W - pL - pR, gH = H - pT - pB;
     const n = ls.length;
     const pts = ls.map(function (it, idx) {
@@ -426,15 +428,16 @@ html[data-theme="dark"] .md-tbl-wrap{
       '<defs><linearGradient id="progGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9e1e4c" stop-opacity="0.28"/><stop offset="100%" stop-color="#9e1e4c" stop-opacity="0.0"/></linearGradient></defs>';
     [0, 5, 8, 10].forEach(function (m) {
       const gy = Math.round((pT + (1 - m / 10) * gH) * 10) / 10;
-      svg += '<line x1="' + pL + '" y1="' + gy + '" x2="' + (W - pR) + '" y2="' + gy + '" stroke="var(--vien)" stroke-dasharray="3 3" stroke-width="1"/>' +
-        '<text x="' + (pL - 6) + '" y="' + (gy + 3.5) + '" text-anchor="end" font-size="9.5" fill="var(--mo)">' + m + '</text>';
+      svg += '<line x1="' + axisX + '" y1="' + gy + '" x2="' + (W - 10) + '" y2="' + gy + '" stroke="var(--vien)" stroke-dasharray="3 3" stroke-width="1"/>' +
+        '<text x="' + (axisX - 6) + '" y="' + (gy + 3.5) + '" text-anchor="end" font-size="9.5" fill="var(--mo)">' + m + '</text>';
     });
     if (area) svg += '<path d="' + area + '" fill="url(#progGrad)"/>';
     if (pts.length > 1) svg += '<polyline fill="none" stroke="var(--do)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="' + poly + '"/>';
     pts.forEach(function (p, i) {
+      const lblY = Math.round((p.val >= 9.2 ? Math.min(p.y - 9, pT - 6) : (p.y - 8)) * 10) / 10;
       svg += '<g><title>' + esc(p.ten + ': ' + diem(p.val) + '/10') + '</title>' +
         '<circle cx="' + p.x + '" cy="' + p.y + '" r="4.2" fill="var(--the)" stroke="var(--do)" stroke-width="2.4"/>' +
-        '<text x="' + p.x + '" y="' + (p.y - 7) + '" text-anchor="middle" font-size="10" font-weight="800" fill="var(--chu)">' + diem(p.val) + '</text>' +
+        '<text x="' + p.x + '" y="' + lblY + '" text-anchor="middle" font-size="10" font-weight="800" fill="var(--chu)" style="paint-order:stroke;stroke:var(--the);stroke-width:3.5px;stroke-linejoin:round">' + diem(p.val) + '</text>' +
         '<text x="' + p.x + '" y="' + (H - 6) + '" text-anchor="middle" font-size="9.5" fill="var(--mo)">#' + (i + 1) + '</text></g>';
     });
     svg += '</svg>';
@@ -481,6 +484,44 @@ html[data-theme="dark"] .md-tbl-wrap{
     return '<button type="button" class="nut ' + lop + '" data-lam="' + esc(d.id) + '">' + chu + '</button>';
   }
 
+  function veDeNoiBat_(r, homNay, nhap, laDeUrl) {
+    if (!homNay) return '';
+    const laHomNay = ms => new Date(ms).toDateString() === new Date(r.now).toDateString();
+    const conGioHn = Math.max(0, Math.round((homNay.han - r.now) / 3600e3));
+    const demNguocHn = conGioHn < 24 ? ('⏳ Còn ' + Math.max(1, conGioHn) + ' giờ') : ('⏳ Còn ' + Math.round(conGioHn / 24) + ' ngày');
+    const dangDoHn = nhap && nhap.de && nhap.de.id === homNay.id && hs && nhap.khoa === hs.khoa;
+    const hetLuotHn = !homNay.hetHan && homNay.hetLuot && !dangDoHn;
+    const chuNutHn = dangDoHn ? 'Làm tiếp bài dở →' : (hetLuotHn ? ('Đã hết lượt (' + homNay.soLan + '/' + homNay.cauHinh.soLanToiDa + ')') : (homNay.soLan ? 'Làm lại để nâng điểm →' : 'Làm bài ngay →'));
+    const nhanDau = laDeUrl
+      ? '<span class="chip chinh">🎯 Đề em vừa chọn</span>'
+      : (laHomNay(homNay.ngayMo) ? '<span class="chip chinh">★ Đề mới · ' + ngay(homNay.ngayMo) + '</span>' : '<span class="chip tim">★ Đề mới nhất</span>');
+    return '<div class="the the-noi feat-banner" style="margin-bottom:10px">' +
+      '<div class="feat-top">' +
+        '<div class="feat-meta">' +
+          nhanDau +
+          '<span><b>' + homNay.soCau + '</b> câu</span><span class="dot"></span>' +
+          '<span>Hạn <b>' + han(homNay.han) + '</b></span>' +
+          veNhanCauHinhDe_(homNay) +
+        '</div>' +
+        '<span class="feat-countdown' + (conGioHn < 24 ? ' gap' : '') + '">' + demNguocHn + '</span>' +
+      '</div>' +
+      '<h2 class="feat-title">' + esc(homNay.ten) + '</h2>' +
+      (!homNay.soLan && !dangDoHn ? '<div class="feat-nhac">⏰ Em chưa làm bài này — nhớ nộp trước hạn nhé!</div>' : '') +
+      (dangDoHn ? '<div class="feat-nhac">✏️ Em đang làm dở bài này, bấm để làm tiếp.</div>' : '') +
+      '<div class="feat-body">' +
+        '<div class="kpi-strip kpi-slim" style="margin-bottom:0;flex:1 1 300px">' +
+          '<div class="kpi-card xanh"><div><div class="n">Điểm cao nhất</div><div class="g">' + (homNay.soLan ? diem(homNay.best) : 'Chưa làm') + '</div></div><div class="kpi-ic">★</div></div>' +
+          '<div class="kpi-card tim"><div><div class="n">Số lần làm đúng hạn</div><div class="g">' + homNay.soLan + (homNay.cauHinh && homNay.cauHinh.soLanToiDa ? ('/' + homNay.cauHinh.soLanToiDa) : '') + '</div></div><div class="kpi-ic">#</div></div>' +
+        '</div>' +
+        '<div class="hang-nut" style="align-items:stretch">' +
+          (homNay.duocXemDapAn && homNay.coBaiLam ? '<button type="button" class="nut tim" data-xem-bai="' + esc(homNay.id) + '">Xem lại bài</button>' : '') +
+          (homNay.duocXemDapAn ? '<button type="button" class="nut xanh" data-xem="' + esc(homNay.id) + '">Đáp án</button>' : '') +
+          '<button type="button" class="nut ' + (hetLuotHn ? '' : 'chinh ') + 'to feat-cta"' + (hetLuotHn ? ' disabled' : ' data-lam="' + esc(homNay.id) + '"') + '>' + chuNutHn + '</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   function veNoiDungDsDe_(r) {
     if (!r || !Array.isArray(r.de)) return '';
     if (!r.de.length) {
@@ -515,46 +556,11 @@ html[data-theme="dark"] .md-tbl-wrap{
     const homNay = !dangLocDe ? mo[0] : null;
     const conLai = (homNay ? mo.slice(1) : mo).filter(hopDeLoc);
     const hetLoc = het.filter(hopDeLoc);
-    const laHomNay = ms => new Date(ms).toDateString() === new Date(r.now).toDateString();
 
     let h = '';
     if (dangLocDe && !conLai.length && !hetLoc.length) {
       h += '<div class="the" style="text-align:center"><p class="phu" style="margin:0 0 8px">Không tìm thấy đề BTVN nào khớp bộ lọc hiện tại.</p><button type="button" class="nut nho chinh" id="xoa-het-loc-de">Hiện tất cả đề</button></div>';
       return h;
-    }
-
-    if (homNay) {
-      const conGioHn = Math.max(0, Math.round((homNay.han - r.now) / 3600e3));
-      const demNguocHn = conGioHn < 24 ? ('⏳ Còn ' + Math.max(1, conGioHn) + ' giờ') : ('⏳ Còn ' + Math.round(conGioHn / 24) + ' ngày');
-      const dangDoHn = nhap && nhap.de && nhap.de.id === homNay.id && hs && nhap.khoa === hs.khoa;
-      const hetLuotHn = !homNay.hetHan && homNay.hetLuot && !dangDoHn;
-      const chuNutHn = dangDoHn ? 'Làm tiếp bài dở →' : (hetLuotHn ? ('Đã hết lượt (' + homNay.soLan + '/' + homNay.cauHinh.soLanToiDa + ')') : (homNay.soLan ? 'Làm lại để nâng điểm →' : 'Làm bài ngay →'));
-      h += '<div class="nhan-muc">Đề mới nhất</div>' +
-        '<div class="the the-noi feat-banner">' +
-          '<div class="feat-top">' +
-            '<div class="feat-meta">' +
-              (laHomNay(homNay.ngayMo) ? '<span class="chip chinh">★ Mới · ' + ngay(homNay.ngayMo) + '</span>' : '<span class="chip tim">Đang mở</span>') +
-              '<span><b>' + homNay.soCau + '</b> câu</span><span class="dot"></span>' +
-              '<span>Hạn <b>' + han(homNay.han) + '</b></span>' +
-              veNhanCauHinhDe_(homNay) +
-            '</div>' +
-            '<span class="feat-countdown' + (conGioHn < 24 ? ' gap' : '') + '">' + demNguocHn + '</span>' +
-          '</div>' +
-          '<h2 class="feat-title">' + esc(homNay.ten) + '</h2>' +
-          (!homNay.soLan && !dangDoHn ? '<div class="feat-nhac">⏰ Em chưa làm bài này — nhớ nộp trước hạn nhé!</div>' : '') +
-          (dangDoHn ? '<div class="feat-nhac">✏️ Em đang làm dở bài này, bấm để làm tiếp.</div>' : '') +
-          '<div class="feat-body">' +
-            '<div class="kpi-strip" style="margin-bottom:0;flex:1 1 320px">' +
-              '<div class="kpi-card xanh"><div><div class="n">Điểm cao nhất</div><div class="g">' + (homNay.soLan ? diem(homNay.best) : 'Chưa làm') + '</div></div><div class="kpi-ic">★</div></div>' +
-              '<div class="kpi-card tim"><div><div class="n">Số lần làm đúng hạn</div><div class="g">' + homNay.soLan + (homNay.cauHinh && homNay.cauHinh.soLanToiDa ? ('/' + homNay.cauHinh.soLanToiDa) : '') + '</div></div><div class="kpi-ic">#</div></div>' +
-            '</div>' +
-            '<div class="hang-nut" style="align-items:stretch">' +
-              (homNay.duocXemDapAn && homNay.coBaiLam ? '<button type="button" class="nut tim" data-xem-bai="' + esc(homNay.id) + '">Xem lại bài</button>' : '') +
-              (homNay.duocXemDapAn ? '<button type="button" class="nut xanh" data-xem="' + esc(homNay.id) + '">Đáp án</button>' : '') +
-              '<button type="button" class="nut ' + (hetLuotHn ? '' : 'chinh ') + 'to feat-cta"' + (hetLuotHn ? ' disabled' : ' data-lam="' + esc(homNay.id) + '"') + '>' + chuNutHn + '</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
     }
 
     if (conLai.length) {
@@ -625,6 +631,9 @@ html[data-theme="dark"] .md-tbl-wrap{
   function capNhatDsDeList_() {
     const box = $('#ds-de-list');
     if (!box || !dsDeCache) return;
+    const dangLocDe = !!(locDe.bai || locDe.tk.trim() || locDe.tt !== 'tat_ca');
+    const feat = $('#ds-de-featured');
+    if (feat) feat.classList.toggle('an', dangLocDe);
     box.innerHTML = veNoiDungDsDe_(dsDeCache);
     ganSuKienNutDe_(box);
   }
@@ -640,6 +649,8 @@ html[data-theme="dark"] .md-tbl-wrap{
       if (bAll) bAll.textContent = 'Tất cả (' + r.de.length + ')';
       if (bChua) bChua.textContent = 'Chưa làm (' + nChuaBg + ')';
       if (bXong) bXong.textContent = 'Đã làm (' + nXongBg + ')';
+      const tabCnt = app.querySelector('[data-ds-tab="btvn"] .h10-tab-cnt');
+      if (tabCnt) tabCnt.textContent = String(r.de.length);
       capNhatDsDeList_();
       return;
     }
@@ -649,42 +660,41 @@ html[data-theme="dark"] .md-tbl-wrap{
     const tenBaiMap = taoTenBaiMap_(mucLuc);
     const dangLocDe = !!(locDe.bai || locDe.tk.trim() || locDe.tt !== 'tat_ca');
     const mo = r.de.filter(d => !d.hetHan);
-    const homNay = !dangLocDe ? mo[0] : null;
-
-    let h = '<div class="hero-box art-benzene">' +
-      '<div class="hero-mascot-split">' +
-        '<div class="hm-txt">' +
-          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">' +
-            '<div><span class="chip chinh">XIN CHÀO</span><h1>' + esc(hs.ten) + '</h1></div>' +
-            '<button type="button" class="nut nho" id="doi-ten">Đổi học sinh</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="st-mascot-box">' + veMascot({ alt: 'Thầy Hoàng đồng hành' }) + '</div>' +
-      '</div>';
-    if (linkTrang && linkTrang.caiDatTrang && linkTrang.caiDatTrang.thongBao) {
-      h += '<div class="thongbao info" style="margin:10px 0 0">' + ICONS.tt + '<div><b>📢 Thông báo từ Thầy Hoàng:</b><div style="margin-top:2px">' + md(linkTrang.caiDatTrang.thongBao) + '</div></div></div>';
-    }
-    h += '</div>';
-
-    // Nếu học sinh bấm từ Trang chủ vào 1 đề cụ thể (?de=...)
-    const deChonUrl = deTuUrl ? r.de.find(x => x.id === deTuUrl) : null;
-    if (deChonUrl) {
-      h += '<div class="the the-noi" style="border-color:var(--do);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">' +
-        '<div><span class="chip chinh">🎯 Đề em vừa chọn</span><div style="font-weight:800;font-size:16px;margin-top:4px">' + esc(deChonUrl.ten) + '</div>' +
-        '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><span class="chip">' + deChonUrl.soCau + ' câu</span>' +
-        (deChonUrl.hetHan ? '<span class="chip canh">Đã hết hạn · Luyện tập</span>' : '') +
-        veNhanCauHinhDe_(deChonUrl) + '</div></div>' +
-        '<div class="hang-nut">' +
-          (deChonUrl.duocXemDapAn ? '<button type="button" class="nut nho xanh" data-xem="' + esc(deChonUrl.id) + '">Xem đáp án</button>' : '') +
-          nutLamDe_(deChonUrl, 'chinh', nhap) +
-        '</div></div>';
-    }
-
-    // Bảng nhắc bài tập chưa làm, điểm số & chuyên cần cá nhân (Bento KPI + Vòng tròn tiến độ)
+    const homNay = mo[0] || null;
     const daNopDe = r.de.filter(d => d.soLan > 0);
     const diemTBCao = daNopDe.length ? (Math.round(daNopDe.reduce((s, d) => s + Number(d.best || 0), 0) / daNopDe.length * 10) / 10) : null;
-    const chuaLamMo = mo.filter(d => !d.soLan);
+    const chuaLamMo = mo.filter(d => !d.soLan && !d.hetLuot);
     const cc = r.chuyenCan;
+    const tb = r.tienBo || {};
+    const lsDiem = Array.isArray(tb.lichSuDiem) ? tb.lichSuDiem : [];
+    const baiHaySai = Array.isArray(tb.baiHaySai) ? tb.baiHaySai : [];
+    const soCauOnTap = Number(tb.soCauOnTap) || 0;
+    const deChonUrl = deTuUrl ? r.de.find(x => x.id === deTuUrl) : null;
+    const deUrlLaHomNay = !!(deChonUrl && homNay && deChonUrl.id === homNay.id);
+
+    // 1. Thanh thông tin học sinh gọn + badge nhắc gọn duy nhất (không lặp tên đề)
+    let h = '<div class="hs-top-bar">' +
+      '<div class="hs-top-id">' +
+        avatarHS(hs.ten) +
+        '<div style="min-width:0">' +
+          '<h1>' + esc(hs.ten) + '</h1>' +
+          '<div class="hs-top-meta">' +
+            (chuaLamMo.length
+              ? '<span class="chip canh">⏰ Còn ' + chuaLamMo.length + ' đề đang mở chưa làm</span>'
+              : (mo.length ? '<span class="chip ok">✓ Đã làm đủ đề đang mở</span>' : '<span class="chip">Hóa học 10 · KNTT</span>')) +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="hs-top-act">' +
+        '<button type="button" class="nut nho" id="doi-ten">Đổi học sinh</button>' +
+      '</div>' +
+    '</div>';
+
+    if (linkTrang && linkTrang.caiDatTrang && linkTrang.caiDatTrang.thongBao) {
+      h += '<div class="thongbao info" style="margin:0 0 10px">' + ICONS.tt + '<div><b>📢 Thông báo từ Thầy Hoàng:</b><div style="margin-top:2px">' + md(linkTrang.caiDatTrang.thongBao) + '</div></div></div>';
+    }
+
+    // 2. Dải KPI mỏng: Tiến độ BTVN · Điểm TB · Chuyên cần
     if (r.de.length || cc) {
       const pct = r.de.length ? Math.round(daNopDe.length / r.de.length * 100) : 0;
       const circ = 150.8; // 2πr, r = 24
@@ -694,91 +704,40 @@ html[data-theme="dark"] .md-tbl-wrap{
         '<circle class="ring-bg" cx="28" cy="28" r="24"></circle>' +
         '<circle class="ring-fg" cx="28" cy="28" r="24" stroke-dasharray="' + circ + '" stroke-dashoffset="' + off + '"></circle>' +
         '</svg><span class="ring-pct">' + pct + '%</span></div>';
-      h += '<div class="kpi-strip">' +
-        '<div class="kpi-card xanh"><div><div class="n">Tiến độ BTVN</div><div class="g">' + daNopDe.length + '<span style="font-size:14px;color:var(--mo)">/' + r.de.length + ' đề</span></div></div>' + ringSvg + '</div>' +
-        '<div class="kpi-card tim"><div><div class="n">Điểm TB cao nhất</div><div class="g">' + (diemTBCao !== null ? diem(diemTBCao) : '–') + '</div></div><div class="kpi-ic">★</div></div>' +
-        (cc ? ('<div class="kpi-card' + (cc.kp ? ' canh' : '') + '"><div><div class="n">Chuyên cần</div><div class="g">' + cc.co + '<span style="font-size:14px;color:var(--mo)">/' + cc.tongBuoi + ' buổi</span></div></div><div class="kpi-ic">✓</div></div>') : '') +
+      h += '<div class="kpi-strip kpi-slim">' +
+        '<div class="kpi-card xanh"><div><div class="n">Tiến độ BTVN</div><div class="g">' + daNopDe.length + '<span style="font-size:12.5px;color:var(--mo)">/' + r.de.length + ' đề</span></div></div>' + ringSvg + '</div>' +
+        '<div class="kpi-card tim"><div><div class="n">Điểm TB</div><div class="g">' + (diemTBCao !== null ? diem(diemTBCao) : '–') + '</div></div><div class="kpi-ic">★</div></div>' +
+        (cc ? ('<div class="kpi-card' + (cc.kp ? ' canh' : '') + '"><div><div class="n">Chuyên cần</div><div class="g">' + cc.co + '<span style="font-size:12.5px;color:var(--mo)">/' + cc.tongBuoi + ' buổi</span></div></div><div class="kpi-ic">✓</div></div>') : '') +
       '</div>';
     }
 
-    // Góc Tiến bộ Cá nhân & Phòng Tự Luyện Ngẫu Nhiên
-    const tb = r.tienBo || {};
-    const lsDiem = Array.isArray(tb.lichSuDiem) ? tb.lichSuDiem : [];
-    const baiHaySai = Array.isArray(tb.baiHaySai) ? tb.baiHaySai : [];
-    const soCauOnTap = Number(tb.soCauOnTap) || 0;
-    if (lsDiem.length || soCauOnTap > 0) {
-      h += '<section class="prog-box">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">' +
-          '<b style="font-size:15.5px">📈 Góc tiến bộ &amp; Phòng tự luyện thông minh</b>' +
-          (soCauOnTap ? '<span class="chip ok">Ngân hàng ' + soCauOnTap + ' câu tự luyện</span>' : '') +
-        '</div>' +
-        '<div class="prog-grid">' +
-          '<div class="prog-chart-card">' +
-            '<div style="font-size:12.5px;font-weight:700;color:var(--mo)">Biểu đồ điểm cao nhất qua các đề gần đây</div>' +
-            veBieuDoDiemSVG_(lsDiem) +
-            (baiHaySai.length
-              ? ('<div style="margin-top:4px"><div style="font-size:12px;font-weight:700;color:var(--mo);margin-bottom:5px">🎯 Chủ đề em hay nhầm (bấm để luyện riêng):</div>' +
-                  '<div style="display:flex;flex-wrap:wrap;gap:6px">' + baiHaySai.map(function (b) {
-                    const tenNgan = (b.ten || ('Bài ' + b.bai)).replace(/^Bài\s+\S+:\s*/i, '');
-                    return '<button type="button" class="weak-chip" data-luyen-bai="' + esc(b.bai) + '" title="' + esc(b.ten) + '">⚡ Bài ' + esc(b.bai) + ': ' + esc(tenNgan.length > 26 ? tenNgan.slice(0, 24) + '…' : tenNgan) + ' (' + b.sai + ')</button>';
-                  }).join('') + '</div></div>')
-              : '<div class="phu" style="font-size:12px">Chưa phát hiện bài nào hay sai — phong độ rất tốt!</div>') +
-          '</div>' +
-          '<div class="prog-prac-card">' +
-            '<div>' +
-              '<b style="font-size:14.5px;color:var(--tim)">⚡ Tự luyện ngẫu nhiên (chấm ngay)</b>' +
-              '<p class="phu" style="margin:4px 0 8px;font-size:12.5px">Rút ngẫu nhiên câu hỏi từ các đề đã hết hạn để ôn phản xạ trước kiểm tra, không ảnh hưởng điểm trên lớp.</p>' +
-              '<div class="truong" style="margin-bottom:8px"><label for="tl-pham-vi" style="font-size:11.5px">Chọn phạm vi ôn tập</label>' +
-                '<select id="tl-pham-vi">' +
-                  (baiHaySai.length ? '<option value="__HAY_SAI__">🔥 Ưu tiên các bài em hay sai</option>' : '') +
-                  '<option value="">📚 Tất cả đề đã hết hạn</option>' +
-                  mucLuc.map(c => '<option value="' + esc(c.id) + '">' + esc(c.ten) + '</option>').join('') +
-                '</select></div>' +
-              '<div class="truong"><label for="tl-so-cau" style="font-size:11.5px">Số lượng câu</label>' +
-                '<select id="tl-so-cau"><option value="10">10 câu nhanh (~5 phút)</option><option value="15">15 câu chuẩn (~10 phút)</option><option value="20">20 câu tổng hợp</option></select></div>' +
-            '</div>' +
-            '<button type="button" class="nut chinh rong" id="btn-tu-luyen"' + (soCauOnTap ? '' : ' disabled') + '>' +
-              (soCauOnTap ? '⚡ Bắt đầu tự luyện ngay →' : 'Chờ có đề hết hạn để mở kho luyện') +
-            '</button>' +
-          '</div>' +
-        '</div>' +
-      '</section>';
-    }
+    // 3. Thanh 2 Tab chuyển đổi (.h10-tabs)
+    h += '<div class="h10-tabs full" role="tablist" aria-label="Khu vực học tập">' +
+      '<button type="button" class="h10-tab-btn' + (dsTab === 'btvn' ? ' on' : '') + '" role="tab" aria-selected="' + (dsTab === 'btvn' ? 'true' : 'false') + '" data-ds-tab="btvn">📝 Bài tập của em <span class="h10-tab-cnt">' + r.de.length + '</span></button>' +
+      '<button type="button" class="h10-tab-btn' + (dsTab === 'tien_bo' ? ' on' : '') + '" role="tab" aria-selected="' + (dsTab === 'tien_bo' ? 'true' : 'false') + '" data-ds-tab="tien_bo">📈 Tiến bộ &amp; Tự luyện' + (soCauOnTap ? ' <span class="h10-tab-cnt">' + soCauOnTap + ' câu</span>' : '') + '</button>' +
+    '</div>';
 
-    // Đề mới nhất đã có khung riêng (kèm dòng nhắc) nên không lặp lại trong hộp nhắc
-    const chuaLamKhac = chuaLamMo.filter(d => (!homNay || d.id !== homNay.id) && !d.hetLuot);
-    if (chuaLamKhac.length) {
-      h += '<div class="tb-nhac">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">' +
-          '<b>⏰ Em còn ' + chuaLamKhac.length + ' bài tập ' + (homNay && !homNay.soLan ? 'khác ' : '') + 'đang mở chưa làm</b>' +
-          '<span class="chip canh">Nhớ nộp đúng hạn nhé!</span>' +
-        '</div>';
-      chuaLamKhac.forEach(function (d) {
-        const conGio = Math.max(0, Math.round((d.han - r.now) / 3600e3));
-        const conTxt = conGio < 24 ? ('Còn ' + Math.max(1, conGio) + ' giờ') : ('Còn ' + Math.round(conGio / 24) + ' ngày');
-        h += '<div class="tb-nhac-item">' +
-          '<div style="min-width:0;flex:1 1 200px"><div style="font-weight:700;font-size:14px">' + esc(d.ten) + '</div>' +
-          '<div class="phu" style="font-size:12px">Hạn: ' + han(d.han) + ' · <b style="color:' + (conGio < 24 ? 'var(--loi)' : 'var(--canh)') + '">' + conTxt + '</b></div></div>' +
-          '<button type="button" class="nut nho chinh" data-lam="' + esc(d.id) + '">Làm ngay →</button>' +
-        '</div>';
-      });
-      h += '</div>';
+    // Tab 1: Bài tập của em (Đề mới nhất / cần làm lên đầu tiên, tiếp đến thanh tìm kiếm & danh sách đề)
+    h += '<div id="tab-panel-btvn"' + (dsTab === 'btvn' ? '' : ' class="an"') + '>';
+    if (deChonUrl && !deUrlLaHomNay) {
+      h += '<div class="the the-noi" style="border-color:var(--do);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">' +
+        '<div><span class="chip chinh">🎯 Đề em vừa chọn</span><div style="font-weight:800;font-size:16px;margin-top:4px">' + esc(deChonUrl.ten) + '</div>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><span class="chip">' + deChonUrl.soCau + ' câu</span>' +
+        (deChonUrl.hetHan ? '<span class="chip canh">Đã hết hạn · Luyện tập</span>' : '') +
+        veNhanCauHinhDe_(deChonUrl) + '</div></div>' +
+        '<div class="hang-nut">' +
+          (deChonUrl.duocXemDapAn ? '<button type="button" class="nut nho xanh" data-xem="' + esc(deChonUrl.id) + '">Xem đáp án</button>' : '') +
+          nutLamDe_(deChonUrl, 'chinh', nhap) +
+        '</div></div>';
     }
-    if (cc && (cc.muon || cc.cp || cc.kp)) {
-      const ttText = { co: 'Có mặt', muon: 'Đi muộn', vang_cp: 'Nghỉ CP', vang_kp: 'Nghỉ KP' };
-      const gan = (cc.ganNhat || []).filter(x => x.tt !== 'co').slice(0, 3);
-      if (gan.length) {
-        h += '<div class="thongbao canh" style="margin:0 0 12px">' + ICONS.tt + '<div><b>Lưu ý chuyên cần:</b> ' +
-          gan.map(x => esc(x.ngay.split('-').reverse().join('/') + ': ' + (ttText[x.tt] || x.tt) + (x.gc ? ' (' + x.gc + ')' : ''))).join(' · ') +
-          '</div></div>';
-      }
+    if (homNay) {
+      h += '<div id="ds-de-featured"' + (dangLocDe ? ' class="an"' : '') + '>' + veDeNoiBat_(r, homNay, nhap, deUrlLaHomNay) + '</div>';
     }
-
     if (r.de.length > 2 || dangLocDe) {
       const nChua = r.de.filter(d => !d.soLan).length;
       const nXong = r.de.filter(d => d.soLan > 0).length;
       h += '<div class="loc-de-bar" id="loc-de-bar">' +
-        '<input id="loc-de-tk" type="search" autocomplete="off" placeholder="Tìm nhanh tên đề, bài học (có hoặc không dấu)..." value="' + esc(locDe.tk) + '">' +
+        '<input id="loc-de-tk" type="search" autocomplete="off" placeholder="Tìm tên đề hoặc bài học..." value="' + esc(locDe.tk) + '">' +
         '<div class="loc-de-chips">' +
           (locDe.bai ? ('<button type="button" class="nut nho xoa" id="bo-loc-bai">✕ Lọc: ' + esc(tenBaiMap[locDe.bai] || ('Bài ' + locDe.bai)) + '</button>') : '') +
           '<div class="seg">' +
@@ -789,12 +748,66 @@ html[data-theme="dark"] .md-tbl-wrap{
         '</div>' +
       '</div>';
     }
-
     h += '<div id="ds-de-list">' + veNoiDungDsDe_(r) + '</div>';
+    h += '</div>';
+
+    // Tab 2: Tiến bộ & Tự luyện (Biểu đồ điểm + Chủ đề hay nhầm + Phòng Tự luyện ngẫu nhiên)
+    h += '<div id="tab-panel-tien-bo"' + (dsTab === 'tien_bo' ? '' : ' class="an"') + '>';
+    if (cc && (cc.muon || cc.cp || cc.kp)) {
+      const ttText = { co: 'Có mặt', muon: 'Đi muộn', vang_cp: 'Nghỉ CP', vang_kp: 'Nghỉ KP' };
+      const gan = (cc.ganNhat || []).filter(x => x.tt !== 'co').slice(0, 3);
+      if (gan.length) {
+        h += '<div class="thongbao canh" style="margin:0 0 12px">' + ICONS.tt + '<div><b>Lưu ý chuyên cần:</b> ' +
+          gan.map(x => esc(x.ngay.split('-').reverse().join('/') + ': ' + (ttText[x.tt] || x.tt) + (x.gc ? ' (' + x.gc + ')' : ''))).join(' · ') +
+          '</div></div>';
+      }
+    }
+    h += '<section class="prog-box">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">' +
+        '<b style="font-size:15.5px">📈 Góc tiến bộ &amp; Phòng tự luyện thông minh</b>' +
+        (soCauOnTap ? '<span class="chip ok">Ngân hàng ' + soCauOnTap + ' câu tự luyện</span>' : '') +
+      '</div>' +
+      '<div class="prog-grid">' +
+        '<div class="prog-chart-card">' +
+          '<div style="font-size:12.5px;font-weight:700;color:var(--mo)">Biểu đồ điểm cao nhất qua các đề gần đây</div>' +
+          veBieuDoDiemSVG_(lsDiem) +
+          (baiHaySai.length
+            ? ('<div style="margin-top:4px"><div style="font-size:12px;font-weight:700;color:var(--mo);margin-bottom:5px">🎯 Chủ đề em hay nhầm (bấm để luyện riêng):</div>' +
+                '<div style="display:flex;flex-wrap:wrap;gap:6px">' + baiHaySai.map(function (b) {
+                  const tenGoc = String(b.ten || (b.bai === 'MD' ? 'Mở đầu' : ('Bài ' + b.bai))).trim();
+                  const tenNgan = tenGoc.replace(/^Bài\s+\S+\s*[.:–-]\s*/i, '').trim();
+                  const nhanBai = b.bai === 'MD' ? 'Mở đầu' : ('Bài ' + b.bai);
+                  const soSai = b.soSai != null ? b.soSai : (b.sai != null ? b.sai : 0);
+                  const hienTen = tenNgan && tenNgan.toLowerCase() !== nhanBai.toLowerCase()
+                    ? (nhanBai + ': ' + (tenNgan.length > 26 ? tenNgan.slice(0, 24) + '…' : tenNgan))
+                    : nhanBai;
+                  return '<button type="button" class="weak-chip" data-luyen-bai="' + esc(b.bai) + '" title="' + esc(tenGoc) + '">⚡ ' + esc(hienTen) + ' (' + soSai + ' câu)</button>';
+                }).join('') + '</div></div>')
+            : '<div class="phu" style="font-size:12px">Chưa phát hiện bài nào hay sai — phong độ rất tốt!</div>') +
+        '</div>' +
+        '<div class="prog-prac-card">' +
+          '<div>' +
+            '<b style="font-size:14.5px;color:var(--tim)">⚡ Tự luyện ngẫu nhiên (chấm ngay)</b>' +
+            '<p class="phu" style="margin:4px 0 8px;font-size:12.5px">Rút ngẫu nhiên câu hỏi từ các đề đã hết hạn để ôn phản xạ trước kiểm tra, không ảnh hưởng điểm trên lớp.</p>' +
+            '<div class="truong" style="margin-bottom:8px"><label for="tl-pham-vi" style="font-size:11.5px">Chọn phạm vi ôn tập</label>' +
+              '<select id="tl-pham-vi">' +
+                (baiHaySai.length ? '<option value="__HAY_SAI__">🔥 Ưu tiên các bài em hay sai</option>' : '') +
+                '<option value="">📚 Tất cả đề đã hết hạn</option>' +
+                mucLuc.map(c => '<option value="' + esc(c.id) + '">' + esc(c.ten) + '</option>').join('') +
+              '</select></div>' +
+            '<div class="truong"><label for="tl-so-cau" style="font-size:11.5px">Số lượng câu</label>' +
+              '<select id="tl-so-cau"><option value="10">10 câu nhanh (~5 phút)</option><option value="15">15 câu chuẩn (~10 phút)</option><option value="20">20 câu tổng hợp</option></select></div>' +
+          '</div>' +
+          '<button type="button" class="nut chinh rong" id="btn-tu-luyen"' + (soCauOnTap ? '' : ' disabled') + '>' +
+            (soCauOnTap ? '⚡ Bắt đầu tự luyện ngay →' : 'Chờ có đề hết hạn để mở kho luyện') +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+    '</section>';
+    h += '</div>';
 
     h += '<div id="slogan-slot"></div>';
     app.innerHTML = h;
-    kichHoatMascot(app);
     renderSlogan(document.getElementById('slogan-slot'));
     $('#doi-ten').onclick = function () {
       clearTimeout(henLuu); henLuu = null;
@@ -803,9 +816,23 @@ html[data-theme="dark"] .md-tbl-wrap{
       kho.xoa(KHOA_HS);
       kho.xoa(KHOA_NHAP);
       dsDeCache = null;
+      dsTab = 'btvn';
       hs = null;
       manNhapTen();
     };
+    app.querySelectorAll('[data-ds-tab]').forEach(function (b) {
+      b.onclick = function () {
+        dsTab = b.getAttribute('data-ds-tab') === 'tien_bo' ? 'tien_bo' : 'btvn';
+        app.querySelectorAll('[data-ds-tab]').forEach(function (x) {
+          const on = x.getAttribute('data-ds-tab') === dsTab;
+          x.classList.toggle('on', on);
+          x.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        const p1 = $('#tab-panel-btvn'), p2 = $('#tab-panel-tien-bo');
+        if (p1) p1.classList.toggle('an', dsTab !== 'btvn');
+        if (p2) p2.classList.toggle('an', dsTab !== 'tien_bo');
+      };
+    });
     const ldtk = $('#loc-de-tk');
     if (ldtk) {
       ldtk.oninput = function () {
@@ -952,7 +979,6 @@ html[data-theme="dark"] .md-tbl-wrap{
       '<div class="hang">' +
         '<button type="button" class="nut nho" id="quay" aria-label="Quay lại">←</button>' +
         '<span class="tieu-de" title="' + esc(lam.de.ten) + '">' + esc(lam.de.ten) + '</span>' +
-        '<button type="button" class="nut nho" id="casio-top" title="Mở Máy tính Casio Hóa học">🧮</button>' +
         '<button type="button" class="nut nho" id="loc-chua-xong" title="Chỉ hiện câu chưa làm hoặc đang cắm cờ">🚩</button>' +
         '<button type="button" class="nut nho" id="toggle-muc" title="Chuyển nhanh câu hỏi">' + ICONS.grid + '</button>' +
         '<span class="dong-ho" id="gio">00:00</span>' +
@@ -1028,7 +1054,7 @@ html[data-theme="dark"] .md-tbl-wrap{
         '<div class="luoi-so">' + luoiNutSo + '</div>' +
       '</div>' +
       '<button type="button" class="nut chinh to rong" style="margin-top:14px" id="nop" data-nop-btn>Nộp bài</button>' +
-      '<p class="phu" style="text-align:center;font-size:12px;margin-top:8px">Thứ tự câu hỏi và đáp án đổi ngẫu nhiên mỗi lần làm.</p>' +
+      '<p class="phu" style="text-align:center;font-size:12px;margin:8px 0 6px">Thứ tự câu hỏi và đáp án đổi ngẫu nhiên mỗi lần làm.</p>' +
     '</div></div>' +
     '<aside class="exam-side" aria-label="Bảng điều khiển bài làm">' +
       '<div class="the exam-panel">' +
@@ -1203,8 +1229,7 @@ html[data-theme="dark"] .md-tbl-wrap{
     if (dFdr) dFdr.onclick = dongDrawerCau_;
     if (fBd) fBd.onclick = dongDrawerCau_;
     const moCasio = function () { if (typeof moBangTraCuu === 'function') moBangTraCuu('casio'); };
-    const ct1 = $('#casio-top'), ct2 = $('#casio-side'), ct3 = $('#fab-casio');
-    if (ct1) ct1.onclick = moCasio;
+    const ct2 = $('#casio-side'), ct3 = $('#fab-casio');
     if (ct2) ct2.onclick = moCasio;
     if (ct3) ct3.onclick = moCasio;
     $('#quay').onclick = manDanhSach;
@@ -1483,6 +1508,43 @@ html[data-theme="dark"] .md-tbl-wrap{
   }
 
   // ---------- 4. Kết quả ----------
+  function chuanKeyDapAn_(html) {
+    const mapSub = { '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9' };
+    const mapSup = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁺': '+', '⁻': '-' };
+    return String(html || '')
+      .replace(/<sub>([\s\S]*?)<\/sub>/gi, '_{$1}')
+      .replace(/<sup>([\s\S]*?)<\/sup>/gi, '^{$1}')
+      .replace(/[₀-₉]+/g, function (m) {
+        return '_{' + m.split('').map(function (c) { return mapSub[c] || c; }).join('') + '}';
+      })
+      .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]+/g, function (m) {
+        return '^{' + m.split('').map(function (c) { return mapSup[c] || c; }).join('') + '}';
+      })
+      .replace(/[−–]/g, '-')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function hienDapAn_(raw, loai) {
+    const s = String(raw === null || raw === undefined ? '' : raw);
+    if (loai === 'tn' || loai === 'ds' || s.indexOf(' / ') < 0) return md(s);
+    const parts = s.split(/\s+\/\s+/);
+    const seenHtml = {};
+    const seenKey = {};
+    const out = [];
+    parts.forEach(function (p) {
+      const t = p.trim();
+      if (!t) return;
+      const rendered = md(t);
+      const key = chuanKeyDapAn_(rendered);
+      if (seenHtml[rendered] || (key && seenKey[key])) return;
+      seenHtml[rendered] = true;
+      if (key) seenKey[key] = true;
+      out.push(rendered);
+    });
+    return out.length ? out.join(' / ') : md(s);
+  }
+
   function hienTraLoi(c, tl) {
     if (c.loai === 'ds') {
       if (!Array.isArray(tl) || !tl.some(v => v === true || v === false)) return '<em>(bỏ trống)</em>';
@@ -1583,7 +1645,7 @@ html[data-theme="dark"] .md-tbl-wrap{
           if (c.loai === 'ds' && kq.giai[id].dapAnDs) {
             h += veDsChiTiet(c.luaChon, l.traLoi[id], kq.giai[id].dapAnDs);
           }
-          h += '<div class="dap-an-box"><div class="d">Đáp án: ' + md(kq.giai[id].dapAn) + '</div>' +
+          h += '<div class="dap-an-box"><div class="d">Đáp án: ' + hienDapAn_(kq.giai[id].dapAn, c.loai) + '</div>' +
             (kq.giai[id].loiGiai ? '<div style="margin-top:4px">' + md(kq.giai[id].loiGiai) + '</div>' : '') + '</div>';
         }
         h += '</div>';
@@ -1657,7 +1719,7 @@ html[data-theme="dark"] .md-tbl-wrap{
           } else if (c.loai === 'ds' && c.luaChon) {
             h += veDsChiTiet(c.luaChon, undefined, c.dapAnDs);
           }
-          h += '<div class="dap-an-box"><div class="d">Đáp án: ' + md(c.dapAn) + '</div>' + (c.loiGiai ? '<div style="margin-top:4px">' + md(c.loiGiai) + '</div>' : '') + '</div></div>';
+          h += '<div class="dap-an-box"><div class="d">Đáp án: ' + hienDapAn_(c.dapAn, c.loai) + '</div>' + (c.loiGiai ? '<div style="margin-top:4px">' + md(c.loiGiai) + '</div>' : '') + '</div></div>';
         });
         h += '<button type="button" class="nut chinh rong" style="margin-top:14px" id="ve2">Về danh sách</button>';
         h += '<div id="slogan-slot"></div>';
@@ -1759,7 +1821,7 @@ html[data-theme="dark"] .md-tbl-wrap{
             const tlHien = (c.tl === null || c.tl === undefined || c.tl === '') ? '<em>(bỏ trống)</em>' : md(c.tl);
             h += '<div class="phu" style="font-size:13.5px;margin-bottom:6px">Em trả lời: <b style="color:' + (c.dung ? 'var(--ok)' : 'var(--loi)') + '">' + tlHien + '</b></div>';
           }
-          h += '<div class="dap-an-box"><div class="d">Đáp án: ' + md(c.dapAn) + '</div>' + (c.loiGiai ? '<div style="margin-top:4px">' + md(c.loiGiai) + '</div>' : '') + '</div></div>';
+          h += '<div class="dap-an-box"><div class="d">Đáp án: ' + hienDapAn_(c.dapAn, c.loai) + '</div>' + (c.loiGiai ? '<div style="margin-top:4px">' + md(c.loiGiai) + '</div>' : '') + '</div></div>';
         });
 
         if (!demHien) h += '<div class="the" style="text-align:center"><p class="phu" style="margin:0">Không có câu hỏi nào trong mục lọc này.</p></div>';
@@ -1870,7 +1932,7 @@ html[data-theme="dark"] .md-tbl-wrap{
     thoatTamLamBai_();
     manHienTai = 'luyenTap';
     cuon();
-    document.body.classList.add('dang-lam');
+    document.body.classList.add('dang-lam', 'dang-luyen');
     const dsCau = (dsGoc || []).map(chuanCauLuyenTap_);
     const tlMap = {};
     const daKiem = {};
@@ -1885,7 +1947,6 @@ html[data-theme="dark"] .md-tbl-wrap{
         '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">' +
           '<button type="button" class="nut nho" id="lt-ve">← Về danh sách</button>' +
           '<div class="hang-nut">' +
-            '<button type="button" class="nut nho" id="lt-casio">🧮 Casio</button>' +
             '<button type="button" class="nut nho tim" id="lt-tron">🔀 Trộn làm lại</button>' +
           '</div>' +
         '</div>' +
@@ -1951,7 +2012,7 @@ html[data-theme="dark"] .md-tbl-wrap{
         }
 
         if (hienGiai) {
-          h += '<div class="dap-an-box"><div class="d">Đáp án: ' + md(c.dapAnHien) + '</div>' +
+          h += '<div class="dap-an-box"><div class="d">Đáp án: ' + hienDapAn_(c.dapAnHien, c.loai) + '</div>' +
             (c.loiGiai ? '<div style="margin-top:4px">' + md(c.loiGiai) + '</div>' : '') + '</div>';
         }
         h += '</div>';
@@ -1965,10 +2026,9 @@ html[data-theme="dark"] .md-tbl-wrap{
       app.innerHTML = h;
       renderSlogan(document.getElementById('slogan-slot'));
 
-      const thoat = function () { document.body.classList.remove('dang-lam'); manDanhSach(); };
+      const thoat = function () { document.body.classList.remove('dang-lam', 'dang-luyen'); manDanhSach(); };
       $('#lt-ve').onclick = thoat;
       $('#lt-ve-2').onclick = thoat;
-      $('#lt-casio').onclick = function () { if (typeof moBangTraCuu === 'function') moBangTraCuu('casio'); };
       const tronLai = function () { veLuyenTap(tieuDe, tronMang_(dsGoc)); };
       $('#lt-tron').onclick = tronLai;
       const ll2 = $('#lt-lam-lai-2'); if (ll2) ll2.onclick = tronLai;

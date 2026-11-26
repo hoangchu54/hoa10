@@ -21,42 +21,140 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=0e9b13a5ac">
+<link rel="stylesheet" href="assets/h10.css?v=9e903f57fc">
 <style>
   body.lab-open, body.modal-open { overflow: hidden; }
+  .tn-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .tn-search-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tn-search-row input {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
   .tn-chip-bar {
     display: flex;
     flex-wrap: wrap;
     gap: 7px;
     align-items: center;
   }
-  .tn-3d-strip {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 14px;
+  .tn-3d-meta-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
   }
-  .tn-3d-more-card { display: none; }
+  .tn-3d-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .tn-3d-card {
+    background: var(--the);
+    border: 1px solid var(--vien);
+    border-left: 4px solid var(--do);
+    border-radius: 15px;
+    padding: 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: var(--shadow);
+    transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+  }
+  .tn-3d-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--tim-v);
+    box-shadow: var(--shadow-lg);
+  }
+  .tn-3d-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tn-3d-ic {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, var(--do-n), var(--tim-n));
+    border: 1px solid var(--do-v);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    flex-shrink: 0;
+  }
+  .tn-3d-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+  }
+  .tn-3d-info b {
+    font-size: 14px;
+    line-height: 1.3;
+    color: var(--chu);
+  }
+  .tn-3d-desc {
+    font-size: 12.6px;
+    line-height: 1.5;
+    color: var(--mo);
+    flex: 1;
+  }
+  .tn-3d-act {
+    display: flex;
+    gap: 6px;
+    margin-top: 2px;
+  }
   .ext-lbl-mob { display: none; }
   .lab-loading {
     position: absolute;
     inset: 0;
-    z-index: 5;
+    z-index: 8;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    background: rgba(12, 10, 22, .88);
-    color: #E2E8F0;
+    gap: 12px;
+    background: rgba(12, 10, 22, .92);
+    color: #F8FAFC;
     font-size: 13.5px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: .01em;
     transition: opacity .25s ease, visibility .25s ease;
     pointer-events: none;
+  }
+  .lab-loading .lab-spinner {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, .22);
+    border-top-color: #C4B5FD;
+    border-right-color: #A78BFA;
+    animation: q .75s linear infinite;
+    box-shadow: 0 0 16px rgba(167, 139, 250, .35);
   }
   .lab-loading.xong {
     opacity: 0;
     visibility: hidden;
+  }
+  .lab-mob-tabs button {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 8px;
+    font-size: 12.5px;
   }
   .lab-rot-hint {
     position: absolute;
@@ -87,8 +185,8 @@
   @media (min-width: 701px), (orientation: landscape) {
     .lab-rot-hint { display: none !important; }
   }
-  @media (max-width: 860px) {
-    .tn-3d-strip { grid-template-columns: minmax(0, 1fr); }
+  @media (max-width: 1024px) {
+    .tn-3d-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 760px) {
     .tn-chip-bar {
@@ -101,49 +199,8 @@
     .tn-chip-bar::-webkit-scrollbar { display: none; }
     .tn-chip-bar > button { flex-shrink: 0; }
   }
-  @media (max-width: 700px) {
-    .tn-3d-strip {
-      display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      gap: 10px;
-      padding: 2px 4px 6px 2px;
-      margin-bottom: 12px;
-    }
-    .tn-3d-strip::-webkit-scrollbar { display: none; }
-    .tn-3d-strip > .tn-row {
-      flex: 0 0 84%;
-      max-width: 316px;
-      scroll-snap-align: start;
-      margin-top: 0 !important;
-      content-visibility: visible;
-      justify-content: space-between;
-    }
-    .tn-3d-more-card {
-      display: flex;
-      flex: 0 0 164px;
-      scroll-snap-align: start;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-align: center;
-      padding: 16px 14px;
-      border-radius: 16px;
-      border: 1.5px dashed var(--tim-v);
-      background: linear-gradient(135deg, var(--tim-n), var(--the));
-      color: var(--tim);
-      font-weight: 800;
-      font-size: 13px;
-      text-decoration: none;
-      box-shadow: var(--shadow);
-    }
-    .tn-3d-more-card:hover { text-decoration: none; border-color: var(--tim); }
-  }
   @media (max-width: 640px) {
+    .tn-3d-grid { grid-template-columns: minmax(0, 1fr); }
     .ext-lbl-pc { display: none; }
     .ext-lbl-mob { display: inline; }
   }
@@ -161,11 +218,6 @@
         </div>
       </div>
       <div class="top-right">
-        <a class="top-pill an" id="btn-home" href="#" target="_self">🏠 Trang chủ</a>
-        <a class="top-pill an" id="btn-btvn" href="#" target="_top">📝 Làm BTVN</a>
-        <a class="top-pill an" id="btn-tailieu" href="#" target="_self">📚 Tài liệu</a>
-        <span class="top-pill on">🔬 Thí nghiệm</span>
-        <a class="top-pill an" id="btn-game" href="#" target="_self">🎮 Trò chơi</a>
         <a class="top-pill an" id="btn-full" href="#" target="_top"></a>
         <button type="button" class="top-pill" id="btn-theme"></button>
       </div>
@@ -175,7 +227,7 @@
   <main class="khung-chinh" id="app" aria-live="polite"></main>
 </div>
 
-<script src="assets/h10.js?v=2416061e55"></script>
+<script src="assets/h10.js?v=abe638fbec"></script>
 <script>
 (function () {
   const { esc, md, api, laGAS, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, renderSlogan, renderGalleryHoa10, ganThanhDieuHuongHS, ganNutLenDau } = window.H10;
@@ -231,36 +283,52 @@
     return layWebUrl() + '?page=lab&id=' + encodeURIComponent(idOnly) + (laEmbed ? '&embed=1' : '') + '#' + idOnly;
   }
 
+  const CHUONG_3D = [
+    { id: '', ten: 'Tất cả (14)' },
+    { id: 'C1', ten: 'C1 · Nguyên tử' },
+    { id: 'C2', ten: 'C2 · Bảng tuần hoàn' },
+    { id: 'C3', ten: 'C3 · Liên kết' },
+    { id: 'C4', ten: 'C4 · Oxi hóa – Khử' },
+    { id: 'C5', ten: 'C5 · Năng lượng' },
+    { id: 'C6', ten: 'C6 · Tốc độ PƯ' },
+    { id: 'C7', ten: 'C7 · Halogen' }
+  ];
+
   const LAB_3D_14 = [
-    { bai: '1', ten: 'Bắn tia α của Rutherford 3D', labId: 'rutherford',
+    { ch: 'C1', ic: '🎯', bai: '1', ten: 'Bắn tia α của Rutherford 3D', labId: 'rutherford',
       mucTieu: 'Bắn chùm hạt α qua lá vàng mỏng, quan sát chớp huỳnh quang ZnS 360° và lực đẩy Coulomb ở góc phóng đại nguyên tử; đối chứng mô hình Thomson.' },
-    { bai: '3, 12', ten: 'Orbital s, p, d & Xen phủ σ, π 3D', labId: 'orbital',
+    { ch: 'C1', ic: '⚛️', bai: '3, 12', ten: 'Orbital s, p, d & Xen phủ σ, π 3D', labId: 'orbital',
       mucTieu: 'Đám mây xác suất lượng tử 5.200 hạt + mặt biên 90% cho 1s, 2s, 2p, 3d (cắt lát thấy nút 2s) và kéo 2 hạt nhân xem xen phủ trục σ / xen phủ bên π.' },
-    { bai: '3, 4', ten: 'Thử màu Ngọn lửa & Quang phổ 3D', labId: 'ngon-lua',
+    { ch: 'C1', ic: '🔥', bai: '3, 4', ten: 'Thử màu Ngọn lửa & Quang phổ 3D', labId: 'ngon-lua',
       mucTieu: 'Đèn Bunsen 3D lửa GLSL, đốt 6 muối Li⁺, Na⁺, K⁺, Ca²⁺, Ba²⁺, Cu²⁺ + kính xanh Cobalt lọc ánh vàng Na⁺ + quang phổ vạch & đoán mẫu X.' },
-    { bai: '6, 9', ten: 'Kim loại Kiềm & Kiềm thổ + Nước 3D', labId: 'kiem',
+    { ch: 'C2', ic: '💧', bai: '6, 9', ten: 'Kim loại Kiềm & Kiềm thổ + Nước 3D', labId: 'kiem',
       mucTieu: 'Gắp Li, Na, K từ lọ dầu hỏa, Mg, Ca thả chậu nước có sóng 3D, vệt hồng phenolphthalein đuổi đuôi, lửa tím hoa cà của K, bếp 80 °C & giải mã 3 mẫu ẩn.' },
-    { bai: '7', ten: 'Tính lưỡng tính Al(OH)₃ & Mg(OH)₂ 3D', labId: 'luong-tinh',
+    { ch: 'C2', ic: '🧪', bai: '7', ten: 'Tính lưỡng tính Al(OH)₃ & Mg(OH)₂ 3D', labId: 'luong-tinh',
       mucTieu: 'Pipet nhỏ giọt NaOH/HCl vào 2 ống AlCl₃ & MgCl₂ theo tỉ lệ mol thực: keo trắng Al(OH)₃ tan hết trong kiềm dư tạo Na[Al(OH)₄], còn Mg(OH)₂ không tan.' },
-    { bai: '11', ten: 'Mạng tinh thể NaCl 3D (Rắn · Nóng chảy · Tan)', labId: 'nacl',
+    { ch: 'C3', ic: '💎', bai: '11', ten: 'Mạng tinh thể NaCl 3D (Rắn · Nóng chảy · Tan)', labId: 'nacl',
       mucTieu: 'Khám phá số phối trí 6:6 hình bát diện, đun nóng chảy vượt 801 °C phá vỡ mạng và thả vào nước xem phân tử H₂O phân cực bóc tách tan hết tinh thể.' },
-    { bai: '11, 12', ten: 'Thử tính dẫn điện (Ion vs Cộng hóa trị) 3D', labId: 'dan-dien',
+    { ch: 'C3', ic: '💡', bai: '11, 12', ten: 'Thử tính dẫn điện (Ion vs Cộng hóa trị) 3D', labId: 'dan-dien',
       mucTieu: 'Mạch điện 3D có công tắc, ampe kế kim quay, bóng đèn dây tóc sáng theo mẫu (nước cất, đường, NaCl rắn/dd, HCl, CH₃COOH) + soi dòng ion vi mô.' },
-    { bai: '13', ten: 'Liên kết Hydrogen & Nước đá nổi 3D', labId: 'hydrogen',
+    { ch: 'C3', ic: '❄️', bai: '13', ten: 'Liên kết Hydrogen & Nước đá nổi 3D', labId: 'hydrogen',
       mucTieu: '54 phân tử H₂O định hướng mạng lục giác rỗng Ice Iₕ (D = 0,92 g/cm³) khi hạ về 0 °C, sụp đặc khi tan lỏng và bay tự do lúc sôi + cốc băng nổi.' },
-    { bai: '15, 16', ten: 'Phản ứng Oxi hóa – Khử 3D (Cây bạc & Zn)', labId: 'oxh',
+    { ch: 'C4', ic: '✨', bai: '15, 16', ten: 'Phản ứng Oxi hóa – Khử 3D (Cây bạc & Zn)', labId: 'oxh',
       mucTieu: 'Nhúng dây Cu xoắn vào AgNO₃ mọc tinh thể bạc óng ánh & dd hóa xanh lam; nhúng lá Zn vào CuSO₄ lá kẽm mòn phủ đồng đỏ & dd mất màu xanh.' },
-    { bai: '17, 18', ten: 'Nhiệt lượng kế Tỏa nhiệt & Thu nhiệt 3D', labId: 'nhiet-luong-ke',
+    { ch: 'C5', ic: '🌡️', bai: '17, 18', ten: 'Nhiệt lượng kế Tỏa nhiệt & Thu nhiệt 3D', labId: 'nhiet-luong-ke',
       mucTieu: 'Nhiệt kế điện tử 3D + đồ thị T(t): CaO + H₂O sôi 76 °C, HCl + NaOH tỏa nhiệt và Ba(OH)₂·8H₂O + NH₄Cl tụt −18 °C đóng băng dính chặt khối gỗ.' },
-    { bai: '19, 20', ten: 'Tốc độ phản ứng 3D (Bóng bay · Dấu X · MnO₂)', labId: 'toc-do',
+    { ch: 'C6', ic: '🎈', bai: '19, 20', ten: 'Tốc độ phản ứng 3D (Bóng bay · Dấu X · MnO₂)', labId: 'toc-do',
       mucTieu: '3 phòng thực hành: CaCO₃ cục/bột & nồng độ HCl làm phồng 2 bóng bay, thí nghiệm dấu X biến mất ở 20 °C vs 60 °C, xúc tác MnO₂ phân hủy H₂O₂.' },
-    { bai: '21', ten: 'Tính tẩy màu của khí Cl₂ ẩm (Tủ hút) 3D', labId: 'cl2-tay',
+    { ch: 'C7', ic: '☁️', bai: '21', ten: 'Tính tẩy màu của khí Cl₂ ẩm (Tủ hút) 3D', labId: 'cl2-tay',
       mucTieu: 'Tủ hút khí độc có quạt quay thật, tự xịt nước làm ẩm giấy đỏ / quỳ tím / cánh hoa hồng / lá xanh đối chứng mẫu khô, xả sạch khí Cl₂ vàng lục vào ống hút.' },
-    { bai: '21', ten: 'Thăng hoa & Ngưng kết tinh thể Iodine (I₂) 3D', labId: 'iodine',
+    { ch: 'C7', ic: '🔮', bai: '21', ten: 'Thăng hoa & Ngưng kết tinh thể Iodine (I₂) 3D', labId: 'iodine',
       mucTieu: 'Đun tinh thể I₂ tím đen thăng hoa trực tiếp thành khói tím sang trọng, gặp bát đá lạnh kết tinh ngược thành chùm mũi kim ánh kim; nhấc bát soi cận.' },
-    { bai: '21, 22, 23', ten: 'Ống nghiệm Halide, Chiết 2 lớp & Giải mã 3D', labId: 'halide',
+    { ch: 'C7', ic: '🧬', bai: '21, 22, 23', ten: 'Ống nghiệm Halide, Chiết 2 lớp & Giải mã 3D', labId: 'halide',
       mucTieu: '4 chế độ: AgNO₃ nhận biết F⁻/Cl⁻/Br⁻/I⁻ (tan AgCl trong NH₃, chiếu sáng UV), thế halogen & chiết tách 2 lớp Hexane, muối rắn + H₂SO₄ đặc, giải mã 4 lọ.' }
   ];
+
+  LAB_3D_14.forEach(function (lb) {
+    const raw = lb.labId + ' ' + lb.ch + ' bài ' + lb.bai + ' ' + lb.ten + ' ' + lb.mucTieu;
+    lb._search = raw.toLowerCase() + ' ' + chuanTK(raw);
+  });
 
   const BAI_THI_NGHIEM = [
     { bai: '1', ten: 'Thành phần của nguyên tử', links: [
@@ -1308,19 +1376,33 @@
   const app = $('#app');
   let data = { caiDatTrang: {}, webUrl: window.H10.GAS_EXEC_URL || '' };
   let laFull = false;
+  let activeTab = '3d';
+  let loc3d = { ch: '', tk: '' };
   let loc = { bai: '', tk: '' };
 
-  getLocation(function (l) {
-    laFull = !!(l && l.parameter && l.parameter.full);
-    if (l && l.parameter && l.parameter.bai) {
-      loc.bai = String(l.parameter.bai);
-      const sel = $('#tn-bai');
-      if (sel) sel.value = loc.bai;
-      capNhatDanhSach();
+  function apRouteParams(params, hashStr) {
+    const p = params || {};
+    if (p.full) laFull = true;
+    const h = String(hashStr || '').replace(/^#/, '').trim().toLowerCase();
+    const tabParam = String(p.tab || '').trim().toLowerCase();
+    if (p.bai) {
+      loc.bai = String(p.bai);
+      activeTab = 'sgk';
+    } else if (tabParam === 'sgk' || h === 'sgk' || h === 'tab=sgk') {
+      activeTab = 'sgk';
+    } else if (tabParam === '3d' || h === '3d' || h === 'tab=3d') {
+      activeTab = '3d';
     }
-    veTopLinks();
-    capNhatLinkDong();
-  });
+  }
+
+  // Đọc ngay URL tĩnh (GitHub Pages) trước khi render 0ms để không nhấp nháy tab
+  (function () {
+    const p = {};
+    try {
+      new URLSearchParams(window.location.search).forEach(function (v, k) { p[k] = v; });
+    } catch (_) {}
+    apRouteParams(p, window.location.hash || '');
+  })();
 
   function layOptNav() {
     const cfg = (data && data.caiDatTrang) || {};
@@ -1330,14 +1412,6 @@
   function veTopLinks() {
     const opt = layOptNav();
     ganThanhDieuHuongHS('thinghiem', opt);
-    const hm = $('#btn-home');
-    if (hm) { const l = linkTrang('home', opt); hm.href = l.href; hm.target = l.target; hm.classList.remove('an'); }
-    const tl = $('#btn-tailieu');
-    if (tl) { const l = linkTrang('tailieu', opt); tl.href = l.href; tl.target = l.target; tl.classList.remove('an'); }
-    const gm = $('#btn-game');
-    if (gm) { const l = linkTrang('trochoi', opt); gm.href = l.href; gm.target = l.target; gm.classList.remove('an'); }
-    const bv = $('#btn-btvn');
-    if (bv) { const l = linkTrang('btvn', opt); bv.href = l.href; bv.target = l.target; bv.classList.remove('an'); }
     const bf = $('#btn-full');
     if (bf) {
       if (!laGAS || laFull) { bf.classList.add('an'); }
@@ -1400,13 +1474,13 @@
         '</div>' +
       '</div>' +
       (coNhung && !laTuLam ? '<div class="lab-mob-tabs">' +
-        '<button type="button" class="nut nho chinh" data-x="m-sim">🔬 Màn hình Thí nghiệm</button>' +
-        '<button type="button" class="nut nho" data-x="m-hd">' + (vocabHtml ? '📖 Hướng dẫn &amp; Từ điển Tiếng Việt' : '📖 Hướng dẫn thực hành') + '</button>' +
+        '<button type="button" class="nut nho chinh" data-x="m-sim">🔬 Thí nghiệm</button>' +
+        '<button type="button" class="nut nho" data-x="m-hd">' + (vocabHtml ? '📖 Hướng dẫn &amp; Từ điển' : '📖 Hướng dẫn') + '</button>' +
       '</div>' : '') +
       '<div class="lab-body' + (coNhung ? (anHD ? ' an-hd' : '') : ' ngoai-only') + '" data-x="body">' +
         (coNhung
           ? ('<div class="lab-stage">' +
-               '<div class="lab-loading" data-x="loader" aria-hidden="true"><span class="cho" style="width:24px;height:24px;border-width:2.5px;color:#A78BFA"></span><span>Đang nạp phòng thí nghiệm...</span></div>' +
+               '<div class="lab-loading" data-x="loader" aria-hidden="true"><span class="lab-spinner"></span><span>Đang nạp phòng thí nghiệm...</span></div>' +
                '<div class="lab-rot-hint" data-x="rot-hint">💡 Xoay ngang máy hoặc bấm ⛶ để thao tác rộng hơn</div>' +
                '<iframe src="' + esc(actualUrl) + '" title="' + esc(linkObj.ten) + '" allowfullscreen allow="fullscreen; autoplay"></iframe>' +
              '</div>' +
@@ -1432,7 +1506,7 @@
     const anLoader = function () {
       if (loaderEl) loaderEl.classList.add('xong');
     };
-    const loaderTimer = coNhung ? setTimeout(anLoader, 4000) : null;
+    const loaderTimer = coNhung ? setTimeout(anLoader, 4500) : null;
     if (frameEl) frameEl.addEventListener('load', anLoader);
 
     const anRotHint = function () {
@@ -1526,14 +1600,73 @@
     const driveSlot = $('#tn-drive-slot');
     if (driveSlot) {
       driveSlot.innerHTML = optNav.cfg.linkThuMucThiNghiem
-        ? '<a class="nut chinh" href="' + esc(optNav.cfg.linkThuMucThiNghiem) + '" target="h10_ngoai" rel="noopener">Thư mục thí nghiệm (Drive)</a>'
+        ? '<a class="nut nho vien" href="' + esc(optNav.cfg.linkThuMucThiNghiem) + '" target="h10_ngoai" rel="noopener">📂 Thư mục Drive</a>'
         : '';
     }
     const lLab = linkTrang('lab', optNav);
-    ['#tn-link-sanh-3d', '#tn-card-sanh-3d'].forEach(function (sel) {
-      const a = $(sel);
-      if (a) { a.href = lLab.href; a.target = lLab.target; }
+    const aSanh = $('#tn-link-sanh-3d');
+    if (aSanh) { aSanh.href = lLab.href; aSanh.target = lLab.target; }
+  }
+
+  function chuyenTab(tabId) {
+    activeTab = tabId === 'sgk' ? 'sgk' : '3d';
+    app.querySelectorAll('[data-tab]').forEach(function (btn) {
+      const on = btn.getAttribute('data-tab') === activeTab;
+      btn.classList.toggle('on', on);
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
     });
+    const p3d = $('#tn-panel-3d');
+    const pSgk = $('#tn-panel-sgk');
+    if (p3d) p3d.classList.toggle('an', activeTab !== '3d');
+    if (pSgk) pSgk.classList.toggle('an', activeTab !== 'sgk');
+  }
+
+  function capNhatLuoi3D() {
+    const wrap = $('#tn3d-grid-wrap');
+    if (!wrap) return;
+    const qRaw = loc3d.tk.trim();
+    const qNorm = chuanTK(qRaw);
+
+    const xoaBtn = $('#tn3d-xoa-loc');
+    if (xoaBtn) xoaBtn.classList.toggle('an', !(loc3d.ch || qRaw));
+
+    app.querySelectorAll('[data-ch3d]').forEach(function (btn) {
+      const on = btn.getAttribute('data-ch3d') === loc3d.ch;
+      btn.classList.toggle('chinh', on);
+      btn.classList.toggle('nhe', !on);
+    });
+
+    const ds = [];
+    LAB_3D_14.forEach(function (lb, idx) {
+      if (loc3d.ch && lb.ch !== loc3d.ch) return;
+      if (qNorm && lb._search.indexOf(qNorm) < 0) return;
+      ds.push({ lb: lb, idx: idx });
+    });
+
+    const demEl = $('#tn3d-dem');
+    if (demEl) demEl.textContent = 'Hiển thị ' + ds.length + '/' + LAB_3D_14.length + ' phòng Lab 3D';
+
+    if (!ds.length) {
+      wrap.innerHTML = '<div class="the" style="margin-bottom:16px"><p class="phu" style="margin:0;text-align:center">Không tìm thấy phòng Lab 3D phù hợp với từ khóa.</p></div>';
+      return;
+    }
+
+    wrap.innerHTML = '<div class="tn-3d-grid">' + ds.map(function (it) {
+      const lb = it.lb;
+      return '<article class="tn-3d-card">' +
+        '<div class="tn-3d-top">' +
+          '<div class="tn-3d-ic" aria-hidden="true">' + lb.ic + '</div>' +
+          '<div class="tn-3d-info">' +
+            '<b>' + esc(lb.ten) + '</b>' +
+            '<span class="phu" style="font-size:12px">' + esc(lb.ch) + ' · Bài ' + esc(lb.bai) + ' · Tiếng Việt</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tn-3d-desc">' + md(lb.mucTieu) + '</div>' +
+        '<div class="tn-3d-act">' +
+          '<button type="button" class="nut nho chinh rong" data-san-idx="' + it.idx + '">▶ Mở Lab 3D</button>' +
+        '</div>' +
+      '</article>';
+    }).join('') + '</div>';
   }
 
   function capNhatDanhSach() {
@@ -1542,21 +1675,21 @@
     const optNav = layOptNav();
     const qRaw = loc.tk.trim();
     const qNorm = chuanTK(qRaw);
-
-    const showcase = $('#tn-3d-showcase');
-    if (showcase) showcase.classList.toggle('an', !!(loc.bai || qRaw));
+    const dangLoc = !!(loc.bai || qRaw);
 
     const xoaBtn = $('#tn-xoa-loc');
-    if (xoaBtn) xoaBtn.classList.toggle('an', !(loc.bai || qRaw));
+    if (xoaBtn) xoaBtn.classList.toggle('an', !dangLoc);
 
     app.querySelectorAll('[data-b]').forEach(function (btn) {
-      btn.classList.toggle('chinh', btn.getAttribute('data-b') === loc.bai);
+      const on = btn.getAttribute('data-b') === loc.bai;
+      btn.classList.toggle('chinh', on);
+      btn.classList.toggle('nhe', !on);
     });
 
     const ds = BAI_THI_NGHIEM.filter(function (b) {
       if (loc.bai) {
         if (/^C\d$/.test(loc.bai)) {
-          const ch = CHUONG_TN.find(c => c.id === loc.bai);
+          const ch = CHUONG_TN.find(function (c) { return c.id === loc.bai; });
           if (!ch || ch.bais.indexOf(b.bai) < 0) return false;
         } else if (b.bai !== loc.bai) {
           return false;
@@ -1566,43 +1699,85 @@
       return true;
     });
 
-    let h = '<div class="nhan-muc">Phòng thí nghiệm theo bài SGK (' + ds.length + ' bài)</div>';
     if (!ds.length) {
-      h += '<div class="the"><p class="phu" style="margin:0;text-align:center">Không tìm thấy thí nghiệm phù hợp với từ khóa.</p></div>';
-    } else {
-      h += '<div class="tn-grid">';
-      ds.forEach(function (b) {
+      listWrap.innerHTML = '<div class="the" style="margin-bottom:14px"><p class="phu" style="margin:0;text-align:center">Không tìm thấy thí nghiệm phù hợp với từ khóa.</p></div>';
+      return;
+    }
+
+    const baiMap = {};
+    ds.forEach(function (b) { baiMap[b.bai] = b; });
+
+    const nhomChuong = [];
+    CHUONG_TN.forEach(function (c) {
+      const listBai = c.bais.map(function (ma) { return baiMap[ma]; }).filter(Boolean);
+      if (listBai.length) {
+        const tongSim = listBai.reduce(function (s, b) { return s + b.links.length; }, 0);
+        nhomChuong.push({ ch: c, bais: listBai, tongSim: tongSim });
+      }
+    });
+
+    const moHetMacDinh = dangLoc;
+    let h = '<div class="tn-3d-meta-bar">' +
+      '<div class="nhan-muc" style="margin:0">Mô phỏng theo 7 Chương SGK (' + ds.length + ' bài)</div>' +
+      (nhomChuong.length > 1
+        ? '<button type="button" class="nut nho nhe" id="tn-acc-toggle" data-all-open="' + (moHetMacDinh ? '1' : '0') + '">' + (moHetMacDinh ? 'Thu gọn tất cả' : 'Mở tất cả chương') + '</button>'
+        : '') +
+    '</div>';
+
+    h += '<div class="h10-acc-list">';
+    nhomChuong.forEach(function (g, gIdx) {
+      const isOpen = moHetMacDinh || gIdx === 0;
+      h += '<details class="h10-acc" data-ch-acc="' + esc(g.ch.id) + '"' + (isOpen ? ' open' : '') + '>' +
+        '<summary class="h10-acc-head">' +
+          '<span class="h10-acc-title">' +
+            '<span class="chip tim">' + esc(g.ch.id) + '</span>' +
+            '<span>' + esc(g.ch.ten) + '</span>' +
+          '</span>' +
+          '<span class="h10-acc-meta">' +
+            '<span>' + g.bais.length + ' bài · ' + g.tongSim + ' mô phỏng</span>' +
+            '<span class="h10-acc-chev" aria-hidden="true">▾</span>' +
+          '</span>' +
+        '</summary>' +
+        '<div class="h10-acc-body"><div class="tn-grid">';
+
+      g.bais.forEach(function (b) {
         const lTlBai = linkTrang('tailieu', { cfg: optNav.cfg, webUrl: optNav.webUrl, laFull: optNav.laFull, query: '?bai=' + encodeURIComponent(b.bai) });
         const lBtBai = linkTrang('btvn', { cfg: optNav.cfg, webUrl: optNav.webUrl, laFull: optNav.laFull, query: '?bai=' + encodeURIComponent(b.bai) });
         h += '<div class="tn-row">' +
           '<div class="tn-head" style="flex-wrap:wrap"><span class="tn-badge">' + (b.bai === 'MD' ? '<small>Mở</small>Đầu' : '<small>Bài</small>' + esc(b.bai)) + '</span>' +
-            '<div class="tn-ten" style="flex:1;min-width:170px"><b>' + esc(b.ten) + '</b><span class="phu">' + b.links.length + ' thí nghiệm có hướng dẫn Tiếng Việt</span></div>' +
+            '<div class="tn-ten" style="flex:1;min-width:160px"><b>' + esc(b.ten) + '</b><span class="phu">' + b.links.length + ' mô phỏng kèm hướng dẫn</span></div>' +
             '<div class="hang-nut" style="gap:4px">' +
-              '<a class="nut nho" href="' + esc(lTlBai.href) + '" target="' + lTlBai.target + '" title="Mở tài liệu Bài ' + esc(b.bai) + '">📚 Tài liệu</a>' +
-              '<a class="nut nho" href="' + esc(lBtBai.href) + '" target="' + lBtBai.target + '" title="Làm BTVN Bài ' + esc(b.bai) + '">📝 BTVN</a>' +
+              '<a class="nut nho nhe" href="' + esc(lTlBai.href) + '" target="' + lTlBai.target + '" title="Mở tài liệu Bài ' + esc(b.bai) + '">📚 Tài liệu</a>' +
+              '<a class="nut nho nhe" href="' + esc(lBtBai.href) + '" target="' + lBtBai.target + '" title="Làm BTVN Bài ' + esc(b.bai) + '">📝 BTVN</a>' +
             '</div>' +
           '</div>' +
           '<div class="tn-sim-list">' + b.links.map(function (l, lIdx) {
             const coNhung = l.embed !== false;
             const laTuLam = !!l.labId;
             const extHref = laTuLam ? urlLabTuLam(l.labId, false) : l.url;
+            const btnClass = laTuLam ? 'chinh' : (coNhung ? 'nhe' : 'vien-tim');
+            const btnLabel = laTuLam ? '▶ Mở Lab 3D' : (coNhung ? '▶ Mở mô phỏng' : '📖 Xem HD');
             return '<div class="tn-sim-card">' +
               '<div class="tn-sim-info">' +
                 '<b><span>' + (laTuLam ? '🧊 ' : '⚗️ ') + esc(l.ten) + '</span>' +
-                  (laTuLam ? '<span class="chip chinh" style="font-size:10.5px;padding:1px 7px">🧊 Lab 3D</span>' : '') +
-                  '<span class="chip ' + (coNhung ? 'ok' : 'tim') + '" style="font-size:10.5px;padding:1px 7px">' + (laTuLam ? 'Tương tác 3D · Tiếng Việt' : (coNhung ? 'Chạy trên web + Tiếng Việt' : 'Kèm HD Tiếng Việt')) + '</span></b>' +
+                  (laTuLam
+                    ? '<span class="chip chinh" style="font-size:10.5px;padding:1px 7px">Lab 3D</span>'
+                    : '<span class="chip ' + (coNhung ? 'ok' : 'tim') + '" style="font-size:10.5px;padding:1px 7px">' + (coNhung ? 'HD Tiếng Việt' : 'Tab riêng') + '</span>') +
+                '</b>' +
                 (l.mucTieu ? '<span class="phu">' + md(l.mucTieu) + '</span>' : '') +
               '</div>' +
-              '<div class="hang-nut">' +
-                '<button type="button" class="nut nho ' + (coNhung ? 'chinh' : 'tim') + '" data-open-bai="' + esc(b.bai) + '" data-open-idx="' + lIdx + '">' + (coNhung ? '▶ Làm ngay trên web' : '📖 Xem HD &amp; Mở') + '</button>' +
-                '<a class="nut nho" href="' + esc(extHref) + '" target="h10_ngoai" rel="noopener" title="Mở trên tab riêng">↗</a>' +
+              '<div class="hang-nut" style="gap:5px;flex-shrink:0">' +
+                '<button type="button" class="nut nho ' + btnClass + '" data-open-bai="' + esc(b.bai) + '" data-open-idx="' + lIdx + '">' + btnLabel + '</button>' +
+                (!coNhung ? '<a class="nut nho nhe" href="' + esc(extHref) + '" target="h10_ngoai" rel="noopener" title="Mở trên tab riêng">↗</a>' : '') +
               '</div>' +
             '</div>';
           }).join('') + '</div>' +
         '</div>';
       });
-      h += '</div>';
-    }
+
+      h += '</div></div></details>';
+    });
+    h += '</div>';
     listWrap.innerHTML = h;
   }
 
@@ -1610,63 +1785,84 @@
     const optNav = layOptNav();
     const lLab = linkTrang('lab', optNav);
     let h = '<div class="hero-box art-flask has-right" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">' +
-      '<div style="flex:1 1 260px;min-width:0"><span class="chip sky" style="white-space:normal;max-width:100%">14 PHÒNG LAB 3D TIẾNG VIỆT · KÈM MÔ PHỎNG PHET &amp; HƯỚNG DẪN</span>' +
+      '<div style="flex:1 1 260px;min-width:0"><span class="chip sky" style="white-space:normal;max-width:100%">14 PHÒNG LAB 3D TIẾNG VIỆT · 23 BÀI MÔ PHỎNG SGK</span>' +
       '<h1>Phòng Thí Nghiệm 3D &amp; Mô Phỏng Hóa 10</h1>' +
-      '<p class="phu" style="margin:0">Trải nghiệm <b>14 phòng Lab 3D real-time</b> tương tác trực tiếp đủ 7 chương SGK Kết nối tri thức, cùng các bài mô phỏng PhET / JavaLab / Ptable kèm <b>Hướng dẫn &amp; Từ điển Tiếng Việt</b>.</p></div>' +
+      '<p class="phu" style="margin:0">Thực hành <b>14 phòng Lab 3D real-time</b> đủ 7 chương KNTT và bộ mô phỏng PhET / JavaLab / Ptable có <b>Hướng dẫn &amp; Từ điển Tiếng Việt</b>.</p></div>' +
       '<div id="tn-drive-slot"></div>' +
     '</div>';
 
-    h += '<section class="the" style="margin-bottom:14px">' +
-      '<div class="hang" style="align-items:flex-end">' +
-        '<div class="truong" style="flex:2 1 240px"><label for="tn-tk">Tìm thí nghiệm / tên bài / hiện tượng (hỗ trợ gõ không dấu)</label><input id="tn-tk" type="search" placeholder="Ví dụ: nguyên tử, đồng vị, ion, PhET, kết tủa AgCl, tốc độ..." value="' + esc(loc.tk) + '"></div>' +
-        '<div class="truong" style="flex:1 1 220px"><label for="tn-bai">Lọc theo Chương / Bài SGK</label><select id="tn-bai"><option value="">Tất cả (' + BAI_THI_NGHIEM.length + ' bài có mô phỏng)</option>' +
-          CHUONG_TN.map(c => '<option value="' + esc(c.id) + '"' + (loc.bai === c.id ? ' selected' : '') + '>' + esc(c.ten) + '</option>').join('') +
-          BAI_THI_NGHIEM.map(b => '<option value="' + esc(b.bai) + '"' + (loc.bai === b.bai ? ' selected' : '') + '>  ↳ ' + (b.bai === 'MD' ? 'Mở đầu' : 'Bài ' + esc(b.bai)) + ' · ' + esc(b.ten) + '</option>').join('') +
-        '</select></div>' +
-      '</div>' +
-      '<div class="tn-chip-bar chip-scroll" style="margin-top:10px">' +
-        '<button type="button" class="nut nho ' + (!loc.bai ? 'chinh' : '') + '" data-b="">Tất cả</button>' +
-        CHUONG_TN.map(c => '<button type="button" class="nut nho ' + (loc.bai === c.id ? 'chinh' : '') + '" data-b="' + esc(c.id) + '">' + (c.id === 'C0' ? 'Mở đầu' : 'Chương ' + c.id.slice(1)) + '</button>').join('') +
-        BAI_THI_NGHIEM.map(b => '<button type="button" class="nut nho ' + (loc.bai === b.bai ? 'chinh' : '') + '" data-b="' + esc(b.bai) + '">' + (b.bai === 'MD' ? 'Mở đầu' : 'Bài ' + esc(b.bai)) + '</button>').join('') +
-        '<button type="button" class="nut nho xoa' + ((loc.bai || loc.tk.trim()) ? '' : ' an') + '" id="tn-xoa-loc">Xóa lọc</button>' +
-      '</div></section>';
-
-    h += '<div id="tn-3d-showcase">' +
-      '<div class="sec-head" style="margin-top:8px"><h2>🧊 14 Phòng Lab 3D Hóa 10 — Tương tác Real-time</h2>' +
-        '<a class="nut nho tim" id="tn-link-sanh-3d" href="' + esc(lLab.href) + '" target="' + lLab.target + '">🏛️ Xem cả 14 Lab →</a></div>' +
-      '<div class="tn-3d-strip">' +
-        LAB_3D_14.map(function (lb, idx) {
-          return '<div class="tn-row" style="border-left-color:var(--do)">' +
-            '<div class="tn-head" style="flex-wrap:wrap">' +
-              '<span class="tn-badge" style="background:linear-gradient(135deg,var(--do-n),var(--tim-n));color:var(--do)"><small>3D</small>' + (idx + 1) + '</span>' +
-              '<div class="tn-ten" style="flex:1;min-width:150px"><b>' + esc(lb.ten) + '</b><span class="phu">🧊 Phòng Lab 3D · Bài ' + esc(lb.bai) + '</span></div>' +
-              '<div class="hang-nut">' +
-                '<button type="button" class="nut nho chinh" data-san-idx="' + idx + '">▶ Mở Lab 3D</button>' +
-                '<a class="nut nho" href="' + esc(urlLabTuLam(lb.labId, false)) + '" target="h10_ngoai" rel="noopener" title="Mở toàn màn hình">↗</a>' +
-              '</div>' +
-            '</div>' +
-            '<div class="phu" style="font-size:12.5px">' + md(lb.mucTieu) + '</div>' +
-          '</div>';
-        }).join('') +
-        '<a class="tn-3d-more-card" id="tn-card-sanh-3d" href="' + esc(lLab.href) + '" target="' + lLab.target + '"><span style="font-size:26px">🏛️</span><span>Xem cả 14 Lab →</span><span class="phu" style="font-size:11.5px;font-weight:500">Mở Sảnh Lab 3D</span></a>' +
-      '</div>' +
+    h += '<div class="h10-tabs full" role="tablist" aria-label="Chế độ xem thí nghiệm">' +
+      '<button type="button" class="h10-tab-btn' + (activeTab === '3d' ? ' on' : '') + '" role="tab" data-tab="3d" aria-selected="' + (activeTab === '3d' ? 'true' : 'false') + '">🧊 Phòng Lab 3D <span class="h10-tab-cnt">' + LAB_3D_14.length + '</span></button>' +
+      '<button type="button" class="h10-tab-btn' + (activeTab === 'sgk' ? ' on' : '') + '" role="tab" data-tab="sgk" aria-selected="' + (activeTab === 'sgk' ? 'true' : 'false') + '">📖 Mô phỏng SGK <span class="h10-tab-cnt">' + BAI_THI_NGHIEM.length + '</span></button>' +
     '</div>';
 
-    h += '<div id="tn-list-wrap"></div>';
+    // Tab 1: 14 Phòng Lab 3D
+    h += '<section id="tn-panel-3d" role="tabpanel"' + (activeTab === '3d' ? '' : ' class="an"') + '>' +
+      '<div class="tn-toolbar">' +
+        '<div class="tn-search-row">' +
+          '<input id="tn3d-tk" type="search" aria-label="Tìm phòng Lab 3D" placeholder="Tìm nhanh Lab 3D (ngọn lửa, NaCl, AgCl, tốc độ, orbital...)..." value="' + esc(loc3d.tk) + '">' +
+          '<button type="button" class="nut nho xoa' + ((loc3d.ch || loc3d.tk.trim()) ? '' : ' an') + '" id="tn3d-xoa-loc">Xóa lọc</button>' +
+        '</div>' +
+        '<div class="tn-chip-bar chip-scroll">' +
+          CHUONG_3D.map(function (c) {
+            return '<button type="button" class="nut nho ' + (loc3d.ch === c.id ? 'chinh' : 'nhe') + '" data-ch3d="' + esc(c.id) + '">' + esc(c.ten) + '</button>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+      '<div class="tn-3d-meta-bar">' +
+        '<span class="phu" id="tn3d-dem" style="font-size:12.5px;font-weight:600"></span>' +
+        '<a class="nut nho nhe" id="tn-link-sanh-3d" href="' + esc(lLab.href) + '" target="' + lLab.target + '">🏛️ Mở Sảnh Lab riêng →</a>' +
+      '</div>' +
+      '<div id="tn3d-grid-wrap"></div>' +
+    '</section>';
 
-    h += '<div id="gallery-tn-slot"></div>';
+    // Tab 2: Mô phỏng 23 bài SGK (Accordion 7 Chương)
+    h += '<section id="tn-panel-sgk" role="tabpanel"' + (activeTab === 'sgk' ? '' : ' class="an"') + '>' +
+      '<div class="the" style="margin-bottom:14px">' +
+        '<div class="hang" style="align-items:flex-end">' +
+          '<div class="truong" style="flex:2 1 240px"><label for="tn-tk">Tìm thí nghiệm / tên bài / hiện tượng (hỗ trợ gõ không dấu)</label><input id="tn-tk" type="search" placeholder="Ví dụ: nguyên tử, đồng vị, ion, PhET, kết tủa AgCl, tốc độ..." value="' + esc(loc.tk) + '"></div>' +
+          '<div class="truong" style="flex:1 1 220px"><label for="tn-bai">Chọn nhanh Chương / Bài SGK</label><select id="tn-bai"><option value="">Tất cả (' + BAI_THI_NGHIEM.length + ' bài SGK)</option>' +
+            CHUONG_TN.map(function (c) { return '<option value="' + esc(c.id) + '"' + (loc.bai === c.id ? ' selected' : '') + '>' + esc(c.ten) + '</option>'; }).join('') +
+            BAI_THI_NGHIEM.map(function (b) { return '<option value="' + esc(b.bai) + '"' + (loc.bai === b.bai ? ' selected' : '') + '>  ↳ ' + (b.bai === 'MD' ? 'Mở đầu' : 'Bài ' + esc(b.bai)) + ' · ' + esc(b.ten) + '</option>'; }).join('') +
+          '</select></div>' +
+        '</div>' +
+        '<div class="tn-chip-bar chip-scroll" style="margin-top:10px">' +
+          '<button type="button" class="nut nho ' + (!loc.bai ? 'chinh' : 'nhe') + '" data-b="">Tất cả</button>' +
+          CHUONG_TN.map(function (c) { return '<button type="button" class="nut nho ' + (loc.bai === c.id ? 'chinh' : 'nhe') + '" data-b="' + esc(c.id) + '">Chương ' + c.id.slice(1) + '</button>'; }).join('') +
+          '<button type="button" class="nut nho xoa' + ((loc.bai || loc.tk.trim()) ? '' : ' an') + '" id="tn-xoa-loc">Xóa lọc</button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="tn-list-wrap"></div>' +
+      '<details class="h10-acc" style="margin-top:14px">' +
+        '<summary class="h10-acc-head">' +
+          '<span class="h10-acc-title"><span>🌐 10 Kho mô phỏng Hóa học quốc tế &amp; trong nước</span></span>' +
+          '<span class="h10-acc-meta"><span>' + WEB_THAM_KHAO.length + ' trang tham khảo</span><span class="h10-acc-chev" aria-hidden="true">▾</span></span>' +
+        '</summary>' +
+        '<div class="h10-acc-body">' +
+          '<div class="tn-cards">' + WEB_THAM_KHAO.map(function (w) {
+            return '<a class="tn-card" href="' + esc(w.url) + '" target="h10_ngoai" rel="noopener"><strong><span>' + esc(w.ten) + '</span><span aria-hidden="true" style="opacity:.6;font-size:13px">↗</span></strong><span>' + esc(w.moTa) + '</span></a>';
+          }).join('') + '</div>' +
+        '</div>' +
+      '</details>' +
+    '</section>';
 
-    h += '<div class="nhan-muc">10 Kho mô phỏng Hóa học quốc tế &amp; trong nước (' + WEB_THAM_KHAO.length + ')</div>' +
-      '<div class="tn-cards">' + WEB_THAM_KHAO.map(w => '<a class="tn-card" href="' + esc(w.url) + '" target="h10_ngoai" rel="noopener"><strong><span>' + esc(w.ten) + '</span><span aria-hidden="true" style="opacity:.6;font-size:13px">↗</span></strong><span>' + esc(w.moTa) + '</span></a>').join('') + '</div>';
-
+    h += '<div id="gallery-tn-slot" style="margin-top:16px"></div>';
     h += '<div id="slogan-slot"></div>';
     app.innerHTML = h;
 
     capNhatLinkDong();
+    capNhatLuoi3D();
     capNhatDanhSach();
     renderGalleryHoa10(document.getElementById('gallery-tn-slot'), 'Sắc màu & Hiện tượng Thí nghiệm Hóa 10');
     renderSlogan(document.getElementById('slogan-slot'));
 
+    const inp3d = $('#tn3d-tk');
+    if (inp3d) {
+      inp3d.addEventListener('input', function () {
+        loc3d.tk = this.value;
+        capNhatLuoi3D();
+      });
+    }
     const inpTk = $('#tn-tk');
     if (inpTk) {
       inpTk.addEventListener('input', function () {
@@ -1683,6 +1879,23 @@
     }
 
     app.addEventListener('click', function (e) {
+      const btnTab = e.target.closest('[data-tab]');
+      if (btnTab) {
+        chuyenTab(btnTab.getAttribute('data-tab'));
+        return;
+      }
+      const btnCh3d = e.target.closest('[data-ch3d]');
+      if (btnCh3d) {
+        loc3d.ch = btnCh3d.getAttribute('data-ch3d') || '';
+        capNhatLuoi3D();
+        return;
+      }
+      if (e.target.closest('#tn3d-xoa-loc')) {
+        loc3d = { ch: '', tk: '' };
+        if (inp3d) inp3d.value = '';
+        capNhatLuoi3D();
+        return;
+      }
       const btnLoc = e.target.closest('[data-b]');
       if (btnLoc) {
         loc.bai = btnLoc.getAttribute('data-b') || '';
@@ -1698,6 +1911,17 @@
         capNhatDanhSach();
         return;
       }
+      const btnAccTog = e.target.closest('#tn-acc-toggle');
+      if (btnAccTog) {
+        const dangMoHet = btnAccTog.getAttribute('data-all-open') === '1';
+        const nextOpen = !dangMoHet;
+        app.querySelectorAll('#tn-list-wrap details.h10-acc').forEach(function (d) {
+          d.open = nextOpen;
+        });
+        btnAccTog.setAttribute('data-all-open', nextOpen ? '1' : '0');
+        btnAccTog.textContent = nextOpen ? 'Thu gọn tất cả' : 'Mở tất cả chương';
+        return;
+      }
       const btnSan = e.target.closest('[data-san-idx]');
       if (btnSan) {
         const lb = LAB_3D_14[Number(btnSan.getAttribute('data-san-idx'))];
@@ -1708,15 +1932,30 @@
       if (btnOpen) {
         const maBai = btnOpen.getAttribute('data-open-bai');
         const idx = Number(btnOpen.getAttribute('data-open-idx')) || 0;
-        const baiObj = BAI_THI_NGHIEM.find(x => x.bai === maBai);
+        const baiObj = BAI_THI_NGHIEM.find(function (x) { return x.bai === maBai; });
         if (baiObj && baiObj.links[idx]) moPhongLab(baiObj, baiObj.links[idx], btnOpen);
       }
     });
   }
 
-  // Hiển thị ngay lập tức ở 0ms (dữ liệu 23 bài đã nằm sẵn tại client), gọi API chạy ngầm để đồng bộ URL & cấu hình Drive
+  // Hiển thị ngay lập tức ở 0ms (dữ liệu đã nằm sẵn tại client), gọi getLocation & API chạy ngầm để đồng bộ URL/GAS
   veTopLinks();
   veKhungTrang();
+  getLocation(function (l) {
+    const prevTab = activeTab;
+    const prevBai = loc.bai;
+    apRouteParams(l && l.parameter, (l && typeof l.hash === 'string') ? l.hash : (window.location.hash || ''));
+    if (loc.bai !== prevBai) {
+      const sel = $('#tn-bai');
+      if (sel) sel.value = loc.bai;
+      capNhatDanhSach();
+    }
+    if (activeTab !== prevTab) {
+      chuyenTab(activeTab);
+    }
+    veTopLinks();
+    capNhatLinkDong();
+  });
   api('tnKhoiDong').then(function (r) {
     if (!r) return;
     data = r;

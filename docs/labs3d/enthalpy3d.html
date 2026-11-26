@@ -111,7 +111,7 @@
     .hint-bar{display:none}
   }
 </style>
-<link rel="stylesheet" href="../assets/lab3d-ui.css?v=42d9838cb8">
+<link rel="stylesheet" href="../assets/lab3d-ui.css?v=64a873cb2d">
 </head>
 <body>
 <div class="wrap">
@@ -1524,8 +1524,10 @@ function bootEnthalpyApp(THREE) {
   };
 
   function fmtVi(num, dec) {
-    const sign = num < -0.0001 ? '−' : '';
-    return sign + Math.abs(num).toFixed(dec).replace('.', ',');
+    const eps = Math.pow(10, -(dec || 0)) * 0.5;
+    const v = Math.abs(num) < eps ? 0 : num;
+    const sign = v < 0 ? '−' : '';
+    return sign + Math.abs(v).toFixed(dec).replace('.', ',');
   }
 
   let toastTimer = null;
@@ -1887,13 +1889,13 @@ function bootEnthalpyApp(THREE) {
 
   /* ==================== 14. CAMERA MƯỢT CÓ QUÁN TÍNH & 3 PRESET ==================== */
   const CAM_PRESETS = {
-    iso:   { theta: 0.42, phi: 1.16, dist: 6.55, target: new THREE.Vector3(0.28, 1.55, -0.05) },
+    iso:   { theta: 0.40, phi: 1.19, dist: 7.95, target: new THREE.Vector3(0.28, 1.92, -0.05) },
     close: { theta: 0.28, phi: 1.32, dist: 3.85, target: new THREE.Vector3(0.02, 1.15, 0.0) },
     lcd:   { theta: 0.28, phi: 1.38, dist: 2.55, target: new THREE.Vector3(0.34, 3.48, -0.14) }
   };
 
-  const camCur = { theta: 0.42, phi: 1.16, dist: 6.55, target: new THREE.Vector3(0.28, 1.55, -0.05) };
-  const camDst = { theta: 0.42, phi: 1.16, dist: 6.55, target: new THREE.Vector3(0.28, 1.55, -0.05) };
+  const camCur = { theta: 0.40, phi: 1.19, dist: 7.95, target: new THREE.Vector3(0.28, 1.92, -0.05) };
+  const camDst = { theta: 0.40, phi: 1.19, dist: 7.95, target: new THREE.Vector3(0.28, 1.92, -0.05) };
 
   function setCamPreset(name) {
     const p = CAM_PRESETS[name] || CAM_PRESETS.iso;

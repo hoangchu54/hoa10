@@ -21,7 +21,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/h10.css?v=0e9b13a5ac">
+<link rel="stylesheet" href="assets/h10.css?v=9e903f57fc">
+<style>
+.home-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+@media (max-width:560px){
+  .hero-mascot .hm-sub{display:block;margin-top:3px;font-size:12.5px;line-height:1.4}
+}
+</style>
 </head>
 <body class="embed-ok">
 <div class="app" style="min-height:auto">
@@ -35,11 +41,6 @@
         </div>
       </div>
       <div class="top-right">
-        <span class="top-pill on" aria-current="page">🏠 Trang chủ</span>
-        <a class="top-pill an" id="btn-btvn" href="#">Làm BTVN</a>
-        <a class="top-pill an" id="btn-tailieu" href="#">Kho tài liệu</a>
-        <a class="top-pill an" id="btn-lab" href="#">Thí nghiệm</a>
-        <a class="top-pill an" id="btn-game" href="#">Trò chơi</a>
         <button type="button" class="top-pill" id="btn-theme"></button>
       </div>
     </div>
@@ -48,10 +49,10 @@
   <main class="khung-chinh" id="app"></main>
 </div>
 
-<script src="assets/h10.js?v=2416061e55"></script>
+<script src="assets/h10.js?v=abe638fbec"></script>
 <script>
 (function () {
-  const { esc, md, api, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, ganNutLenDau, renderSlogan, renderGalleryHoa10, ganThanhDieuHuongHS, docCacheUI, ghiCacheUI, ganBungCoVu, veMascot, kichHoatMascot, tenDep } = window.H10;
+  const { esc, md, api, getLocation, linkTrang, skelCards, ICONS, ganNutTheme, ganNutLenDau, renderSlogan, ganThanhDieuHuongHS, docCacheUI, ghiCacheUI, ganBungCoVu, veMascot, kichHoatMascot, tenDep } = window.H10;
   const CHUONG_POSTERS = [
     { id: 'C1', so: 'Chương 1', ten: 'Cấu tạo nguyên tử', sub: 'Bài 1 – 4 · Hạt nhân & Orbital', ic: '⚛️', cls: 'ch-c1' },
     { id: 'C2', so: 'Chương 2', ten: 'Bảng tuần hoàn', sub: 'Bài 5 – 9 · Chu kì & Quy luật', ic: '🧭', cls: 'ch-c2' },
@@ -124,24 +125,8 @@
 
     const lBtvn = linkTrang('btvn', opt);
     const lTailieu = linkTrang('tailieu', opt);
-    const lGame = linkTrang('trochoi', opt);
-    const lLab = linkTrang('thinghiem', opt);
     const lAdmin = linkTrang('admin', opt);
 
-    [
-      ['btn-btvn', lBtvn],
-      ['btn-tailieu', lTailieu],
-      ['btn-lab', lLab],
-      ['btn-game', lGame]
-    ].forEach(function (cap) {
-      const el = document.getElementById(cap[0]);
-      if (el) { ganThuocTinhLink_(el, cap[1]); el.classList.remove('an'); }
-    });
-
-    ganThuocTinhLink_(document.getElementById('hub-btvn'), lBtvn);
-    ganThuocTinhLink_(document.getElementById('hub-tailieu'), lTailieu);
-    ganThuocTinhLink_(document.getElementById('hub-game'), lGame);
-    ganThuocTinhLink_(document.getElementById('hub-lab'), lLab);
     ganThuocTinhLink_(document.getElementById('btn-admin-link'), lAdmin);
     ganThuocTinhLink_(document.getElementById('news-all-btvn'), lBtvn);
     ganThuocTinhLink_(document.getElementById('news-all-tl'), lTailieu);
@@ -160,6 +145,13 @@
     });
   }
 
+  function locNhanPhuTL_(s) {
+    const v = String(s || '').trim();
+    if (!v) return false;
+    const n = v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').toLowerCase();
+    return n !== 'tai lieu hoc tap' && n !== 'tai lieu' && n !== 'chung';
+  }
+
   function renderBangTinHtml_(r) {
     const cfg = r.caiDatTrang || {};
     const opt = { cfg: cfg, webUrl: r.webUrl, laFull: laFull };
@@ -168,13 +160,12 @@
     const deMo = Array.isArray(r.deMo) ? r.deMo : [];
     const tlMoi = Array.isArray(r.taiLieuMoi) ? r.taiLieuMoi : [];
     if (r._tam) {
-      return '<div class="home-news">' + skelCards(2) + '</div>';
+      return '<div class="home-news" style="margin-top:0">' + skelCards(2) + '</div>';
     }
-    if (!deMo.length && !tlMoi.length) return '';
 
-    let h = '<div class="home-news">';
+    let h = '<div class="home-news" style="margin-top:0">';
     h += '<section class="the" style="margin:0"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
-      '<h2 class="tieu-khoi" style="margin:0">📝 Đề đang mở</h2>' +
+      '<h2 class="tieu-khoi" style="margin:0">📝 Đề đang mở' + (deMo.length ? ' <span class="chip chinh">' + deMo.length + '</span>' : '') + '</h2>' +
       '<a class="hub-go" id="news-all-btvn" style="color:var(--do);margin:0" ' + attrLink_(lBtvn) + '>Tất cả →</a></div>';
     if (deMo.length) {
       h += '<div class="news-list">' + deMo.map(function (d) {
@@ -191,15 +182,16 @@
     h += '</section>';
 
     h += '<section class="the" style="margin:0"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
-      '<h2 class="tieu-khoi" style="margin:0">📚 Tài liệu mới</h2>' +
+      '<h2 class="tieu-khoi" style="margin:0">📚 Tài liệu mới' + (r.soTaiLieu ? ' <span class="chip tim">' + r.soTaiLieu + '</span>' : '') + '</h2>' +
       '<a class="hub-go" id="news-all-tl" style="color:var(--tim);margin:0" ' + attrLink_(lTailieu) + '>Kho tài liệu →</a></div>';
     if (tlMoi.length) {
       h += '<div class="news-list">' + tlMoi.map(function (x) {
         const dd = x.dinhDang === 'pdf' ? 'PDF' : (x.dinhDang === 'ppt' ? 'SLIDE' : (x.dinhDang === 'doc' ? 'WORD' : 'FILE'));
         const lFile = x.fileId ? linkTrang('tailieu', { cfg: cfg, webUrl: r.webUrl, laFull: laFull, query: '?xem=' + encodeURIComponent(x.fileId) }) : lTailieu;
+        const meta = [x.thuMuc, x.loai].filter(locNhanPhuTL_).join(' · ');
         return '<a class="news-item" data-file-id="' + esc(x.fileId || '') + '" ' + attrLink_(lFile) + ' title="' + esc(x.ten) + '">' +
           '<div class="tl-ic ' + esc(x.dinhDang) + '" aria-hidden="true">' + dd + '</div>' +
-          '<div style="min-width:0;flex:1"><b>' + esc(tenDep(x.ten)) + '</b><span class="phu">' + esc([x.loai, x.thuMuc].filter(Boolean).join(' · ')) + '</span></div></a>';
+          '<div style="min-width:0;flex:1"><b>' + esc(tenDep(x.ten)) + '</b>' + (meta ? '<span class="phu">' + esc(meta) + '</span>' : '') + '</div></a>';
       }).join('') + '</div>';
     } else {
       h += '<p class="phu" style="margin:10px 0 0;font-size:13px">Chưa có tài liệu nào.</p>';
@@ -214,23 +206,15 @@
     document.getElementById('site-title').textContent = 'Hóa học 10 · Thầy Hoàng';
 
     const opt = { cfg: cfg, webUrl: curHomeData.webUrl, laFull: laFull };
-    const lBtvn = linkTrang('btvn', opt);
-    const lTailieu = linkTrang('tailieu', opt);
-    const lGame = linkTrang('trochoi', opt);
-    const lLab = linkTrang('thinghiem', opt);
     const lAdmin = linkTrang('admin', opt);
 
-    let h = '<div class="hero-mascot" id="hero-mascot" title="Chạm vào Thầy Hoàng để đổi câu nhắc &amp; nhận cổ vũ!">' +
-      '<div class="hm-side l">' + veMascot({ cls: 'hm-mascot-img', alt: 'Thầy Hoàng CaFe Hóa 10' }) + '</div>' +
+    // Khối 1: Hero tối giản + Linh vật tương tác
+    let h = '<div class="hero-mascot" id="hero-mascot" title="Chạm vào Thầy Hoàng để nhận lời cổ vũ!">' +
+      '<div class="hm-side l">' + veMascot({ cls: 'hm-mascot-img', alt: 'Thầy Hoàng Hóa 10' }) + '</div>' +
       '<div class="hm-mid">' +
-        '<div class="hm-kicker"><span class="hm-star">✦ </span>KẾT NỐI TRI THỨC · HÓA HỌC 10<span class="hm-star"> ✦</span></div>' +
+        '<div class="hm-kicker">KẾT NỐI TRI THỨC · HÓA HỌC 10</div>' +
         '<h1 id="hm-title">' + esc(cfg.tieuDeTrang || 'Học tốt – Thi tốt – Hóa thật giỏi!') + '</h1>' +
-        '<p class="hm-sub" id="hm-sub">' + esc(cfg.phuDeTrang || 'Cố lên nào! Cùng Thầy Hoàng chinh phục Hóa 10') + '</p>' +
-        '<div class="hm-quote" id="hm-quote-txt"><b>☕ CaFe Hóa 10:</b> <span>Ca (Z=20) + Fe (Z=26) = CaFe nạp năng lượng học Hóa!</span></div>' +
-        '<div class="hm-tags">' +
-          '<span class="hm-hint">✨ Chạm vào thầy để đổi mẹo Hóa 10</span>' +
-          '<span class="hm-hint">⚗️ 7 Chương · 23 Bài SGK</span>' +
-        '</div>' +
+        '<p class="hm-sub" id="hm-sub">' + esc(cfg.phuDeTrang || 'Cố lên nào! Cùng Thầy Hoàng chinh phục 7 chương Hóa 10') + '</p>' +
       '</div>' +
       '<div class="hm-side r">' + SVG_NGUYEN_TU + '</div>' +
     '</div>';
@@ -239,51 +223,10 @@
       (cfg.thongBao ? '<div class="thongbao info" style="margin:0 0 14px">' + ICONS.tt + '<div><b>📢 Thông báo từ Thầy Hoàng:</b><div style="margin-top:2px">' + md(cfg.thongBao) + '</div></div></div>' : '') +
     '</div>';
 
-    h += '<div class="hub-grid">' +
-      '<a class="hub-card" id="hub-btvn" ' + attrLink_(lBtvn) + '>' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
-          '<div class="hub-ic do">' + ICONS.binh + '</div>' +
-          '<span class="chip chinh" id="chip-so-de">' + (curHomeData.soDeDangMo ? curHomeData.soDeDangMo + ' đề đang mở' : 'Luyện tập') + '</span>' +
-        '</div>' +
-        '<b style="font-size:17px">Bài tập về nhà</b>' +
-        '<span class="phu" style="font-size:13px">Làm bài trắc nghiệm, đúng/sai, trả lời ngắn, tự luyện câu sai &amp; xem tiến bộ.</span>' +
-        '<span class="hub-go" style="color:var(--do)">Vào làm bài →</span>' +
-      '</a>' +
-
-      '<a class="hub-card" id="hub-tailieu" ' + attrLink_(lTailieu) + '>' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
-          '<div class="hub-ic tim">' + ICONS.doc + '</div>' +
-          '<span class="chip tim" id="chip-so-tl">' + (curHomeData.soTaiLieu != null ? curHomeData.soTaiLieu + ' tài liệu' : 'Slide · Phiếu · Đề') + '</span>' +
-        '</div>' +
-        '<b style="font-size:17px">Kho tài liệu Hóa 10</b>' +
-        '<span class="phu" style="font-size:13px">Slide bài giảng, phiếu bài tập, đề ôn tập và đáp án chi tiết theo từng buổi.</span>' +
-        '<span class="hub-go" style="color:var(--tim)">Mở kho tài liệu →</span>' +
-      '</a>' +
-
-      '<a class="hub-card" id="hub-game" ' + attrLink_(lGame) + '>' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
-          '<div class="hub-ic xanh">' + ICONS.game + '</div>' +
-          '<span class="chip ok">3 Game Hóa 10</span>' +
-        '</div>' +
-        '<b style="font-size:17px">Trò chơi Hóa 10</b>' +
-        '<span class="phu" style="font-size:13px">Flappy Hóa học, Xây tháp 118 nguyên tố &amp; Đấu trường Danh pháp 60s.</span>' +
-        '<span class="hub-go" style="color:var(--ok)">Vào trò chơi →</span>' +
-      '</a>' +
-
-      '<a class="hub-card" id="hub-lab" ' + attrLink_(lLab) + '>' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
-          '<div class="hub-ic sky">' + ICONS.lab + '</div>' +
-          '<span class="chip sky">Theo bài SGK</span>' +
-        '</div>' +
-        '<b style="font-size:17px">Thí nghiệm mô phỏng</b>' +
-        '<span class="phu" style="font-size:13px">Phòng thí nghiệm ảo theo từng bài SGK &amp; 10 kho mô phỏng Hóa học hay.</span>' +
-        '<span class="hub-go" style="color:var(--sky)">Mở thí nghiệm ảo →</span>' +
-      '</a>' +
-    '</div>';
-
+    // Khối 2: Bảng tin 2 cột (Đề đang mở & Tài liệu mới) nổi bật ngay trên tầm nhìn đầu tiên
     h += '<div id="home-news-slot">' + renderBangTinHtml_(curHomeData) + '</div>';
 
-    // Dải Poster 7 Chương SGK Hóa 10 (cuộn ngang mượt có snap trên điện thoại)
+    // Khối 3: Dải Poster 7 Chương SGK Hóa 10 + Flashcard 10 giây
     h += '<div class="sec-head">' +
       '<h2>🗺️ Khám phá 7 Chương Hóa học 10</h2>' +
       '<span class="phu">Bấm vào chương để mở thẳng học liệu của chương đó</span>' +
@@ -298,10 +241,11 @@
     });
     h += '</div>';
 
-    h += '<div id="fc-slot" style="margin-top:16px"></div>';
-    h += '<div id="gallery-slot"></div>';
+    h += '<div id="fc-slot" style="margin-top:14px"></div>';
+
+    // Khối 4: Slogan chân trang nhẹ gọn + Lối vào giáo viên
     h += '<div id="slogan-slot"></div>';
-    h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px">' +
+    h += '<div class="home-foot">' +
       '<span class="phu" style="font-size:12px">💡 Mẹo: Bấm <b>🧮 Casio</b> (hoặc Alt+P trên máy tính) để mở nhanh Casio Hóa học, Danh pháp IUPAC &amp; Công thức.</span>' +
       '<a class="top-pill" id="btn-admin-link" ' + attrLink_(lAdmin) + '>Khu vực giáo viên →</a>' +
     '</div>';
@@ -311,7 +255,6 @@
     capNhatLinksHome();
     ganBungCoVu(document.getElementById('hero-mascot'));
     kichHoatMascot(app);
-    renderGalleryHoa10(document.getElementById('gallery-slot'));
     renderSlogan(document.getElementById('slogan-slot'));
 
     // Khởi tạo Flashcard 3D (hỗ trợ cả click/chạm và phím Enter/Space)
@@ -331,7 +274,7 @@
           '<div class="fc-a">💡 ' + md(f.a) + '</div>' +
           '<div class="fc-foot">' +
             '<span>Thẻ ' + (fIdx + 1) + '/' + FLASHCARDS.length + ' · Ôn nhanh kiến thức trọng tâm</span>' +
-            '<button type="button" class="nut nho" id="fc-next">Câu tiếp theo ↻</button>' +
+            '<button type="button" class="nut nho nhe" id="fc-next">Câu tiếp theo ↻</button>' +
           '</div>' +
         '</div></div>';
         const card = document.getElementById('fc-card');
@@ -371,7 +314,7 @@
     const tEl = document.getElementById('hm-title');
     const sEl = document.getElementById('hm-sub');
     const tieuDeMoi = cfg.tieuDeTrang || 'Học tốt – Thi tốt – Hóa thật giỏi!';
-    const phuDeMoi = cfg.phuDeTrang || 'Cố lên nào! Cùng Thầy Hoàng chinh phục Hóa 10';
+    const phuDeMoi = cfg.phuDeTrang || 'Cố lên nào! Cùng Thầy Hoàng chinh phục 7 chương Hóa 10';
     if (tEl && tEl.textContent !== tieuDeMoi) tEl.textContent = tieuDeMoi;
     if (sEl && sEl.textContent !== phuDeMoi) sEl.textContent = phuDeMoi;
 
@@ -381,10 +324,6 @@
         ? '<div class="thongbao info" style="margin:0 0 14px">' + ICONS.tt + '<div><b>📢 Thông báo từ Thầy Hoàng:</b><div style="margin-top:2px">' + md(cfg.thongBao) + '</div></div></div>'
         : '';
     }
-    const chipDe = document.getElementById('chip-so-de');
-    if (chipDe) chipDe.textContent = curHomeData.soDeDangMo ? (curHomeData.soDeDangMo + ' đề đang mở') : 'Luyện tập';
-    const chipTl = document.getElementById('chip-so-tl');
-    if (chipTl) chipTl.textContent = curHomeData.soTaiLieu != null ? (curHomeData.soTaiLieu + ' tài liệu') : 'Slide · Phiếu · Đề';
 
     const newsSlot = document.getElementById('home-news-slot');
     if (newsSlot) newsSlot.innerHTML = renderBangTinHtml_(curHomeData);
